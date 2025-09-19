@@ -11,6 +11,7 @@ path_output = "output"
 path_temp = ".temp"
 path_logs = os.path.join(path_temp, "logs")
 path_build = os.path.join(path_temp, "build")
+path_build_process = os.path.join(path_temp, "build_process")
 
 def getLogFile():
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -32,7 +33,13 @@ def getItemPath(item):
     
     return path
 
-def getFolder(item):
+def getTempPath(item, subdirectory):
+    path = os.path.join(path_build_process, subdirectory, item["name"])
+    os.makedirs(path_logs, exist_ok=True)
+
+    return path
+
+def getItemFolder(item):
     path = getItemPath(item)
     os.makedirs(path, exist_ok=True)
     
@@ -49,6 +56,9 @@ def buildLog(logstr, quiet=False):
     print(logstr)
     log_file.write(logstr + "\n")
     log_file.flush()
+
+def findItem(itemName);
+    pass
 
 def executeProcess(item, cmd):
     buildLog(f"building item 1/1 {item["type"]} ({item["name"]})")
@@ -84,17 +94,33 @@ def buildDebian(item):
         "--aptopt=Acquire::AllowInsecureRepositories true",
         "--aptopt=APT::Get::AllowUnauthenticated true",
         item["suite"],
-        getFolder(item),
+        getItemFolder(item),
         item["url"]
     ]
     executeProcess(item, cmd)
+
+def copyItemFiles(fromPath, toPath):
+    pass
+
+def buildFilesystem(item):
+    fs_files = getTempPath(item, "fs_files")
+
+    if "directories" in item:
+        for folderName in item["directories"]:
+            os.makedirs(os.path.join(fs_files, folderName), exist_ok=True)
+
+    if "items" in item:
+        for itemObj in item["items"]:
+            
+            
 
 def buildUnknown(item):
     buildLog(f"unknown build item type: {item["type"]}")
     sys.exit(1)
 
 buildActions = {
-    "debian": buildDebian
+    "debian": buildDebian,
+    "filesystem": buildFilesystem
 }
 
 def buildItems(builditems):
@@ -107,6 +133,7 @@ def buildProject(json_path):
 
     deleteDirectory(path_output)
     deleteDirectory(path_build)
+    deleteDirectory(path_build_process)
     
     buildItems(projectData["builditems"])
 
