@@ -12,6 +12,7 @@ for a computer, you can build a kernel, but not export it, but assemble the debi
 ## dependencies
 * python3
 * mmdebstrap
+* mkfs.*
 
 ## project example
 ```json
@@ -19,22 +20,35 @@ for a computer, you can build a kernel, but not export it, but assemble the debi
     "builditems": [
         {
             "type": "debian",
-            "name": "rootfs",
+            "name": "not public artifact name",
             "export": false,
 
-            "packages": [
+            "include": [
                 "cowsay"
             ],
+            "exclude": [],
+
             "variant": "minbase",
             "suite": "bookworm",
             "url": "http://snapshot.debian.org/archive/debian/20250809T133719Z"
         },
         {
-            "type": "debian",
-            "name": "rootfs",
+            "type": "filesystem",
+            "name": "",
             "export": false,
 
+            "directories": [
+                // empty directories that will be created before adding items can be listed here
+                // this is not necessary, since all directories are created automatically when adding items, but it can be used if you need an empty directory
+            ],
 
+            "items": [
+                ["not public artifact name", "."] //adding the previously built debian to the file system
+            ],
+
+            "fs_type": "ext4",
+            "size": "2G",
+            "label": "ROOTFS",
         }
     ]
 }
