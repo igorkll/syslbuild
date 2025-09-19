@@ -2,10 +2,36 @@
 import sys
 import json5
 import argparse
+import subprocess
 import os
 
-def buildDebian(architecture, item):
+def readBool(tbl, name):
+    if name in tbl:
+        return bool(tbl[name])
     
+    return False
+
+def getFolder(architecture, item):
+    if readBool(item, "export"):
+        path = os.path.join("output", item["name"])
+    else:
+        path = os.path.join(".temp", "build", item["name"])
+    
+    return path
+
+def buildDebian(architecture, item):
+    subprocess.run(["mmdebstrap",
+        "--arch", architecture,
+        "--variant", item["variant"],
+        "--include=" + ",".join(item["include"]),
+        "--exclude=" + ",".join(item["exclude"]),
+        "--aptopt=Acquire::Check-Valid-Until \"false\"",
+        "--aptopt=Acquire::AllowInsecureRepositories \"true\"",
+        "--aptopt=APT::Get::AllowUnauthenticated \"true\"",
+        item["suite"],
+        ".local/rootfs",
+        item["url"]
+    ])
 
 def buildUnknown(architecture, item):
     print(f"unknown build item type: {item["type"]}")
