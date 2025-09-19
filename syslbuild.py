@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 import sys
-import json
+import json5
 import argparse
 import os
+
+def buildDebian(architecture, item):
+    
 
 def buildUnknown(architecture, item):
     print(f"unknown build item type: {item["type"]}")
     sys.exit(1)
 
 buildActions = {
+    "debian": buildDebian
 }
 
 def buildItems(architecture, builditems):
@@ -17,7 +21,7 @@ def buildItems(architecture, builditems):
 
 def buildProject(architecture, json_path):
     with open(json_path, "r", encoding="utf-8") as f:
-        projectData = json.load(f)
+        projectData = json5.load(f)
     
     buildItems(architecture, projectData["builditems"])
 

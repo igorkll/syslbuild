@@ -16,6 +16,9 @@ also, assembling a bootable img with an already installed system is also a separ
 * mmdebstrap
 * mkfs.*
 
+## python dependencies
+* json5
+
 ## project example
 ```json
 {
@@ -51,7 +54,7 @@ also, assembling a bootable img with an already installed system is also a separ
 
             "fs_type": "ext4",
             "size": "1G",
-            "label": "example-distro",
+            "label": "example-distro"
         },
         {
             "type": "full-disk-image",
