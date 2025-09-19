@@ -7,7 +7,13 @@ import os
 import shutil
 
 path_output = "output"
-path_build = ".temp/build"
+path_temp = ".temp"
+path_build = os.path.join(path_temp, "build")
+
+def getLogFile(architecture):
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    log_filename = f"build_{architecture}_{timestamp}.log"
+    return open(os.path.join(path_temp, "logs", log_filename), "w")
 
 def readBool(tbl, name):
     if name in tbl:
@@ -37,7 +43,7 @@ def buildLog(logstr):
     print(f"-------- SYSLBUILD: {logstr}")
 
 def executeProcess(item, cmd):
-    buildLog(f"building item 1/1 ({item["type"]})")
+    buildLog(f"building item 1/1 {item["type"]} ({item["name"]})")
     result = subprocess.run(cmd)
     if result.returncode != 0:
         buildLog("failed to build")
