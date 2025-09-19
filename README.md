@@ -22,7 +22,7 @@ also, assembling a bootable img with an already installed system is also a separ
     "builditems": [
         {
             "type": "debian",
-            "name": "not public artifact name",
+            "name": "debian folder",
             "export": false,
 
             "include": [
@@ -36,7 +36,7 @@ also, assembling a bootable img with an already installed system is also a separ
         },
         {
             "type": "filesystem",
-            "name": "not public fs name",
+            "name": "example-distro rootfs.img",
             "export": false,
 
             "directories": [
@@ -46,13 +46,22 @@ also, assembling a bootable img with an already installed system is also a separ
             ],
 
             "items": [
-                ["not public artifact name", "."] //adding the previously built debian to the file system
+                ["debian folder", "."] //adding the previously built debian to the file system
             ],
 
             "fs_type": "ext4",
             "size": "1G",
-            "label": "my distribution",
-        }
+            "label": "example-distro",
+        },
+        {
+            "type": "filesystem",
+            "name": "example-distro.img",
+            "export": true,
+
+            "items": [
+                
+            ]
+        },
     ]
 }
 ```
