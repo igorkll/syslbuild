@@ -11,7 +11,7 @@ def readBool(tbl, name):
     
     return False
 
-def getFolder(architecture, item):
+def getItemPath(item):
     if readBool(item, "export"):
         path = os.path.join("output", item["name"])
     else:
@@ -19,19 +19,35 @@ def getFolder(architecture, item):
     
     return path
 
+def getFolder(item):
+    path = getItemPath(item)
+    os.makedirs(path, exist_ok=True)
+    
+    return path
+
+def executeProcess(item, cmd):
+    print(f"building item 1/1 ({item["type"]})")
+    result = subprocess.run(cmd)
+    if result.returncode != 0:
+        print("failed to build")
+        os.exit(1)
+
 def buildDebian(architecture, item):
-    subprocess.run(["mmdebstrap",
-        "--arch", architecture,
-        "--variant", item["variant"],
-        "--include=" + ",".join(item["include"]),
-        "--exclude=" + ",".join(item["exclude"]),
-        "--aptopt=Acquire::Check-Valid-Until \"false\"",
-        "--aptopt=Acquire::AllowInsecureRepositories \"true\"",
-        "--aptopt=APT::Get::AllowUnauthenticated \"true\"",
+    include_arg = "--include=" + ",".join(item["include"]) if item.get("include") else None
+    exclude_arg = "--exclude=" + ",".join(item["exclude"]) if item.get("exclude") else None
+
+    cmd = ["mmdebstrap", "--arch", architecture, "--variant", item["variant"]]
+    if include_arg: cmd.append(include_arg)
+    if exclude_arg: cmd.append(exclude_arg)
+    cmd += [
+        "--aptopt=Acquire::Check-Valid-Until false",
+        "--aptopt=Acquire::AllowInsecureRepositories true",
+        "--aptopt=APT::Get::AllowUnauthenticated true",
         item["suite"],
-        ".local/rootfs",
+        getFolder(item),
         item["url"]
-    ])
+    ]
+    executeProcess(item, cmd)
 
 def buildUnknown(architecture, item):
     print(f"unknown build item type: {item["type"]}")
