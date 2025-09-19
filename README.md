@@ -1,3 +1,41 @@
 # syslbuild
 an assembly system for creating Linux distributions. it is focused on embedded distributions 
 * the program requires root access because it mounts images
+
+## build process
+you create a folder and in it a json file with a description of the project  
+it describes the build items, each of which can be 'exported' and/or used in another build items  
+if you set the 'export' flag to true in the build item, the build item will appear in the output directory after the build, otherwise it will remain in .temp but can be used for other build items during the build process  
+for example, for a phone whose bootloader usually loads the kernel from the raw partition, you can separately assemble the rootfs and the kernel separately and export them separately  
+for a computer, you can build a kernel, but not export it, but assemble the debian base system separately. after create a file system, copy debian and the kernel into it, and then add another build item that will make an img with a bootloader and MBR  
+
+## dependencies
+* python3
+* mmdebstrap
+
+## project example
+```json
+{
+    "builditems": [
+        {
+            "type": "debian",
+            "name": "rootfs",
+            "export": false,
+
+            "packages": [
+                "cowsay"
+            ],
+            "variant": "minbase",
+            "suite": "bookworm",
+            "url": "http://snapshot.debian.org/archive/debian/20250809T133719Z"
+        },
+        {
+            "type": "debian",
+            "name": "rootfs",
+            "export": false,
+
+
+        }
+    ]
+}
+```
