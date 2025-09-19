@@ -34,12 +34,13 @@ for a computer, you can build a kernel, but not export it, but assemble the debi
         },
         {
             "type": "filesystem",
-            "name": "",
+            "name": "not public fs name",
             "export": false,
 
             "directories": [
                 // empty directories that will be created before adding items can be listed here
                 // this is not necessary, since all directories are created automatically when adding items, but it can be used if you need an empty directory
+                "/home/MY EMPTY DIR"
             ],
 
             "items": [
@@ -47,7 +48,7 @@ for a computer, you can build a kernel, but not export it, but assemble the debi
             ],
 
             "fs_type": "ext4",
-            "size": "2G",
+            "size": "1G",
             "label": "ROOTFS",
         }
     ]
