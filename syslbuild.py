@@ -52,6 +52,7 @@ def buildLog(logstr, quiet=False):
 
 def executeProcess(item, cmd):
     buildLog(f"building item 1/1 {item["type"]} ({item["name"]})")
+    buildLog(f"execute command: {cmd}")
     
     process = subprocess.Popen(
         cmd,
