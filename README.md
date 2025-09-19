@@ -54,14 +54,14 @@ also, assembling a bootable img with an already installed system is also a separ
             "label": "example-distro",
         },
         {
-            "type": "filesystem",
+            "type": "full-disk-image",
             "name": "example-distro.img",
             "export": true,
 
             "items": [
                 
             ]
-        },
+        }
     ]
 }
 ```
