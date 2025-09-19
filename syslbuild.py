@@ -4,19 +4,27 @@ import json
 import argparse
 import os
 
-def requireRoot():
-    if os.geteuid() != 0:
-        print("This program requires root permissions. Restarting with sudo...")
-        sys.exit(os.system("sudo {} {}".format(sys.executable, " ".join(sys.argv))))
+def buildUnknown(architecture, item):
+    print(f"unknown build item type: {item["type"]}")
+    sys.exit(1)
+
+buildActions = {
+}
 
 def buildItems(architecture, builditems):
-    
+    for item in builditems:
+        buildActions.get(item["type"], buildUnknown)(architecture, item)
 
 def buildProject(architecture, json_path):
     with open(json_path, "r", encoding="utf-8") as f:
         projectData = json.load(f)
     
     buildItems(architecture, projectData["builditems"])
+
+def requireRoot():
+    if os.geteuid() != 0:
+        print("This program requires root permissions. Restarting with sudo...")
+        sys.exit(os.system("sudo {} {}".format(sys.executable, " ".join(sys.argv))))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="an assembly system for creating Linux distributions. it is focused on embedded distributions")
