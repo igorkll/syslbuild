@@ -5,15 +5,18 @@ import argparse
 import subprocess
 import os
 import shutil
+import datetime
 
 path_output = "output"
 path_temp = ".temp"
+path_logs = os.path.join(path_temp, "logs")
 path_build = os.path.join(path_temp, "build")
 
-def getLogFile(architecture):
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+def getLogFile():
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     log_filename = f"build_{architecture}_{timestamp}.log"
-    return open(os.path.join(path_temp, "logs", log_filename), "w")
+    os.makedirs(path_logs, exist_ok=True)
+    return open(os.path.join(path_logs, log_filename), "w")
 
 def readBool(tbl, name):
     if name in tbl:
@@ -39,17 +42,36 @@ def deleteDirectory(path):
     if os.path.exists(path) and os.path.isdir(path):
         shutil.rmtree(path)
 
-def buildLog(logstr):
-    print(f"-------- SYSLBUILD: {logstr}")
+def buildLog(logstr, quiet=False):
+    if not quiet:
+        logstr = f"-------- SYSLBUILD: {logstr}"
+    
+    print(logstr)
+    log_file.write(logstr + "\n")
+    log_file.flush()
 
 def executeProcess(item, cmd):
     buildLog(f"building item 1/1 {item["type"]} ({item["name"]})")
-    result = subprocess.run(cmd)
-    if result.returncode != 0:
-        buildLog("failed to build")
-        os.exit(1)
+    
+    process = subprocess.Popen(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        bufsize=1
+    )
 
-def buildDebian(architecture, item):
+    for line in process.stdout:
+        buildLog(line.rstrip(), True)
+
+    process.stdout.close()
+    returncode = process.wait()
+
+    if returncode != 0:
+        buildLog("failed to build")
+        sys.exit(1)
+
+def buildDebian(item):
     include_arg = "--include=" + ",".join(item["include"]) if item.get("include") else None
     exclude_arg = "--exclude=" + ",".join(item["exclude"]) if item.get("exclude") else None
 
@@ -66,7 +88,7 @@ def buildDebian(architecture, item):
     ]
     executeProcess(item, cmd)
 
-def buildUnknown(architecture, item):
+def buildUnknown(item):
     buildLog(f"unknown build item type: {item["type"]}")
     sys.exit(1)
 
@@ -74,22 +96,22 @@ buildActions = {
     "debian": buildDebian
 }
 
-def buildItems(architecture, builditems):
+def buildItems(builditems):
     for item in builditems:
-        buildActions.get(item["type"], buildUnknown)(architecture, item)
+        buildActions.get(item["type"], buildUnknown)(item)
 
-def buildProject(architecture, json_path):
+def buildProject(json_path):
     with open(json_path, "r", encoding="utf-8") as f:
         projectData = json5.load(f)
 
     deleteDirectory(path_output)
     deleteDirectory(path_build)
     
-    buildItems(architecture, projectData["builditems"])
+    buildItems(projectData["builditems"])
 
 def requireRoot():
     if os.geteuid() != 0:
-        buildLog("This program requires root permissions. Restarting with sudo...")
+        print("This program requires root permissions. Restarting with sudo...")
         sys.exit(os.system("sudo {} {}".format(sys.executable, " ".join(sys.argv))))
 
 if __name__ == "__main__":
@@ -99,6 +121,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     requireRoot()
-    buildProject(args.arch, args.json_path)
+    
+    architecture = args.arch
+    log_file = getLogFile()
+    buildProject(args.json_path)
 
     
