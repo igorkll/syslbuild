@@ -2,17 +2,12 @@
 import sys
 import json
 import argparse
+import os
 
 def require_root():
     if os.geteuid() != 0:
         print("This program requires root permissions. Restarting with sudo...")
-
-        try:
-            subprocess.check_call(["sudo", sys.executable] + sys.argv)
-        except subprocess.CalledProcessError as e:
-            print(f"root rights were not obtained: {e}")
-        
-        sys.exit(1)
+        sys.exit(os.system("sudo {} {}".format(sys.executable, " ".join(sys.argv))))
 
 if __name__ == "__main__":
     if len(sys.argv) == 0:
