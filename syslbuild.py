@@ -4,6 +4,10 @@ import json5
 import argparse
 import subprocess
 import os
+import shutil
+
+path_output = "output"
+path_build = ".temp/build"
 
 def readBool(tbl, name):
     if name in tbl:
@@ -13,9 +17,9 @@ def readBool(tbl, name):
 
 def getItemPath(item):
     if readBool(item, "export"):
-        path = os.path.join("output", item["name"])
+        path = os.path.join(path_output, item["name"])
     else:
-        path = os.path.join(".temp", "build", item["name"])
+        path = os.path.join(path_build, item["name"])
     
     return path
 
@@ -25,11 +29,18 @@ def getFolder(item):
     
     return path
 
+def deleteDirectory(path):
+    if os.path.exists(path) and os.path.isdir(path):
+        shutil.rmtree(path)
+
+def buildLog(logstr):
+    print(f"-------- SYSLBUILD: {logstr}")
+
 def executeProcess(item, cmd):
-    print(f"building item 1/1 ({item["type"]})")
+    buildLog(f"building item 1/1 ({item["type"]})")
     result = subprocess.run(cmd)
     if result.returncode != 0:
-        print("failed to build")
+        buildLog("failed to build")
         os.exit(1)
 
 def buildDebian(architecture, item):
@@ -50,7 +61,7 @@ def buildDebian(architecture, item):
     executeProcess(item, cmd)
 
 def buildUnknown(architecture, item):
-    print(f"unknown build item type: {item["type"]}")
+    buildLog(f"unknown build item type: {item["type"]}")
     sys.exit(1)
 
 buildActions = {
@@ -64,12 +75,15 @@ def buildItems(architecture, builditems):
 def buildProject(architecture, json_path):
     with open(json_path, "r", encoding="utf-8") as f:
         projectData = json5.load(f)
+
+    deleteDirectory(path_output)
+    deleteDirectory(path_build)
     
     buildItems(architecture, projectData["builditems"])
 
 def requireRoot():
     if os.geteuid() != 0:
-        print("This program requires root permissions. Restarting with sudo...")
+        buildLog("This program requires root permissions. Restarting with sudo...")
         sys.exit(os.system("sudo {} {}".format(sys.executable, " ".join(sys.argv))))
 
 if __name__ == "__main__":
