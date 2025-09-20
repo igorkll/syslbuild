@@ -8,6 +8,7 @@ import shutil
 import datetime
 import asteval
 import math
+import re
 
 path_output = "output"
 path_temp = ".temp"
@@ -16,6 +17,27 @@ path_build = os.path.join(path_temp, "build")
 path_build_process = os.path.join(path_temp, "build_process")
 
 aeval = asteval.Interpreter()
+
+SIZE_UNITS = {
+    "":   0,
+    "B":  1,
+    "K":  1024,
+    "KB": 1024,
+    "M":  1024**2,
+    "MB": 1024**2,
+    "G":  1024**3,
+    "GB": 1024**3,
+    "T":  1024**4,
+    "TB": 1024**4,
+}
+
+def buildLog(logstr, quiet=False):
+    if not quiet:
+        logstr = f"-------- SYSLBUILD: {logstr}"
+    
+    print(logstr)
+    log_file.write(logstr + "\n")
+    log_file.flush()
 
 def getFolderSize(path):
     total = 0
@@ -28,6 +50,13 @@ def getFolderSize(path):
                 pass
     return total
 
+def splitNumberUnit(s):
+    match = re.match(r"([\d\.]+)([a-zA-Z]*)", s)
+    if match:
+        number, unit = match.groups()
+        return float(number), unit
+    return None, None
+
 def calcSize(sizeLitteral, folder):
     if isinstance(sizeLitteral, (int, float)):
         return math.ceil(sizeLitteral)
@@ -38,7 +67,13 @@ def calcSize(sizeLitteral, folder):
         result = aeval(evalStr)
         return math.ceil(result)
     
-    return sizeLitteral
+    number, unit = splitNumberUnit(sizeLitteral)
+
+    if not unit in SIZE_UNITS:
+        buildLog(f"Unknown size unit: {unit}")
+        os.exit(1)
+
+    return math.ceil(number * SIZE_UNITS[unit])
 
 def getLogFile():
     os.makedirs(path_logs, exist_ok=True)
@@ -79,14 +114,6 @@ def getItemFolder(item):
 def deleteDirectory(path):
     if os.path.exists(path) and os.path.isdir(path):
         shutil.rmtree(path)
-
-def buildLog(logstr, quiet=False):
-    if not quiet:
-        logstr = f"-------- SYSLBUILD: {logstr}"
-    
-    print(logstr)
-    log_file.write(logstr + "\n")
-    log_file.flush()
 
 def findItem(itemName):
     path = os.path.join(path_build, itemName)
@@ -150,6 +177,8 @@ def copyItemFiles(fromPath, toPath):
         shutil.copy2(fromPath, toPath)
 
 def allocateFile(path, size):
+    buildLog(f"Allocation file with size {size}: {path}")
+
     bs = 1024 * 1024
     count = math.ceil(size / bs)
 
