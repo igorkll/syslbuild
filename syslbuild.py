@@ -330,11 +330,15 @@ def formatFilesystem(path, item):
     cmd.append(path)
     buildExecute(cmd)
 
-def mountFilesystem(path, mpath):
-    buildExecute(["mount", "-o", "loop", path, mpath])
-
 def umountFilesystem(mpath):
-    buildExecute(["umount", mpath])
+    if os.path.exists(mpath):
+        buildExecute(["umount", mpath])
+        deleteDirectory(mpath)
+
+def mountFilesystem(path, mpath):
+    umountFilesystem(mpath)
+    os.makedirs(mpath, exist_ok=True)
+    buildExecute(["mount", "-o", "loop", path, mpath])
 
 def buildFilesystem(item):
     buildItemLog(item)
@@ -417,14 +421,11 @@ def buildProject(json_path):
         buildLog(f"the project requires at least the syslbuild {formatVersion(projectData["min-syslbuild-version"])} version. you have {formatVersion(VERSION)} installed")
         sys.exit(1)
 
-    if os.path.exists(path_mount):
-        umountFilesystem(path_mount)
-
+    umountFilesystem(path_mount)
     deleteDirectory(path_output)
     deleteDirectory(path_build)
     deleteDirectory(path_build_process)
     deleteDirectory(path_build_temp)
-    deleteDirectory(path_mount)
 
     builditems = projectData["builditems"]
 
