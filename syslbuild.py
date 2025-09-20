@@ -72,7 +72,7 @@ def findItem(itemName):
 
     return None
 
-def executeProcess(cmd):
+def buildExecute(cmd):
     buildLog(f"execute command: {cmd}")
     
     process = subprocess.Popen(
@@ -113,12 +113,12 @@ def buildDebian(item):
         getItemFolder(item),
         item["url"]
     ]
-    executeProcess(cmd)
+    buildExecute(cmd)
 
 def copyItemFiles(fromPath, toPath):
     if os.path.isdir(fromPath):
         os.makedirs(toPath, exist_ok=True)
-        executeProcess(["cp", "-a", fromPath, toPath])
+        buildExecute(["cp", "-a", fromPath + "/.", toPath])
     else:
         shutil.copy2(fromPath, toPath)
 
