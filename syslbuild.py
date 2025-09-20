@@ -33,9 +33,10 @@ SIZE_UNITS = {
     "TB": 1024**4,
 }
 
-VER_MAJOR = 0
-VER_MINOR = 1
-VER_PATCH = 0
+VERSION = [0, 1, 0]
+
+def formatVersion(version):
+    return '.'.join(str(n) for n in version)
 
 def checkVersion(project):
     if not "min-syslbuild-version" in project:
@@ -43,14 +44,11 @@ def checkVersion(project):
     
     minVersion = project["min-syslbuild-version"]
 
-    if VER_MAJOR < minVersion[0]:
-        return False
-
-    if VER_MINOR < minVersion[1]:
-        return False
-
-    if VER_PATCH < minVersion[2]:
-        return False
+    for index, vernum in enumerate(VERSION):
+        if vernum > minVersion[index]:
+            return True
+        elif vernum < minVersion[index]:
+            return False
     
     return True
 
@@ -401,9 +399,23 @@ def buildItems(builditems):
             exported.append(item)
     return exported
 
+def showProjectInfo(projectData):
+    buildLog(f"Project info:")
+
+    if "min-syslbuild-version" in projectData:
+        buildLog(f"Minimal syslbuild: {formatVersion(projectData["min-syslbuild-version"])}")
+    
+    buildLog(";")
+
 def buildProject(json_path):
     with open(json_path, "r", encoding="utf-8") as f:
         projectData = json5.load(f)
+
+    showProjectInfo(projectData)
+
+    if not checkVersion(projectData):
+        buildLog(f"the project requires at least the syslbuild {formatVersion(projectData["min-syslbuild-version"])} version. you have {formatVersion(VERSION)} installed")
+        sys.exit(1)
 
     if os.path.exists(path_mount):
         umountFilesystem(path_mount)
@@ -446,6 +458,10 @@ if __name__ == "__main__":
     
     architecture = args.arch
     log_file = getLogFile()
+
+    buildLog("Syslbuild info:")
+    buildLog(f"Syslbuild version: {formatVersion(VERSION)}")
+    buildLog(";")
     buildProject(args.json_path)
 
     
