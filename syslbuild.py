@@ -92,7 +92,7 @@ def calcSize(sizeLitteral, folder):
 
     if not unit in SIZE_UNITS:
         buildLog(f"Unknown size unit: {unit}")
-        os.exit(1)
+        sys.exit(1)
 
     return math.ceil(number * SIZE_UNITS[unit])
 
