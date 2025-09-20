@@ -19,7 +19,7 @@ path_build_process = os.path.join(path_temp, "build_process")
 aeval = asteval.Interpreter()
 
 SIZE_UNITS = {
-    "":   0,
+    "":   1,
     "B":  1,
     "K":  1024,
     "KB": 1024,
@@ -54,8 +54,8 @@ def splitNumberUnit(s):
     match = re.match(r"([\d\.]+)([a-zA-Z]*)", s)
     if match:
         number, unit = match.groups()
-        return float(number), unit
-    return None, None
+        return float(number), unit.upper()
+    return 0, ""
 
 def calcSize(sizeLitteral, folder):
     if isinstance(sizeLitteral, (int, float)):
@@ -185,10 +185,9 @@ def allocateFile(path, size):
     buildExecute([
         "dd",
         "if=/dev/zero",
-        "of", path,
-        "bs", str(bs),
-        "count", str(count),
-        "status=none"
+        f"of={path}",
+        "bs=" + str(bs),
+        "count=" + str(count)
     ])
     buildExecute(["truncate", "-s", str(size), path])
 
