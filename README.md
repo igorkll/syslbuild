@@ -31,6 +31,14 @@ also, assembling a bootable img with an already installed system is also a separ
 * sudo pip install json5 --break-system-packages
 * sudo pip install asteval --break-system-packages
 
+## build items types
+* debian - debian build via mmdebstrap
+* download - downloads the file
+* filesystem - builds a file system from the specified items and sets the specified access rights for the files
+* full-disk-image - creates a bootable image of a raw img disk that can be written to the root of the disk via dd or some etcher and it will immediately become bootable (the ability to boot depends on the settings)
+* kernel - 
+* initramfs - 
+
 ## project example
 ```json
 {
@@ -48,6 +56,13 @@ also, assembling a bootable img with an already installed system is also a separ
             "variant": "minbase",
             "suite": "bookworm",
             "url": "http://snapshot.debian.org/archive/debian/20250809T133719Z"
+        },
+        {
+            "type": "download",
+            "name": "downloaded file",
+            "export": false,
+
+            "url": "https://raw.githubusercontent.com/igorkll/trashfolder/refs/heads/main/sound3/1.mp3"
         },
         {
             "type": "filesystem",
@@ -69,14 +84,20 @@ also, assembling a bootable img with an already installed system is also a separ
                 // when adding an item, you can specify your UID/GID and access rights, if you do not do this, then for user files from the project folder they will automatically be changed to zero (as mentioned above) and for previously collected items they will be moved unchanged
                 // please note that this way you specify access rights recursively for all item elements, if you need a different behavior, then you must change it in a separate "chmod" block
                 // ["file/dir in project | item name", "output path", [UID, GID, CHMOD]]
-                ["debian folder", "."]
-                // ["userfile.txt", "/home/userfile.txt", [0, 0, "0000"]]
+                // i recommend always explicitly specifying access rights, except when they are already set in the item (for example, when building debian, the rights are taken from packages)
+                ["debian folder", "."],
+                ["downloaded file", "/home/test.mp3", [0, 0, "0755"]],
+                ["userfile.txt", "/home/userfile.txt", [0, 0, "0755"]]
             ],
 
             "chmod": [
                 // allows you to change access rights in the filesystem
                 // first, specify the path to the object, then the new access rights (symbolic entry option is supported) and then a recursion flag if needed
                 ["/home/MY EMPTY DIR", "1777", false] //let's say I want it to be a shared folder
+            ],
+
+            "chown": [
+                ["/home/MY EMPTY DIR", 0, 0, false]
             ],
 
             "fs_type": "ext4",

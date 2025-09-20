@@ -203,8 +203,8 @@ def buildExecute(cmd):
         buildLog("failed to build")
         sys.exit(1)
 
-def buildItemLog(item):
-    buildLog(f"building item {item["__item_index"]}/{item["__items_count"]} {item["type"]} ({item["name"]})")
+def buildItemLog(item, comment="Building item ---------------- "):
+    buildLog(f"{comment}{item["__item_index"]}/{item["__items_count"]} {item["type"]} ({item["name"]})")
 
 def makeChmod(path, chmodList):
     for chmodAction in chmodList:
@@ -213,6 +213,15 @@ def makeChmod(path, chmodList):
             cmd.append("-R")
         cmd.append(chmodAction[1])
         cmd.append(pathConcat(path, chmodAction[0]))
+        buildExecute(cmd)
+
+def makeChown(path, chownList):
+    for chownAction in chownList:
+        cmd = ["chown"]
+        if chownAction[3]:
+            cmd.append("-R")
+        cmd.append(str(chownAction[1]) + ":" + str(chownAction[2]))
+        cmd.append(pathConcat(path, chownAction[0]))
         buildExecute(cmd)
 
 def buildDebian(item):
@@ -233,6 +242,13 @@ def buildDebian(item):
         item["url"]
     ]
     buildExecute(cmd)
+
+def downloadFile(url, path):
+    buildLog(f"Downloading file ({url}): {path}")
+    buildExecute(["wget", "-O", path, url])
+
+def buildDownload(item):
+    downloadFile(item["url"], getItemPath(item))
 
 def changeAccessRights(path, changeRights):
     buildExecute(["chmod", "-R", changeRights[2], path])
@@ -301,6 +317,9 @@ def buildFilesystem(item):
     if "chmod" in item:
         makeChmod(fs_files, item["chmod"])
 
+    if "chown" in item:
+        makeChown(fs_files, item["chown"])
+
     allocateFile(fs_path, calcSize(item['size'], fs_files))     
 
 def buildUnknown(item):
@@ -309,12 +328,17 @@ def buildUnknown(item):
 
 buildActions = {
     "debian": buildDebian,
+    "download": buildDownload,
     "filesystem": buildFilesystem
 }
 
 def buildItems(builditems):
+    exported = []
     for item in builditems:
         buildActions.get(item["type"], buildUnknown)(item)
+        if item["export"]:
+            exported.append(item)
+    return exported
 
 def buildProject(json_path):
     with open(json_path, "r", encoding="utf-8") as f:
@@ -330,8 +354,17 @@ def buildProject(json_path):
     for index, item in enumerate(builditems):
         item["__item_index"] = index + 1
         item["__items_count"] = len(builditems)
+
+    buildLog("Item list:")
+    for item in builditems:
+        buildItemLog(item, "")
+    buildLog(";")
     
-    buildItems(builditems)
+    exported = buildItems(builditems)
+    buildItemLog(exportedItem, "The build was successful. export list:")
+    for exportedItem in exported:
+        buildItemLog(exportedItem, "Exported: ")
+    buildLog(";")
 
 def requireRoot():
     if os.geteuid() != 0:
