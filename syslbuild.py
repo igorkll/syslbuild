@@ -16,6 +16,7 @@ path_logs = os.path.join(path_temp, "logs")
 path_build = os.path.join(path_temp, "build")
 path_build_process = os.path.join(path_temp, "build_process")
 path_build_temp = os.path.join(path_temp, "build_temp")
+path_mount = os.path.join(path_temp, "mount")
 
 aeval = asteval.Interpreter()
 
@@ -308,6 +309,12 @@ def formatFilesystem(path, item):
     cmd.append(fs_path)
     buildExecute(cmd)
 
+def mountFilesystem(path, mpath):
+    buildExecute(["mount", "-o", "loop", path, mpath])
+
+def umountFilesystem(mpath):
+    buildExecute(["umount", mpath])
+
 def buildFilesystem(item):
     buildItemLog(item)
 
@@ -349,6 +356,10 @@ def buildFilesystem(item):
     allocateFile(fs_path, calcSize(item['size'], fs_files))
     formatFilesystem(fs_path, item)
 
+    mountFilesystem(fs_path, mount_path)
+    copyItemFiles(fs_files, mount_path)
+    umountFilesystem(mount_path)
+
 def buildUnknown(item):
     buildLog(f"unknown build item type: {item["type"]}")
     sys.exit(1)
@@ -371,10 +382,13 @@ def buildProject(json_path):
     with open(json_path, "r", encoding="utf-8") as f:
         projectData = json5.load(f)
 
+    umountFilesystem(path_mount)
+
     deleteDirectory(path_output)
     deleteDirectory(path_build)
     deleteDirectory(path_build_process)
     deleteDirectory(path_build_temp)
+    deleteDirectory(path_mount)
 
     builditems = projectData["builditems"]
 
