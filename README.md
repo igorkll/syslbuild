@@ -21,6 +21,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * python3
 * mmdebstrap
 * mkfs.* - you need support for the file systems that you intend to use in your projects
+* qemu - needed for debian cross-build
 
 ## python dependencies
 * json5
@@ -43,7 +44,7 @@ also, assembling a bootable img with an already installed system is also a separ
 ```json
 {
     "min-syslbuild-version": [0, 1, 0],
-    
+
     "builditems": [
         {
             "type": "debian",
