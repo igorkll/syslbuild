@@ -14,10 +14,14 @@ path_build = os.path.join(path_temp, "build")
 path_build_process = os.path.join(path_temp, "build_process")
 
 def getLogFile():
-    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    log_filename = f"build_{architecture}_{timestamp}.log"
     os.makedirs(path_logs, exist_ok=True)
-    return open(os.path.join(path_logs, log_filename), "w")
+
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    filename = f"build_{architecture}_{timestamp}.log"
+    filepath = os.path.join(path_logs, filename)
+
+    print(f"Log path: {filepath}")
+    return open(filepath, "w")
 
 def readBool(tbl, name):
     if name in tbl:
@@ -109,7 +113,7 @@ def buildDebian(item):
 
 def copyItemFiles(fromPath, toPath):
     if os.path.isdir(fromPath):
-        os.makedirs(path, exist_ok=True)
+        os.makedirs(toPath, exist_ok=True)
         shutil.copytree(
             fromPath,
             toPath,
