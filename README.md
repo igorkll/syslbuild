@@ -54,7 +54,7 @@ also, assembling a bootable img with an already installed system is also a separ
             ],
 
             "fs_type": "ext4",
-            "size": "1G",
+            "size": "(auto * 1.2) + (100 * 1024 * 1024)", //could be a constant like 1G or 100M. when specified as auto, you operate with the value in bytes and can specify any eval
             "label": "example-distro"
         },
         {
