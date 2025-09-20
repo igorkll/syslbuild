@@ -200,11 +200,16 @@ def buildFilesystem(item):
 
     if "directories" in item:
         for folderName in item["directories"]:
-            os.makedirs(os.path.join(fs_files, folderName), exist_ok=True)
+            folderPath = os.path.join(fs_files, folderName)
+            buildLog(f"Create empty folder: {folderPath}")
+            os.makedirs(folderPath, exist_ok=True)
 
     if "items" in item:
         for itemObj in item["items"]:
-            copyItemFiles(findItem(itemObj[0]), fs_files)
+            itemPath = findItem(itemObj[0])
+            outputPath = os.path.join(fs_files, itemObj[1])
+            buildLog(f"Copy item to filesystem: {itemPath} > {outputPath}")
+            copyItemFiles(itemPath, outputPath)
 
     allocateFile(fs_path, calcSize(item['size'], fs_files))     
 
