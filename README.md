@@ -65,8 +65,11 @@ also, assembling a bootable img with an already installed system is also a separ
                 // items of the build added to syslbuild itself will take precedence, but if there is no build item with that name, then syslbuild will try to import the file/directory from the project folder
                 // when importing user files/directories, all UIDs and GIDs are automatically set to 0 and all access rights are set to 0000
                 // this is done so that the build result is the same when cloning the repository from the version control system
+                // when adding an item, you can specify your UID/GID and access rights, if you do not do this, then for user files from the project folder they will automatically be changed to zero (as mentioned above) and for previously collected items they will be moved unchanged
+                // please note that this way you specify access rights recursively for all item elements, if you need a different behavior, then you must change it in a separate "chmod" block
+                // ["file/dir in project | item name", "output path", [UID, GID, CHMOD]]
                 ["debian folder", "."]
-                // ["userfile.txt", "/home/userfile.txt"]
+                // ["userfile.txt", "/home/userfile.txt", [0, 0, "0000"]]
             ],
 
             "chmod": [

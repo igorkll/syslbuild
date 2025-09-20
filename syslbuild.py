@@ -15,6 +15,7 @@ path_temp = ".temp"
 path_logs = os.path.join(path_temp, "logs")
 path_build = os.path.join(path_temp, "build")
 path_build_process = os.path.join(path_temp, "build_process")
+path_build_temp = os.path.join(path_temp, "build_temp")
 
 aeval = asteval.Interpreter()
 
@@ -122,7 +123,25 @@ def getItemPath(item):
 
 def getTempPath(item, subdirectory):
     path = pathConcat(path_build_process, subdirectory, item["name"])
-    os.makedirs(path_logs, exist_ok=True)
+    deleteDirectory(path)
+    os.makedirs(path, exist_ok=True)
+
+    return path
+
+def deleteDirectory(path):
+    if os.path.exists(path) and os.path.isdir(path):
+        shutil.rmtree(path)
+
+def deleteAny(path):
+    if os.path.isdir(path):
+        deleteDirectory(path)
+    else:
+        os.remove(path)
+
+def getAnyTempPath(subdirectory):
+    path = pathConcat(path_build_temp, subdirectory)
+    deleteDirectory(path)
+    os.makedirs(path, exist_ok=True)
 
     return path
 
@@ -131,10 +150,6 @@ def getItemFolder(item):
     os.makedirs(path, exist_ok=True)
     
     return path
-
-def deleteDirectory(path):
-    if os.path.exists(path) and os.path.isdir(path):
-        shutil.rmtree(path)
 
 def findItem(itemName):
     path = pathConcat(path_build, itemName)
@@ -219,12 +234,24 @@ def buildDebian(item):
     ]
     buildExecute(cmd)
 
-def copyItemFiles(fromPath, toPath):
+def changeAccessRights(path, changeRights):
+    buildExecute(["chmod", "-R", changeRights[2], path])
+    buildExecute(["chown", "-R", str(changeRights[0]) + ":" + str(changeRights[1]), path])
+
+def copyItemFiles(fromPath, toPath, changeRights=None):
     if os.path.isdir(fromPath):
         os.makedirs(toPath, exist_ok=True)
-        buildExecute(["cp", "-a", fromPath + "/.", toPath])
+        if changeRights:
+            tempFolder = getAnyTempPath("changeRights")
+            buildExecute(["cp", "-a", fromPath + "/.", tempFolder])
+            changeAccessRights(tempFolder, changeRights)
+            buildExecute(["cp", "-a", tempFolder + "/.", toPath])
+        else:
+            buildExecute(["cp", "-a", fromPath + "/.", toPath])
     else:
         shutil.copy2(fromPath, toPath)
+        if changeRights:
+            changeAccessRights(toPath, changeRights)
 
 def allocateFile(path, size):
     buildLog(f"Allocation file with size {size}: {path}")
@@ -262,6 +289,10 @@ def buildFilesystem(item):
             changeRights = None
             if len(itemObj) >= 3:
                 changeRights = itemObj[2]
+            
+            if not changeRights and isUserItem(itemObj[0]):
+                changeRights = [0, 0, "0000"]
+            
             if changeRights:
                 buildLog(f"With custom rights: {changeRights}")
             
@@ -292,6 +323,7 @@ def buildProject(json_path):
     deleteDirectory(path_output)
     deleteDirectory(path_build)
     deleteDirectory(path_build_process)
+    deleteDirectory(path_build_temp)
 
     builditems = projectData["builditems"]
 
