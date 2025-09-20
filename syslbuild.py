@@ -290,8 +290,8 @@ def allocateFile(path, size):
 def buildFilesystem(item):
     buildItemLog(item)
 
+    # make filesystem files
     fs_files = getTempPath(item, "fs_files")
-    fs_path = getItemPath(item)
 
     if "directories" in item:
         for folderName in item["directories"]:
@@ -323,7 +323,16 @@ def buildFilesystem(item):
     if "chown" in item:
         makeChown(fs_files, item["chown"])
 
-    allocateFile(fs_path, calcSize(item['size'], fs_files))     
+    # make filesystem file
+    fs_path = getItemPath(item)
+    allocateFile(fs_path, calcSize(item['size'], fs_files))
+
+    cmd = [f"mkfs.{item["fs_type"]}"]
+    if "label" in item:
+        cmd.append("-L")
+        cmd.append(item["label"])
+    cmd.append(fs_path)
+    buildExecute(cmd)
 
 def buildUnknown(item):
     buildLog(f"unknown build item type: {item["type"]}")
@@ -364,7 +373,7 @@ def buildProject(json_path):
     buildLog(";")
     
     exported = buildItems(builditems)
-    buildItemLog(exportedItem, "The build was successful. export list:")
+    buildLog("The build was successful. export list:")
     for exportedItem in exported:
         buildItemLog(exportedItem, "Exported: ")
     buildLog(";")
