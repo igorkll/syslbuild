@@ -35,6 +35,7 @@ also, assembling a bootable img with an already installed system is also a separ
 ## build items types
 * debian - debian build via mmdebstrap
 * download - downloads the file
+* directory - allows you to assemble many items into one (for example, to pack them into a file system later) allows you to set file owners and their rights
 * filesystem - builds a file system from the specified items and sets the specified access rights for the files
 * full-disk-image - creates a bootable image of a raw img disk that can be written to the root of the disk via dd or some etcher and it will immediately become bootable (the ability to boot depends on the settings)
 * kernel - 
@@ -48,7 +49,7 @@ also, assembling a bootable img with an already installed system is also a separ
     "builditems": [
         {
             "type": "debian",
-            "name": "debian folder",
+            "name": "debian directory",
             "export": false,
 
             "include": [
@@ -68,8 +69,8 @@ also, assembling a bootable img with an already installed system is also a separ
             "url": "https://raw.githubusercontent.com/igorkll/trashfolder/refs/heads/main/sound3/1.mp3"
         },
         {
-            "type": "filesystem",
-            "name": "example-distro rootfs.img",
+            "type": "directory",
+            "name": "rootfs directory",
             "export": false,
 
             "directories": [
@@ -88,9 +89,9 @@ also, assembling a bootable img with an already installed system is also a separ
                 // please note that this way you specify access rights recursively for all item elements, if you need a different behavior, then you must change it in a separate "chmod" block
                 // ["file/dir in project | item name", "output path", [UID, GID, CHMOD]]
                 // i recommend always explicitly specifying access rights, except when they are already set in the item (for example, when building debian, the rights are taken from packages)
-                ["debian folder", "."],
+                ["debian directory", "."],
                 ["downloaded file", "/home/test.mp3", [0, 0, "0755"]],
-                ["userfile.txt", "/home/userfile.txt", [0, 0, "0755"]]
+                ["userfile.txt", "/home/userfile.txt", [0, 0, "0755"]] //file from the project folder
             ],
 
             "chmod": [
@@ -101,7 +102,14 @@ also, assembling a bootable img with an already installed system is also a separ
 
             "chown": [
                 ["/home/MY EMPTY DIR", 0, 0, false]
-            ],
+            ]
+        },
+        {
+            "type": "filesystem",
+            "name": "example-distro rootfs.img",
+            "export": false,
+
+            "source": "rootfs directory",
 
             "fs_type": "ext4",
             "size": "(auto * 1.2) + (100 * 1024 * 1024)", //could be a constant like 1G or 100M. when specified as auto, you operate with the value in bytes and can specify any eval
