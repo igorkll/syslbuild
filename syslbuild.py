@@ -327,7 +327,7 @@ def formatFilesystem(path, item):
             cmd.append("-U")
         cmd.append(item["fsid"])
     
-    cmd.append(fs_path)
+    cmd.append(path)
     buildExecute(cmd)
 
 def mountFilesystem(path, mpath):
