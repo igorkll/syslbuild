@@ -6,12 +6,30 @@ import subprocess
 import os
 import shutil
 import datetime
+import ast
 
 path_output = "output"
 path_temp = ".temp"
 path_logs = os.path.join(path_temp, "logs")
 path_build = os.path.join(path_temp, "build")
 path_build_process = os.path.join(path_temp, "build_process")
+
+def getFolderSize(path):
+    total = 0
+    for dirpath, dirnames, filenames in os.walk(path, followlinks=False):
+        for f in filenames:
+            fp = os.path.join(dirpath, f)
+            try:
+                total += os.path.getsize(fp)
+            except FileNotFoundError:
+                pass
+    return total
+
+def calcSize(sizeLitteral, folder):
+    if "auto" in sizeLitteral:
+        return ast.literal_eval(sizeLitteral.replace("auto", str(getFolderSize(folder))))
+    
+    return sizeLitteral
 
 def getLogFile():
     os.makedirs(path_logs, exist_ok=True)
@@ -134,6 +152,8 @@ def buildFilesystem(item):
     if "items" in item:
         for itemObj in item["items"]:
             copyItemFiles(findItem(itemObj[0]), fs_files)
+
+    buildLog(calcSize(item['size'], fs_files))
             
 
 def buildUnknown(item):
