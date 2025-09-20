@@ -382,7 +382,8 @@ def buildProject(json_path):
     with open(json_path, "r", encoding="utf-8") as f:
         projectData = json5.load(f)
 
-    umountFilesystem(path_mount)
+    if os.path.exists(path_mount):
+        umountFilesystem(path_mount)
 
     deleteDirectory(path_output)
     deleteDirectory(path_build)
