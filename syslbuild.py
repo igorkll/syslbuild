@@ -146,13 +146,6 @@ def getItemPath(item):
     
     return path
 
-def getTempPath(item, subdirectory):
-    path = pathConcat(path_build_process, subdirectory, item["name"])
-    deleteDirectory(path)
-    os.makedirs(path, exist_ok=True)
-
-    return path
-
 def deleteDirectory(path):
     if os.path.exists(path) and os.path.isdir(path):
         shutil.rmtree(path)
@@ -172,6 +165,7 @@ def getAnyTempPath(subdirectory):
 
 def getItemFolder(item):
     path = getItemPath(item)
+    deleteDirectory(path)
     os.makedirs(path, exist_ok=True)
     
     return path
@@ -340,22 +334,20 @@ def mountFilesystem(path, mpath):
     os.makedirs(mpath, exist_ok=True)
     buildExecute(["mount", "-o", "loop", path, mpath])
 
-def buildFilesystem(item):
+def buildDirectory(item):
     buildItemLog(item)
-
-    # make filesystem files
-    fs_files = getTempPath(item, "fs_files")
+    buildDirectoryPath = getItemFolder(item)
 
     if "directories" in item:
-        for folderName in item["directories"]:
-            folderPath = pathConcat(fs_files, folderName)
-            buildLog(f"Create empty folder: {folderPath}")
-            os.makedirs(folderPath, exist_ok=True)
+        for directoryName in item["directories"]:
+            directoryPath = pathConcat(buildDirectoryPath, directoryName)
+            buildLog(f"Create empty directory: {directoryPath}")
+            os.makedirs(directoryPath, exist_ok=True)
 
     if "items" in item:
         for itemObj in item["items"]:
             itemPath = findItem(itemObj[0])
-            outputPath = pathConcat(fs_files, itemObj[1])
+            outputPath = pathConcat(buildDirectoryPath, itemObj[1])
             buildLog(f"Copy item to filesystem: {itemPath} > {outputPath}")
 
             changeRights = None
@@ -371,12 +363,22 @@ def buildFilesystem(item):
             copyItemFiles(itemPath, outputPath, changeRights)
 
     if "chmod" in item:
-        makeChmod(fs_files, item["chmod"])
+        makeChmod(buildDirectoryPath, item["chmod"])
 
     if "chown" in item:
-        makeChown(fs_files, item["chown"])
+        makeChown(buildDirectoryPath, item["chown"])
 
-    # make filesystem file
+def findDirectory(item):
+    dirpath = findItem(item["source"])
+    if not os.path.isdir(dirpath):
+        buildLog(f"Item \"{dirpath}\" is not a directory")
+        sys.exit(1)
+    return dirpath
+
+def buildFilesystem(item):
+    buildItemLog(item)
+    fs_files = findDirectory(item["source"])
+
     fs_path = getItemPath(item)
     allocateFile(fs_path, calcSize(item['size'], fs_files))
     formatFilesystem(fs_path, item)
@@ -392,6 +394,7 @@ def buildUnknown(item):
 buildActions = {
     "debian": buildDebian,
     "download": buildDownload,
+    "directory": buildDirectory,
     "filesystem": buildFilesystem
 }
 

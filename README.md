@@ -109,6 +109,7 @@ also, assembling a bootable img with an already installed system is also a separ
             "name": "example-distro rootfs.img",
             "export": false,
 
+            // specify the directory from which the filesystem will be created
             "source": "rootfs directory",
 
             "fs_type": "ext4",
