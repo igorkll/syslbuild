@@ -31,6 +31,27 @@ SIZE_UNITS = {
     "TB": 1024**4,
 }
 
+def _pathConcat(path1, path2):
+    path2_rel = os.path.relpath(path2, "/") if os.path.isabs(path2) else path2
+    full_path = os.path.normpath(os.path.join(path1, path2_rel))
+    abs_path1 = os.path.abspath(path1)
+    abs_full = os.path.abspath(full_path)
+    if not abs_full.startswith(abs_path1):
+        buildLog(f"Building outside the sandbox: {path1} | {path2}")
+        sys.exit(1)
+
+    return full_path
+
+def pathConcat(*paths):
+    if not paths:
+        return ""
+    
+    full_path = paths[0]
+    for p in paths[1:]:
+        full_path = _pathConcat(full_path, p)
+    
+    return full_path
+
 def buildLog(logstr, quiet=False):
     if not quiet:
         logstr = f"-------- SYSLBUILD: {logstr}"
@@ -80,7 +101,7 @@ def getLogFile():
 
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     filename = f"build_{architecture}_{timestamp}.log"
-    filepath = os.path.join(path_logs, filename)
+    filepath = pathConcat(path_logs, filename)
 
     print(f"Log path: {filepath}")
     return open(filepath, "w")
@@ -93,14 +114,14 @@ def readBool(tbl, name):
 
 def getItemPath(item):
     if readBool(item, "export"):
-        path = os.path.join(path_output, item["name"])
+        path = pathConcat(path_output, item["name"])
     else:
-        path = os.path.join(path_build, item["name"])
+        path = pathConcat(path_build, item["name"])
     
     return path
 
 def getTempPath(item, subdirectory):
-    path = os.path.join(path_build_process, subdirectory, item["name"])
+    path = pathConcat(path_build_process, subdirectory, item["name"])
     os.makedirs(path_logs, exist_ok=True)
 
     return path
@@ -116,15 +137,16 @@ def deleteDirectory(path):
         shutil.rmtree(path)
 
 def findItem(itemName):
-    path = os.path.join(path_build, itemName)
+    path = pathConcat(path_build, itemName)
     if os.path.exists(path):
         return path
     else:
-        path = os.path.join(path_output, itemName)
+        path = pathConcat(path_output, itemName)
         if os.path.exists(path):
             return path
 
-    return None
+    buildLog(f"Failed to find item: {itemName}")
+    sys.exit(1)
 
 def buildExecute(cmd):
     buildLog(f"execute command: {cmd}")
@@ -199,14 +221,14 @@ def buildFilesystem(item):
 
     if "directories" in item:
         for folderName in item["directories"]:
-            folderPath = os.path.join(fs_files, folderName)
+            folderPath = pathConcat(fs_files, folderName)
             buildLog(f"Create empty folder: {folderPath}")
             os.makedirs(folderPath, exist_ok=True)
 
     if "items" in item:
         for itemObj in item["items"]:
             itemPath = findItem(itemObj[0])
-            outputPath = os.path.join(fs_files, itemObj[1])
+            outputPath = pathConcat(fs_files, itemObj[1])
             buildLog(f"Copy item to filesystem: {itemPath} > {outputPath}")
             copyItemFiles(itemPath, outputPath)
 
