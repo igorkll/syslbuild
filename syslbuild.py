@@ -287,6 +287,27 @@ def allocateFile(path, size):
     ])
     buildExecute(["truncate", "-s", str(size), path])
 
+def formatFilesystem(path, item):
+    fs_type = item["fs_type"]
+    cmd = [f"mkfs.{fs_type}"]
+    
+    if "label" in item:
+        if "fat" in fs_type:
+            cmd.append("-n")
+        else:
+            cmd.append("-L")
+        cmd.append(item["label"])
+
+    if "fsid" in item:
+        if "fat" in fs_type:
+            cmd.append("-i")
+        else:
+            cmd.append("-U")
+        cmd.append(item["fsid"])
+    
+    cmd.append(fs_path)
+    buildExecute(cmd)
+
 def buildFilesystem(item):
     buildItemLog(item)
 
@@ -326,13 +347,7 @@ def buildFilesystem(item):
     # make filesystem file
     fs_path = getItemPath(item)
     allocateFile(fs_path, calcSize(item['size'], fs_files))
-
-    cmd = [f"mkfs.{item["fs_type"]}"]
-    if "label" in item:
-        cmd.append("-L")
-        cmd.append(item["label"])
-    cmd.append(fs_path)
-    buildExecute(cmd)
+    formatFilesystem(fs_path, item)
 
 def buildUnknown(item):
     buildLog(f"unknown build item type: {item["type"]}")
