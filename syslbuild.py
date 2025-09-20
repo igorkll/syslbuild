@@ -377,9 +377,9 @@ def buildFilesystem(item):
     allocateFile(fs_path, calcSize(item['size'], fs_files))
     formatFilesystem(fs_path, item)
 
-    mountFilesystem(fs_path, mount_path)
-    copyItemFiles(fs_files, mount_path)
-    umountFilesystem(mount_path)
+    mountFilesystem(fs_path, path_mount)
+    copyItemFiles(fs_files, path_mount)
+    umountFilesystem(path_mount)
 
 def buildUnknown(item):
     buildLog(f"unknown build item type: {item["type"]}")
