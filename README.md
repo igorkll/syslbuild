@@ -19,6 +19,12 @@ also, assembling a bootable img with an already installed system is also a separ
 
 ## python dependencies
 * json5
+* asteval
+
+## installing dependencies on debian systems
+* sudo apt install mmdebstrap
+* sudo pip install json5 --break-system-packages
+* sudo pip install asteval --break-system-packages
 
 ## project example
 ```json

@@ -6,13 +6,16 @@ import subprocess
 import os
 import shutil
 import datetime
-import ast
+import asteval
+import math
 
 path_output = "output"
 path_temp = ".temp"
 path_logs = os.path.join(path_temp, "logs")
 path_build = os.path.join(path_temp, "build")
 path_build_process = os.path.join(path_temp, "build_process")
+
+aeval = asteval.Interpreter()
 
 def getFolderSize(path):
     total = 0
@@ -26,8 +29,14 @@ def getFolderSize(path):
     return total
 
 def calcSize(sizeLitteral, folder):
+    if isinstance(sizeLitteral, (int, float)):
+        return math.ceil(sizeLitteral)
+    
     if "auto" in sizeLitteral:
-        return ast.literal_eval(sizeLitteral.replace("auto", str(getFolderSize(folder))))
+        folderSize = getFolderSize(folder)
+        evalStr = sizeLitteral.replace("auto", str(folderSize))
+        result = aeval(evalStr)
+        return math.ceil(result)
     
     return sizeLitteral
 
@@ -140,10 +149,25 @@ def copyItemFiles(fromPath, toPath):
     else:
         shutil.copy2(fromPath, toPath)
 
+def allocateFile(path, size):
+    bs = 1024 * 1024
+    count = math.ceil(size / bs)
+
+    buildExecute([
+        "dd",
+        "if=/dev/zero",
+        "of", path,
+        "bs", str(bs),
+        "count", str(count),
+        "status=none"
+    ])
+    buildExecute(["truncate", "-s", str(size), path])
+
 def buildFilesystem(item):
     buildItemLog(item)
 
     fs_files = getTempPath(item, "fs_files")
+    fs_path = getItemPath(item)
 
     if "directories" in item:
         for folderName in item["directories"]:
@@ -153,8 +177,7 @@ def buildFilesystem(item):
         for itemObj in item["items"]:
             copyItemFiles(findItem(itemObj[0]), fs_files)
 
-    buildLog(calcSize(item['size'], fs_files))
-            
+    allocateFile(fs_path, calcSize(item['size'], fs_files))     
 
 def buildUnknown(item):
     buildLog(f"unknown build item type: {item["type"]}")
