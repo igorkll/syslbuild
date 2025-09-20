@@ -377,7 +377,7 @@ def findDirectory(item):
 
 def buildFilesystem(item):
     buildItemLog(item)
-    fs_files = findDirectory(item["source"])
+    fs_files = findDirectory(item)
 
     fs_path = getItemPath(item)
     allocateFile(fs_path, calcSize(item['size'], fs_files))
