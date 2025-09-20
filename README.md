@@ -2,6 +2,10 @@
 an assembly system for creating Linux distributions. it is focused on embedded distributions 
 DOWNLOAD THE RELEASE, NOT THE REPOSITORY!
 * the program requires root access because it mounts images
+* syslbuild allows you to automate the distribution build process, which is suitable for small custom distributions
+* syslbuild is focused on building distributions for embedded systems (kiosks, navigators, and DVRs)
+* in syslbuild, the build process is described by writing json with individual build elements (filesystems, kernels, bootloaders)
+* syslbuild is able to create a boot image with a partition table itself, which can be convenient for creating a complete firmware.
 
 ## build process
 you create a folder and in it a json file with a description of the project  
