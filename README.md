@@ -20,7 +20,7 @@ also, assembling a bootable img with an already installed system is also a separ
 ## dependencies
 * python3
 * mmdebstrap
-* mkfs.*
+* mkfs.* - you need support for the file systems that you intend to use in your projects
 
 ## python dependencies
 * json5
@@ -42,6 +42,8 @@ also, assembling a bootable img with an already installed system is also a separ
 ## project example
 ```json
 {
+    "min-syslbuild-version": [0, 1, 0],
+    
     "builditems": [
         {
             "type": "debian",

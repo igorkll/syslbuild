@@ -33,6 +33,27 @@ SIZE_UNITS = {
     "TB": 1024**4,
 }
 
+VER_MAJOR = 0
+VER_MINOR = 1
+VER_PATCH = 0
+
+def checkVersion(project):
+    if not "min-syslbuild-version" in project:
+        return True
+    
+    minVersion = project["min-syslbuild-version"]
+
+    if VER_MAJOR < minVersion[0]:
+        return False
+
+    if VER_MINOR < minVersion[1]:
+        return False
+
+    if VER_PATCH < minVersion[2]:
+        return False
+    
+    return True
+
 def _pathConcat(path1, path2):
     path2_rel = os.path.relpath(path2, "/") if os.path.isabs(path2) else path2
     full_path = os.path.normpath(os.path.join(path1, path2_rel))
@@ -119,8 +140,10 @@ def needExport(item):
 
 def getItemPath(item):
     if needExport(item):
+        os.makedirs(path_output, exist_ok=True)
         path = pathConcat(path_output, item["name"])
     else:
+        os.makedirs(path_build, exist_ok=True)
         path = pathConcat(path_build, item["name"])
     
     return path
