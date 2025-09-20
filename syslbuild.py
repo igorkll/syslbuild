@@ -73,7 +73,6 @@ def findItem(itemName):
     return None
 
 def executeProcess(item, cmd):
-    buildLog(f"building item 1/1 {item["type"]} ({item["name"]})")
     buildLog(f"execute command: {cmd}")
     
     process = subprocess.Popen(
@@ -94,7 +93,12 @@ def executeProcess(item, cmd):
         buildLog("failed to build")
         sys.exit(1)
 
+def buildItemLog(item):
+    buildLog(f"building item {item["__item_index"]}/{item["__items_count"]} {item["type"]} ({item["name"]})")
+
 def buildDebian(item):
+    buildItemLog(item)
+
     include_arg = "--include=" + ",".join(item["include"]) if item.get("include") else None
     exclude_arg = "--exclude=" + ",".join(item["exclude"]) if item.get("exclude") else None
 
@@ -124,6 +128,8 @@ def copyItemFiles(fromPath, toPath):
         shutil.copy2(fromPath, toPath)
 
 def buildFilesystem(item):
+    buildItemLog(item)
+
     fs_files = getTempPath(item, "fs_files")
 
     if "directories" in item:
@@ -155,8 +161,14 @@ def buildProject(json_path):
     deleteDirectory(path_output)
     deleteDirectory(path_build)
     deleteDirectory(path_build_process)
+
+    builditems = projectData["builditems"]
+
+    for index, item in enumerate(builditems):
+        item["__item_index"] = index + 1
+        item["__items_count"] = len(builditems)
     
-    buildItems(projectData["builditems"])
+    buildItems(builditems)
 
 def requireRoot():
     if os.geteuid() != 0:
