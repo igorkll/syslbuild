@@ -57,8 +57,16 @@ def buildLog(logstr, quiet=False):
     log_file.write(logstr + "\n")
     log_file.flush()
 
-def findItem(itemName);
-    pass
+def findItem(itemName):
+    path = os.path.join(path_build, itemName)
+    if os.path.exists(path):
+        return path
+    else:
+        path = os.path.join(path_output, itemName)
+        if os.path.exists(path):
+            return path
+
+    return None
 
 def executeProcess(item, cmd):
     buildLog(f"building item 1/1 {item["type"]} ({item["name"]})")
@@ -100,7 +108,16 @@ def buildDebian(item):
     executeProcess(item, cmd)
 
 def copyItemFiles(fromPath, toPath):
-    pass
+    if os.path.isdir(fromPath):
+        os.makedirs(path, exist_ok=True)
+        shutil.copytree(
+            fromPath,
+            toPath,
+            copy_function=shutil.copy2,
+            dirs_exist_ok=True
+        )
+    else:
+        shutil.copy2(fromPath, toPath)
 
 def buildFilesystem(item):
     fs_files = getTempPath(item, "fs_files")
@@ -111,7 +128,7 @@ def buildFilesystem(item):
 
     if "items" in item:
         for itemObj in item["items"]:
-            
+            copyItemFiles(findItem(itemObj[0]), fs_files)
             
 
 def buildUnknown(item):
