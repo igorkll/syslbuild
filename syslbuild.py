@@ -113,8 +113,11 @@ def readBool(tbl, name):
     
     return False
 
+def needExport(item):
+    return readBool(item, "export")
+
 def getItemPath(item):
-    if readBool(item, "export"):
+    if needExport(item):
         path = pathConcat(path_output, item["name"])
     else:
         path = pathConcat(path_build, item["name"])
@@ -336,7 +339,7 @@ def buildItems(builditems):
     exported = []
     for item in builditems:
         buildActions.get(item["type"], buildUnknown)(item)
-        if item["export"]:
+        if needExport(item):
             exported.append(item)
     return exported
 
