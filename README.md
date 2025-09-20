@@ -1,5 +1,5 @@
 # syslbuild
-an assembly system for creating Linux distributions. it is focused on embedded distributions 
+an build system for creating Linux distributions. it is focused on embedded distributions 
 DOWNLOAD THE RELEASE, NOT THE REPOSITORY!
 * the program requires root access because it mounts images
 * syslbuild allows you to automate the distribution build process, which is suitable for small custom distributions
@@ -13,8 +13,8 @@ it describes the build items, each of which can be 'exported' and/or used in ano
 if you set the 'export' flag to true in the build item, the build item will appear in the output directory after the build, otherwise it will remain in .temp but can be used for other build items during the build process  
 for example, for a phone whose bootloader usually loads the kernel from the raw partition, you can separately assemble the rootfs and the kernel separately and export them separately  
 for a computer, you can build a kernel, but not export it, but assemble the debian base system separately. after create a file system, copy debian and the kernel into it, and then add another build item that will make an img with a bootloader and MBR  
-the assembly in syslbuild is heavily divided into items, for example, you can't just assemble a module into a file system. First, you need to create a separate item directory and then add it to the file system  
-also, assembling a bootable img with an already installed system is also a separate assembly item in which you must add file systems, etc  
+the build in syslbuild is heavily divided into items, for example, you can't just assemble a module into a file system. First, you need to create a separate item directory and then add it to the file system  
+also, assembling a bootable img with an already installed system is also a separate build item in which you must add file systems, etc  
 
 ## dependencies
 * python3
@@ -25,7 +25,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * json5
 * asteval
 
-## installing dependencies on debian systems
+## installing dependencies on debian systems (or you can use venv)
 * sudo apt install mmdebstrap
 * sudo pip install json5 --break-system-packages
 * sudo pip install asteval --break-system-packages
@@ -60,7 +60,19 @@ also, assembling a bootable img with an already installed system is also a separ
             ],
 
             "items": [
-                ["debian folder", "."] //adding the previously built debian to the file system
+                // adding the previously built debian to the file system
+                // you can also import files/directories from your project's directory by simply specifying their name here
+                // items of the build added to syslbuild itself will take precedence, but if there is no build item with that name, then syslbuild will try to import the file/directory from the project folder
+                // when importing user files/directories, all UIDs and GIDs are automatically set to 0 and all access rights are set to 0000
+                // this is done so that the build result is the same when cloning the repository from the version control system
+                ["debian folder", "."]
+                // ["userfile.txt", "/home/userfile.txt"]
+            ],
+
+            "chmod": [
+                // allows you to change access rights in the filesystem
+                // first, specify the path to the object, then the new access rights (symbolic entry option is supported) and then a recursion flag if needed
+                ["/home/MY EMPTY DIR", "1777", false] //let's say I want it to be a shared folder
             ],
 
             "fs_type": "ext4",

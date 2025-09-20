@@ -144,9 +144,28 @@ def findItem(itemName):
         path = pathConcat(path_output, itemName)
         if os.path.exists(path):
             return path
+        else:
+            path = pathConcat(".", itemName)
+            if os.path.exists(path):
+                return path
 
     buildLog(f"Failed to find item: {itemName}")
     sys.exit(1)
+
+def isUserItem(itemName):
+    path = pathConcat(path_build, itemName)
+    if os.path.exists(path):
+        return False
+    else:
+        path = pathConcat(path_output, itemName)
+        if os.path.exists(path):
+            return False
+        else:
+            path = pathConcat(".", itemName)
+            if os.path.exists(path):
+                return True
+
+    return False
 
 def buildExecute(cmd):
     buildLog(f"execute command: {cmd}")
@@ -171,6 +190,15 @@ def buildExecute(cmd):
 
 def buildItemLog(item):
     buildLog(f"building item {item["__item_index"]}/{item["__items_count"]} {item["type"]} ({item["name"]})")
+
+def makeChmod(path, chmodList):
+    for chmodAction in chmodList:
+        cmd = ["chmod"]
+        if chmodAction[2]:
+            cmd.append("-R")
+        cmd.append(chmodAction[1])
+        cmd.append(pathConcat(path, chmodAction[0]))
+        buildExecute(cmd)
 
 def buildDebian(item):
     buildItemLog(item)
@@ -230,7 +258,17 @@ def buildFilesystem(item):
             itemPath = findItem(itemObj[0])
             outputPath = pathConcat(fs_files, itemObj[1])
             buildLog(f"Copy item to filesystem: {itemPath} > {outputPath}")
-            copyItemFiles(itemPath, outputPath)
+
+            changeRights = None
+            if len(itemObj) >= 3:
+                changeRights = itemObj[2]
+            if changeRights:
+                buildLog(f"With custom rights: {changeRights}")
+            
+            copyItemFiles(itemPath, outputPath, changeRights)
+
+    if "chmod" in item:
+        makeChmod(fs_files, item["chmod"])
 
     allocateFile(fs_path, calcSize(item['size'], fs_files))     
 
