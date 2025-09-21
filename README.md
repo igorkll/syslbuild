@@ -110,10 +110,11 @@ also, assembling a bootable img with an already installed system is also a separ
             "export": false,
 
             // specify the directory from which the filesystem will be created
+            // this parameter is optional. you don't have to specify it if you need an empty file system.
             "source": "rootfs directory",
 
             "fs_type": "ext4",
-            "size": "(auto * 1.2) + (100 * 1024 * 1024)", //could be a constant like 1G or 100M. when specified as auto, you operate with the value in bytes and can specify any eval
+            "size": "(auto * 1.2) + (100 * 1024 * 1024)", // could be a constant like 1G or 100M. when specified as auto, you operate with the value in bytes and can specify any eval
             "label": "example-distro"
         },
         {

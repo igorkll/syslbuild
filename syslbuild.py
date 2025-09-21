@@ -14,9 +14,8 @@ path_output = "output"
 path_temp = ".temp"
 path_logs = os.path.join(path_temp, "logs")
 path_build = os.path.join(path_temp, "build")
-path_build_process = os.path.join(path_temp, "build_process")
-path_build_temp = os.path.join(path_temp, "build_temp")
 path_mount = os.path.join(path_temp, "mount")
+path_temp_temp = os.path.join(path_temp, "temp")
 
 aeval = asteval.Interpreter()
 
@@ -104,10 +103,13 @@ def calcSize(sizeLitteral, folder):
         return math.ceil(sizeLitteral)
     
     if "auto" in sizeLitteral:
-        folderSize = getFolderSize(folder)
-        evalStr = sizeLitteral.replace("auto", str(folderSize))
-        result = aeval(evalStr)
-        return math.ceil(result)
+        if folder:
+            folderSize = getFolderSize(folder)
+            evalStr = sizeLitteral.replace("auto", str(folderSize))
+            result = aeval(evalStr)
+            return math.ceil(result)
+        else:
+            return 0
     
     number, unit = splitNumberUnit(sizeLitteral)
 
@@ -156,8 +158,8 @@ def deleteAny(path):
     else:
         os.remove(path)
 
-def getAnyTempPath(subdirectory):
-    path = pathConcat(path_build_temp, subdirectory)
+def getTempFolder(subdirectory):
+    path = pathConcat(path_temp_temp, subdirectory)
     deleteDirectory(path)
     os.makedirs(path, exist_ok=True)
 
@@ -277,7 +279,7 @@ def copyItemFiles(fromPath, toPath, changeRights=None):
     if os.path.isdir(fromPath):
         os.makedirs(toPath, exist_ok=True)
         if changeRights:
-            tempFolder = getAnyTempPath("changeRights")
+            tempFolder = getTempFolder("changeRights")
             buildExecute(["cp", "-a", fromPath + "/.", tempFolder])
             changeAccessRights(tempFolder, changeRights)
             buildExecute(["cp", "-a", tempFolder + "/.", toPath])
@@ -324,10 +326,24 @@ def formatFilesystem(path, item):
     cmd.append(path)
     buildExecute(cmd)
 
-def umountFilesystem(mpath):
+def umountFilesystem(mpath, recursion=False):
     if os.path.exists(mpath):
-        buildExecute(["umount", mpath])
-        deleteDirectory(mpath)
+        cmd = ["umount"]
+        if recursion:
+            cmd.append("-Rl")
+        cmd.append(mpath)
+
+        buildExecute(cmd)
+        if not recursion:
+            deleteDirectory(mpath)
+
+def recursionUmount(path):
+    path = os.path.abspath(path)
+    with open("/proc/self/mounts") as f:
+        mounts = [line.split()[1] for line in f]
+    mounts = [m.replace("\\040", " ") for m in mounts if m.startswith(path)]
+    for m in sorted(mounts, key=len, reverse=True):
+        subprocess.run(["umount", "-l", m], check=False)
 
 def mountFilesystem(path, mpath):
     umountFilesystem(mpath)
@@ -369,6 +385,9 @@ def buildDirectory(item):
         makeChown(buildDirectoryPath, item["chown"])
 
 def findDirectory(item):
+    if not "source" in item:
+        return None
+
     dirpath = findItem(item["source"])
     if not os.path.isdir(dirpath):
         buildLog(f"Item \"{dirpath}\" is not a directory")
@@ -383,9 +402,10 @@ def buildFilesystem(item):
     allocateFile(fs_path, calcSize(item['size'], fs_files))
     formatFilesystem(fs_path, item)
 
-    mountFilesystem(fs_path, path_mount)
-    copyItemFiles(fs_files, path_mount)
-    umountFilesystem(path_mount)
+    if fs_files:
+        mountFilesystem(fs_path, path_mount)
+        copyItemFiles(fs_files, path_mount)
+        umountFilesystem(path_mount)
 
 def buildUnknown(item):
     buildLog(f"unknown build item type: {item["type"]}")
@@ -424,11 +444,12 @@ def buildProject(json_path):
         buildLog(f"the project requires at least the syslbuild {formatVersion(projectData["min-syslbuild-version"])} version. you have {formatVersion(VERSION)} installed")
         sys.exit(1)
 
+    recursionUmount(path_temp)
+
     umountFilesystem(path_mount)
     deleteDirectory(path_output)
     deleteDirectory(path_build)
-    deleteDirectory(path_build_process)
-    deleteDirectory(path_build_temp)
+    deleteDirectory(path_temp_temp)
 
     builditems = projectData["builditems"]
 
