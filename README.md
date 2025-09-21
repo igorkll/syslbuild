@@ -20,8 +20,17 @@ also, assembling a bootable img with an already installed system is also a separ
 ## dependencies
 * python3
 * mmdebstrap
-* mkfs.* - you need support for the file systems that you intend to use in your projects
+* mkfs.\* - you need support for the file systems that you intend to use in your projects
 * qemu - needed for debian cross-build
+* wget
+* cp
+* dd
+* truncate
+* mount
+* umount
+* chmod
+* chown
+* sudo - either run syslbuild from root yourself, or you should have sudo and it will do it itself
 
 ## python dependencies
 * json5
