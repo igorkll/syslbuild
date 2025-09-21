@@ -20,7 +20,7 @@ also, assembling a bootable img with an already installed system is also a separ
 ## dependencies
 * python3
 * mmdebstrap
-* mkfs.\* - you need support for the file systems that you intend to use in your projects
+* mkfs.* - you need support for the file systems that you intend to use in your projects
 * qemu - needed for debian cross-build
 * wget
 * cp
