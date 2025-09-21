@@ -384,6 +384,10 @@ def buildDirectory(item):
     if "chown" in item:
         makeChown(buildDirectoryPath, item["chown"])
 
+    if "delete" in item:
+        for deletePath in item["delete"]:
+            deleteAny(pathConcat(buildDirectoryPath, deletePath))
+
 def findDirectory(item):
     if not "source" in item:
         return None
