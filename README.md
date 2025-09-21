@@ -46,6 +46,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * download - downloads the file
 * directory - allows you to assemble many items into one (for example, to pack them into a file system later) allows you to set file owners and their rights
 * filesystem - builds a file system from the specified items and sets the specified access rights for the files
+* tar - collects archive from rootfs in tar format
 * full-disk-image - creates a bootable image of a raw img disk that can be written to the root of the disk via dd or some etcher and it will immediately become bootable (the ability to boot depends on the settings)
 * kernel - 
 * initramfs - 
@@ -132,6 +133,24 @@ also, assembling a bootable img with an already installed system is also a separ
             "fs_type": "ext4",
             "size": "(auto * 1.2) + (100 * 1024 * 1024)", // could be a constant like 1G or 100M. when specified as auto, you operate with the value in bytes and can specify any eval
             "label": "example-distro"
+        },
+        {
+            "type": "tar",
+            "name": "example-distro rootfs.tar",
+            "export": true,
+
+            "source": "rootfs directory",
+
+            "gz": false
+        },
+        {
+            "type": "tar",
+            "name": "example-distro rootfs.tar.gz",
+            "export": true,
+
+            "source": "rootfs directory",
+
+            "gz": true
         },
         {
             "type": "full-disk-image",

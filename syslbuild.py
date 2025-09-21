@@ -388,6 +388,15 @@ def buildDirectory(item):
         for deletePath in item["delete"]:
             deleteAny(pathConcat(buildDirectoryPath, deletePath))
 
+def buildTar(item):
+    tar_files = findDirectory(item)
+    tar_path = getItemPath(item)
+
+    if readBool(item, "gz"):
+        buildExecute(["tar", "-czf", tar_path, "-C", tar_files, "."])
+    else:
+        buildExecute(["tar", "-cf", tar_path, "-C", tar_files, "."])
+
 def findDirectory(item):
     if not "source" in item:
         return None
@@ -419,6 +428,7 @@ buildActions = {
     "debian": buildDebian,
     "download": buildDownload,
     "directory": buildDirectory,
+    "tar": buildTar,
     "filesystem": buildFilesystem
 }
 
