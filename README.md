@@ -196,8 +196,7 @@ also, assembling a bootable img with an already installed system is also a separ
                     "part_msdos",
                     "part_gpt",
                     "ext2",
-                    "configfile",
-                    "biosdisk"
+                    "configfile"
                 ]
             }
         },
@@ -231,8 +230,7 @@ also, assembling a bootable img with an already installed system is also a separ
                     "part_msdos",
                     "part_gpt",
                     "ext2",
-                    "configfile",
-                    "biosdisk"
+                    "configfile"
                 ]
             }
         },
@@ -270,8 +268,7 @@ also, assembling a bootable img with an already installed system is also a separ
                     "part_msdos",
                     "part_gpt",
                     "ext2",
-                    "configfile",
-                    "biosdisk"
+                    "configfile"
                 ]
             }
         }
