@@ -73,6 +73,7 @@ also, assembling a bootable img with an already installed system is also a separ
             "name": "debian directory",
             "export": false,
 
+            "kernel": "default",
             "include": [
                 "cowsay"
             ],
@@ -185,7 +186,15 @@ also, assembling a bootable img with an already installed system is also a separ
             "bootloader": {
                 "type": "grub",
                 "config": "grub.cfg", // grub.cfg from the project folder
-                "boot": 0
+                "boot": 0,
+                "modules": [
+                    "normal",
+                    "part_msdos",
+                    "part_gpt",
+                    "ext2",
+                    "configfile",
+                    "biosdisk"
+                ]
             }
         },
 
@@ -212,7 +221,15 @@ also, assembling a bootable img with an already installed system is also a separ
             "bootloader": {
                 "type": "grub",
                 "config": "grub.cfg", // grub.cfg from the project folder
-                "boot": 1
+                "boot": 1,
+                "modules": [
+                    "normal",
+                    "part_msdos",
+                    "part_gpt",
+                    "ext2",
+                    "configfile",
+                    "biosdisk"
+                ]
             }
         },
 
@@ -243,7 +260,15 @@ also, assembling a bootable img with an already installed system is also a separ
                 "type": "grub",
                 "config": "grub.cfg", // grub.cfg from the project folder
                 "esp": 0,
-                "boot": 1
+                "boot": 1,
+                "modules": [
+                    "normal",
+                    "part_msdos",
+                    "part_gpt",
+                    "ext2",
+                    "configfile",
+                    "biosdisk"
+                ]
             }
         }
     ]

@@ -277,10 +277,31 @@ def makeChown(path, chownList):
         cmd.append(pathConcat(path, chownAction[0]))
         buildExecute(cmd)
 
+debianKernelArchitectureAliases = {
+    "i686": "686"
+}
+
+def getDebianKernelName(kernelType):
+    kernelName = "linux-image-"
+    if kernelType == "default":
+    elif kernelType == "realtime":
+        kernelName += "rt-"
+    else:
+        buildLog(f"Unknown kernel type: {kernelType}")
+        sys.exit(1)
+
+    kernelName += debianKernelArchitectureAliases.get(architecture, architecture)
+
+    return kernelName
+
 def buildDebian(item):
     buildItemLog(item)
 
-    include_arg = "--include=" + ",".join(item["include"]) if item.get("include") else None
+    includeList = item.get("include", [])
+    if "kernel" in item:
+        includeList = getDebianKernelName(item["kernel"])
+
+    include_arg = "--include=" + ",".join(includeList) if includeList else None
     exclude_arg = "--exclude=" + ",".join(item["exclude"]) if item.get("exclude") else None
 
     cmd = ["mmdebstrap", "--arch", architecture, "--variant", item["variant"]]
@@ -504,10 +525,14 @@ def installBootloader(item, path, partitionsOffsets):
         bootDirectory = pathConcat(path_mount, "boot")
         os.makedirs(bootDirectory, exist_ok=True)
 
+        modulesString = ""
+        if "modules" in bootloaderInfo:
+            modulesString = " ".joit(modules)
+
         if efi:
-            buildExecute(["grub-install", "--target=x86_64-efi", f"--boot-directory={bootDirectory}", path, f"--efi-directory={path_mount2}", "--removable"])
+            buildExecute(["grub-install", f"--modules={modulesString}", "--target=x86_64-efi", f"--boot-directory={bootDirectory}", path, f"--efi-directory={path_mount2}", "--removable"])
         else:
-            buildExecute(["grub-install", "--modules=normal part_msdos part_gpt ext2 configfile biosdisk", "--target=i386-pc", f"--boot-directory={bootDirectory}", path])
+            buildExecute(["grub-install", f"--modules={modulesString}", "--target=i386-pc", f"--boot-directory={bootDirectory}", path])
 
         if "config" in bootloaderInfo:
             os.makedirs(pathConcat(bootDirectory, "grub"), exist_ok=True)
