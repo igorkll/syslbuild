@@ -81,7 +81,7 @@ def buildLog(logstr, quiet=False):
     log_file.flush()
 
 def getSize(path):
-    if os.path.exists(path):
+    if os.path.isfile(path):
         return os.path.getsize(path)
     
     total = 0
@@ -212,7 +212,7 @@ def isUserItem(itemName):
 
     return False
 
-def buildExecute(cmd):
+def buildExecute(cmd, checkValid=True):
     buildLog(f"execute command: {cmd}")
     
     process = subprocess.Popen(
@@ -229,7 +229,7 @@ def buildExecute(cmd):
     process.stdout.close()
     returncode = process.wait()
 
-    if returncode != 0:
+    if returncode != 0 and checkValid:
         buildLog("failed to build")
         sys.exit(1)
 
@@ -335,16 +335,10 @@ def formatFilesystem(path, item):
     cmd.append(path)
     buildExecute(cmd)
 
-def umountFilesystem(mpath, recursion=False):
+def umountFilesystem(mpath):
     if os.path.exists(mpath):
-        cmd = ["umount"]
-        if recursion:
-            cmd.append("-Rl")
-        cmd.append(mpath)
-
-        buildExecute(cmd)
-        if not recursion:
-            deleteDirectory(mpath)
+        buildExecute(["umount", mpath], False)
+        deleteDirectory(mpath)
 
 def recursionUmount(path):
     path = os.path.abspath(path)
