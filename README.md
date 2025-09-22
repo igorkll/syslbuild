@@ -92,6 +92,7 @@ also, assembling a bootable img with an already installed system is also a separ
             
             // allows you to execute hook scripts when creating a system
             // automatically makes all files in the directory executable so that it doesn't have to be done manually after cloning the repository with the project
+            // https://manpages.debian.org/unstable/mmdebstrap/mmdebstrap.1.en.html#hook
             "hook-directory": "hooks"
         },
         {
