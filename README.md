@@ -93,6 +93,10 @@ also, assembling a bootable img with an already installed system is also a separ
             // allows you to execute hook scripts when creating a system
             // automatically makes all files in the directory executable so that it doesn't have to be done manually after cloning the repository with the project
             // https://manpages.debian.org/unstable/mmdebstrap/mmdebstrap.1.en.html#hook
+            // please note that the scripts are NOT executed inside the chroot, but on the host system.
+            // to execute something inside the chroot, write in your script: chroot "$1" COMMAND
+            // this will work even when cross-build to a different architecture. since mmdebstrap uses qemu for emulation, you can safely chroot there
+            // however, please note that the cross-build may take a long time, and it may seem that the build has hung up, although this is not the case
             "hook-directory": "hooks"
         },
         {
