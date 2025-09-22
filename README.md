@@ -62,6 +62,10 @@ also, assembling a bootable img with an already installed system is also a separ
 * efi - C12A7328-F81F-11D2-BA4B-00A0C93EC93B / ef
 * bios - 21686148-6449-6E6F-744E-656564454649 / None
 
+## debian kernel types
+* default
+* realtime
+
 ## project example
 ```json
 {
