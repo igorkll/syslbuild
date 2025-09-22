@@ -88,7 +88,11 @@ also, assembling a bootable img with an already installed system is also a separ
 
             "variant": "minbase",
             "suite": "bookworm",
-            "url": "http://snapshot.debian.org/archive/debian/20250809T133719Z"
+            "url": "http://snapshot.debian.org/archive/debian/20250809T133719Z",
+            
+            // allows you to execute hook scripts when creating a system
+            // automatically makes all files in the directory executable so that it doesn't have to be done manually after cloning the repository with the project
+            "hook-directory": "hooks"
         },
         {
             "type": "download",

@@ -4,6 +4,7 @@ import json5
 import argparse
 import subprocess
 import os
+import stat
 import shutil
 import datetime
 import asteval
@@ -295,6 +296,12 @@ def getDebianKernelName(kernelType):
 
     return kernelName
 
+def makeAllFilesExecutable(path):
+    for entry in os.scandir(path):
+        if entry.is_file():
+            st = os.stat(entry.path)
+            os.chmod(entry.path, st.st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+
 def buildDebian(item):
     buildItemLog(item)
 
@@ -316,6 +323,9 @@ def buildDebian(item):
         getItemFolder(item),
         item["url"]
     ]
+    if "hook-directory" in item:
+        makeAllFilesExecutable(item["hook-directory"])
+        cmd.append(f"--hook-directory={item["hook-directory"]}")
     buildExecute(cmd)
 
 def downloadFile(url, path):
