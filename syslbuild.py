@@ -512,12 +512,12 @@ def buildFullDiskImage(item):
     resultSectorsize = resultPartitionTable["partitiontable"]["sectorsize"]
 
     partitionsOffsets = []
-    for paritition in resultPartitions:
+    for i, paritition in enumerate(resultPartitions):
         start_sector = paritition["start"]
         partitionsOffsets.append(start_sector * resultSectorsize)
         buildExecute([
             "dd",
-            f"if={partitionsPaths[0]}",
+            f"if={partitionsPaths[i]}",
             f"of={path}",
             f"bs={resultSectorsize}",
             "seek=" + str(start_sector),
