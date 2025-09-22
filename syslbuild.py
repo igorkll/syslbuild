@@ -505,7 +505,7 @@ def installBootloader(item, path, partitionsOffsets):
         os.makedirs(bootDirectory, exist_ok=True)
 
         if "config" in item:
-            copyItemFiles(findItem(config["config"]), pathConcat(bootDirectory, "boot/grub", "grub.cfg"), [0, 0, "0000"])
+            copyItemFiles(findItem(config["config"]), pathConcat(bootDirectory, "grub", "grub.cfg"), [0, 0, "0000"])
 
         if efi:
             buildExecute(["grub-install", "--target=x86_64-efi", f"--boot-directory={bootDirectory}", path, f"--efi-directory={path_mount2}", "--removable"])
@@ -513,7 +513,9 @@ def installBootloader(item, path, partitionsOffsets):
             buildExecute(["grub-install", "--target=i386-pc", f"--boot-directory={bootDirectory}", path])
 
         umountFilesystem(path_mount)
-        umountFilesystem(path_mount2)
+
+        if efi:
+            umountFilesystem(path_mount2)
     else:
         buildLog("Unknown bootloader type")
         sys.exit(1)
