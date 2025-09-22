@@ -509,16 +509,17 @@ def buildFullDiskImage(item):
     # apply partitions
     resultPartitionTable = json5.loads(buildExecute(["sfdisk", "-J", path]))
     resultPartitions = resultPartitionTable["partitiontable"]["partitions"]
+    resultSectorsize = resultPartitionTable["partitiontable"]["sectorsize"]
 
     partitionsOffsets = []
     for paritition in resultPartitions:
         start_sector = paritition["start"]
-        partitionsOffsets.append(start_sector * 512)
+        partitionsOffsets.append(start_sector * resultSectorsize)
         buildExecute([
             "dd",
             f"if={partitionsPaths[0]}",
             f"of={path}",
-            "bs=512",
+            f"bs={resultSectorsize}",
             "seek=" + str(start_sector),
             "conv=notrunc"
         ])
