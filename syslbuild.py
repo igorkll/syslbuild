@@ -80,7 +80,10 @@ def buildLog(logstr, quiet=False):
     log_file.write(logstr + "\n")
     log_file.flush()
 
-def getFolderSize(path):
+def getSize(path):
+    if os.path.exists(path):
+        return os.path.getsize(path)
+    
     total = 0
     for dirpath, dirnames, filenames in os.walk(path, followlinks=False):
         for f in filenames:
@@ -98,14 +101,20 @@ def splitNumberUnit(s):
         return float(number), unit.upper()
     return 0, ""
 
-def calcSize(sizeLitteral, folder):
+def calcSize(sizeLitteral, folderOrFilelist):
     if isinstance(sizeLitteral, (int, float)):
         return math.ceil(sizeLitteral)
     
     if "auto" in sizeLitteral:
-        if folder:
-            folderSize = getFolderSize(folder)
-            evalStr = sizeLitteral.replace("auto", str(folderSize))
+        if folderOrFilelist:
+            contentSize = 0
+            if isinstance(folderOrFilelist, list):
+                for path in folderOrFilelist:
+                    contentSize += getSize(path)
+            else:
+                contentSize = getSize(folderOrFilelist)
+            
+            evalStr = sizeLitteral.replace("auto", str(contentSize))
             result = aeval(evalStr)
             return math.ceil(result)
         else:
