@@ -284,6 +284,7 @@ debianKernelArchitectureAliases = {
 def getDebianKernelName(kernelType):
     kernelName = "linux-image-"
     if kernelType == "default":
+        pass
     elif kernelType == "realtime":
         kernelName += "rt-"
     else:
