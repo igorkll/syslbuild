@@ -212,17 +212,22 @@ def isUserItem(itemName):
 
     return False
 
-def buildExecute(cmd, checkValid=True, input_data):
-    buildLog(f"execute command: {cmd}")
+def buildExecute(cmd, checkValid=True, input_data=None):
+    buildLog(f"Execute command: {cmd}")
     
     process = subprocess.Popen(
         cmd,
-        input=input_data.encode()
+        stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         text=True,
         bufsize=1
     )
+
+    if input_data:
+        buildLog(f"With input: {input_data}")
+        process.stdin.write(input_data)
+        process.stdin.close()
 
     for line in process.stdout:
         buildLog(line.rstrip(), True)
@@ -456,7 +461,7 @@ def buildFullDiskImage(item):
     # make paritition table
     partitionTable = f"label: {item["partitionTable"]}"
     for i, partition in enumerate(item["partitions"]):
-        partitionTable += f"\nsize={partitionsSizes}MiB, type={getParititionType(item, partition[1])}"
+        partitionTable += f"\nsize={math.ceil(partitionsSizes[i] / 1024 / 1024)}MiB, type={getParititionType(item, partition[1])}"
 
     buildExecute(["sfdisk", path], False, partitionTable)
 
