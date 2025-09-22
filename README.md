@@ -53,6 +53,15 @@ also, assembling a bootable img with an already installed system is also a separ
 * kernel - 
 * initramfs - 
 
+## supported bootloaders
+* grub
+
+## aliases of names for partitions IDs (GPT / MBR)
+* linux - 0FC63DAF-8483-4772-8E79-3D69D8477DE4 / 83
+* swap - 0657FD6D-A4AB-43C4-84E5-0933C84B4F4F / 82
+* efi - C12A7328-F81F-11D2-BA4B-00A0C93EC93B / ef
+* bios - 21686148-6449-6E6F-744E-656564454649 / None
+
 ## project example
 ```json
 {
