@@ -66,6 +66,9 @@ also, assembling a bootable img with an already installed system is also a separ
 * default
 * realtime
 
+# builditem universal keys
+* architectures - if the builditem has an array with that name, then the build will only be performed if it has an architecture for which it is being built
+
 ## project example
 ```json
 {

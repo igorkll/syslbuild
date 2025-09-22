@@ -635,6 +635,13 @@ def buildProject(json_path):
     deleteDirectory(path_temp_temp)
 
     builditems = projectData["builditems"]
+    i = 0
+    while i < len(builditems):
+        builditem = builditems[i]
+        if "architectures" in builditem and not architecture in builditem["architectures"]:
+            del builditems[i]
+        else:
+            i += 1
 
     for index, item in enumerate(builditems):
         item["__item_index"] = index + 1
