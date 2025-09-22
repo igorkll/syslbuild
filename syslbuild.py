@@ -511,6 +511,36 @@ def getParititionType(item, partitionType):
     else:
         return parititionTypesList_dos[partitionType]
 
+defaultGrubTargets_efi = {
+    "amd64": "x86_64-efi",
+    "i386": "i386-efi",
+    "arm64": "arm64-efi",
+    "armhf": "arm-efi",
+    "armel": "arm-efi"
+}
+
+defaultGrubTargets_bios = {
+    "amd64": "i386-pc",
+    "i386": "i386-pc"
+}
+
+def getGrubTarget(item, efi):
+    bootloaderInfo = item["bootloader"]
+    if "target" in bootloaderInfo:
+        return bootloaderInfo["target"]
+
+    target = None
+    if efi:
+        target = defaultGrubTargets_efi.get(partitionType)
+    else:
+        target = defaultGrubTargets_bios.get(partitionType)
+
+    if target == None:
+        buildLog(f"Unknown grub target for {}-{}")
+        sys.exit(1)
+
+    return target
+
 def installBootloader(item, path, partitionsOffsets):
     bootloaderInfo = item["bootloader"]
     bootloaderType = bootloaderInfo["type"]
@@ -531,9 +561,9 @@ def installBootloader(item, path, partitionsOffsets):
             modulesString = " ".join(bootloaderInfo["modules"])
 
         if efi:
-            buildExecute(["grub-install", f"--modules={modulesString}", "--target=x86_64-efi", f"--boot-directory={bootDirectory}", path, f"--efi-directory={path_mount2}", "--removable"])
+            buildExecute(["grub-install", f"--modules={modulesString}", f"--target={getGrubTarget(item, True)}", f"--boot-directory={bootDirectory}", path, f"--efi-directory={path_mount2}", "--removable"])
         else:
-            buildExecute(["grub-install", f"--modules={modulesString}", "--target=i386-pc", f"--boot-directory={bootDirectory}", path])
+            buildExecute(["grub-install", f"--modules={modulesString}", f"--target={getGrubTarget(item, False)}", f"--boot-directory={bootDirectory}", path])
 
         if "config" in bootloaderInfo:
             os.makedirs(pathConcat(bootDirectory, "grub"), exist_ok=True)

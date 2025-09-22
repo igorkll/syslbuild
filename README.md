@@ -201,7 +201,13 @@ also, assembling a bootable img with an already installed system is also a separ
                     "ext2",
                     "configfile"
                 ]
+                // you can force any grub target you are interested in
+                // "target": "i386-efi"
             }
+
+            // do you want to use your grub target and still keep the project cross-compiled?
+            // you can limit the build to specific architectures, and duplicate this block for each architecture.
+            // "architectures": ["i386"]
         },
 
         {
