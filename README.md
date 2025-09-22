@@ -31,6 +31,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * chmod
 * chown
 * sudo - either run syslbuild from root yourself, or you should have sudo and it will do it itself
+* sfdisk
 
 ## python dependencies
 * json5
@@ -161,8 +162,12 @@ also, assembling a bootable img with an already installed system is also a separ
             // since auto only takes into account the files size in bytes
             "size": "auto + (1 * 1024 * 1024)",
 
+            // there are dos and gpt partition tables
+            // sections have different types, and syslbuild has simpler aliases for names
+            // although there's nothing stopping you from using dos partition IDs or UUIDs for gpt
+            "partitionTable": "dos",
             "partitions": [
-                ["example-distro rootfs.img"]
+                ["example-distro rootfs.img", "linux"]
             ]
         },
         {
@@ -172,8 +177,9 @@ also, assembling a bootable img with an already installed system is also a separ
 
             "size": "auto + (1 * 1024 * 1024)",
 
+            "partitionTable": "gpt",
             "partitions": [
-                ["example-distro rootfs.img"]
+                ["example-distro rootfs.img", "linux"]
             ]
         }
     ]

@@ -212,11 +212,12 @@ def isUserItem(itemName):
 
     return False
 
-def buildExecute(cmd, checkValid=True):
+def buildExecute(cmd, checkValid=True, input_data):
     buildLog(f"execute command: {cmd}")
     
     process = subprocess.Popen(
         cmd,
+        input=input_data.encode()
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         text=True,
@@ -312,7 +313,7 @@ def allocateFile(path, size):
         "bs=" + str(bs),
         "count=" + str(count)
     ])
-    buildExecute(["truncate", "-s", str(size), path])
+    # buildExecute(["truncate", "-s", str(size), path])
 
 def formatFilesystem(path, item):
     fs_type = item["fs_type"]
@@ -423,13 +424,41 @@ def buildFilesystem(item):
         copyItemFiles(fs_files, path_mount)
         umountFilesystem(path_mount)
 
+parititionTypesList_gpt = {
+    "linux": "0FC63DAF-8483-4772-8E79-3D69D8477DE4",
+    "swap": "0657FD6D-A4AB-43C4-84E5-0933C84B4F4F",
+    "efi": "C12A7328-F81F-11D2-BA4B-00A0C93EC93B"
+}
+
+parititionTypesList_dos = {
+    "linux": "83",
+    "swap": "82",
+    "efi": "ef"
+}
+
+def getParititionType(item, partitionType):
+    if item["partitionTable"] == "gpt":
+        return parititionTypesList_gpt[partitionType]
+    else:
+        return parititionTypesList_dos[partitionType]
+
 def buildFullDiskImage(item):
+    # allocate file
     path = getItemPath(item)
     partitionsPaths = []
+    partitionsSizes = []
     for partition in item["partitions"]:
-        partitionsPaths.append(findItem(partition[0]))
-
+        parititionPath = findItem(partition[0])
+        partitionsPaths.append(parititionPath)
+        partitionsSizes.append(getSize(parititionPath))
     allocateFile(path, calcSize(item['size'], partitionsPaths))
+
+    # make paritition table
+    partitionTable = f"label: {item["partitionTable"]}"
+    for i, partition in enumerate(item["partitions"]):
+        partitionTable += f"\nsize={partitionsSizes}MiB, type={getParititionType(item, partition[1])}"
+
+    buildExecute(["sfdisk", path], False, partitionTable)
 
 def buildUnknown(item):
     buildLog(f"unknown build item type: {item["type"]}")
