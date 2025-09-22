@@ -531,12 +531,12 @@ def getGrubTarget(item, efi):
 
     target = None
     if efi:
-        target = defaultGrubTargets_efi.get(partitionType)
+        target = defaultGrubTargets_efi.get(architecture)
     else:
-        target = defaultGrubTargets_bios.get(partitionType)
+        target = defaultGrubTargets_bios.get(architecture)
 
     if target == None:
-        buildLog(f"Unknown grub target for {}-{}")
+        buildLog(f"Unknown grub target for {architecture} ({"efi" if efi else "bios"})")
         sys.exit(1)
 
     return target
