@@ -509,9 +509,9 @@ def installBootloader(item, path, partitionsOffsets):
         else:
             buildExecute(["grub-install", "--modules=normal part_msdos part_gpt ext2 configfile biosdisk", "--target=i386-pc", f"--boot-directory={bootDirectory}", path])
 
-        if "config" in item:
+        if "config" in bootloaderInfo:
             os.makedirs(pathConcat(bootDirectory, "grub"), exist_ok=True)
-            copyItemFiles(findItem(config["config"]), pathConcat(bootDirectory, "grub", "grub.cfg"), [0, 0, "0000"])
+            copyItemFiles(findItem(bootloaderInfo["config"]), pathConcat(bootDirectory, "grub", "grub.cfg"), [0, 0, "0000"])
 
         umountFilesystem(path_mount)
 
