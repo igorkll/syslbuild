@@ -221,7 +221,7 @@ also, assembling a bootable img with an already installed system is also a separ
 
             "fs_arg": "-F32",
             "fs_type": "fat",
-            "size": "1M",
+            "size": "64M",
             "label": "EFI"
         },
         {
