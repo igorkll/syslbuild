@@ -257,12 +257,23 @@ def makeChmod(path, chmodList):
         cmd.append(pathConcat(path, chmodAction[0]))
         buildExecute(cmd)
 
+def chownStr(uid, gid):
+    chownString = ""
+    
+    if uid:
+        chownString += str(uid)
+    
+    if gid:
+        chownString += ":" + str(gid)
+    
+    return chownString
+
 def makeChown(path, chownList):
     for chownAction in chownList:
         cmd = ["chown"]
         if chownAction[3]:
             cmd.append("-R")
-        cmd.append(str(chownAction[1]) + ":" + str(chownAction[2]))
+        cmd.append(chownStr(chownAction[1], chownAction[2]))
         cmd.append(pathConcat(path, chownAction[0]))
         buildExecute(cmd)
 
@@ -294,7 +305,7 @@ def buildDownload(item):
 
 def changeAccessRights(path, changeRights):
     buildExecute(["chmod", "-R", changeRights[2], path])
-    buildExecute(["chown", "-R", str(changeRights[0]) + ":" + str(changeRights[1]), path])
+    buildExecute(["chown", "-R", chownStr(changeRights[0], changeRights[1]), path])
 
 def copyItemFiles(fromPath, toPath, changeRights=None):
     if os.path.isdir(fromPath):
@@ -492,6 +503,9 @@ def installBootloader(item, path, partitionsOffsets):
 
         bootDirectory = pathConcat(path_mount, "boot")
         os.makedirs(bootDirectory, exist_ok=True)
+
+        if "config" in item:
+            copyItemFiles(findItem(config["config"]), pathConcat(bootDirectory, "boot/grub", "grub.cfg"), [0, 0, "0000"])
 
         if efi:
             buildExecute(["grub-install", "--target=x86_64-efi", f"--boot-directory={bootDirectory}", path, f"--efi-directory={path_mount2}", "--removable"])

@@ -184,6 +184,7 @@ also, assembling a bootable img with an already installed system is also a separ
 
             "bootloader": {
                 "type": "grub",
+                "config": "grub.cfg", // grub.cfg from the project folder
                 "boot": 0
             }
         },
@@ -210,6 +211,7 @@ also, assembling a bootable img with an already installed system is also a separ
 
             "bootloader": {
                 "type": "grub",
+                "config": "grub.cfg", // grub.cfg from the project folder
                 "boot": 1
             }
         },
@@ -239,6 +241,7 @@ also, assembling a bootable img with an already installed system is also a separ
 
             "bootloader": {
                 "type": "grub",
+                "config": "grub.cfg", // grub.cfg from the project folder
                 "esp": 0,
                 "boot": 1
             }
