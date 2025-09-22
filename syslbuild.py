@@ -358,18 +358,34 @@ def recursionUmount(path):
     for m in sorted(mounts, key=len, reverse=True):
         subprocess.run(["umount", "-l", m], check=False)
 
-def mountFilesystem(path, mpath, offset=None):
-    umountFilesystem(mpath)
-    os.makedirs(mpath, exist_ok=True)
-    mode = "loop"
-    if offset:
-        mode += f",offset={offset}"
-    buildExecute(["mount", "-o", mode, path, mpath])
+mountLoops = {}
 
-def umountFilesystem(mpath):
-    if os.path.exists(mpath):
-        buildExecute(["umount", mpath], False)
-        deleteDirectory(mpath)
+def mountFilesystem(img_path, mount_path, offset=None):
+    mount_path = os.path.normpath(mount_path)
+    os.makedirs(mount_path, exist_ok=True)
+
+    result = subprocess.run(["losetup", "-f"], capture_output=True, text=True, check=True)
+    loop_device = result.stdout.strip()
+
+    losetup_cmd = ["losetup", loop_device, img_path]
+    if offset:
+        losetup_cmd.insert(2, f"-o {offset}")
+    buildExecute(losetup_cmd)
+
+    buildExecute(["mount", loop_device, mount_path])    
+    mountLoops[mount_path] = loop_device
+
+def umountFilesystem(mount_path):
+    mount_path = os.path.normpath(mount_path)
+    loop_device = mountLoops.get(mount_path)
+    if loop_device:
+        del mountLoops[mount_path]
+
+    if os.path.exists(mount_path):
+        buildExecute(["umount", mount_path], False)
+        if loop_device:
+            buildExecute(["losetup", "-d", loop_device])
+        deleteDirectory(mount_path)
 
 def buildDirectory(item):
     buildItemLog(item)
