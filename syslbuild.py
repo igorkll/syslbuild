@@ -434,7 +434,9 @@ def buildFilesystem(item):
 
     fs_path = getItemPath(item)
     allocateFile(fs_path, calcSize(item['size'], fs_files))
-    formatFilesystem(fs_path, item)
+
+    if "fs_type" in item:
+        formatFilesystem(fs_path, item)
 
     if fs_files:
         mountFilesystem(fs_path, path_mount)
@@ -461,21 +463,24 @@ def getParititionType(item, partitionType):
         return parititionTypesList_dos[partitionType]
 
 def installBootloader(item, path, partitionsOffsets):
-    bootloaderType = item["bootloader"]
+    bootloaderInfo = item["bootloader"]
+    bootloaderType = bootloaderInfo["type"]
+
     if bootloaderType == "grub":
         efi = False
 
-        mountFilesystem(path, path_mount, partitionsOffsets[boot["boot"]])
-        if "esp" in item:
-            mountFilesystem(path, path_mount2, partitionsOffsets[boot["esp"]])
+        mountFilesystem(path, path_mount, partitionsOffsets[bootloaderInfo["boot"]])
+        if "esp" in bootloaderInfo:
+            mountFilesystem(path, path_mount2, partitionsOffsets[bootloaderInfo["esp"]])
             efi = True
 
         bootDirectory = pathConcat(path_mount, "boot")
+        os.makedirs(bootDirectory, exist_ok=True)
 
         if efi:
-
+            buildExecute(["grub-install", "--target=x86_64-efi", f"--boot-directory={bootDirectory}", path, f"--efi-directory={path_mount2}", "--removable"])
         else:
-            buildExecute(["grub-install", "--target=i386-pc", f"--boot-directory={bootDirectory}", ""])
+            buildExecute(["grub-install", "--target=i386-pc", f"--boot-directory={bootDirectory}", path])
 
         umountFilesystem(path_mount)
         umountFilesystem(path_mount2)
@@ -508,7 +513,7 @@ def buildFullDiskImage(item):
     partitionsOffsets = []
     for paritition in resultPartitions:
         start_sector = paritition["start"]
-        partitionsOffsets.append(start_sector)
+        partitionsOffsets.append(start_sector * 512)
         buildExecute([
             "dd",
             f"if={partitionsPaths[0]}",

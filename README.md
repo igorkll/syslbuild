@@ -195,7 +195,7 @@ also, assembling a bootable img with an already installed system is also a separ
 
             "partitionTable": "gpt",
             "partitions": [
-                ["bios boot.img", "bios"]
+                ["bios boot.img", "bios"],
                 ["example-distro rootfs.img", "linux"]
             ],
 
