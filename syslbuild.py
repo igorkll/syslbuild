@@ -504,13 +504,14 @@ def installBootloader(item, path, partitionsOffsets):
         bootDirectory = pathConcat(path_mount, "boot")
         os.makedirs(bootDirectory, exist_ok=True)
 
-        if "config" in item:
-            copyItemFiles(findItem(config["config"]), pathConcat(bootDirectory, "grub", "grub.cfg"), [0, 0, "0000"])
-
         if efi:
             buildExecute(["grub-install", "--target=x86_64-efi", f"--boot-directory={bootDirectory}", path, f"--efi-directory={path_mount2}", "--removable"])
         else:
             buildExecute(["grub-install", "--modules=normal part_msdos part_gpt ext2 configfile biosdisk", "--target=i386-pc", f"--boot-directory={bootDirectory}", path])
+
+        if "config" in item:
+            os.makedirs(pathConcat(bootDirectory, "grub"), exist_ok=True)
+            copyItemFiles(findItem(config["config"]), pathConcat(bootDirectory, "grub", "grub.cfg"), [0, 0, "0000"])
 
         umountFilesystem(path_mount)
 
