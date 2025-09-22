@@ -528,7 +528,7 @@ def installBootloader(item, path, partitionsOffsets):
 
         modulesString = ""
         if "modules" in bootloaderInfo:
-            modulesString = " ".joit(modules)
+            modulesString = " ".join(modules)
 
         if efi:
             buildExecute(["grub-install", f"--modules={modulesString}", "--target=x86_64-efi", f"--boot-directory={bootDirectory}", path, f"--efi-directory={path_mount2}", "--removable"])
