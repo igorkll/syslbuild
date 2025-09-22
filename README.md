@@ -154,10 +154,25 @@ also, assembling a bootable img with an already installed system is also a separ
         },
         {
             "type": "full-disk-image",
-            "name": "example-distro.img",
+            "name": "example-distro MBR.img",
             "export": true,
 
-            "items": [
+            // i am adding one megabyte (with a margin) for the partition table
+            // since auto only takes into account the files size in bytes
+            "size": "auto + (1 * 1024 * 1024)",
+
+            "partitions": [
+                ["example-distro rootfs.img"]
+            ]
+        },
+        {
+            "type": "full-disk-image",
+            "name": "example-distro GPT.img",
+            "export": true,
+
+            "size": "auto + (1 * 1024 * 1024)",
+
+            "partitions": [
                 
             ]
         }

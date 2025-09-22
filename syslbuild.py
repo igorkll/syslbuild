@@ -420,6 +420,14 @@ def buildFilesystem(item):
         copyItemFiles(fs_files, path_mount)
         umountFilesystem(path_mount)
 
+def buildFullDiskImage(item):
+    path = getItemPath(item)
+    partitionsPaths = []
+    for partition in item["partitions"]:
+        partitionsPaths.append(findItem(partition[0]))
+
+    allocateFile(path, calcSize(item['size'], partitionsPaths))
+
 def buildUnknown(item):
     buildLog(f"unknown build item type: {item["type"]}")
     sys.exit(1)
@@ -429,7 +437,8 @@ buildActions = {
     "download": buildDownload,
     "directory": buildDirectory,
     "tar": buildTar,
-    "filesystem": buildFilesystem
+    "filesystem": buildFilesystem,
+    "full-disk-image": buildFullDiskImage
 }
 
 def buildItems(builditems):
