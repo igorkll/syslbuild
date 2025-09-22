@@ -32,6 +32,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * chown
 * sudo - either run syslbuild from root yourself, or you should have sudo and it will do it itself
 * sfdisk
+* grub-install
 
 ## python dependencies
 * json5
@@ -209,6 +210,7 @@ also, assembling a bootable img with an already installed system is also a separ
             "name": "efi boot.img",
             "export": false,
 
+            "fs_arg": "-F32",
             "fs_type": "fat",
             "size": "1M",
             "label": "EFI"

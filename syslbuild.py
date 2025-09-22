@@ -329,6 +329,9 @@ def allocateFile(path, size):
 def formatFilesystem(path, item):
     fs_type = item["fs_type"]
     cmd = [f"mkfs.{fs_type}"]
+
+    if "fs_arg" in item:
+        cmd.append(item["fs_arg"])
     
     if "label" in item:
         if "fat" in fs_type:
@@ -406,15 +409,6 @@ def buildDirectory(item):
         for deletePath in item["delete"]:
             deleteAny(pathConcat(buildDirectoryPath, deletePath))
 
-def buildTar(item):
-    tar_files = findDirectory(item)
-    tar_path = getItemPath(item)
-
-    if readBool(item, "gz"):
-        buildExecute(["tar", "-czf", tar_path, "-C", tar_files, "."])
-    else:
-        buildExecute(["tar", "-cf", tar_path, "-C", tar_files, "."])
-
 def findDirectory(item):
     if not "source" in item:
         return None
@@ -424,6 +418,15 @@ def findDirectory(item):
         buildLog(f"Item \"{dirpath}\" is not a directory")
         sys.exit(1)
     return dirpath
+
+def buildTar(item):
+    tar_files = findDirectory(item)
+    tar_path = getItemPath(item)
+
+    if readBool(item, "gz"):
+        buildExecute(["tar", "-czf", tar_path, "-C", tar_files, "."])
+    else:
+        buildExecute(["tar", "-cf", tar_path, "-C", tar_files, "."])
 
 def buildFilesystem(item):
     buildItemLog(item)
@@ -457,6 +460,29 @@ def getParititionType(item, partitionType):
     else:
         return parititionTypesList_dos[partitionType]
 
+def installBootloader(item, path, partitionsOffsets):
+    bootloaderType = item["bootloader"]
+    if bootloaderType == "grub":
+        efi = False
+
+        mountFilesystem(path, path_mount, partitionsOffsets[boot["boot"]])
+        if "esp" in item:
+            mountFilesystem(path, path_mount2, partitionsOffsets[boot["esp"]])
+            efi = True
+
+        bootDirectory = pathConcat(path_mount, "boot")
+
+        if efi:
+
+        else:
+            buildExecute(["grub-install", "--target=i386-pc", f"--boot-directory={bootDirectory}", ""])
+
+        umountFilesystem(path_mount)
+        umountFilesystem(path_mount2)
+    else:
+        buildLog("Unknown bootloader type")
+        sys.exit(1)
+
 def buildFullDiskImage(item):
     # allocate file
     path = getItemPath(item)
@@ -479,8 +505,10 @@ def buildFullDiskImage(item):
     resultPartitionTable = json5.loads(buildExecute(["sfdisk", "-J", path]))
     resultPartitions = resultPartitionTable["partitiontable"]["partitions"]
 
+    partitionsOffsets = []
     for paritition in resultPartitions:
         start_sector = paritition["start"]
+        partitionsOffsets.append(start_sector)
         buildExecute([
             "dd",
             f"if={partitionsPaths[0]}",
@@ -489,6 +517,10 @@ def buildFullDiskImage(item):
             "seek=" + str(start_sector),
             "conv=notrunc"
         ])
+
+    # install bootloader
+    if "bootloader" in item:
+        installBootloader(item, path, partitionsOffsets)
 
 def buildUnknown(item):
     buildLog(f"unknown build item type: {item["type"]}")
