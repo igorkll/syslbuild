@@ -510,7 +510,7 @@ def installBootloader(item, path, partitionsOffsets):
         if efi:
             buildExecute(["grub-install", "--target=x86_64-efi", f"--boot-directory={bootDirectory}", path, f"--efi-directory={path_mount2}", "--removable"])
         else:
-            buildExecute(["grub-install", "--target=i386-pc", f"--boot-directory={bootDirectory}", path])
+            buildExecute(["grub-install", "--modules=normal part_msdos part_gpt ext2 configfile biosdisk", "--target=i386-pc", f"--boot-directory={bootDirectory}", path])
 
         umountFilesystem(path_mount)
 
