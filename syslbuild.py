@@ -245,7 +245,7 @@ def buildExecute(cmd, checkValid=True, input_data=None):
     return "\n".join(output_lines)
 
 def buildItemLog(item, comment="Building item ---------------- "):
-    buildLog(f"{comment}{item["__item_index"]}/{item["__items_count"]} {item["type"]} ({item["name"]})")
+    buildLog(f"{comment}{item["__item_index"]}/{item["__items_count"]} {item["type"]} ({item["name"]}){" (export)" if readBool(item, "export") else ""}")
 
 def makeChmod(path, chmodList):
     for chmodAction in chmodList:
@@ -471,7 +471,7 @@ def buildFullDiskImage(item):
     buildExecute(["sfdisk", path], False, partitionTable)
 
     # apply partitions
-    resultPartitionTable = buildExecute(["sfdisk", "-J", path])
+    resultPartitionTable = json5.loads(buildExecute(["sfdisk", "-J", path]))
     resultPartitions = resultPartitionTable["partitiontable"]["partitions"]
 
     for paritition in resultPartitions:
