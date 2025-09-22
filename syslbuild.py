@@ -278,7 +278,7 @@ def makeChown(path, chownList):
         buildExecute(cmd)
 
 debianKernelArchitectureAliases = {
-    "i686": "686"
+    "i386": "686"
 }
 
 def getDebianKernelName(kernelType):
@@ -299,7 +299,7 @@ def buildDebian(item):
 
     includeList = item.get("include", [])
     if "kernel" in item:
-        includeList = getDebianKernelName(item["kernel"])
+        includeList.append(getDebianKernelName(item["kernel"]))
 
     include_arg = "--include=" + ",".join(includeList) if includeList else None
     exclude_arg = "--exclude=" + ",".join(item["exclude"]) if item.get("exclude") else None
