@@ -350,11 +350,6 @@ def formatFilesystem(path, item):
     cmd.append(path)
     buildExecute(cmd)
 
-def umountFilesystem(mpath):
-    if os.path.exists(mpath):
-        buildExecute(["umount", mpath], False)
-        deleteDirectory(mpath)
-
 def recursionUmount(path):
     path = os.path.abspath(path)
     with open("/proc/self/mounts") as f:
@@ -370,6 +365,11 @@ def mountFilesystem(path, mpath, offset=None):
     if offset:
         mode += f",offset={offset}"
     buildExecute(["mount", "-o", mode, path, mpath])
+
+def umountFilesystem(mpath):
+    if os.path.exists(mpath):
+        buildExecute(["umount", mpath], False)
+        deleteDirectory(mpath)
 
 def buildDirectory(item):
     buildItemLog(item)
