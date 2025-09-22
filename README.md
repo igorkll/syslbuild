@@ -155,7 +155,7 @@ also, assembling a bootable img with an already installed system is also a separ
         },
         {
             "type": "full-disk-image",
-            "name": "example-distro MBR.img",
+            "name": "example-distro MBR (BIOS).img",
             "export": true,
 
             // i am adding one megabyte (with a margin) for the partition table
@@ -172,7 +172,19 @@ also, assembling a bootable img with an already installed system is also a separ
         },
         {
             "type": "full-disk-image",
-            "name": "example-distro GPT.img",
+            "name": "example-distro GPT (BIOS).img",
+            "export": true,
+
+            "size": "auto + (1 * 1024 * 1024)",
+
+            "partitionTable": "gpt",
+            "partitions": [
+                ["example-distro rootfs.img", "linux"]
+            ]
+        },
+        {
+            "type": "full-disk-image",
+            "name": "example-distro GPT (EFI).img",
             "export": true,
 
             "size": "auto + (1 * 1024 * 1024)",
