@@ -173,7 +173,7 @@ also, assembling a bootable img with an already installed system is also a separ
             "size": "auto + (1 * 1024 * 1024)",
 
             "partitions": [
-                
+                ["example-distro rootfs.img"]
             ]
         }
     ]
