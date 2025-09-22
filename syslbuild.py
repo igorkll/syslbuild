@@ -15,6 +15,7 @@ path_temp = ".temp"
 path_logs = os.path.join(path_temp, "logs")
 path_build = os.path.join(path_temp, "build")
 path_mount = os.path.join(path_temp, "mount")
+path_mount2 = os.path.join(path_temp, "mount2")
 path_temp_temp = os.path.join(path_temp, "temp")
 
 aeval = asteval.Interpreter()
@@ -359,10 +360,13 @@ def recursionUmount(path):
     for m in sorted(mounts, key=len, reverse=True):
         subprocess.run(["umount", "-l", m], check=False)
 
-def mountFilesystem(path, mpath):
+def mountFilesystem(path, mpath, offset=None):
     umountFilesystem(mpath)
     os.makedirs(mpath, exist_ok=True)
-    buildExecute(["mount", "-o", "loop", path, mpath])
+    mode = "loop"
+    if offset:
+        mode += f",offset={offset}"
+    buildExecute(["mount", "-o", mode, path, mpath])
 
 def buildDirectory(item):
     buildItemLog(item)
@@ -437,7 +441,8 @@ def buildFilesystem(item):
 parititionTypesList_gpt = {
     "linux": "0FC63DAF-8483-4772-8E79-3D69D8477DE4",
     "swap": "0657FD6D-A4AB-43C4-84E5-0933C84B4F4F",
-    "efi": "C12A7328-F81F-11D2-BA4B-00A0C93EC93B"
+    "efi": "C12A7328-F81F-11D2-BA4B-00A0C93EC93B",
+    "bios": "21686148-6449-6E6F-744E-656564454649"
 }
 
 parititionTypesList_dos = {
@@ -527,6 +532,7 @@ def buildProject(json_path):
     recursionUmount(path_temp)
 
     umountFilesystem(path_mount)
+    umountFilesystem(path_mount2)
     deleteDirectory(path_output)
     deleteDirectory(path_build)
     deleteDirectory(path_temp_temp)

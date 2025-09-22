@@ -135,6 +135,8 @@ also, assembling a bootable img with an already installed system is also a separ
             "size": "(auto * 1.2) + (100 * 1024 * 1024)", // could be a constant like 1G or 100M. when specified as auto, you operate with the value in bytes and can specify any eval
             "label": "example-distro"
         },
+
+
         {
             "type": "tar",
             "name": "example-distro rootfs.tar",
@@ -168,7 +170,20 @@ also, assembling a bootable img with an already installed system is also a separ
             "partitionTable": "dos",
             "partitions": [
                 ["example-distro rootfs.img", "linux"]
-            ]
+            ],
+
+            "bootloader": {
+                "type": "grub",
+                "boot": 0
+            }
+        },
+
+        {
+            "type": "filesystem",
+            "name": "bios boot.img",
+            "export": false,
+
+            "size": "1M"
         },
         {
             "type": "full-disk-image",
@@ -179,8 +194,24 @@ also, assembling a bootable img with an already installed system is also a separ
 
             "partitionTable": "gpt",
             "partitions": [
+                ["bios boot.img", "bios"]
                 ["example-distro rootfs.img", "linux"]
-            ]
+            ],
+
+            "bootloader": {
+                "type": "grub",
+                "boot": 1
+            }
+        },
+
+        {
+            "type": "filesystem",
+            "name": "efi boot.img",
+            "export": false,
+
+            "fs_type": "fat",
+            "size": "1M",
+            "label": "EFI"
         },
         {
             "type": "full-disk-image",
@@ -191,8 +222,15 @@ also, assembling a bootable img with an already installed system is also a separ
 
             "partitionTable": "gpt",
             "partitions": [
+                ["efi boot.img", "efi"],
                 ["example-distro rootfs.img", "linux"]
-            ]
+            ],
+
+            "bootloader": {
+                "type": "grub",
+                "esp": 0,
+                "boot": 1
+            }
         }
     ]
 }
