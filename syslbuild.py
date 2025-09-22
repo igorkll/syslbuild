@@ -224,13 +224,16 @@ def buildExecute(cmd, checkValid=True, input_data=None):
         bufsize=1
     )
 
-    if input_data:
-        buildLog(f"With input: {input_data}")
-        process.stdin.write(input_data)
+    if process.stdin:
+        if input_data:
+            buildLog(f"With input: {input_data}")
+            process.stdin.write(input_data)
         process.stdin.close()
 
+    output_lines = []
     for line in process.stdout:
         buildLog(line.rstrip(), True)
+        output_lines.append(line)
 
     process.stdout.close()
     returncode = process.wait()
@@ -238,6 +241,8 @@ def buildExecute(cmd, checkValid=True, input_data=None):
     if returncode != 0 and checkValid:
         buildLog("failed to build")
         sys.exit(1)
+
+    return "\n".join(output_lines)
 
 def buildItemLog(item, comment="Building item ---------------- "):
     buildLog(f"{comment}{item["__item_index"]}/{item["__items_count"]} {item["type"]} ({item["name"]})")
@@ -464,6 +469,21 @@ def buildFullDiskImage(item):
         partitionTable += f"\nsize={math.ceil(partitionsSizes[i] / 1024 / 1024)}MiB, type={getParititionType(item, partition[1])}"
 
     buildExecute(["sfdisk", path], False, partitionTable)
+
+    # apply partitions
+    resultPartitionTable = buildExecute(["sfdisk", "-J", path])
+    resultPartitions = resultPartitionTable["partitiontable"]["partitions"]
+
+    for paritition in resultPartitions:
+        start_sector = paritition["start"]
+        buildExecute([
+            "dd",
+            f"if={partitionsPaths[0]}",
+            f"of={path}",
+            "bs=512",
+            "seek=" + str(start_sector),
+            "conv=notrunc"
+        ])
 
 def buildUnknown(item):
     buildLog(f"unknown build item type: {item["type"]}")
