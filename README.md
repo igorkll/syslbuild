@@ -77,10 +77,10 @@ also, assembling a bootable img with an already installed system is also a separ
 
     // you can announce this list and build a system for all architectures at once
     // just specify --arch ALL when starting syslbuild
-    "architectures": [
-        "amd64",
-        "arm64"
-    ],
+    //"architectures": [
+    //    "amd64",
+    //    "arm64"
+    //],
 
     "builditems": [
         {
