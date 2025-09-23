@@ -149,11 +149,20 @@ def readBool(tbl, name):
 def needExport(item):
     return readBool(item, "export")
 
+
 def getItemPath(item):
     if needExport(item):
         os.makedirs(path_output, exist_ok=True)
         prefix = item.get("__prefix", "")
-        root, ext = os.path.splitext(item["name"])
+        
+        name_parts = item["name"].split(".")
+        if len(name_parts) > 1:
+            root = name_parts[0]
+            ext = "." + ".".join(name_parts[1:])
+        else:
+            root = item["name"]
+            ext = ""
+
         path = pathConcat(path_output, root + prefix + ext)
     else:
         os.makedirs(path_build, exist_ok=True)
@@ -356,6 +365,10 @@ def copyItemFiles(fromPath, toPath, changeRights=None):
         else:
             buildExecute(["cp", "-a", fromPath + "/.", toPath])
     else:
+        file_dir = os.path.dirname(toPath)
+        if not os.path.isdir(file_dir):
+            os.makedirs(file_dir, exist_ok=True)
+
         shutil.copy2(fromPath, toPath)
         if changeRights:
             changeAccessRights(toPath, changeRights)
@@ -647,7 +660,7 @@ def buildFromDirectory(item):
 
     sourcePath = pathConcat(source, item["path"])
 
-    copyItemFiles(sourcePath, path, [0, 0, "1000"])
+    copyItemFiles(sourcePath, path, [0, 0, "0755"])
 
 buildActions = {
     "debian": buildDebian,
