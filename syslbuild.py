@@ -152,7 +152,9 @@ def needExport(item):
 def getItemPath(item):
     if needExport(item):
         os.makedirs(path_output, exist_ok=True)
-        path = pathConcat(path_output, item["name"])
+        prefix = item.get("__prefix", "")
+        root, ext = os.path.splitext(name)
+        path = pathConcat(path_output, root + prefix + ext)
     else:
         os.makedirs(path_build, exist_ok=True)
         path = pathConcat(path_build, item["name"])
@@ -631,13 +633,26 @@ def buildUnknown(item):
     buildLog(f"unknown build item type: {item["type"]}")
     sys.exit(1)
 
+def buildFromDirectory(item):
+    path = getItemPath(item)
+    source = findItem(item["source"])
+
+    if not os.path.isdir(source):
+        buildLog("Source item is not a directory")
+        sys.exit(1)
+
+    sourcePath = pathConcat(source, item["path"])
+
+    copyItemFiles(sourcePath, path, [0, 0, "1000"])
+
 buildActions = {
     "debian": buildDebian,
     "download": buildDownload,
     "directory": buildDirectory,
     "tar": buildTar,
     "filesystem": buildFilesystem,
-    "full-disk-image": buildFullDiskImage
+    "full-disk-image": buildFullDiskImage,
+    "from-directory": buildFromDirectory
 }
 
 def buildItems(builditems):
@@ -656,11 +671,12 @@ def showProjectInfo(projectData):
     
     buildLog(";")
 
-def buildProject(json_path):
+def buildProject(json_path, prefix=None):
     with open(json_path, "r", encoding="utf-8") as f:
         projectData = json5.load(f)
 
     showProjectInfo(projectData)
+    buildLog(f"Target architecture: {architecture}")
 
     if not checkVersion(projectData):
         buildLog(f"the project requires at least the syslbuild {formatVersion(projectData["min-syslbuild-version"])} version. you have {formatVersion(VERSION)} installed")
@@ -670,7 +686,6 @@ def buildProject(json_path):
 
     umountFilesystem(path_mount)
     umountFilesystem(path_mount2)
-    deleteDirectory(path_output)
     deleteDirectory(path_build)
     deleteDirectory(path_temp_temp)
 
@@ -684,6 +699,7 @@ def buildProject(json_path):
             i += 1
 
     for index, item in enumerate(builditems):
+        item["__prefix"] = prefix
         item["__item_index"] = index + 1
         item["__items_count"] = len(builditems)
 
@@ -705,7 +721,7 @@ def requireRoot():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="an assembly system for creating Linux distributions. it is focused on embedded distributions")
-    parser.add_argument("--arch", choices=["amd64", "i386", "arm64", "armhf", "armel"], type=str, required=True, help="the processor architecture for which the build will be made")
+    parser.add_argument("--arch", choices=["ALL", "amd64", "i386", "arm64", "armhf", "armel"], type=str, required=True, help="the processor architecture for which the build will be made")
     parser.add_argument("json_path", type=str, help="the path to the json file of the project")
     args = parser.parse_args()
     
@@ -717,6 +733,23 @@ if __name__ == "__main__":
     buildLog("Syslbuild info:")
     buildLog(f"Syslbuild version: {formatVersion(VERSION)}")
     buildLog(";")
-    buildProject(args.json_path)
 
+    deleteDirectory(path_output)
+
+    if architecture == "ALL":
+        with open(args.json_path, "r", encoding="utf-8") as f:
+            projectData = json5.load(f)
+            if "architectures" in projectData:
+                buildLog("build for the following list of architectures:")
+                for arch in projectData["architectures"]:
+                    buildLog(arch)
+                buildLog(";")
+                
+                for arch in projectData["architectures"]:
+                    architecture = arch
+                    buildProject(args.json_path, f" ({arch})")
+            else:
+                buildLog("Architectures list is not defined in project json")
+    else:
+        buildProject(args.json_path)
     

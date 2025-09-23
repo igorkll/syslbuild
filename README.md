@@ -50,6 +50,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * filesystem - builds a file system from the specified items and sets the specified access rights for the files
 * tar - collects archive from directory in tar format
 * full-disk-image - creates a bootable image of a raw img disk that can be written to the root of the disk via dd or some etcher and it will immediately become bootable (the ability to boot depends on the settings)
+* from-directory - extracts a file/directory from a directory
 * kernel - 
 * initramfs - 
 
@@ -73,6 +74,13 @@ also, assembling a bootable img with an already installed system is also a separ
 ```json
 {
     "min-syslbuild-version": [0, 1, 0],
+
+    // you can announce this list and build a system for all architectures at once
+    // just specify --arch ALL when starting syslbuild
+    "architectures": [
+        "amd64",
+        "arm64"
+    ],
 
     "builditems": [
         {
@@ -289,6 +297,23 @@ also, assembling a bootable img with an already installed system is also a separ
                     "configfile"
                 ]
             }
+        },
+
+        {
+            "type": "from-directory",
+            "name": "vmlinuz",
+            "export": true,
+
+            "source": "rootfs directory",
+            "path": "/vmlinuz"
+        },
+        {
+            "type": "from-directory",
+            "name": "initrd.img",
+            "export": true,
+
+            "source": "rootfs directory",
+            "path": "/initrd.img"
         }
     ]
 }
