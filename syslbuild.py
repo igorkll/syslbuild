@@ -338,8 +338,12 @@ def buildDownload(item):
     downloadFile(item["url"], getItemPath(item))
 
 def changeAccessRights(path, changeRights):
-    buildExecute(["chmod", "-R", changeRights[2], path])
-    buildExecute(["chown", "-R", chownStr(changeRights[0], changeRights[1]), path])
+    if len(changeRights) >= 3 and changeRights[2]:
+        buildExecute(["chmod", "-R", changeRights[2], path])
+    
+    chownString = chownStr(changeRights[0], changeRights[1])
+    if chownString:
+        buildExecute(["chown", "-R", chownString, path])
 
 def copyItemFiles(fromPath, toPath, changeRights=None):
     if os.path.isdir(fromPath):
@@ -675,12 +679,7 @@ def buildProject(json_path, prefix=None):
     with open(json_path, "r", encoding="utf-8") as f:
         projectData = json5.load(f)
 
-    showProjectInfo(projectData)
-    buildLog(f"Target architecture: {architecture}")
-
-    if not checkVersion(projectData):
-        buildLog(f"the project requires at least the syslbuild {formatVersion(projectData["min-syslbuild-version"])} version. you have {formatVersion(VERSION)} installed")
-        sys.exit(1)
+    buildLog(f"Build for architecture: {architecture}")
 
     recursionUmount(path_temp)
 
@@ -734,22 +733,27 @@ if __name__ == "__main__":
     buildLog(f"Syslbuild version: {formatVersion(VERSION)}")
     buildLog(";")
 
-    deleteDirectory(path_output)
+    with open(args.json_path, "r", encoding="utf-8") as f:
+        projectData = json5.load(f)
+        showProjectInfo(projectData)
+        if not checkVersion(projectData):
+            buildLog(f"the project requires at least the syslbuild {formatVersion(projectData["min-syslbuild-version"])} version. you have {formatVersion(VERSION)} installed")
+            sys.exit(1)
 
-    if architecture == "ALL":
-        with open(args.json_path, "r", encoding="utf-8") as f:
-            projectData = json5.load(f)
+        if architecture == "ALL":
             if "architectures" in projectData:
                 buildLog("build for the following list of architectures:")
                 for arch in projectData["architectures"]:
                     buildLog(arch)
                 buildLog(";")
                 
+                deleteDirectory(path_output)
                 for arch in projectData["architectures"]:
                     architecture = arch
                     buildProject(args.json_path, f" ({arch})")
             else:
                 buildLog("Architectures list is not defined in project json")
-    else:
-        buildProject(args.json_path)
-    
+        else:
+            deleteDirectory(path_output)
+            buildProject(args.json_path)
+        
