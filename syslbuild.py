@@ -153,7 +153,7 @@ def getItemPath(item):
     if needExport(item):
         os.makedirs(path_output, exist_ok=True)
         prefix = item.get("__prefix", "")
-        root, ext = os.path.splitext(name)
+        root, ext = os.path.splitext(item["name"])
         path = pathConcat(path_output, root + prefix + ext)
     else:
         os.makedirs(path_build, exist_ok=True)
