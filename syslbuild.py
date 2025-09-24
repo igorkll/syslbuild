@@ -154,7 +154,7 @@ def getItemPath(item):
     if needExport(item):
         os.makedirs(path_output, exist_ok=True)
         prefix = item.get("__prefix")
-        if prefix is not None:
+        if prefix is None:
             prefix = ""
         
         name_parts = item["name"].split(".")
