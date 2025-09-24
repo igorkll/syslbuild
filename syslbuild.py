@@ -153,7 +153,9 @@ def needExport(item):
 def getItemPath(item):
     if needExport(item):
         os.makedirs(path_output, exist_ok=True)
-        prefix = item.get("__prefix", "")
+        prefix = item.get("__prefix")
+        if prefix is not None:
+            prefix = ""
         
         name_parts = item["name"].split(".")
         if len(name_parts) > 1:
@@ -371,7 +373,7 @@ def copyItemFiles(fromPath, toPath, changeRights=None):
 
         # this is necessary to correctly overwrite the symlink that links to a working file in the host system.
         os.remove(toPath)
-        
+
         shutil.copy2(fromPath, toPath)
         if changeRights:
             changeAccessRights(toPath, changeRights)
