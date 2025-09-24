@@ -27,9 +27,15 @@
                 "libxss1",
                 "libglib2.0-0",
                 "libdrm2",
-                "libgbm1"
+                "libgbm1",
+                "xserver-xorg",
+                "xinit",
+                "xserver-xorg-video-fbdev",
+                "xserver-xorg-video-vesa",
+                "xserver-xorg-video-qxl",
+                "libgl1-mesa-dri",
+                "mesa-utils"
             ],
-            "exclude": [],
 
             "variant": "minbase",
             "suite": "bookworm",
