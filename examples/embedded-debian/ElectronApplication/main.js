@@ -1,11 +1,17 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, globalShortcut } = require('electron');
 const path = require('path');
 
 function createWindow () {
   const win = new BrowserWindow({
-    width: 800,
-    height: 600
+    frame: false,
+    fullscreen: true,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    }
   });
+
+  globalShortcut.register('F11', () => {});
 
   win.loadFile(path.join(__dirname, 'main.html'));
 }
