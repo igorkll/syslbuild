@@ -1,0 +1,89 @@
+{
+    "builditems": [
+        {
+            "type": "debian",
+            "name": "debian directory",
+            "export": false,
+
+            "kernel": "default",
+            "include": [
+                "cowsay",
+                "initramfs-tools",
+                "plymouth",
+                "plymouth-themes",
+                "nodejs",
+                "npm",
+                "libgtk-3-0",
+                "libx11-6",
+                "libxcomposite1",
+                "libxdamage1",
+                "libxext6",
+                "libxfixes3",
+                "libxrandr2",
+                "libxtst6",
+                "libnss3",
+                "libasound2",
+                "libatk1.0-0",
+                "libcups2",
+                "libxss1",
+                "libglib2.0-0",
+                "libdrm2",
+                "libgbm1"
+            ],
+            "exclude": [],
+
+            "variant": "minbase",
+            "suite": "bookworm",
+            "url": "http://snapshot.debian.org/archive/debian/20250809T133719Z",
+
+            "hook-directory": "hooks"
+        },
+        {
+            "type": "directory",
+            "name": "rootfs directory",
+            "export": false,
+
+            "items": [
+                ["debian directory", "."],
+                ["init.sh", "/sbin/init", [0, 0, "0755"]],
+                ["ElectronApplication", "/embedded/ElectronApplication"]
+            ]
+        },
+        {
+            "type": "filesystem",
+            "name": "rootfs.img",
+            "export": false,
+
+            "source": "rootfs directory",
+
+            "fs_type": "ext4",
+            "size": "auto + (100 * 1024 * 1024)",
+            "label": "embedded-debian"
+        },
+        {
+            "type": "full-disk-image",
+            "name": "embedded-debian (BIOS).img",
+            "export": true,
+
+            "size": "auto + (1 * 1024 * 1024)",
+
+            "partitionTable": "dos",
+            "partitions": [
+                ["rootfs.img", "linux"]
+            ],
+
+            "bootloader": {
+                "type": "grub",
+                "config": "grub.cfg",
+                "boot": 0,
+                "modules": [
+                    "normal",
+                    "part_msdos",
+                    "part_gpt",
+                    "ext2",
+                    "configfile"
+                ]
+            }
+        }
+    ]
+}
