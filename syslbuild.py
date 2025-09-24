@@ -173,13 +173,17 @@ def getItemPath(item):
     return path
 
 def deleteDirectory(path):
-    if os.path.exists(path) and os.path.isdir(path):
+    if os.path.isdir(path):
         shutil.rmtree(path)
+
+def deleteFile(path):
+    if os.path.exists(path):
+        os.remove(path)
 
 def deleteAny(path):
     if os.path.isdir(path):
-        deleteDirectory(path)
-    else:
+        shutil.rmtree(path)
+    elif os.path.exists(path):
         os.remove(path)
 
 def getTempFolder(subdirectory):
@@ -259,8 +263,14 @@ def buildExecute(cmd, checkValid=True, input_data=None):
 
     return "\n".join(output_lines)
 
-def buildItemLog(item, comment="Building item ---------------- "):
-    buildLog(f"{comment}{item["__item_index"]}/{item["__items_count"]} {item["type"]} ({item["name"]}){" (export)" if readBool(item, "export") else ""}")
+def buildItemLog(item, comment=None, comment2=None, hideExport=False):
+    if comment is None:
+        comment = "Building item ---------------- "
+    
+    if comment2 is None:
+        comment2 = ""
+    
+    buildLog(f"{comment}{item["__item_index"]}/{item["__items_count"]} {item["type"]} ({item["name"]}){" (export)" if (readBool(item, "export") and not hideExport) else ""}{comment2}")
 
 def makeChmod(path, chmodList):
     for chmodAction in chmodList:
@@ -316,8 +326,6 @@ def makeAllFilesExecutable(path):
             os.chmod(entry.path, st.st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
 def buildDebian(item):
-    buildItemLog(item)
-
     includeList = item.get("include", [])
     if "kernel" in item:
         includeList.append(getDebianKernelName(item["kernel"]))
@@ -368,8 +376,7 @@ def copyItemFiles(fromPath, toPath, changeRights=None):
             buildExecute(["cp", "-a", fromPath + "/.", toPath])
     else:
         # this is necessary to correctly overwrite the symlink that links to a working file in the host system.
-        if os.path.exists(toPath):
-            os.remove(toPath)
+        deleteAny(toPath)
 
         file_dir = os.path.dirname(toPath)
         if not os.path.isdir(file_dir):
@@ -456,7 +463,6 @@ def umountFilesystem(mount_path):
         deleteDirectory(mount_path)
 
 def buildDirectory(item):
-    buildItemLog(item)
     buildDirectoryPath = getItemFolder(item)
 
     if "directories" in item:
@@ -513,7 +519,6 @@ def buildTar(item):
         buildExecute(["tar", "-cf", tar_path, "-C", tar_files, "."])
 
 def buildFilesystem(item):
-    buildItemLog(item)
     fs_files = findDirectory(item)
 
     fs_path = getItemPath(item)
@@ -678,10 +683,21 @@ buildActions = {
     "from-directory": buildFromDirectory
 }
 
+cachedBuildActions = [
+    "debian"
+]
+
 def buildItems(builditems):
     exported = []
     for item in builditems:
-        buildActions.get(item["type"], buildUnknown)(item)
+        itemPath = getItemPath(item)
+        if item["type"] in cachedBuildActions and os.path.exists(itemPath):
+            buildItemLog(item, None, " (cache)")
+        else:
+            deleteAny(itemPath)
+            buildItemLog(item)
+            buildActions.get(item["type"], buildUnknown)(item)
+
         if needExport(item):
             exported.append(item)
     return exported
@@ -704,7 +720,7 @@ def buildProject(json_path, prefix=None):
 
     umountFilesystem(path_mount)
     umountFilesystem(path_mount2)
-    deleteDirectory(path_build)
+    # deleteDirectory(path_build)
     deleteDirectory(path_temp_temp)
 
     builditems = projectData["builditems"]
@@ -729,7 +745,7 @@ def buildProject(json_path, prefix=None):
     exported = buildItems(builditems)
     buildLog("The build was successful. export list:")
     for exportedItem in exported:
-        buildItemLog(exportedItem, "Exported: ")
+        buildItemLog(exportedItem, "Exported: ", None, True)
     buildLog(";")
 
 def requireRoot():
