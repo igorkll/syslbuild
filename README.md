@@ -94,7 +94,6 @@ also, assembling a bootable img with an already installed system is also a separ
             "include": [
                 "cowsay"
             ],
-            "exclude": [],
 
             "variant": "minbase",
             "suite": "bookworm",

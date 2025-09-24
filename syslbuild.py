@@ -323,11 +323,11 @@ def buildDebian(item):
         includeList.append(getDebianKernelName(item["kernel"]))
 
     include_arg = "--include=" + ",".join(includeList) if includeList else None
-    exclude_arg = "--exclude=" + ",".join(item["exclude"]) if item.get("exclude") else None
+    # exclude_arg = "--exclude=" + ",".join(item["exclude"]) if item.get("exclude") else None
 
     cmd = ["mmdebstrap", "--arch", architecture, "--variant", item["variant"]]
     if include_arg: cmd.append(include_arg)
-    if exclude_arg: cmd.append(exclude_arg)
+    # if exclude_arg: cmd.append(exclude_arg)
     cmd += [
         "--aptopt=Acquire::Check-Valid-Until false",
         "--aptopt=Acquire::AllowInsecureRepositories true",
