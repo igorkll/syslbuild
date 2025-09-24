@@ -300,6 +300,7 @@ also, assembling a bootable img with an already installed system is also a separ
             }
         },
 
+        // some bootloaders can only load the kernel from the raw partition
         {
             "type": "from-directory",
             "name": "vmlinuz",

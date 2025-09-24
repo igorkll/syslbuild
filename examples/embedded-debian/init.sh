@@ -1,6 +1,9 @@
 #!/bin/bash
-Xorg :0 vt1 -nolisten tcp &
 sleep 3
 plymouth quit
-export DISPLAY=:0
-/usr/local/bin/electron --no-sandbox /embedded/ElectronApplication
+
+mkdir -p /dev/shm
+mount -t tmpfs -o rw,nosuid,nodev,noexec,relatime,size=64M tmpfs /dev/shm
+chmod 1700 /dev/shm
+
+xinit /usr/local/bin/electron /embedded/ElectronApplication -- :0
