@@ -2,6 +2,8 @@
 an build system for creating Linux distributions. it is focused on embedded distributions 
 DOWNLOAD THE RELEASE, NOT THE REPOSITORY!
 * the program requires root access because it mounts images
+* WARNING! syslbuild runs from root during the build process, and the project can run code on the host system at the time of build.
+* for this reason, treat syslbuild projects as executable files with full access. since they can execute code from root on the host system at the time of build
 * if you don't want to run this on the host system to avoid providing root access, you can run this in a container
 * syslbuild allows you to automate the distribution build process, which is suitable for small custom distributions
 * syslbuild is focused on building distributions for embedded systems (kiosks, navigators, and DVRs)
