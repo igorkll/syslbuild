@@ -369,6 +369,9 @@ def copyItemFiles(fromPath, toPath, changeRights=None):
         if not os.path.isdir(file_dir):
             os.makedirs(file_dir, exist_ok=True)
 
+        # this is necessary to correctly overwrite the symlink that links to a working file in the host system.
+        os.remove(toPath)
+        
         shutil.copy2(fromPath, toPath)
         if changeRights:
             changeAccessRights(toPath, changeRights)

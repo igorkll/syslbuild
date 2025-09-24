@@ -7,7 +7,6 @@
 
             "kernel": "default",
             "include": [
-                "cowsay",
                 "initramfs-tools",
                 "plymouth",
                 "plymouth-themes",
