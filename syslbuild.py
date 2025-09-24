@@ -367,12 +367,13 @@ def copyItemFiles(fromPath, toPath, changeRights=None):
         else:
             buildExecute(["cp", "-a", fromPath + "/.", toPath])
     else:
+        # this is necessary to correctly overwrite the symlink that links to a working file in the host system.
+        if os.path.exists(toPath):
+            os.remove(toPath)
+
         file_dir = os.path.dirname(toPath)
         if not os.path.isdir(file_dir):
             os.makedirs(file_dir, exist_ok=True)
-
-        # this is necessary to correctly overwrite the symlink that links to a working file in the host system.
-        os.remove(toPath)
 
         shutil.copy2(fromPath, toPath)
         if changeRights:
