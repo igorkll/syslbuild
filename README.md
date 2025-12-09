@@ -58,8 +58,10 @@ also, assembling a bootable img with an already installed system is also a separ
 
 # the order of assembly
 ## this is just the order that you should use to properly understand the syslbuild concept
-* ready-made distributions/module assembly - starting point. 
-* 
+* ready-made distributions/module assembly/packages download - starting point (builditems: debian, download)
+* combining all modules, packages, and distributions into one directory (or several if you want to create multiple partitions in the future) (builditem: directory)
+* packing a directory into a file system (builditem: filesystem, tar)
+* pack the disk image (builditem: full-disk-image)
 
 ## supported bootloaders
 * grub
@@ -199,6 +201,8 @@ also, assembling a bootable img with an already installed system is also a separ
         },
 
         // ---------------- making full disk image (an image with an already installed system and bootloader, an OEM image that is usually installed on laptops at the factory. Whatever you want to call it)
+
+        // ------ BIOS/MBR image
         {
             "type": "full-disk-image",
             "name": "example-distro MBR (BIOS).img",
@@ -236,6 +240,7 @@ also, assembling a bootable img with an already installed system is also a separ
             // "architectures": ["i386"]
         },
 
+        // ------ BIOS/GPT image
         {
             "type": "filesystem",
             "name": "bios boot.img",
@@ -270,6 +275,7 @@ also, assembling a bootable img with an already installed system is also a separ
             }
         },
 
+        // ------ EFI/GPT image
         {
             "type": "filesystem",
             "name": "efi boot.img",
@@ -308,7 +314,38 @@ also, assembling a bootable img with an already installed system is also a separ
             }
         },
 
-        // some bootloaders can only load the kernel from the raw partition
+        // ------ EFI+BIOS/GPT image (universal)
+        {
+            "type": "full-disk-image",
+            "name": "example-distro GPT (EFI+BIOS).img",
+            "export": true,
+
+            "size": "auto + (1 * 1024 * 1024)",
+
+            "partitionTable": "gpt",
+            "partitions": [
+                ["bios boot.img", "bios"],
+                ["efi boot.img", "efi"],
+                ["example-distro rootfs.img", "linux"]
+            ],
+
+            "bootloader": {
+                "type": "grub",
+                "config": "grub.cfg", // grub.cfg from the project folder
+                "esp": 0,
+                "boot": 2,
+                "efiAndBios": true,
+                "modules": [
+                    "normal",
+                    "part_msdos",
+                    "part_gpt",
+                    "ext2",
+                    "configfile"
+                ]
+            }
+        },
+
+        // ---------------- some bootloaders can only load the kernel from the raw partition
         {
             "type": "from-directory",
             "name": "vmlinuz",
