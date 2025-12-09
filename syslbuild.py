@@ -693,7 +693,7 @@ def buildItems(builditems):
     exported = []
     for item in builditems:
         itemPath = getItemPath(item)
-        if item["type"] in cachedBuildActions and os.path.exists(itemPath):
+        if item["type"] in cachedBuildActions and os.path.exists(itemPath) and False: # temp disable cache
             buildItemLog(item, None, " (cache)")
         else:
             deleteAny(itemPath)

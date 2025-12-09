@@ -1,1 +1,1 @@
-systemctl mask getty.target
+systemctl enable shell.service
