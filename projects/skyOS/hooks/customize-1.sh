@@ -8,5 +8,8 @@ run_in_chroot() {
     rm -f "$CHROOT_PATH/.build_script"
 }
 
+run_in_chroot "$1" hooks/chroot/apply_settings.sh
 run_in_chroot "$1" hooks/chroot/dependencies.sh
 run_in_chroot "$1" hooks/chroot/boot_logo.sh
+run_in_chroot "$1" hooks/chroot/disable_trash.sh
+run_in_chroot "$1" hooks/chroot/register_shell.sh

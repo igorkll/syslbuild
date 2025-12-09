@@ -1,0 +1,15 @@
+[Unit]
+Description=skyOS shell
+After=systemd-user-sessions.service
+
+[Service]
+User=root
+ExecStart=/sky/shell.sh
+Restart=always
+TTYPath=/dev/tty1
+StandardInput=tty
+StandardOutput=tty
+
+[Install]
+WantedBy=graphical.target
+

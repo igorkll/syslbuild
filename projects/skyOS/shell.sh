@@ -5,7 +5,9 @@ chmod 700 $XDG_RUNTIME_DIR
 dbus-launch --exit-with-session &
 
 weston --tty=1 --no-config &
+export WAYLAND_DISPLAY=wayland-0
 
-/path/to/your_app
+/usr/local/bin/electron --no-sandbox /embedded/ElectronApplication
+bash
 
 killall weston

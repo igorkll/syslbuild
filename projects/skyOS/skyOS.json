@@ -59,7 +59,7 @@
 
             "items": [
                 ["debian directory", "."],
-                ["start.sh", "/sky/start.sh", [0, 0, "0700"]],
+                ["shell.sh", "/sky/shell.sh", [0, 0, "0700"]],
                 ["ElectronApplication", "/sky/ElectronApplication"]
             ]
         },
