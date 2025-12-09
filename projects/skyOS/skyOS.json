@@ -1,0 +1,120 @@
+{
+    "builditems": [
+        {
+            "type": "debian",
+            "name": "debian directory",
+            "export": false,
+
+            "kernel": "default",
+            "include": [
+                "initramfs-tools",
+                "plymouth",
+                "plymouth-themes",
+                "nodejs",
+                "npm",
+                "dbus",
+
+                // video drivers
+                "xserver-xorg-video-fbdev",
+                "xserver-xorg-video-vesa",
+                "xserver-xorg-video-qxl",
+                "xserver-xorg-video-intel",
+
+                // mesa
+                "mesa-utils",
+                "libegl1-mesa",
+                "libgles2-mesa",
+                "libgl1-mesa-dri",
+
+                // wayland
+                "libwayland-client0",
+                "libwayland-server0",
+                "libwayland-cursor0",
+                "libwayland-egl1",
+                "weston",
+
+                // input
+                "libinput10",
+                "libudev1",
+                "libmtdev1" //touchscreens
+            ],
+
+            "variant": "minbase",
+            "suite": "bookworm",
+            "url": "http://snapshot.debian.org/archive/debian/20250809T133719Z",
+
+            "hook-directory": "hooks"
+        },
+        {
+            "type": "directory",
+            "name": "rootfs directory",
+            "export": false,
+
+            "directories": [
+                "/sky"
+            ],
+
+            "items": [
+                ["debian directory", "."],
+                ["start.sh", "/sky/start.sh", [0, 0, "0700"]],
+                ["ElectronApplication", "/embedded/ElectronApplication"]
+            ]
+        },
+        {
+            "type": "filesystem",
+            "name": "rootfs.img",
+            "export": false,
+
+            "source": "rootfs directory",
+
+            "fs_type": "ext4",
+            "size": "auto + (100 * 1024 * 1024)",
+            "label": "skyOS"
+        },
+        
+
+        {
+            "type": "filesystem",
+            "name": "bios boot.img",
+            "export": false,
+
+            "size": "1M"
+        },
+        {
+            "type": "filesystem",
+            "name": "efi boot.img",
+            "export": false,
+
+            "fs_arg": "-F32",
+            "fs_type": "fat",
+            "size": "64M",
+            "label": "EFI"
+        },
+        {
+            "type": "full-disk-image",
+            "name": "skyOS (BIOS).img",
+            "export": true,
+
+            "size": "auto + (1 * 1024 * 1024)",
+
+            "partitionTable": "gpt",
+            "partitions": [
+                ["bios boot.img", "bios"],
+                ["rootfs.img", "linux"]
+            ],
+
+            "bootloader": {
+                "type": "grub",
+                "config": "grub.cfg",
+                "boot": 1,
+                "modules": [
+                    "normal",
+                    "part_msdos",
+                    "part_gpt",
+                    "ext2",
+                    "configfile"
+                ]
+            }
+        }
+    ]
+}
