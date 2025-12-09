@@ -1,15 +1,14 @@
 # remove unnecessary apt packages
 apt purge -y npm nodejs
-apt purge -y python3 perl mawk
-apt autoremove -y --purge
+apt purge -y python3 perl mawk ruby
+apt purge -y manpages manpages-dev
+apt purge -y net-tools ifconfig man info doc
 
-# garbage after npm
-rm -rf /root/.npm
-rm -rf /home/*/.npm
-rm -rf /usr/lib/node_modules
-rm -rf /usr/local/lib/node_modules
+# removing dev packages
+apt purge -y libc6-dev linux-headers
 
 # garbage collection from apt
+apt autoremove -y --purge
 apt clean
 rm -rf /var/lib/apt/lists/*
 rm -rf /var/cache/apt/archives/*
@@ -52,6 +51,12 @@ rm -f /usr/bin/add-apt-repository
 rm -rf /var/cache/debconf
 rm -rf /var/lib/debconf
 rm -rf /usr/share/debconf
+
+# garbage after npm
+rm -rf /root/.npm
+rm -rf /home/*/.npm
+rm -rf /usr/lib/node_modules
+rm -rf /usr/local/lib/node_modules
 
 # removing system garbage
 rm -rf /usr/share/doc/*
