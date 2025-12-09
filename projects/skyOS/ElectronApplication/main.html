@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>test web page</h1>
+    <h2 id="time"></h2>
+    <img src="test.png"></img>
+    <audio controls>
+        <source src="test.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        function updateTime() {
+          const now = new Date();
+          const hours = String(now.getHours()).padStart(2, '0');
+          const minutes = String(now.getMinutes()).padStart(2, '0');
+          const seconds = String(now.getSeconds()).padStart(2, '0');
+          document.getElementById('time').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+    
+        updateTime();
+        setInterval(updateTime, 1000);
+      </script>
+</body>
+</html>

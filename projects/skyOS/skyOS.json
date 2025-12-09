@@ -1,5 +1,6 @@
 {
     "builditems": [
+        // ----------------- rootfs
         {
             "type": "debian",
             "name": "debian directory",
@@ -57,9 +58,11 @@
             "items": [
                 ["debian directory", "."],
                 ["start.sh", "/sky/start.sh", [0, 0, "0700"]],
-                ["ElectronApplication", "/embedded/ElectronApplication"]
+                ["ElectronApplication", "/sky/ElectronApplication"]
             ]
         },
+
+        // ----------------- filesystem
         {
             "type": "filesystem",
             "name": "rootfs.img",
@@ -72,7 +75,7 @@
             "label": "skyOS"
         },
         
-
+        // ----------------- boot images
         {
             "type": "filesystem",
             "name": "bios boot.img",
