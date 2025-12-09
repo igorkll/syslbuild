@@ -112,6 +112,32 @@
                     "configfile"
                 ]
             }
+        },
+        {
+            "type": "full-disk-image",
+            "name": "embedded-debian (BIOS).img",
+            "export": true,
+
+            "size": "auto + (1 * 1024 * 1024)",
+
+            "partitionTable": "gpt",
+            "partitions": [
+                ["bios boot.img", "bios"],
+                ["rootfs.img", "linux"]
+            ],
+
+            "bootloader": {
+                "type": "grub",
+                "config": "grub.cfg",
+                "boot": 1,
+                "modules": [
+                    "normal",
+                    "part_msdos",
+                    "part_gpt",
+                    "ext2",
+                    "configfile"
+                ]
+            }
         }
     ]
 }
