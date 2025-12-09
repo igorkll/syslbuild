@@ -59,7 +59,6 @@
 
             "items": [
                 ["debian directory", "."],
-                ["shell.service", "/etc/systemd/system/shell.service"],
                 ["shell.sh", "/sky/shell.sh", [0, 0, "0755"]],
                 ["ElectronApplication", "/sky/ElectronApplication"]
             ]

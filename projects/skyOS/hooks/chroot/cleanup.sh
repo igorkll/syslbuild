@@ -38,6 +38,21 @@ rm -f /usr/bin/apt /usr/bin/dpkg /usr/bin/apt-get /usr/bin/apt-cache
 rm -rf /var/lib/dpkg
 rm -rf /var/lib/debconf
 
+rm -rf /etc/apt
+rm -rf /etc/dpkg/
+rm -rf /usr/lib/apt
+rm -rf /var/lib/dpkg
+rm -rf /usr/share/keyrings
+
+rm -f /usr/bin/apt*
+rm -f /usr/bin/dpkg*
+rm -f /usr/bin/aptitude*
+rm -f /usr/bin/add-apt-repository
+
+rm -rf /var/cache/debconf
+rm -rf /var/lib/debconf
+rm -rf /usr/share/debconf
+
 # removing system garbage
 rm -rf /usr/share/doc/*
 rm -rf /usr/share/man/*

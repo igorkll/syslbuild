@@ -8,6 +8,12 @@ run_in_chroot() {
     rm -f "$CHROOT_PATH/.build_script"
 }
 
+# ----------------- copy files
+cp shell.service "$1/etc/systemd/system/shell.service"
+chown root:root "$1/etc/systemd/system/shell.service"
+chmod 0644 "$1/etc/systemd/system/shell.service"
+
+# ----------------- chroot scripts
 run_in_chroot "$1" hooks/chroot/apply_settings.sh
 run_in_chroot "$1" hooks/chroot/dependencies.sh
 run_in_chroot "$1" hooks/chroot/boot_logo.sh
