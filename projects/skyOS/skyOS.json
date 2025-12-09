@@ -97,21 +97,20 @@
         },
         {
             "type": "full-disk-image",
-            "name": "skyOS (BIOS).img",
+            "name": "skyOS.img",
             "export": true,
 
             "size": "auto + (1 * 1024 * 1024)",
 
-            "partitionTable": "gpt",
+            "partitionTable": "dos",
             "partitions": [
-                ["bios boot.img", "bios"],
                 ["rootfs.img", "linux"]
             ],
 
             "bootloader": {
                 "type": "grub",
                 "config": "grub.cfg",
-                "boot": 1,
+                "boot": 0,
                 "modules": [
                     "normal",
                     "part_msdos",
