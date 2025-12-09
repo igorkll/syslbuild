@@ -59,8 +59,8 @@ also, assembling a bootable img with an already installed system is also a separ
 * kernel - 
 * initramfs - 
 
-# the order of assembly
-## this is just the order that you should use to properly understand the syslbuild concept
+## the order of assembly
+### this is just the order that you should use to properly understand the syslbuild concept
 * ready-made distributions/module assembly/packages download - starting point (builditems: debian, download)
 * combining all modules, packages, and distributions into one directory (or several if you want to create multiple partitions in the future) (builditem: directory)
 * packing a directory into a file system (builditem: filesystem, tar)
@@ -79,8 +79,12 @@ also, assembling a bootable img with an already installed system is also a separ
 * default
 * realtime
 
-# builditem universal keys
+## builditem universal keys
 * architectures - if the builditem has an array with that name, then the build will only be performed if it has an architecture for which it is being built
+
+## debug
+* full disk image | with graphic | x86_64 | BIOS: qemu-system-x86_64 -m 2048 -smp 4 -vga std -drive file=output/disk.img,format=raw
+* full disk image | with graphic | x86_64 | UEFI: qemu-system-x86_64 -m 2048 -smp 4 -vga std -drive file=output/disk.img,format=raw -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.fd
 
 ## project example
 ```json
