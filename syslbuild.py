@@ -712,18 +712,20 @@ def showProjectInfo(projectData):
     
     buildLog(";")
 
+def cleanup():
+    recursionUmount(path_temp)
+    umountFilesystem(path_mount)
+    umountFilesystem(path_mount2)
+    deleteDirectory(path_temp_temp)
+
+
 def buildProject(json_path, prefix=None):
     with open(json_path, "r", encoding="utf-8") as f:
         projectData = json5.load(f)
 
     buildLog(f"Build for architecture: {architecture}")
 
-    recursionUmount(path_temp)
-
-    umountFilesystem(path_mount)
-    umountFilesystem(path_mount2)
-    # deleteDirectory(path_build)
-    deleteDirectory(path_temp_temp)
+    cleanup()
 
     builditems = projectData["builditems"]
     i = 0
