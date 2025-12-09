@@ -65,22 +65,45 @@
             "size": "auto + (100 * 1024 * 1024)",
             "label": "embedded-debian"
         },
+        
+
+        {
+            "type": "filesystem",
+            "name": "bios boot.img",
+            "export": false,
+
+            "size": "1M"
+        },
+        {
+            "type": "filesystem",
+            "name": "efi boot.img",
+            "export": false,
+
+            "fs_arg": "-F32",
+            "fs_type": "fat",
+            "size": "64M",
+            "label": "EFI"
+        },
         {
             "type": "full-disk-image",
-            "name": "embedded-debian (BIOS).img",
+            "name": "embedded-debian (EFI+BIOS).img",
             "export": true,
 
             "size": "auto + (1 * 1024 * 1024)",
 
-            "partitionTable": "dos",
+            "partitionTable": "gpt",
             "partitions": [
+                ["bios boot.img", "bios"],
+                ["efi boot.img", "efi"],
                 ["rootfs.img", "linux"]
             ],
 
             "bootloader": {
                 "type": "grub",
                 "config": "grub.cfg",
-                "boot": 0,
+                "esp": 0,
+                "boot": 2,
+                "efiAndBios": true,
                 "modules": [
                     "normal",
                     "part_msdos",

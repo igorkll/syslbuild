@@ -36,6 +36,9 @@ also, assembling a bootable img with an already installed system is also a separ
 * sfdisk
 * grub-install
 
+## docs
+* mmdebstrap: https://manpages.debian.org/testing/mmdebstrap/mmdebstrap.1.en.html
+
 ## python dependencies
 * json5
 * asteval
