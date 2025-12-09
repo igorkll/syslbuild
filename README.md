@@ -56,6 +56,11 @@ also, assembling a bootable img with an already installed system is also a separ
 * kernel - 
 * initramfs - 
 
+# the order of assembly
+## this is just the order that you should use to properly understand the syslbuild concept
+* ready-made distributions/module assembly - starting point. 
+* 
+
 ## supported bootloaders
 * grub
 
@@ -85,6 +90,7 @@ also, assembling a bootable img with an already installed system is also a separ
     //],
 
     "builditems": [
+        // ---------------- making root fs
         {
             "type": "debian",
             "name": "debian directory",
@@ -158,6 +164,8 @@ also, assembling a bootable img with an already installed system is also a separ
                 //"/any path"
             ]
         },
+
+        // ---------------- packing root fs
         {
             "type": "filesystem",
             "name": "example-distro rootfs.img",
@@ -171,8 +179,6 @@ also, assembling a bootable img with an already installed system is also a separ
             "size": "(auto * 1.2) + (100 * 1024 * 1024)", // could be a constant like 1G or 100M. when specified as auto, you operate with the value in bytes and can specify any eval
             "label": "example-distro"
         },
-
-
         {
             "type": "tar",
             "name": "example-distro rootfs.tar",
@@ -191,6 +197,8 @@ also, assembling a bootable img with an already installed system is also a separ
 
             "gz": true
         },
+
+        // ---------------- making full disk image (an image with an already installed system and bootloader, an OEM image that is usually installed on laptops at the factory. Whatever you want to call it)
         {
             "type": "full-disk-image",
             "name": "example-distro MBR (BIOS).img",
