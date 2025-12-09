@@ -335,7 +335,7 @@ also, assembling a bootable img with an already installed system is also a separ
             "bootloader": {
                 "type": "grub",
                 "config": "grub.cfg", // grub.cfg from the project folder
-                "esp": 0,
+                "esp": 1,
                 "boot": 2,
                 "efiAndBios": true,
                 "modules": [

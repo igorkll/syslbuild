@@ -101,7 +101,7 @@
             "bootloader": {
                 "type": "grub",
                 "config": "grub.cfg",
-                "esp": 0,
+                "esp": 1,
                 "boot": 2,
                 "efiAndBios": true,
                 "modules": [
