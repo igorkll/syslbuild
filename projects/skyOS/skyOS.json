@@ -20,30 +20,24 @@
                 // libraries
                 "libnspr4",
                 "libgtk-3-0",
-                "libx11-6",
-                "libxcomposite1",
-                "libxdamage1",
                 "libxext6",
-                "libxfixes3",
-                "libxrandr2",
-                "libxtst6",
                 "libnss3",
                 "libasound2",
                 "libatk1.0-0",
                 "libcups2",
-                "libxss1",
                 "libglib2.0-0",
                 "libdrm2",
+                "libdrm-dev",
                 "libgbm1",
+                "libgbm-dev",
 
                 // video drivers
-                "xserver-xorg-video-fbdev",
-                "xserver-xorg-video-vesa",
-                "xserver-xorg-video-qxl",
-                "xserver-xorg-video-intel",
+                "nvidia-driver",
+                "nvidia-drm",
 
                 // mesa
                 "mesa-utils",
+                "mesa-vulkan-drivers",
                 "libegl1-mesa",
                 "libgles2-mesa",
                 "libgl1-mesa-dri",
@@ -54,7 +48,22 @@
                 "libwayland-cursor0",
                 "libwayland-egl1",
                 "iio-sensor-proxy", // auto rotation
-                //"xwayland",
+                "xwayland",
+
+                // x11
+                "xserver-xorg-core",
+                "xserver-xorg-video-fbdev",
+                "xserver-xorg-video-vesa",
+                "xserver-xorg-video-qxl",
+                "xserver-xorg-video-intel",
+                "xserver-xorg-video-nouveau",
+                "libx11-6",
+                "libxcomposite1",
+                "libxdamage1",
+                "libxfixes3",
+                "libxrandr2",
+                "libxtst6",
+                "libxss1",
 
                 // compositor
                 "kwin-wayland",

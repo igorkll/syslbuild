@@ -3,8 +3,11 @@ export XDG_RUNTIME_DIR=/run/user/$(id -u)
 mkdir -p $XDG_RUNTIME_DIR
 chmod 700 $XDG_RUNTIME_DIR
 
+# ------------- drivers
+modprobe nvidia-drm modeset=1
+
 # ------------- run compositor
-KWIN_FLAGS="--drm --no-lockscreen --no-global-shortcuts"
+KWIN_FLAGS="--no-lockscreen --no-global-shortcuts"
 if command -v XWayland >/dev/null 2>&1; then
     KWIN_FLAGS="$KWIN_FLAGS --xwayland"
 fi
