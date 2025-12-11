@@ -32,8 +32,6 @@
                 "libgbm-dev",
 
                 // video drivers
-                "nvidia-driver",
-                "nvidia-drm",
 
                 // mesa
                 "mesa-utils",
