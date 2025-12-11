@@ -21,6 +21,8 @@ path_temp_temp = os.path.join(path_temp, "temp")
 
 aeval = asteval.Interpreter()
 
+DEFAULT_RIGHTS = [0, 0, "0000"]
+
 SIZE_UNITS = {
     "":   1,
     "B":  1,
@@ -129,6 +131,11 @@ def calcSize(sizeLitteral, folderOrFilelist):
         sys.exit(1)
 
     return math.ceil(number * SIZE_UNITS[unit])
+
+def makedirsChangeRights(path, changeRights=None):
+    if not os.path.exists(path):
+        os.makedirs(path_logs)
+        changeAccessRights(path, changeRights or DEFAULT_RIGHTS)
 
 def getLogFile():
     os.makedirs(path_logs, exist_ok=True)
@@ -366,7 +373,7 @@ def changeAccessRights(path, changeRights):
 
 def copyItemFiles(fromPath, toPath, changeRights=None):
     if os.path.isdir(fromPath):
-        os.makedirs(toPath, exist_ok=True)
+        makedirsChangeRights(toPath)
         if changeRights:
             tempFolder = getTempFolder("changeRights")
             buildExecute(["cp", "-a", fromPath + "/.", tempFolder])
@@ -380,7 +387,7 @@ def copyItemFiles(fromPath, toPath, changeRights=None):
 
         file_dir = os.path.dirname(toPath)
         if not os.path.isdir(file_dir):
-            os.makedirs(file_dir, exist_ok=True)
+            makedirsChangeRights(file_dir)
 
         shutil.copy2(fromPath, toPath)
         if changeRights:
@@ -466,10 +473,12 @@ def buildDirectory(item):
     buildDirectoryPath = getItemFolder(item)
 
     if "directories" in item:
-        for directoryName in item["directories"]:
-            directoryPath = pathConcat(buildDirectoryPath, directoryName)
-            buildLog(f"Create empty directory: {directoryPath}")
-            os.makedirs(directoryPath, exist_ok=True)
+        for directoryData in item["directories"]:
+            directoryPath = pathConcat(buildDirectoryPath, directoryData[0])
+            changeRights = directoryData[1] or DEFAULT_RIGHTS
+
+            buildLog(f"Create empty directory: {directoryPath} {changeRights}")
+            makedirsChangeRights(directoryPath, changeRights)
 
     if "items" in item:
         for itemObj in item["items"]:
@@ -482,7 +491,7 @@ def buildDirectory(item):
                 changeRights = itemObj[2]
             
             if not changeRights and isUserItem(itemObj[0]):
-                changeRights = [0, 0, "0000"]
+                changeRights = DEFAULT_RIGHTS
             
             if changeRights:
                 buildLog(f"With custom rights: {changeRights}")
@@ -594,7 +603,7 @@ def installBootloader(item, path, partitionsOffsets):
             efi = True
 
         bootDirectory = pathConcat(path_mount, "boot")
-        os.makedirs(bootDirectory, exist_ok=True)
+        makedirsChangeRights(bootDirectory)
 
         modulesString = ""
         if "modules" in bootloaderInfo:
@@ -608,8 +617,8 @@ def installBootloader(item, path, partitionsOffsets):
             buildExecute(["grub-install", f"--modules={modulesString}", f"--target={getGrubTarget(item, False)}", f"--boot-directory={bootDirectory}", path])
 
         if "config" in bootloaderInfo:
-            os.makedirs(pathConcat(bootDirectory, "grub"), exist_ok=True)
-            copyItemFiles(findItem(bootloaderInfo["config"]), pathConcat(bootDirectory, "grub", "grub.cfg"), [0, 0, "0000"])
+            makedirsChangeRights(pathConcat(bootDirectory, "grub"))
+            copyItemFiles(findItem(bootloaderInfo["config"]), pathConcat(bootDirectory, "grub", "grub.cfg"), DEFAULT_RIGHTS)
 
         umountFilesystem(path_mount)
 

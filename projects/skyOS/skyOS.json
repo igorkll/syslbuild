@@ -51,7 +51,14 @@
                 "libwayland-server0",
                 "libwayland-cursor0",
                 "libwayland-egl1",
-                "weston",
+                "iio-sensor-proxy", // auto rotation
+
+                // compositor
+                "kwin-wayland",
+                "kwin-wayland-backend-drm",
+                "kwin-common",
+                "kwin-addons",
+                "plasma-framework",
 
                 // input
                 "libinput10",
@@ -71,12 +78,12 @@
             "export": false,
 
             "directories": [
-                "/sky"
+                ["/sky", [0, 0, "1700"]]
             ],
 
             "items": [
                 ["debian directory", "."],
-                ["shell.sh", "/sky/shell.sh", [0, 0, "0755"]],
+                ["start.sh", "/sky/start.sh", [0, 0, "0755"]],
                 ["ElectronApplication", "/sky/ElectronApplication"]
             ]
         },

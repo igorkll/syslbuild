@@ -1,0 +1,14 @@
+#!/bin/bash
+export XDG_RUNTIME_DIR=/run/user/$(id -u)
+mkdir -p $XDG_RUNTIME_DIR
+chmod 700 $XDG_RUNTIME_DIR
+
+# ------------- run compositor
+KWIN_FLAGS="--drm --no-lockscreen --no-global-shortcuts"
+if command -v XWayland >/dev/null 2>&1; then
+    KWIN_FLAGS="$KWIN_FLAGS --xwayland"
+fi
+kwin_wayland $KWIN_FLAGS &
+
+# ------------- run shell
+electron --ozone-platform=wayland --enable-features=UseOzonePlatform,WaylandWindowDecorations --no-sandbox /embedded/ElectronApplication

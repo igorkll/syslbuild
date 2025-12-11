@@ -23,7 +23,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * python3
 * mmdebstrap
 * mkfs.* - you need support for the file systems that you intend to use in your projects
-* qemu - needed for debian cross-build
+* qemu (qemu-user-static binfmt-support) - needed for debian cross-build
 * wget
 * cp
 * dd
@@ -138,14 +138,14 @@ also, assembling a bootable img with an already installed system is also a separ
             "directories": [
                 // empty directories that will be created before adding items can be listed here
                 // this is not necessary, since all directories are created automatically when adding items, but it can be used if you need an empty directory
-                "/home/MY EMPTY DIR"
+                ["/home/MY EMPTY DIR", [0, 0, "0755"]]
             ],
 
             "items": [
                 // adding the previously built debian to the file system
                 // you can also import files/directories from your project's directory by simply specifying their name here
                 // items of the build added to syslbuild itself will take precedence, but if there is no build item with that name, then syslbuild will try to import the file/directory from the project folder
-                // when importing user files/directories, all UIDs and GIDs are automatically set to 0 and all access rights are set to 0000
+                // when importing user files/directories, all UIDs and GIDs are default set to 0 and all access rights are set to 0000
                 // this is done so that the build result is the same when cloning the repository from the version control system
                 // when adding an item, you can specify your UID/GID and access rights, if you do not do this, then for user files from the project folder they will automatically be changed to zero (as mentioned above) and for previously collected items they will be moved unchanged
                 // please note that this way you specify access rights recursively for all item elements, if you need a different behavior, then you must change it in a separate "chmod" block
