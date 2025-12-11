@@ -134,7 +134,7 @@ def calcSize(sizeLitteral, folderOrFilelist):
 
 def makedirsChangeRights(path, changeRights=None):
     if not os.path.exists(path):
-        os.makedirs(path_logs)
+        os.makedirs(path)
         changeAccessRights(path, changeRights or DEFAULT_RIGHTS)
 
 def getLogFile():

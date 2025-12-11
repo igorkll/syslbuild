@@ -9,14 +9,14 @@ run_in_chroot() {
 }
 
 # ----------------- copy files
-cp shell.service "$1/etc/systemd/system/shell.service"
-chown root:root "$1/etc/systemd/system/shell.service"
-chmod 0644 "$1/etc/systemd/system/shell.service"
+cp files/skystart.service "$1/etc/systemd/system/skystart.service"
+chown root:root "$1/etc/systemd/system/skystart.service"
+chmod 0644 "$1/etc/systemd/system/skystart.service"
 
 # ----------------- chroot scripts
 run_in_chroot "$1" hooks/chroot/apply_settings.sh
 run_in_chroot "$1" hooks/chroot/dependencies.sh
 run_in_chroot "$1" hooks/chroot/boot_logo.sh
 run_in_chroot "$1" hooks/chroot/disable_trash.sh
-run_in_chroot "$1" hooks/chroot/register_shell.sh
+run_in_chroot "$1" hooks/chroot/register_skystart.sh
 # run_in_chroot "$1" hooks/chroot/cleanup.sh

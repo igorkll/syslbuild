@@ -1,10 +1,10 @@
 [Unit]
-Description=skyOS shell
+Description=skyOS initialization
 After=systemd-user-sessions.service
 
 [Service]
 User=root
-ExecStart=/sky/shell.sh
+ExecStart=/sky/system/skystart.sh
 Restart=always
 TTYPath=/dev/tty1
 StandardInput=tty

@@ -11,4 +11,4 @@ fi
 kwin_wayland $KWIN_FLAGS &
 
 # ------------- run shell
-electron --ozone-platform=wayland --enable-features=UseOzonePlatform,WaylandWindowDecorations --no-sandbox /embedded/ElectronApplication
+electron --ozone-platform=wayland --enable-features=UseOzonePlatform,WaylandWindowDecorations --no-sandbox /sky/system/ElectronApplication
