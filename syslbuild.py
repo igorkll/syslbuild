@@ -10,11 +10,13 @@ import datetime
 import asteval
 import math
 import re
+import hashlib
 
 path_output = "output"
 path_temp = ".temp"
 path_logs = os.path.join(path_temp, "logs")
 path_build = os.path.join(path_temp, "build")
+path_build_checksums = os.path.join(path_temp, "build_checksums")
 path_mount = os.path.join(path_temp, "mount")
 path_mount2 = os.path.join(path_temp, "mount2")
 path_temp_temp = os.path.join(path_temp, "temp")
@@ -178,6 +180,10 @@ def getItemPath(item):
         path = pathConcat(path_build, item["name"])
     
     return path
+
+def getItemChecksumPath(item):
+    os.makedirs(path_build_checksums, exist_ok=True)
+    return pathConcat(path_build_checksums, item["name"])
 
 def deleteDirectory(path):
     if os.path.isdir(path):
@@ -351,6 +357,8 @@ def buildDebian(item):
         getItemFolder(item),
         item["url"]
     ]
+    cmd.append(f"--customize-hook=echo hostname > \"$1/etc/hostname\"")
+    cmd.append(f"--customize-hook=rm \"$1\"/etc/resolv.conf")
     if "hook-directory" in item:
         makeAllFilesExecutable(item["hook-directory"])
         cmd.append(f"--hook-directory={item["hook-directory"]}")
@@ -698,16 +706,32 @@ cachedBuildActions = [
     "debian"
 ]
 
+def dictChecksum(tbl):
+    return hashlib.md5(json5.dumps(tbl).encode('utf-8')).hexdigest()
+
+def writeCacheChecksum(item):
+    checksum_path = getItemChecksumPath(item)
+    with open(checksum_path, "w") as f:
+        f.write(dictChecksum(item))
+
+def isCacheValid(item):
+    checksum_path = getItemChecksumPath(item)
+    if os.path.exists(checksum_path):
+        with open(checksum_path, "r") as f:
+            return f.read() == dictChecksum(item)
+    return False
+
 def buildItems(builditems):
     exported = []
     for item in builditems:
         itemPath = getItemPath(item)
-        if item["type"] in cachedBuildActions and os.path.exists(itemPath) and True: # temp disable cache
+        if item["type"] in cachedBuildActions and os.path.exists(itemPath) and isCacheValid(item):
             buildItemLog(item, None, " (cache)")
         else:
             deleteAny(itemPath)
             buildItemLog(item)
             buildActions.get(item["type"], buildUnknown)(item)
+            writeCacheChecksum(item)
 
         if needExport(item):
             exported.append(item)
