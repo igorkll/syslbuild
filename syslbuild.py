@@ -718,7 +718,6 @@ def isCacheValid(item, checksum):
     checksum_path = getItemChecksumPath(item)
     if os.path.exists(checksum_path):
         with open(checksum_path, "r") as f:
-            print(f.read(), checksum)
             return f.read() == checksum
     return False
 
@@ -730,10 +729,11 @@ def buildItems(builditems):
         if item["type"] in cachedBuildActions and os.path.exists(itemPath) and isCacheValid(item, checksum):
             buildItemLog(item, None, " (cache)")
         else:
+            writeCacheChecksum(item, checksum)
             deleteAny(itemPath)
             buildItemLog(item)
             buildActions.get(item["type"], buildUnknown)(item)
-            writeCacheChecksum(item, checksum)
+            
 
         if needExport(item):
             exported.append(item)
