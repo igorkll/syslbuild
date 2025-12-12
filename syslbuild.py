@@ -709,29 +709,31 @@ cachedBuildActions = [
 def dictChecksum(tbl):
     return hashlib.md5(json5.dumps(tbl).encode('utf-8')).hexdigest()
 
-def writeCacheChecksum(item):
+def writeCacheChecksum(item, checksum):
     checksum_path = getItemChecksumPath(item)
     with open(checksum_path, "w") as f:
-        f.write(dictChecksum(item))
+        f.write(checksum)
 
-def isCacheValid(item):
+def isCacheValid(item, checksum):
     checksum_path = getItemChecksumPath(item)
     if os.path.exists(checksum_path):
         with open(checksum_path, "r") as f:
-            return f.read() == dictChecksum(item)
+            print(f.read(), checksum)
+            return f.read() == checksum
     return False
 
 def buildItems(builditems):
     exported = []
     for item in builditems:
         itemPath = getItemPath(item)
-        if item["type"] in cachedBuildActions and os.path.exists(itemPath) and isCacheValid(item):
+        checksum = dictChecksum(item)
+        if item["type"] in cachedBuildActions and os.path.exists(itemPath) and isCacheValid(item, checksum):
             buildItemLog(item, None, " (cache)")
         else:
             deleteAny(itemPath)
             buildItemLog(item)
             buildActions.get(item["type"], buildUnknown)(item)
-            writeCacheChecksum(item)
+            writeCacheChecksum(item, checksum)
 
         if needExport(item):
             exported.append(item)
