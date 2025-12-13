@@ -48,6 +48,7 @@
                 "dbus",
                 "systemd",
                 "systemd-sysv",
+                "kexec-tools",
 
                 // libraries
                 "libnspr4",
