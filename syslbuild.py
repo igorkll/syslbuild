@@ -276,6 +276,36 @@ def buildExecute(cmd, checkValid=True, input_data=None):
 
     return "\n".join(output_lines)
 
+def buildRawExecute(cmd, checkValid=True, cwd=None):
+    if cwd != None:
+        buildLog(f"Execute raw command from directory ({cwd}): {cmd}")
+    else:
+        buildLog(f"Execute raw command: {cmd}")
+    
+    process = subprocess.Popen(
+        cmd,
+        shell=True,             
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        bufsize=1,
+        cwd=cwd
+    )
+
+    output_lines = []
+    for line in process.stdout:
+        buildLog(line.rstrip(), True)
+        output_lines.append(line)
+    
+    process.stdout.close()
+    returncode = process.wait()
+
+    if returncode != 0 and checkValid:
+        buildLog("failed to build")
+        sys.exit(1)
+
+    return "\n".join(output_lines)
+
 def buildItemLog(item, comment=None, comment2=None, hideExport=False):
     if comment is None:
         comment = "Building item ---------------- "
@@ -680,16 +710,17 @@ def buildUnknown(item):
     buildLog(f"unknown build item type: {item["type"]}")
     sys.exit(1)
 
-def buildFromDirectory(item):
-    path = getItemPath(item)
+def getSourceDirectory(item):
     source = findItem(item["source"])
-
     if not os.path.isdir(source):
         buildLog("Source item is not a directory")
         sys.exit(1)
+    return source
 
+def buildFromDirectory(item):
+    path = getItemPath(item)
+    source = getSourceDirectory(item)
     sourcePath = pathConcat(source, item["path"])
-
     copyItemFiles(sourcePath, path, [0, 0, "0755"])
 
 gccNames = {
@@ -729,6 +760,11 @@ def gccBuild(item):
         ["-o", getItemPath(item)]
     )
 
+def buildInitramfs(item):
+    source = getSourceDirectory(item)
+    outputPath = os.path.abspath(getItemPath(item))
+    buildRawExecute(f"find . -print0 | cpio --null -ov --format=newc > \"{outputPath}\"", True, source)
+
 buildActions = {
     "debian": buildDebian,
     "download": buildDownload,
@@ -737,7 +773,8 @@ buildActions = {
     "filesystem": buildFilesystem,
     "full-disk-image": buildFullDiskImage,
     "from-directory": buildFromDirectory,
-    "gcc-build": gccBuild
+    "gcc-build": gccBuild,
+    "initramfs": buildInitramfs
 }
 
 cachedBuildActions = [

@@ -63,7 +63,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * from-directory - extracts a file/directory from a directory
 * gcc-build - builds something through GCC
 * kernel - 
-* initramfs - 
+* initramfs - collects initramfs from a directory
 
 ## the order of assembly
 ### this is just the order that you should use to properly understand the syslbuild concept
@@ -136,6 +136,22 @@ also, assembling a bootable img with an already installed system is also a separ
             "sources-dirs": ["my-sources"],
             "sources-dirs-extensions": [".c", ".cpp"], //optional. if this is not specified, syslbuild will take all files.
             "sources-dirs-recursive": true
+        },
+        {
+            "type": "directory",
+            "name": "custom initramfs directory",
+            "export": false,
+
+            "items": [
+                ["custom-executable", "/init"]
+            ]
+        },
+        {
+            "type": "initramfs",
+            "name": "custom initramfs.img",
+            "export": false,
+
+            "source": "custom initramfs directory"
         },
 
         // ---------------- making root fs
