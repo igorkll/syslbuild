@@ -692,6 +692,43 @@ def buildFromDirectory(item):
 
     copyItemFiles(sourcePath, path, [0, 0, "0755"])
 
+gccNames = {
+    "amd64": "x86_64-linux-gnu",
+    "i386": "i686-linux-gnu",
+    "arm64": "aarch64-linux-gnu",
+    "armhf": "arm-linux-gnueabihf",
+    "armel": "arm-linux-gnueabi"
+}
+
+def collect_sources(item):
+    sources = []
+    dirs = item.get("sources-dirs", [])
+    recursive = item.get("sources-dirs-recursive", False)
+    exts = item.get("sources-dirs-extensions", None)  # optional. if this is not specified, syslbuild will take all files.
+
+    for d in dirs:
+        if recursive:
+            for root, _, files in os.walk(d):
+                for f in files:
+                    if exts is None or any(f.endswith(ext) for ext in exts):
+                        sources.append(os.path.join(root, f))
+        else:
+            for f in os.listdir(d):
+                full = os.path.join(d, f)
+                if os.path.isfile(full) and (exts is None or any(f.endswith(ext) for ext in exts)):
+                    sources.append(full)
+
+    return sources
+
+def gccBuild(item):
+    buildExecute(
+        [gccNames[architecture] + "-gcc"] +
+        item.get("CFLAGS", []) +
+        item.get("sources", collect_sources(item)) +
+        item.get("LDFLAGS", []) +
+        ["-o", getItemPath(item)]
+    )
+
 buildActions = {
     "debian": buildDebian,
     "download": buildDownload,
@@ -699,7 +736,8 @@ buildActions = {
     "tar": buildTar,
     "filesystem": buildFilesystem,
     "full-disk-image": buildFullDiskImage,
-    "from-directory": buildFromDirectory
+    "from-directory": buildFromDirectory,
+    "gcc-build": gccBuild
 }
 
 cachedBuildActions = [
@@ -753,16 +791,7 @@ def cleanup():
     umountFilesystem(path_mount2)
     deleteDirectory(path_temp_temp)
 
-
-def buildProject(json_path, prefix=None):
-    with open(json_path, "r", encoding="utf-8") as f:
-        projectData = json5.load(f)
-
-    buildLog(f"Build for architecture: {architecture}")
-
-    cleanup()
-
-    builditems = projectData["builditems"]
+def prepairBuildItems(builditems):
     i = 0
     while i < len(builditems):
         builditem = builditems[i]
@@ -775,6 +804,17 @@ def buildProject(json_path, prefix=None):
         item["__prefix"] = prefix
         item["__item_index"] = index + 1
         item["__items_count"] = len(builditems)
+
+def buildProject(json_path, prefix=None):
+    with open(json_path, "r", encoding="utf-8") as f:
+        projectData = json5.load(f)
+
+    buildLog(f"Build for architecture: {architecture}")
+
+    cleanup()
+
+    builditems = projectData["builditems"]
+    prepairBuildItems(buildItems)
 
     buildLog("Item list:")
     for item in builditems:

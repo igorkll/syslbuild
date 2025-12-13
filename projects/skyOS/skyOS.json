@@ -1,5 +1,27 @@
 {
     "builditems": [
+        // ----------------- kernel panic
+        {
+            "type": "gcc-build",
+            "name": "kernel_panic",
+            "export": false,
+
+            "CFLAGS": [
+                "-O2",
+                "-ffreestanding",
+                "-Wall",
+                "-Wextra",
+                "-nostdlib"
+            ],
+            "LDFLAGS": [
+                "-static"
+            ],
+
+            "sources-dirs": ["sources/kernel_panic"],
+            "sources-dirs-extensions": [".c", ".cpp"],
+            "sources-dirs-recursive": true
+        },
+
         // ----------------- rootfs
         {
             "type": "debian",

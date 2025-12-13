@@ -35,6 +35,11 @@ also, assembling a bootable img with an already installed system is also a separ
 * sudo - either run syslbuild from root yourself, or you should have sudo and it will do it itself
 * sfdisk
 * grub-install
+* x86_64-linux-gnu-gcc - different gcc builds for different architectures
+* i686-linux-gnu-gcc
+* aarch64-linux-gnu-gcc
+* arm-linux-gnueabihf-gcc
+* arm-linux-gnueabi-gcc
 
 ## docs
 * mmdebstrap: https://manpages.debian.org/testing/mmdebstrap/mmdebstrap.1.en.html
@@ -56,6 +61,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * tar - collects archive from directory in tar format
 * full-disk-image - creates a bootable image of a raw img disk that can be written to the root of the disk via dd or some etcher and it will immediately become bootable (the ability to boot depends on the settings)
 * from-directory - extracts a file/directory from a directory
+* gcc-build - builds something through GCC
 * kernel - 
 * initramfs - 
 
@@ -109,6 +115,29 @@ also, assembling a bootable img with an already installed system is also a separ
     //],
 
     "builditems": [
+        // ---------------- building custom executable
+        {
+            "type": "gcc-build",
+            "name": "custom-executable",
+            "export": false,
+
+            "CFLAGS": [
+                "-O2",
+                "-ffreestanding",
+                "-Wall",
+                "-Wextra"
+            ],
+            "LDFLAGS": [
+                "-static"
+            ],
+
+            // specify a list of executable files OR directories for executable files
+            //"sources": []
+            "sources-dirs": ["my-sources"],
+            "sources-dirs-extensions": [".c", ".cpp"], //optional. if this is not specified, syslbuild will take all files.
+            "sources-dirs-recursive": true
+        },
+
         // ---------------- making root fs
         {
             "type": "debian",
