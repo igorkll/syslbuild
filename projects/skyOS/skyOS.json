@@ -10,7 +10,7 @@
                 "bash"
             ],
 
-            "variant": "minbase",
+            "variant": "essential",
             "suite": "bookworm",
             "url": "http://snapshot.debian.org/archive/debian/20250809T133719Z"
         },
@@ -20,7 +20,7 @@
             "export": false,
 
             "items": [
-                ["kernel_panic_userspace", "*"],
+                ["kernel_panic_userspace", "."],
                 ["files/kernel_panic.sh", "/kernel_panic", [0, 0, "0700"]]
             ]
         },
