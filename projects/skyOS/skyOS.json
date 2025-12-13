@@ -7,7 +7,14 @@
             "export": false,
 
             "include": [
+                "dash",
+                "libc6",
+                "libc-bin",
+                "libtinfo6",
+                "diffutils",
+                "coreutils",
                 "dpkg",
+                
                 "bash"
             ],
 
