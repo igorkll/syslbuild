@@ -184,8 +184,7 @@
 
             "items": [
                 ["image directory", "/system/A"],
-                ["image directory", "/system/B"],
-                ["files/system_current", "/system/.current"]
+                ["image directory", "/system/B"]
             ]
         },
         {
