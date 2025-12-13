@@ -745,7 +745,8 @@ cachedBuildActions = [
 ]
 
 def dictChecksum(tbl):
-    return hashlib.md5(json5.dumps(tbl).encode('utf-8')).hexdigest()
+    filtered = {k: v for k, v in tbl.items() if not k.startswith("_")}
+    return hashlib.md5(json5.dumps(filtered).encode('utf-8')).hexdigest()
 
 def writeCacheChecksum(item, checksum):
     checksum_path = getItemChecksumPath(item)
@@ -791,7 +792,7 @@ def cleanup():
     umountFilesystem(path_mount2)
     deleteDirectory(path_temp_temp)
 
-def prepairBuildItems(builditems):
+def prepairBuildItems(builditems, prefix):
     i = 0
     while i < len(builditems):
         builditem = builditems[i]
@@ -814,7 +815,7 @@ def buildProject(json_path, prefix=None):
     cleanup()
 
     builditems = projectData["builditems"]
-    prepairBuildItems(buildItems)
+    prepairBuildItems(builditems, prefix)
 
     buildLog("Item list:")
     for item in builditems:
