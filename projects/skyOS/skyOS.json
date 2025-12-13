@@ -117,7 +117,7 @@
         },
         {
             "type": "from-directory",
-            "name": "kernel",
+            "name": "kernel.img",
             "export": false,
 
             "source": "debian directory",
@@ -149,18 +149,51 @@
             ],
 
             "delete": [
-                "/",
-                "files/skystart.sh"
+                "/vmlinuz",
+                "/initrd.img"
             ]
         },
-
-        // ----------------- filesystem
         {
             "type": "filesystem",
             "name": "rootfs.img",
             "export": false,
 
             "source": "rootfs directory",
+
+            "fs_type": "ext4",
+            "size": "auto + (100 * 1024 * 1024)",
+            "label": "skyOS rootfs"
+        },
+
+        // ----------------- filesystem
+        {
+            "type": "directory",
+            "name": "image directory",
+            "export": false,
+
+            "items": [
+                ["kernel.img", "/kernel.img"],
+                ["initrd.img", "/initrd.img"],
+                ["rootfs.img", "/rootfs.img"]
+            ]
+        },
+        {
+            "type": "directory",
+            "name": "data directory",
+            "export": false,
+
+            "items": [
+                ["image directory", "/system/A"],
+                ["image directory", "/system/B"],
+                ["files/system_current", "/system/.current"]
+            ]
+        },
+        {
+            "type": "filesystem",
+            "name": "data.img",
+            "export": false,
+
+            "source": "data directory",
 
             "fs_type": "ext4",
             "size": "auto + (100 * 1024 * 1024)",
@@ -194,7 +227,7 @@
 
             "partitionTable": "dos",
             "partitions": [
-                ["rootfs.img", "linux"]
+                ["data.img", "linux"]
             ],
 
             "bootloader": {
