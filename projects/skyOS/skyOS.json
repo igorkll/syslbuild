@@ -10,7 +10,7 @@
                 "bash"
             ],
 
-            "variant": "essential",
+            "variant": "minbase",
             "suite": "bookworm",
             "url": "http://snapshot.debian.org/archive/debian/20250809T133719Z"
         },
