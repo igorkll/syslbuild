@@ -7,22 +7,12 @@
             "export": false,
 
             "include": [
-                "dash",
-                "libc6",
-                "libc-bin",
-                "libtinfo6",
-                "diffutils",
-                "coreutils",
-                "dpkg",
-                
                 "bash"
             ],
 
-            "variant": "custom",
+            "variant": "essential",
             "suite": "bookworm",
-            "url": "http://snapshot.debian.org/archive/debian/20250809T133719Z",
-
-            "hook-directory": "hooks"
+            "url": "http://snapshot.debian.org/archive/debian/20250809T133719Z"
         },
         {
             "type": "directory",

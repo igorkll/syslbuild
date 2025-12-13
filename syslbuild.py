@@ -368,15 +368,31 @@ def makeAllFilesExecutable(path):
             st = os.stat(entry.path)
             os.chmod(entry.path, st.st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
+minDebianPackages = [
+    "base-files",
+    "libc6",
+    "libc-bin",
+    "libtinfo6",
+    "dash",
+    "diffutils",
+    "coreutils",
+    "dpkg"
+]
+
 def buildDebian(item):
     includeList = item.get("include", [])
     if "kernel" in item:
         includeList.append(getDebianKernelName(item["kernel"]))
+    
+    variant = item["variant"]
+    if variant == "_min":
+        variant = "custom"
+        includeList += minDebianPackages
 
     include_arg = "--include=" + ",".join(includeList) if includeList else None
     # exclude_arg = "--exclude=" + ",".join(item["exclude"]) if item.get("exclude") else None
 
-    cmd = ["mmdebstrap", "--arch", architecture, "--variant", item["variant"]]
+    cmd = ["mmdebstrap", "--arch", architecture, "--variant", variant]
     if include_arg: cmd.append(include_arg)
     # if exclude_arg: cmd.append(exclude_arg)
     cmd += [
@@ -802,7 +818,7 @@ def buildItems(builditems):
     for item in builditems:
         itemPath = getItemPath(item)
         checksum = dictChecksum(item)
-        if item["type"] in cachedBuildActions and os.path.exists(itemPath) and isCacheValid(item, checksum):
+        if item["type"] in cachedBuildActions and os.path.exists(itemPath) and (isCacheValid(item, checksum) and not args.n):
             buildItemLog(item, None, " (cache)")
         else:
             writeCacheChecksum(item, checksum)
@@ -874,6 +890,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="an assembly system for creating Linux distributions. it is focused on embedded distributions")
     parser.add_argument("--arch", choices=["ALL", "amd64", "i386", "arm64", "armhf", "armel"], type=str, required=True, help="the processor architecture for which the build will be made")
     parser.add_argument("json_path", type=str, help="the path to the json file of the project")
+    parser.add_argument("-n", action="store_true", help="does the build anew, does not use the cache")
     args = parser.parse_args()
     
     requireRoot()

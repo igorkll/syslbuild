@@ -19,6 +19,11 @@ for a computer, you can build a kernel, but not export it, but assemble the debi
 the build in syslbuild is heavily divided into items, for example, you can't just assemble a module into a file system. First, you need to create a separate item directory and then add it to the file system  
 also, assembling a bootable img with an already installed system is also a separate build item in which you must add file systems, etc  
 
+## arguments
+* -h - show help info
+* --arch ARCHITECTURE - set the output architecture of the build
+* -n - does the build anew, does not use the cache
+
 ## dependencies
 * python3
 * mmdebstrap
@@ -64,6 +69,9 @@ also, assembling a bootable img with an already installed system is also a separ
 * gcc-build - builds something through GCC
 * kernel - 
 * initramfs - collects initramfs from a directory
+
+## build items features
+* debian supports the "_min" variant, which is essentially a "custom" but with a minimal set package required for assembly
 
 ## the order of assembly
 ### this is just the order that you should use to properly understand the syslbuild concept
