@@ -125,7 +125,7 @@
         },
         {
             "type": "from-directory",
-            "name": "initramfs.img",
+            "name": "initrd.img",
             "export": false,
 
             "source": "debian directory",
@@ -161,7 +161,7 @@
             "source": "rootfs directory",
 
             "fs_type": "ext4",
-            "size": "auto + (100 * 1024 * 1024)",
+            "size": "auto + (256 * 1024 * 1024)",
             "label": "skyOS rootfs"
         },
 
@@ -195,7 +195,7 @@
             "source": "data directory",
 
             "fs_type": "ext4",
-            "size": "auto + (100 * 1024 * 1024)",
+            "size": "auto + (1024 * 1024 * 1024)",
             "label": "skyOS"
         },
         
