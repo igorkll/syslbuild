@@ -251,6 +251,16 @@
                     "configfile"
                 ]
             }
+        },
+
+        // ----------------- update image
+        {
+            "type": "tar",
+            "name": "skyOS update.skyupdate",
+            "export": true,
+
+            "source": "image directory",
+            "gz": true
         }
     ]
 }
