@@ -17,8 +17,17 @@ done
 
 if [ -n "$ROOT" ] && [ -n "$ROOT_PROCESSING" ]; then
     local_device_setup "${ROOT}" "root file system"
-
+    PART_NUM="${DEV##*[!0-9]}"
+    DISK="${DEV%$PART_NUM}"
     
+    log_begin_msg "ROOT_PROCESSING: ${ROOT} : ${PART_NUM} : ${DISK}"
+
+    if [ -n "$ROOT_EXPAND" ]; then
+        growpart "$DISK" "$PART_NUM"
+        resize2fs "$DEV"
+    fi
+
+    log_end_msg
 fi
 
 if [ -n "$LOOP" ]; then
