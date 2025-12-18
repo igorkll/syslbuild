@@ -152,7 +152,9 @@
 
             "delete": [
                 "/vmlinuz",
-                "/initrd.img"
+                "/initrd.img",
+                "/vmlinuz.old",
+                "/initrd.img.old"
             ]
         },
         {
@@ -191,7 +193,8 @@
 
             "items": [
                 ["image directory", "/system/A"],
-                ["image directory", "/system/B"]
+                ["image directory", "/system/B"],
+                ["image directory", "/system/OEM"]
             ]
         },
         {
