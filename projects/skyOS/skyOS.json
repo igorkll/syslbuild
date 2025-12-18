@@ -138,11 +138,13 @@
 
             "directories": [
                 ["/sky", [0, 0, "1755"]],
-                ["/sky/system", [0, 0, "1700"]]
+                ["/sky/system", [0, 0, "1700"]],
+                ["/realroot", [0, 0, "0700"]]
             ],
 
             "items": [
                 ["debian directory", "."],
+                ["files/loop_mountroot", "/etc/initramfs-tools/scripts/local-premount/loop_mountroot", [0, 0, "0700"]],
                 ["files/skystart.sh", "/sky/system/skystart.sh", [0, 0, "0755"]],
                 ["files/logo.png", "/sky/system/logo.png", [0, 0, "0755"]],
                 ["files/ElectronApplication", "/sky/system/ElectronApplication"]
