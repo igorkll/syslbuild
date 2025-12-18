@@ -184,6 +184,11 @@
             "name": "data directory",
             "export": false,
 
+            "directories": [
+                ["/data", [0, 0, "1700"]],
+                ["/data/userdata", [0, 0, "1700"]]
+            ],
+
             "items": [
                 ["image directory", "/system/A"],
                 ["image directory", "/system/B"]
