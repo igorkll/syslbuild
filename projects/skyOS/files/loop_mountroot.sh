@@ -23,6 +23,10 @@ if [ -n "$LOOP" ]; then
             mount -n -o move ${rootmnt} /realroot
         fi
 
-        mount -n -o move /root ${rootmnt}/run
+        mount -o loop "$LOOP" ${rootmnt}
+
+        if [ -d "$/realroot" ]; then
+            mount -n -o move /realroot ${rootmnt}/realroot
+        fi
     }
 fi
