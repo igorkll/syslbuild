@@ -13,10 +13,13 @@ cp files/skystart.service "$1/etc/systemd/system/skystart.service"
 chown root:root "$1/etc/systemd/system/skystart.service"
 chmod 0644 "$1/etc/systemd/system/skystart.service"
 
+cp files/sky_mount_root.sh "$1/etc/initramfs-tools/scripts/local-premount/sky_mount_root.sh"
+
 # ----------------- chroot scripts
 run_in_chroot "$1" hooks/chroot/apply_settings.sh
 run_in_chroot "$1" hooks/chroot/dependencies.sh
 run_in_chroot "$1" hooks/chroot/boot_logo.sh
 run_in_chroot "$1" hooks/chroot/disable_trash.sh
 run_in_chroot "$1" hooks/chroot/register_skystart.sh
+run_in_chroot "$1" hooks/chroot/make_initramfs.sh
 # run_in_chroot "$1" hooks/chroot/cleanup.sh
