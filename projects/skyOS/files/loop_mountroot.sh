@@ -6,6 +6,9 @@ for param in $CMDLINE; do
         loop=*)
             LOOP="${param#loop=}"
             ;;
+        root_processing)
+            ROOT_PROCESSING=y
+            ;;
     esac
 done
 
@@ -13,6 +16,8 @@ if [ -n "$LOOP" ]; then
     mountroot()
     {
         if [ -n "$ROOT" ]; then
+            # local_device_setup "${ROOT}" "root file system"
+
             if [ "$BOOT" = "nfs" ]; then
                 nfs_mount_root
             else
