@@ -442,7 +442,7 @@ def archLinuxBuild(item):
     makeExtendedPacmanConfig(item["pacman_conf"])
     root_path = getItemFolder(item)
 
-    cmd = ["pacstrap", "-C", path_temp_cache_pacman, "-M", root_path]
+    cmd = ["pacstrap", "-C", path_temp_pacman_conf, "-M", root_path]
     if item.get("withoutDependencies", False):
         cmd.append("--nodeps")
     cmd += item.get("include", [])
@@ -453,7 +453,7 @@ def archLinuxPackage(item):
     makeExtendedPacmanConfig(item["pacman_conf"])
     root_path = getItemFolder(item)
 
-    cmd = ["pacman", "-r", root_path, "-C", path_temp_cache_pacman, "-Sy", "--noconfirm"]
+    cmd = ["pacman", "-r", root_path, "-C", path_temp_pacman_conf, "-Sy", "--noconfirm"]
     if item.get("withoutDependencies", False):
         cmd.append("--nodeps")
     cmd.append(item["package"])
