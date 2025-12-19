@@ -61,6 +61,8 @@ also, assembling a bootable img with an already installed system is also a separ
 
 ## build items types
 * debian - debian build via mmdebstrap
+* arch-linux - arch linux build via pacstrap
+* arch-package - download arch linux package via pacman
 * download - downloads the file
 * directory - allows you to assemble many items into one (for example, to pack them into a file system later) allows you to set file owners and their rights
 * filesystem - builds a file system from the specified items and sets the specified access rights for the files
@@ -68,7 +70,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * full-disk-image - creates a bootable image of a raw img disk that can be written to the root of the disk via dd or some etcher and it will immediately become bootable (the ability to boot depends on the settings)
 * from-directory - extracts a file/directory from a directory
 * gcc-build - builds something through GCC
-* kernel - 
+* kernel - NOT IMPLEMENTED NOW
 * initramfs - collects initramfs from a directory
 
 ## build items features
@@ -258,7 +260,7 @@ also, assembling a bootable img with an already installed system is also a separ
                 "linux",
                 "linux-firmware"
             ],
-            "withoutDependencies": false,
+            "withoutDependencies": false
         },
         {
             "type": "arch-package",
@@ -275,7 +277,7 @@ also, assembling a bootable img with an already installed system is also a separ
             },
 
             "package": "linux",
-            "withoutDependencies": false,
+            "withoutDependencies": false
         },
 
         // ---------------- packing root fs

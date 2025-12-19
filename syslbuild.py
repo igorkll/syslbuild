@@ -14,14 +14,15 @@ import hashlib
 
 path_output = "output"
 path_temp = ".temp"
-path_cache = os.path.join(path_temp, "cache")
-path_cache_pacman = os.path.join(path_cache, "pacman")
+path_temp_cache = os.path.join(path_temp, "cache")
+path_temp_cache_pacman = os.path.join(path_cache, "pacman")
 path_logs = os.path.join(path_temp, "logs")
 path_build = os.path.join(path_temp, "build")
 path_build_checksums = os.path.join(path_temp, "build_checksums")
 path_mount = os.path.join(path_temp, "mount")
 path_mount2 = os.path.join(path_temp, "mount2")
 path_temp_temp = os.path.join(path_temp, "temp")
+path_temp_pacman_conf = os.path.join(path_temp, "pacman.conf")
 
 aeval = asteval.Interpreter()
 
@@ -399,8 +400,32 @@ def buildDebian(item):
         cmd.append(f"--hook-directory={item["hook-directory"]}")
     buildExecute(cmd)
 
-def makePacmanConfig():
-    
+def makePacmanConfig(pacman_conf):
+    lines = []
+
+    for section, values in pacman_conf.items():
+        lines.append(f"[{section}]")
+        for key, val in values.items():
+            lines.append(f"{key} = {val}")
+        lines.append("")
+
+    with open(path_temp_pacman_conf, "w") as f:
+        f.write("\n".join(lines))
+
+pacman_architectures_names = {
+    "amd64": "x86_64"
+}
+
+def makeExtendedPacmanConfig(pacman_conf):
+    pacman_conf["Architecture"] = pacman_architectures_names[architecture]
+    pacman_conf["CacheDir"] = path_temp_cache_pacman
+    makePacmanConfig(pacman_conf)
+
+def archLinuxBuild(item):
+    pass
+
+def archLinuxPackage(item):
+    pass
 
 def downloadFile(url, path):
     buildLog(f"Downloading file ({url}): {path}")
@@ -782,7 +807,9 @@ buildActions = {
     "full-disk-image": buildFullDiskImage,
     "from-directory": buildFromDirectory,
     "gcc-build": gccBuild,
-    "initramfs": buildInitramfs
+    "initramfs": buildInitramfs,
+    "arch-linux": archLinuxBuild,
+    "arch-package": archLinuxPackage
 }
 
 cachedBuildActions = [
@@ -838,6 +865,7 @@ def cleanup():
     deleteDirectory(path_temp_temp)
 
 def prepairBuild():
+    global path_output_target
     path_output_target = pathConcat(path_output, architecture)
     deleteDirectory(path_output_target)
     os.makedirs(path_output_target, exist_ok=True)
