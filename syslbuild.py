@@ -423,10 +423,11 @@ def makeExtendedPacmanConfig(pacman_conf):
     if "options" not in pacman_conf:
         pacman_conf["options"] = {}
     
-    if "_auto" not in pacman_conf:
+    if "_auto" in pacman_conf:
         pacman_conf["core"] = pacman_conf["_auto"]
         pacman_conf["extra"] = pacman_conf["_auto"]
         pacman_conf["community"] = pacman_conf["_auto"]
+        del pacman_conf["_auto"]
 
     if "Architecture" not in pacman_conf["options"]:
         pacman_conf["options"]["Architecture"] = pacman_architectures_names[architecture]
@@ -900,6 +901,7 @@ def cleanup():
 def prepairBuild():
     global path_output_target
     path_output_target = pathConcat(path_output, architecture)
+    recursionUmount(path_output_target)
     deleteDirectory(path_output_target)
     os.makedirs(path_output_target, exist_ok=True)
 
