@@ -15,7 +15,7 @@ import hashlib
 path_output = "output"
 path_temp = ".temp"
 path_temp_cache = os.path.join(path_temp, "cache")
-path_temp_cache_pacman = os.path.join(path_cache, "pacman")
+path_temp_cache_pacman = os.path.join(path_temp_cache, "pacman")
 path_logs = os.path.join(path_temp, "logs")
 path_build = os.path.join(path_temp, "build")
 path_build_checksums = os.path.join(path_temp, "build_checksums")
@@ -416,6 +416,9 @@ pacman_architectures_names = {
     "amd64": "x86_64"
 }
 
+def prepairPacman(pacman_conf):
+    os.makedirs(pacman_conf["options"]["CacheDir"], exist_ok=True)
+
 def makeExtendedPacmanConfig(pacman_conf):
     if "options" not in pacman_conf:
         pacman_conf["options"] = {}
@@ -425,10 +428,14 @@ def makeExtendedPacmanConfig(pacman_conf):
         pacman_conf["extra"] = pacman_conf["_auto"]
         pacman_conf["community"] = pacman_conf["_auto"]
 
-    pacman_conf["options"]["Architecture"] = pacman_architectures_names[architecture]
-    pacman_conf["options"]["CacheDir"] = path_temp_cache_pacman
+    if "Architecture" not in pacman_conf["options"]:
+        pacman_conf["options"]["Architecture"] = pacman_architectures_names[architecture]
+    
+    if "CacheDir" not in pacman_conf["options"]:
+        pacman_conf["options"]["CacheDir"] = path_temp_cache_pacman
     
     makePacmanConfig(pacman_conf)
+    prepairPacman(pacman_conf)
 
 def archLinuxBuild(item):
     makeExtendedPacmanConfig(item["pacman_conf"])
