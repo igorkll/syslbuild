@@ -447,7 +447,7 @@ def archLinuxBuild(item):
         cmd.append("--nodeps")
     cmd += item.get("include", [])
 
-    buildExecute(cmd, True, "Y")
+    buildExecute(cmd)
 
 def archLinuxPackage(item):
     makeExtendedPacmanConfig(item["pacman_conf"])

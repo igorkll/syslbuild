@@ -1,5 +1,8 @@
 #!/bin/sh
 
+log_begin_msg "SKY MOUNT ROOT"
+log_end_msg
+
 CMDLINE=$(cat /proc/cmdline)
 for param in $CMDLINE; do
     case "$param" in
