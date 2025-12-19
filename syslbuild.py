@@ -161,20 +161,7 @@ def needExport(item):
 
 def getItemPath(item):
     if needExport(item):
-        os.makedirs(path_output, exist_ok=True)
-        prefix = item.get("__prefix")
-        if prefix is None:
-            prefix = ""
-        
-        name_parts = item["name"].split(".")
-        if len(name_parts) > 1:
-            root = name_parts[0]
-            ext = "." + ".".join(name_parts[1:])
-        else:
-            root = item["name"]
-            ext = ""
-
-        path = pathConcat(path_output, root + prefix + ext)
+        path = pathConcat(path_output_target, item["name"])
     else:
         os.makedirs(path_build, exist_ok=True)
         path = pathConcat(path_build, item["name"])
@@ -845,7 +832,12 @@ def cleanup():
     umountFilesystem(path_mount2)
     deleteDirectory(path_temp_temp)
 
-def prepairBuildItems(builditems, prefix):
+def prepairBuild():
+    path_output_target = pathConcat(path_output, architecture)
+    deleteDirectory(path_output_target)
+    os.makedirs(path_output_target, exist_ok=True)
+
+def prepairBuildItems(builditems):
     i = 0
     while i < len(builditems):
         builditem = builditems[i]
@@ -855,20 +847,18 @@ def prepairBuildItems(builditems, prefix):
             i += 1
 
     for index, item in enumerate(builditems):
-        item["__prefix"] = prefix
         item["__item_index"] = index + 1
         item["__items_count"] = len(builditems)
 
-def buildProject(json_path, prefix=None):
+def buildProject(json_path):
     with open(json_path, "r", encoding="utf-8") as f:
         projectData = json5.load(f)
 
     buildLog(f"Build for architecture: {architecture}")
-
-    cleanup()
-
     builditems = projectData["builditems"]
-    prepairBuildItems(builditems, prefix)
+    cleanup()
+    prepairBuild()
+    prepairBuildItems(builditems)
 
     buildLog("Item list:")
     for item in builditems:
@@ -916,13 +906,11 @@ if __name__ == "__main__":
                     buildLog(arch)
                 buildLog(";")
                 
-                deleteDirectory(path_output)
                 for arch in projectData["architectures"]:
                     architecture = arch
-                    buildProject(args.json_path, f" ({arch})")
+                    buildProject(args.json_path)
             else:
                 buildLog("Architectures list is not defined in project json")
         else:
-            deleteDirectory(path_output)
             buildProject(args.json_path)
         
