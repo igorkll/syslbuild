@@ -417,8 +417,17 @@ pacman_architectures_names = {
 }
 
 def makeExtendedPacmanConfig(pacman_conf):
-    pacman_conf["Architecture"] = pacman_architectures_names[architecture]
-    pacman_conf["CacheDir"] = path_temp_cache_pacman
+    if "options" not in pacman_conf:
+        pacman_conf["options"] = {}
+    
+    if "_auto" not in pacman_conf:
+        pacman_conf["core"] = pacman_conf["_auto"]
+        pacman_conf["extra"] = pacman_conf["_auto"]
+        pacman_conf["community"] = pacman_conf["_auto"]
+
+    pacman_conf["options"]["Architecture"] = pacman_architectures_names[architecture]
+    pacman_conf["options"]["CacheDir"] = path_temp_cache_pacman
+    
     makePacmanConfig(pacman_conf)
 
 def archLinuxBuild(item):
@@ -429,7 +438,7 @@ def archLinuxBuild(item):
     if item.get("withoutDependencies", False):
         cmd.append("--nodeps")
     cmd += item.get("include", [])
-    
+
     buildExecute(cmd)
 
 def archLinuxPackage(item):

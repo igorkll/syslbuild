@@ -1,0 +1,60 @@
+{
+    "builditems": [
+        {
+            "type": "arch-linux",
+            "name": "arch directory",
+            "export": true,
+
+            "pacman_conf": {
+                "options": {
+                    "SigLevel": "Never"
+                },
+                "_auto": {
+                    "Server": "https://archive.archlinux.org/repos/2024/05/15/$repo/os/$arch"
+                }
+            },
+
+            "include": [
+                "base",
+                "linux",
+                "linux-firmware",
+                "cowsay"
+            ],
+            "withoutDependencies": false
+        },
+        {
+            "type": "arch-package",
+            "name": "arch package",
+            "export": true,
+
+            "pacman_conf": {
+                "options": {
+                    "SigLevel": "Never"
+                },
+                "_auto": {
+                    "Server": "https://archive.archlinux.org/repos/2024/05/15/$repo/os/$arch"
+                }
+            },
+
+            "package": "cowsay",
+            "withoutDependencies": false
+        },
+        {
+            "type": "arch-package",
+            "name": "arch package without dependencies",
+            "export": true,
+
+            "pacman_conf": {
+                "options": {
+                    "SigLevel": "Never"
+                },
+                "_auto": {
+                    "Server": "https://archive.archlinux.org/repos/2024/05/15/$repo/os/$arch"
+                }
+            },
+
+            "package": "cowsay",
+            "withoutDependencies": true
+        }
+    ]
+}

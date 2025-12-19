@@ -244,13 +244,13 @@ also, assembling a bootable img with an already installed system is also a separ
         {
             "type": "arch-linux",
             "name": "arch directory",
-            "export": false,
+            "export": true,
 
             "pacman_conf": {
                 "options": {
                     "SigLevel": "Never"
                 },
-                "ALA": {
+                "_auto": { //automatically replaced by core, extra, and community
                     "Server": "https://archive.archlinux.org/repos/2024/05/15/$repo/os/$arch"
                 }
             },
@@ -265,13 +265,13 @@ also, assembling a bootable img with an already installed system is also a separ
         {
             "type": "arch-package",
             "name": "arch package",
-            "export": false,
+            "export": true,
 
             "pacman_conf": {
                 "options": {
                     "SigLevel": "Never"
                 },
-                "ALA": {
+                "_auto": {
                     "Server": "https://archive.archlinux.org/repos/2024/05/15/$repo/os/$arch"
                 }
             },
