@@ -26,7 +26,8 @@ also, assembling a bootable img with an already installed system is also a separ
 
 ## dependencies
 * python3
-* mmdebstrap
+* mmdebstrap - to build debian based systems
+* pacman/pacstrap - to build arch linux based systems
 * mkfs.* - you need support for the file systems that you intend to use in your projects
 * qemu (qemu-user-static binfmt-support) - needed for debian cross-build
 * wget
@@ -235,6 +236,46 @@ also, assembling a bootable img with an already installed system is also a separ
                 // in this case, you will no longer need the initrd and the kernel in it, so delete them
                 //"/any path"
             ]
+        },
+
+        // ---------------- arch linux example
+        {
+            "type": "arch-linux",
+            "name": "arch directory",
+            "export": false,
+
+            "pacman_conf": {
+                "options": {
+                    "SigLevel": "Never"
+                },
+                "ALA": {
+                    "Server": "https://archive.archlinux.org/repos/2024/05/15/$repo/os/$arch"
+                }
+            },
+
+            "include": [
+                "base",
+                "linux",
+                "linux-firmware"
+            ],
+            "withoutDependencies": false,
+        },
+        {
+            "type": "arch-package",
+            "name": "arch package",
+            "export": false,
+
+            "pacman_conf": {
+                "options": {
+                    "SigLevel": "Never"
+                },
+                "ALA": {
+                    "Server": "https://archive.archlinux.org/repos/2024/05/15/$repo/os/$arch"
+                }
+            },
+
+            "package": "linux",
+            "withoutDependencies": false,
         },
 
         // ---------------- packing root fs

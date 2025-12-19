@@ -14,6 +14,8 @@ import hashlib
 
 path_output = "output"
 path_temp = ".temp"
+path_cache = os.path.join(path_temp, "cache")
+path_cache_pacman = os.path.join(path_cache, "pacman")
 path_logs = os.path.join(path_temp, "logs")
 path_build = os.path.join(path_temp, "build")
 path_build_checksums = os.path.join(path_temp, "build_checksums")
@@ -396,6 +398,9 @@ def buildDebian(item):
         makeAllFilesExecutable(item["hook-directory"])
         cmd.append(f"--hook-directory={item["hook-directory"]}")
     buildExecute(cmd)
+
+def makePacmanConfig():
+    
 
 def downloadFile(url, path):
     buildLog(f"Downloading file ({url}): {path}")
