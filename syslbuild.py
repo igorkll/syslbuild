@@ -422,10 +422,27 @@ def makeExtendedPacmanConfig(pacman_conf):
     makePacmanConfig(pacman_conf)
 
 def archLinuxBuild(item):
-    pass
+    makeExtendedPacmanConfig(item["pacman_conf"])
+    root_path = getItemFolder(item)
+
+    cmd = ["pacstrap", "-C", path_temp_cache_pacman, "-M", root_path]
+    if item.get("withoutDependencies", False):
+        cmd.append("--nodeps")
+    cmd += item.get("include", [])
+    
+    buildExecute(cmd)
 
 def archLinuxPackage(item):
-    pass
+    makeExtendedPacmanConfig(item["pacman_conf"])
+    root_path = getItemFolder(item)
+
+    cmd = ["pacman", "-r", root_path, "-C", path_temp_cache_pacman, "-Sy", "--noconfirm"]
+    if item.get("withoutDependencies", False):
+        cmd.append("--nodeps")
+    cmd.append(item["package"])
+
+    buildExecute(cmd)
+
 
 def downloadFile(url, path):
     buildLog(f"Downloading file ({url}): {path}")
