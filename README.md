@@ -61,8 +61,8 @@ also, assembling a bootable img with an already installed system is also a separ
 
 ## build items types
 * debian - debian build via mmdebstrap
-* arch-linux - arch linux build via pacstrap
-* arch-package - download arch linux package via pacman
+* arch-linux - arch linux build via pacstrap (It's not working right now)
+* arch-package - download arch linux package via pacman (It's not working right now)
 * download - downloads the file
 * directory - allows you to assemble many items into one (for example, to pack them into a file system later) allows you to set file owners and their rights
 * filesystem - builds a file system from the specified items and sets the specified access rights for the files
