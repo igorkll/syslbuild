@@ -1,4 +1,4 @@
-# syslbuild
+# syslbuild 0.1.0
 an build system for creating Linux distributions. it is focused on embedded distributions 
 DOWNLOAD THE RELEASE, NOT THE REPOSITORY!
 * the program requires root access because it mounts images
