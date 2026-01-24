@@ -316,6 +316,7 @@ if [ -n "$LOOP" ]; then
 		fi
 
         modprobe loop
+        _log_msg "loop: $LOOP"
         mount ${roflag} -o loop -t ${FSTYPE} ${LOOPFLAGS} "$LOOP" "${rootmnt}"
 
         if [ -d "/realroot" ] && [ -d "${rootmnt}/realroot" ]; then
