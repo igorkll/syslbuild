@@ -196,8 +196,8 @@
             ],
 
             "items": [
-                ["image directory", "/system/A"],
-                ["image directory", "/system/B"],
+                //["image directory", "/system/A"],
+                //["image directory", "/system/B"],
                 ["image directory", "/system/OEM"]
             ]
         },
