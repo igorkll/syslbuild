@@ -214,6 +214,7 @@
         },
         
         // ----------------- boot images
+        /*
         {
             "type": "filesystem",
             "name": "bios boot.img",
@@ -231,6 +232,7 @@
             "size": "64M",
             "label": "EFI"
         },
+        */
         {
             "type": "full-disk-image",
             "name": "skyOS.img",
@@ -255,9 +257,10 @@
                     "configfile"
                 ]
             }
-        },
+        }//,
 
         // ----------------- update image
+        /*
         {
             "type": "tar",
             "name": "skyOS update.skyupdate",
@@ -266,5 +269,6 @@
             "source": "image directory",
             "gz": true
         }
+        */
     ]
 }
