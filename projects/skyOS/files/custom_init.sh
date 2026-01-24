@@ -194,7 +194,7 @@ for x in $(cat /proc/cmdline); do
     
     # custom init functions
     loop=*)
-        LOOP="${param#loop=}"
+        LOOP="${x#loop=}"
         ;;
     root_processing)
         ROOT_PROCESSING=y
@@ -275,6 +275,9 @@ if [ -n "$ROOT" ] && [ -n "$ROOT_PROCESSING" ]; then
 fi
 
 if [ -n "$LOOP" ]; then
+    log_begin_msg "Loop is used"
+    log_end_msg
+    
     mountroot()
     {
         log_begin_msg "Mount loop root filesystem"
@@ -298,6 +301,9 @@ if [ -n "$LOOP" ]; then
 
         log_end_msg
     }
+else
+    log_begin_msg "Loop not used"
+    log_end_msg
 fi
 
 mountroot
