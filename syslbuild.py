@@ -469,8 +469,23 @@ def grubIsoImage(item):
     grubDirectory = pathConcat(bootDirectory, "grub")
     makedirsChangeRights(grubDirectory)
 
+    if "kernel" in item:
+        copyItemFiles(findItem(item["kernel"]), pathConcat(bootDirectory, "vmlinuz"), DEFAULT_RIGHTS)
+
+    if "initramfs" in item:
+        copyItemFiles(findItem(item["initramfs"]), pathConcat(bootDirectory, "initrd.img"), DEFAULT_RIGHTS)
+
+    grub_cfg_path = pathConcat(grubDirectory, "grub.cfg")
     if "config" in item:
-        copyItemFiles(findItem(item["config"]), pathConcat(grubDirectory, "grub.cfg"), DEFAULT_RIGHTS)
+        copyItemFiles(findItem(item["config"]), grub_cfg_path, DEFAULT_RIGHTS)
+    else:
+        with open(grub_cfg_path, "w") as f:
+            if "kernel" in item:
+                f.write("linux /boot/vmlinuz " + item.get("kernel_args", "") + "\n")
+            if "initramfs" in item:
+                f.write("initrd /boot/initrd.img\n")
+            f.write("boot\n")
+        changeAccessRights(grub_cfg_path, DEFAULT_RIGHTS)
 
     cmd = ["grub-mkrescue", "-o", getItemPath(item), tempPath]
     if "modules" in item:

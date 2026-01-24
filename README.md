@@ -486,6 +486,7 @@ also, assembling a bootable img with an already installed system is also a separ
 
             // please note that you do not have a root file system here, your kernel and ramdisk must be able to work independently
             "kernel": "vmlinuz",
+            "kernel_args": "quiet splash", //you can set custom kernel arguments if you want
             "initramfs": "initrd.img" //the parameter is optional and is not required if initramdisk is embedded in the kernel
         }
     ]
