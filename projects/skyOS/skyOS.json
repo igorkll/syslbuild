@@ -144,7 +144,7 @@
 
             "items": [
                 ["debian directory", "."],
-                ["files/sky_mount_root.sh", "/etc/initramfs-tools/scripts/local-premount/sky_mount_root.sh", [0, 0, "0700"]],
+                ["files/custom_init.sh", "/usr/share/initramfs-tools/init", [0, 0, "0700"]],
                 ["files/skystart.sh", "/sky/system/skystart.sh", [0, 0, "0755"]],
                 ["files/logo.png", "/sky/system/logo.png", [0, 0, "0755"]],
                 ["files/ElectronApplication", "/sky/system/ElectronApplication"]
@@ -241,7 +241,7 @@
 
             "bootloader": {
                 "type": "grub",
-                "config": "grub.cfg",
+                "config": "files/grub.cfg",
                 "boot": 0,
                 "modules": [
                     "normal",
