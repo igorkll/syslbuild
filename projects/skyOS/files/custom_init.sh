@@ -196,6 +196,12 @@ for x in $(cat /proc/cmdline); do
     loop=*)
         LOOP="${x#loop=}"
         ;;
+    loopflags=*)
+		LOOPFLAGS="-o ${x#loopflags=}"
+		;;
+	loopfstype=*)
+		LOOPFSTYPE="${x#loopfstype=}"
+		;;
     root_processing)
         ROOT_PROCESSING=y
         ;;
@@ -280,8 +286,6 @@ if [ -n "$LOOP" ]; then
         log_begin_msg "Mount loop root filesystem"
 
         if [ -n "$ROOT" ]; then
-            log_begin_msg "Real mount"
-
             if [ "$BOOT" = "nfs" ]; then
                 nfs_mount_root
             else
@@ -289,13 +293,24 @@ if [ -n "$LOOP" ]; then
             fi
 
             mkdir -m 0700 /realroot
-            mount -n -o move ${rootmnt} /realroot
+            mount -n -o move "${rootmnt}" /realroot
         fi
 
-        log_begin_msg "Loop mount"
-        mount -o loop "$LOOP" ${rootmnt}
+        if [ "$readonly" = y ]; then
+			roflag=-r
+		else
+			roflag=-w
+		fi
 
-        log_begin_msg "Loop move"
+        FSTYPE="$LOOPFSTYPE"
+		if [ -z "$FSTYPE" ] || [ "$FSTYPE" = "unknown" ]; then
+			FSTYPE=$(/sbin/blkid -s TYPE -o value "$LOOP")
+			[ -z "$FSTYPE" ] && FSTYPE="unknown"
+		fi
+
+        modprobe loop
+        mount ${roflag} -o loop -t ${FSTYPE} ${LOOPFLAGS} "$LOOP" "${rootmnt}"
+
         if [ -d "/realroot" ] && [ -d "${rootmnt}/realroot" ]; then
             mount -n -o move /realroot ${rootmnt}/realroot
         fi
