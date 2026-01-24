@@ -46,6 +46,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * aarch64-linux-gnu-gcc
 * arm-linux-gnueabihf-gcc
 * arm-linux-gnueabi-gcc
+* grub-mkrescue
 
 ## docs
 * mmdebstrap: https://manpages.debian.org/testing/mmdebstrap/mmdebstrap.1.en.html
@@ -72,6 +73,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * gcc-build - builds something through GCC
 * kernel - NOT IMPLEMENTED NOW
 * initramfs - collects initramfs from a directory
+* grub-iso-image - collects the bootable iso
 
 ## build items features
 * debian supports the "_min" variant, which is essentially a "custom" but with a minimal set package required for assembly
@@ -474,6 +476,17 @@ also, assembling a bootable img with an already installed system is also a separ
 
             "source": "rootfs directory",
             "path": "/initrd.img"
+        }
+
+        // ---------------- easy creation of an iso image
+        {
+            "type": "grub-iso-image",
+            "name": "lifeimage.iso",
+            "export": true,
+
+            // please note that you do not have a root file system here, your kernel and ramdisk must be able to work independently
+            "kernel": "vmlinuz",
+            "initramfs": "initrd.img" //the parameter is optional and is not required if initramdisk is embedded in the kernel
         }
     ]
 }

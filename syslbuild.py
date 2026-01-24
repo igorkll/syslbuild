@@ -460,6 +460,22 @@ def archLinuxPackage(item):
 
     buildExecute(cmd)
 
+def grubIsoImage(item):
+    tempPath = getTempFolder("isotemp")
+
+    bootDirectory = pathConcat(tempPath, "boot")
+    makedirsChangeRights(bootDirectory)
+
+    grubDirectory = pathConcat(bootDirectory, "grub")
+    makedirsChangeRights(grubDirectory)
+
+    if "config" in item:
+        copyItemFiles(findItem(item["config"]), pathConcat(grubDirectory, "grub.cfg"), DEFAULT_RIGHTS)
+
+    cmd = ["grub-mkrescue", "-o", getItemPath(item), tempPath]
+    if "modules" in item:
+        cmd.append("--modules=\"" + " ".join(item["modules"]) + "\"")
+    buildExecute(cmd)
 
 def downloadFile(url, path):
     buildLog(f"Downloading file ({url}): {path}")
@@ -843,7 +859,8 @@ buildActions = {
     "gcc-build": gccBuild,
     "initramfs": buildInitramfs,
     "arch-linux": archLinuxBuild,
-    "arch-package": archLinuxPackage
+    "arch-package": archLinuxPackage,
+    "grub-iso-image": grubIsoImage
 }
 
 cachedBuildActions = [
