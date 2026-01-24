@@ -260,6 +260,7 @@ maybe_break mountroot
 mount_top
 mount_premount
 
+# custom init options
 if [ -n "$ROOT" ] && [ -n "$ROOT_PROCESSING" ]; then
     local_device_setup "${ROOT}" "root file system"
     PART_NUM="${DEV##*[!0-9]}"
