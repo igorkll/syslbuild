@@ -202,13 +202,13 @@ for x in $(cat /proc/cmdline); do
 	loopfstype=*)
 		LOOPFSTYPE="${x#loopfstype=}"
 		;;
-    loopreadonly)
+    loopreadonly=y)
         LOOPREADONLY=y
         ;;
-    root_processing)
+    root_processing=y)
         ROOT_PROCESSING=y
         ;;
-    root_expand)
+    root_expand=y)
         ROOT_EXPAND=y
         ;;
 	esac
@@ -316,8 +316,6 @@ if [ -n "$LOOP" ]; then
 		fi
 
         modprobe loop
-        _log_msg "loop: $LOOP"
-
         mknod /dev/loop-root b 7 0
         losetup /dev/loop-root "$LOOP"
         mount ${roflag} -t ${FSTYPE} ${LOOPFLAGS} /dev/loop-root "${rootmnt}"
