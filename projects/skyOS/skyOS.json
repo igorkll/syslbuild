@@ -1,6 +1,7 @@
 {
     "builditems": [
         // ----------------- kernel panic
+        /*
         {
             "type": "debian",
             "name": "panic_handler_base",
@@ -31,6 +32,7 @@
 
             "source": "panic_handler"
         },
+        */
 
         // ----------------- system & rootfs
         {
@@ -41,6 +43,7 @@
             "kernel": "default",
             "include": [
                 "initramfs-tools",
+                /*
                 "plymouth",
                 "plymouth-themes",
                 "nodejs",
@@ -107,6 +110,7 @@
                 "libinput10",
                 "libudev1",
                 "libmtdev1" //touchscreens
+                */
             ],
 
             "variant": "minbase",

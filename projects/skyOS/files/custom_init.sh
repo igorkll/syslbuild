@@ -267,14 +267,18 @@ if [ -n "$ROOT" ] && [ -n "$ROOT_PROCESSING" ]; then
     DISK="${DEV%$PART_NUM}"
     
     if [ -n "$ROOT_EXPAND" ]; then
+        log_begin_msg "Expanding root partition"
         growpart "$DISK" "$PART_NUM"
         resize2fs "$DEV"
+        log_end_msg
     fi
 fi
 
 if [ -n "$LOOP" ]; then
     mountroot()
     {
+        log_begin_msg "Mount loop root filesystem"
+
         if [ -n "$ROOT" ]; then
             if [ "$BOOT" = "nfs" ]; then
                 nfs_mount_root
@@ -291,6 +295,8 @@ if [ -n "$LOOP" ]; then
         if [ -d "/realroot" ]; then
             mount -n -o move /realroot ${rootmnt}/realroot
         fi
+
+        log_end_msg
     }
 fi
 
