@@ -292,7 +292,7 @@ if [ -n "$LOOP" ]; then
 
         mount -o loop "$LOOP" ${rootmnt}
 
-        if [ -d "/realroot" ]; then
+        if [ -d "/realroot" ] && [ -d "${rootmnt}/realroot" ]; then
             mount -n -o move /realroot ${rootmnt}/realroot
         fi
 
