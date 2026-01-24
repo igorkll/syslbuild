@@ -275,14 +275,13 @@ if [ -n "$ROOT" ] && [ -n "$ROOT_PROCESSING" ]; then
 fi
 
 if [ -n "$LOOP" ]; then
-    log_begin_msg "Loop is used"
-    log_end_msg
-    
     mountroot()
     {
         log_begin_msg "Mount loop root filesystem"
 
         if [ -n "$ROOT" ]; then
+            log_begin_msg "Real mount"
+
             if [ "$BOOT" = "nfs" ]; then
                 nfs_mount_root
             else
@@ -293,17 +292,16 @@ if [ -n "$LOOP" ]; then
             mount -n -o move ${rootmnt} /realroot
         fi
 
+        log_begin_msg "Loop mount"
         mount -o loop "$LOOP" ${rootmnt}
 
+        log_begin_msg "Loop move"
         if [ -d "/realroot" ] && [ -d "${rootmnt}/realroot" ]; then
             mount -n -o move /realroot ${rootmnt}/realroot
         fi
 
         log_end_msg
     }
-else
-    log_begin_msg "Loop not used"
-    log_end_msg
 fi
 
 mountroot
