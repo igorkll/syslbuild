@@ -10,7 +10,7 @@ run_in_chroot() {
 
 # ----------------- copy files
 install -Dm644 files/skystart.service "$1/etc/systemd/system/skystart.service"
-install -Dm755 files/sky_mount_root.sh "$1/etc/initramfs-tools/scripts/local-premount/sky_mount_root.sh"
+install -Dm755 files/custom_init.sh "$1/usr/share/initramfs-tools/init"
 
 # ----------------- chroot scripts
 run_in_chroot "$1" hooks/chroot/apply_settings.sh
