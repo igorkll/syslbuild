@@ -202,6 +202,9 @@ for x in $(cat /proc/cmdline); do
 	loopfstype=*)
 		LOOPFSTYPE="${x#loopfstype=}"
 		;;
+    loopreadonly)
+        LOOPREADONLY=y
+        ;;
     root_processing)
         ROOT_PROCESSING=y
         ;;
@@ -299,7 +302,11 @@ if [ -n "$LOOP" ]; then
         if [ "$readonly" = y ]; then
 			roflag=-r
 		else
-			roflag=-w
+            if [ -n "$LOOPREADONLY" ]; then
+			    roflag=-r
+            else
+                roflag=-w
+            fi
 		fi
 
         FSTYPE="$LOOPFSTYPE"
