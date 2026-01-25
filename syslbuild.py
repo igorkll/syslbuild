@@ -494,11 +494,9 @@ def grubIsoImage(item):
 
 def unpackInitramfs(item):
     initramfs = os.path.abspath(findItem(item["initramfs"]))
+    folder = getItemFolder(item)
 
-    folder = getItemPath(item)
-    makedirsChangeRights(folder)
-
-    buildRawExecute(f"{item.get("decompressor", "zcat")} \"{initramfs}\" | cpio -idmv", True, folder)
+    buildRawExecute(f"{item.get("decompressor", "cat")} \"{initramfs}\" | cpio -idmv", True, folder)
 
 
 
