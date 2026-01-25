@@ -480,6 +480,16 @@ also, assembling a bootable img with an already installed system is also a separ
             "path": "/initrd.img"
         }
 
+        // you can disassemble the initramdisk, for example, to rebuild it
+        {
+            "type": "unpack-initramfs",
+            "name": "initrd directory",
+            "export": false,
+
+            "initramfs": "initrd.img",
+            "decompressor": "zcat"
+        },
+
         // ---------------- easy creation of an iso image
         {
             "type": "grub-iso-image",
