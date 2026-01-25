@@ -190,13 +190,13 @@ def deleteAny(path):
         os.remove(path)
 
 def getTempPath(subpath):
+    os.makedirs(path_temp_temp, exist_ok=True)
     return pathConcat(path_temp_temp, subpath)
 
 def getTempFolder(subdirectory):
     path = getTempPath(subdirectory)
     deleteDirectory(path)
     os.makedirs(path, exist_ok=True)
-
     return path
 
 def getItemFolder(item):
@@ -874,7 +874,7 @@ def buildInitramfs(item):
     realOutputPath = os.path.abspath(getItemPath(item))
     
     if "compressor" in item:
-        outputPath = getTempPath("temp.cpio")
+        outputPath = os.path.abspath(getTempPath("temp.cpio"))
     else:
         outputPath = realOutputPath
 
