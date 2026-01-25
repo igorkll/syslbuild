@@ -75,6 +75,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * initramfs - collects initramfs from a directory
 * grub-iso-image - collects the bootable iso
 * unpack-initramfs - unpacking initramfs
+* gzip / zcat
 
 ## build items features
 * debian supports the "_min" variant, which is essentially a "custom" but with a minimal set package required for assembly
@@ -115,7 +116,7 @@ also, assembling a bootable img with an already installed system is also a separ
   -drive file=output/amd64/disk.img,format=raw \
   -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.fd \
   -drive if=pflash,format=raw,file=output/OVMF_VARS.fd
-* iso image | x86 | BIOS: qemu-system-i386 -cdrom output/i386/lifeimage.iso -boot d -m 512
+* iso image | x86 | BIOS: qemu-system-i386 -cdrom output/i386/lifeimage.iso -boot d -m 2048
 
 ## project example
 ```json
@@ -167,6 +168,14 @@ also, assembling a bootable img with an already installed system is also a separ
             "export": false,
 
             "source": "custom initramfs directory"
+        },
+        {
+            "type": "initramfs",
+            "name": "compressed custom initramfs.img",
+            "export": false,
+
+            "source": "custom initramfs directory",
+            "compressor": "gzip -9"
         },
 
         // ---------------- making root fs
@@ -487,7 +496,7 @@ also, assembling a bootable img with an already installed system is also a separ
             "export": false,
 
             "initramfs": "initrd.img",
-            "decompressor": "zcat"
+            "decompressor": "cat" //zcat
         },
 
         // ---------------- easy creation of an iso image

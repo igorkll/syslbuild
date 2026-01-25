@@ -189,8 +189,11 @@ def deleteAny(path):
     elif os.path.exists(path):
         os.remove(path)
 
+def getTempPath(subpath):
+    return pathConcat(path_temp_temp, subpath)
+
 def getTempFolder(subdirectory):
-    path = pathConcat(path_temp_temp, subdirectory)
+    path = getTempPath(subdirectory)
     deleteDirectory(path)
     os.makedirs(path, exist_ok=True)
 
@@ -868,8 +871,17 @@ def gccBuild(item):
 
 def buildInitramfs(item):
     source = getSourceDirectory(item)
-    outputPath = os.path.abspath(getItemPath(item))
+    realOutputPath = os.path.abspath(getItemPath(item))
+    
+    if "compressor" in item:
+        outputPath = getTempPath("temp.cpio")
+    else:
+        outputPath = realOutputPath
+
     buildRawExecute(f"find . -print0 | cpio --null -ov --format=newc > \"{outputPath}\"", True, source)
+
+    if "compressor" in item:
+        buildRawExecute(f"gzip -9 < \"{outputPath}\" > \"{realOutputPath}\"", True)
 
 buildActions = {
     "debian": buildDebian,
