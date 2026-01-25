@@ -492,6 +492,16 @@ def grubIsoImage(item):
         cmd.append("--modules=\"" + " ".join(item["modules"]) + "\"")
     buildExecute(cmd)
 
+def unpackInitramfs(item):
+    initramfs = os.path.abspath(findItem(item["initramfs"]))
+
+    folder = getItemPath(item)
+    makedirsChangeRights(folder)
+
+    buildRawExecute(f"{item.get("decompressor", "zcat")} \"{initramfs}\" | cpio -idmv", True, folder)
+
+
+
 def downloadFile(url, path):
     buildLog(f"Downloading file ({url}): {path}")
     buildExecute(["wget", "-O", path, url])
@@ -875,7 +885,8 @@ buildActions = {
     "initramfs": buildInitramfs,
     "arch-linux": archLinuxBuild,
     "arch-package": archLinuxPackage,
-    "grub-iso-image": grubIsoImage
+    "grub-iso-image": grubIsoImage,
+    "unpack-initramfs": unpackInitramfs
 }
 
 cachedBuildActions = [

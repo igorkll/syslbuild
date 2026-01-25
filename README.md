@@ -46,7 +46,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * aarch64-linux-gnu-gcc
 * arm-linux-gnueabihf-gcc
 * arm-linux-gnueabi-gcc
-* grub-mkrescue
+* grub-mkrescue/xorriso - to build iso images
 
 ## docs
 * mmdebstrap: https://manpages.debian.org/testing/mmdebstrap/mmdebstrap.1.en.html
@@ -74,6 +74,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * kernel - NOT IMPLEMENTED NOW
 * initramfs - collects initramfs from a directory
 * grub-iso-image - collects the bootable iso
+* unpack-initramfs - unpacking initramfs
 
 ## build items features
 * debian supports the "_min" variant, which is essentially a "custom" but with a minimal set package required for assembly
@@ -114,6 +115,7 @@ also, assembling a bootable img with an already installed system is also a separ
   -drive file=output/amd64/disk.img,format=raw \
   -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.fd \
   -drive if=pflash,format=raw,file=output/OVMF_VARS.fd
+* iso image | x86 | BIOS: qemu-system-i386 -cdrom output/i386/lifeimage.iso -boot d -m 512
 
 ## project example
 ```json
