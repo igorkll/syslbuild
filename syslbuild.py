@@ -984,10 +984,12 @@ def buildKernel(item):
             sys.exit(1)
 
     if "modules_name" in item:
+        buildLog(f"exporting modules...")
         export_path = getCustomItemFolder(item, "modules_name", "modules_export")
         buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "modules_install", f"INSTALL_MOD_PATH={export_path}"], True, None, kernel_sources)
 
     if "headers_name" in item:
+        buildLog(f"exporting headers...")
         export_path = getCustomItemFolder(item, "headers_name", "headers_export")
         buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "headers_install", f"INSTALL_HDR_PATH={export_path}"], True, None, kernel_sources)
 
