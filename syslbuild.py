@@ -1062,6 +1062,20 @@ def buildKernel(item):
         export_path = getCustomItemFolder(item, "headers_name", "headers_export")
         buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "headers_install", f"INSTALL_HDR_PATH={os.path.abspath(export_path)}"], True, None, kernel_sources)
 
+def get_host_arch():
+    m = platform.machine().lower()
+
+    if m in ("x86_64", "amd64"):
+        return "amd64"
+    if m in ("i386", "i686"):
+        return "i386"
+    if m in ("aarch64", "arm64"):
+        return "arm64"
+    if m.startswith("arm"):
+        return "armhf"
+
+    raise RuntimeError(f"unknown host architecture: {m}")
+
 qemuStaticNames = {
     "amd64": "qemu-x86_64-static",
     "i386": "qemu-i386-static",
@@ -1069,6 +1083,23 @@ qemuStaticNames = {
     "armhf": "qemu-arm-static",
     "armel": "qemu-arm-static"
 }
+
+notNeedQemuStatic = {
+    "amd64": ("i386")
+}
+
+def checkQemuStaticNeed():
+    hostArchitecture = get_host_arch()
+    if hostArchitecture == architecture:
+        buildLog(f"the architectures of the host and the target system are the same ({architecture}) we do not use qemu-static")
+        return False
+    
+    if hostArchitecture == "amd64" and architecture == "i386":
+        buildLog(f"the host architecture ({hostArchitecture}) is compatible with the target architecture ({architecture}) we do not use qemu-static")
+        return False
+
+    buildLog(f"the host architecture ({hostArchitecture}) is compatible with the target architecture ({architecture}) we do not use qemu-static")
+    return True
 
 def rawCrossChroot(chrootDirectory, chrootCommand):
     bindList = [
@@ -1078,15 +1109,20 @@ def rawCrossChroot(chrootDirectory, chrootCommand):
     ]
     
     for bindPath in bindList:
-        buildRawExecute(f"mount --bind /{bindPath} {pathConcat(chrootDirectory, bindPath)}")
+        buildRawExecute(f"mount --bind /{bindPath} \"{pathConcat(chrootDirectory, bindPath)}\"")
 
     boolCopyQemuStatic = True
     qemuStaticName = qemuStaticNames[architecture]
+    qemuStaticHostPath = f"/usr/bin/{qemuStaticName}"
     qemuStaticPath = pathConcat(chrootDirectory, "usr/bin", qemuStaticName)
+
+    if boolCopyQemuStatic and not os.path.isfile(qemuStaticHostPath):
+        buildLog(f"WARNINGL: there is no suitable version of qemu-static ({qemuStaticName}) in the host system. we are trying without it")
+        boolCopyQemuStatic = False
 
     if boolCopyQemuStatic:
         os.makedirs(os.path.dirname(qemuStaticPath), exist_ok=True)
-        buildExecute(["cp", "-a", f"/usr/bin/{qemuStaticName}", qemuStaticPath])
+        buildExecute(["cp", "-a", qemuStaticHostPath, qemuStaticPath])
         buildExecute(["chmod", "0755", qemuStaticPath])
         buildExecute(["chown", "0:0", qemuStaticPath])
 
