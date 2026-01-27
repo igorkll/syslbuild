@@ -2,6 +2,7 @@
 an build system for creating Linux distributions. it is focused on embedded distributions  
 DOWNLOAD THE RELEASE, NOT THE REPOSITORY!  
 WARNING!!! if you read this text from GITHUB page please, download a release and read description there. on github this text is DEV syslbuild version (not released yet)  
+![preview](https://raw.githubusercontent.com/igorkll/syslbuild/refs/heads/main/preview.png)  
 * the program requires root access because it mounts images
 * WARNING! syslbuild runs from root during the build process, and the project can run code on the host system at the time of build.
 * for this reason, treat syslbuild projects as executable files with full access. since they can execute code from root on the host system at the time of build
