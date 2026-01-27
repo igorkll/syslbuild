@@ -964,7 +964,7 @@ def copyKernel(kernel_sources):
 
 def patchKernel(kernel_sources, patches):
     for patchPath in patches:
-        buildRawExecute(f"patch -p1 < {findItem(patchPath)}", True, kernel_sources)
+        buildRawExecute(f"patch -p1 < {os.path.abspath(findItem(patchPath))}", True, kernel_sources)
 
 kernelArchitectures = {
     "amd64": "x86_64",
