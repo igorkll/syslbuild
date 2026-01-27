@@ -209,6 +209,8 @@ also, assembling a bootable img with an already installed system is also a separ
 
             "example_dictionary": {
                 // here you are not overwriting the old array, but rather adding elements to the end (thanks to the forkArraysCombine flag)
+                // in this case, the array will contain: ["test1", "test2", "test7", "test8"]
+                // NOT ["test7", "test8", "test7", "test8"], since the fork is not created from the previous builditem, but from the nearest previous one with the forkbase flag.
                 "testArray": ["test7", "test8"]
             }
         },
