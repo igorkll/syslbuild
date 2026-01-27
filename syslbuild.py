@@ -994,7 +994,7 @@ def buildKernel(item):
     if "kernel_config" in item:
         copyItemFiles(findItem(item["kernel_config"]), pathConcat(kernel_sources, ".config"))
 
-    buildRawExecute(f"make {ARCH_STR} {CROSS_COMPILE_STR} -j$(nproc)", True, kernel_sources)
+    buildRawExecute(f"make {ARCH_STR} {CROSS_COMPILE_STR} -j$(nproc) W=0", True, kernel_sources)
 
     kernel_output_filename = item.get("kernel_output_file", "bzImage")
     kernel_output_file = pathConcat(kernel_sources, "arch", kernelArchitectures[architecture], "boot", kernel_output_filename)
