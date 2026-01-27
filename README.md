@@ -610,6 +610,10 @@ also, assembling a bootable img with an already installed system is also a separ
             // you can specify a custom unpacker for the kernel source code. by default "tar -xJf %s -C %s --strip-components=1"
             "kernel_source_unpacker": "tar -xJf %s -C %s --strip-components=1",
 
+            // specify which file will be exported to builditem after the kernel build
+            // syslbuild first searches for the file in "arch/<arch>/<kernel_output_file>" and then in the root folder of the kernel project
+            "kernel_output_file": "bzImage",
+
             // examples are taken from here: https://github.com/igorkll/linux-embedded-patchs
             // these are quite real patches, and they work
             "patches": [

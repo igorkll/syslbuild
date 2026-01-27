@@ -255,8 +255,11 @@ def isUserItem(itemName):
 
     return False
 
-def buildExecute(cmd, checkValid=True, input_data=None):
-    buildLog(f"Execute command: {cmd}")
+def buildExecute(cmd, checkValid=True, input_data=None, cwd=None):
+    if cwd != None:
+        buildLog(f"Execute command from directory ({cwd}): {cmd}")
+    else:
+        buildLog(f"Execute command: {cmd}")
     
     process = subprocess.Popen(
         cmd,
@@ -264,7 +267,8 @@ def buildExecute(cmd, checkValid=True, input_data=None):
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         text=True,
-        bufsize=1
+        bufsize=1,
+        cwd=cwd
     )
 
     if process.stdin:
@@ -960,20 +964,34 @@ def buildKernel(item):
     CROSS_COMPILE = gccNames[architecture]
     ARCH_STR = f"ARCH={ARCH}"
     CROSS_COMPILE_STR = f"CROSS_COMPILE={CROSS_COMPILE}-"
-    buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "defconfig"])
+    buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "defconfig"], True, None, kernel_sources)
 
     if "kernel_config" in item:
         copyItemFiles(findItem(item["kernel_config"]), pathConcat(kernel_sources, ".config"))
 
-    buildRawExecute(f"make {ARCH_STR} {CROSS_COMPILE_STR} -j$(nproc)")
+    buildRawExecute(f"make {ARCH_STR} {CROSS_COMPILE_STR} -j$(nproc)", True, kernel_sources)
+
+    kernel_output_filename = item.get("kernel_output_file", "bzImage")
+    kernel_output_file = pathConcat(kernel_sources, "arch", kernelArchitectures[architecture], kernel_output_filename)
+    if os.path.isfile(kernel_output_file):
+        copyItemFiles(kernel_output_file, getItemPath(item))
+    else:
+        kernel_output_file = pathConcat(kernel_sources, kernel_output_filename)
+        if os.path.isfile(kernel_output_file):
+            copyItemFiles(kernel_output_file, getItemPath(item))
+        else:
+            buildLog(f"failed to find \"{kernel_output_filename}\" kernel output file")
+            sys.exit(1)
 
     if "modules_name" in item:
         export_path = getCustomItemFolder(item, "modules_name", "modules_export")
-        buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "modules_install", f"INSTALL_MOD_PATH={export_path}"])
+        buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "modules_install", f"INSTALL_MOD_PATH={export_path}"], True, None, kernel_sources)
 
     if "headers_name" in item:
         export_path = getCustomItemFolder(item, "headers_name", "headers_export")
-        buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "headers_install", f"INSTALL_HDR_PATH={export_path}"])
+        buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "headers_install", f"INSTALL_HDR_PATH={export_path}"], True, None, kernel_sources)
+
+    
 
 buildActions = {
     "debian": buildDebian,
