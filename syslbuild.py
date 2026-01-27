@@ -1062,6 +1062,37 @@ def buildKernel(item):
         export_path = getCustomItemFolder(item, "headers_name", "headers_export")
         buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "headers_install", f"INSTALL_HDR_PATH={os.path.abspath(export_path)}"], True, None, kernel_sources)
 
+qemuStaticNames = {
+    "amd64": "qemu-x86_64-static",
+    "i386": "qemu-i386-static",
+    "arm64": "qemu-arm64-static",
+    "armhf": "qemu-armhf-static",
+    "armel": "qemu-armel-static"
+}
+
+def rawCrossChroot(chrootDirectory, chrootCommand):
+    bindList = [
+        "dev",
+        "proc",
+        "sys"
+    ]
+    
+    for bindPath in bindList:
+        buildRawExecute(f"mount --bind /{bindPath} {pathConcat(chrootDirectory, bindPath)}")
+
+    boolCopyQemuStatic = True
+    qemuStaticName = qemuStaticNames[architecture]
+    qemuStaticPath = pathConcat(chrootDirectory, "usr/bin", qemuStaticName)
+
+    if boolCopyQemuStatic:
+        os.makedirs(exist_ok=True)
+        buildExecute(["cp", "/usr/bin/", qemuStaticPath])
+
+    buildExecute(["chroot", chrootDirectory, chrootCommand])
+
+    for bindPath in bindList:
+        buildRawExecute(f"umount /{bindPath}")
+
 def updateInitramfs(item):
     buildExecute(["update-initramfs", "-c", "-k", item["kernel_version"], "-b", findItem(item["rootfs"])])
 

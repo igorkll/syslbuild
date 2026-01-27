@@ -56,7 +56,6 @@ also, assembling a bootable img with an already installed system is also a separ
 * grub-mkrescue/xorriso - to build iso images
 * tar
 * make
-* update-initramfs
 * gzip / zcat
 
 ## docs
