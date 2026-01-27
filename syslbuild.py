@@ -974,6 +974,40 @@ kernelArchitectures = {
     "armel": "arm"
 }
 
+import os
+import subprocess
+
+def set_kernel_config_parameter(config_path, param, value):
+    with open(config_path, "r") as f:
+        lines = f.readlines()
+
+    new_lines = []
+    param_found = False
+    for line in lines:
+        if line.startswith(f"{param}=") or line.startswith(f"# {param} is not set"):
+            param_found = True
+            if value is None:
+                new_lines.append(f"# {param} is not set\n")
+            else:
+                new_lines.append(f"{param}={value}\n")
+        else:
+            new_lines.append(line)
+
+    if not param_found:
+        if value is not None:
+            new_lines.append(f"{param}={value}\n")
+
+    with open(config_path, "w") as f:
+        f.writelines(new_lines)
+
+def update_kernel_config(kernel_sources):
+    buildExecute(["make", "olddefconfig"], True, None, kernel_sources)
+
+def modifyKernelConfig(item, kernel_sources):
+    kernel_config_path = pathConcat(kernel_sources, ".config")
+    set_kernel_config_parameter(kernel_config_path, "CONFIG_WERROR", "n")
+    update_kernel_config(kernel_sources)
+
 def buildKernel(item):
     kernel_sources = copyKernel(
         downloadKernel(
@@ -993,6 +1027,8 @@ def buildKernel(item):
 
     if "kernel_config" in item:
         copyItemFiles(findItem(item["kernel_config"]), pathConcat(kernel_sources, ".config"))
+
+    modifyKernelConfig(item, kernel_sources)
 
     buildRawExecute(f"make {ARCH_STR} {CROSS_COMPILE_STR} -j$(nproc)", True, kernel_sources)
 
