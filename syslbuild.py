@@ -11,6 +11,7 @@ import asteval
 import math
 import re
 import hashlib
+import urllib.parse
 
 path_output = "output"
 path_temp = ".temp"
@@ -928,11 +929,24 @@ def buildInitramfs(item):
     if "compressor" in item:
         buildRawExecute(f"gzip -9 < \"{outputPath}\" > \"{realOutputPath}\"", True)
 
+def get_file_extension(url):
+    path = urllib.parse.urlparse(url).path
+    filename = os.path.basename(path)
+
+    double_exts = ['.tar.gz', '.tar.xz', '.tar.bz2', '.tar.Z', '.tar.lz']
+
+    for ext in double_exts:
+        if filename.endswith(ext):
+            return ext
+
+    _, ext = os.path.splitext(filename)
+    return ext
+
 def downloadKernel(url, unpacker):
-    url_hash = hashlib.md5(url)
+    url_hash = hashlib.md5(url.encode('utf-8')).hexdigest()
     kernel_sources = pathConcat(path_temp_kernel_sources, url_hash)
     kernel_sources_downloaded_flag = pathConcat(path_temp_kernel_sources, url_hash + ".downloaded")
-    kernel_sources_archive = pathConcat(path_temp_kernel_sources, url_hash)
+    kernel_sources_archive = pathConcat(path_temp_kernel_sources, url_hash + get_file_extension(url))
 
     if os.path.isdir(kernel_sources) and os.path.isfile(kernel_sources_downloaded_flag):
         return kernel_sources
