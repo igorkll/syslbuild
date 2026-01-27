@@ -1014,6 +1014,8 @@ def modifyKernelConfig(item, kernel_sources):
     if not item.get("kernel_config_disable_default_changes", False):
         # I'm disabling this for some patches to work correctly
         set_kernel_config_parameter(kernel_config_path, "CONFIG_WERROR", "n")
+
+        set_kernel_config_parameter(kernel_config_path, "CONFIG_RD_GZIP", "y")
     
     update_kernel_config(kernel_sources)
 

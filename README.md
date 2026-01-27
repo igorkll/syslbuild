@@ -126,6 +126,7 @@ also, assembling a bootable img with an already installed system is also a separ
 ## default kernel config changes
 these changes to the kernel config are applied automatically when building the kernel in syslbuild unless the "kernel_config_disable_default_changes" parameter is set to true
 * CONFIG_WERROR=n - this is necessary for the functionality of some of my patches
+* CONFIG_RD_GZIP=y
 
 ## debug
 * full disk image | with graphic | x86_64 | BIOS: qemu-system-x86_64 \
@@ -622,6 +623,9 @@ these changes to the kernel config are applied automatically when building the k
             "modules_name": "custom_amd64_kernel_modules",
             "modules_export": false,
 
+            "result_config_name": "custom_amd64_kernel_config",
+            "result_config_export": false,
+
             // the url for downloading the kernel source code
             // single-board computers like the orange pi usually require their own core
             "kernel_source_url": "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.18.7.tar.xz",
@@ -670,6 +674,7 @@ these changes to the kernel config are applied automatically when building the k
 
             // the rootfs (directory) where initramfs is created
             // this is not shown here, but the modules of the kernel for which you are generating initramfs should be installed in this rootfs
+            // there should also be a "config-<kernel_version>" kernel config in the "/boot" directory, you can export the resulting kernel config with all changes via "result_config_name"
             "rootfs": "my_rootfs_with_kernel_modules"
         },
         {
