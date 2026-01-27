@@ -972,9 +972,7 @@ def forkCombine(builditem, forkbase, forkArraysCombine=False, keysBlackList=None
             if k not in builditem:
                 builditem[k] = v
             elif isinstance(v, list):
-                if k not in builditem:
-                    builditem[k] = v
-                elif k in builditem and isinstance(builditem[k], list):
+                if forkArraysCombine and isinstance(builditem[k], list):
                     if 
 
 def prepairBuildItems(builditems):
