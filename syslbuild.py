@@ -942,13 +942,15 @@ def buildKernel(item):
 
     ARCH = kernelArchitectures[architecture]
     CROSS_COMPILE = gccNames[architecture]
-    buildExecute(["make", f"ARCH={ARCH}", f"CROSS_COMPILE={CROSS_COMPILE}-", "defconfig"])
+    ARCH_STR = f"ARCH={ARCH}"
+    CROSS_COMPILE_STR = f"CROSS_COMPILE={CROSS_COMPILE}-"
+    buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "defconfig"])
 
     if "kernel_config" in item:
         copyItemFiles(findItem(item["kernel_config"]), pathConcat(kernel_sources, ".config"))
 
-
-    
+    buildRawExecute(f"make {ARCH_STR} {CROSS_COMPILE_STR} -j$(nproc)")
+    buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "modules_install", "INSTALL_MOD_PATH=/path/to/rootfs"])
 
 buildActions = {
     "debian": buildDebian,
