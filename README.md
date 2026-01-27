@@ -598,6 +598,12 @@ also, assembling a bootable img with an already installed system is also a separ
             "name": "custom_amd64_kernel",
             "export": false,
 
+            "headers_name": "custom_amd64_kernel_headers",
+            "headers_export": false,
+
+            "modules_name": "custom_amd64_kernel_modules",
+            "modules_export": false,
+
             // the url for downloading the kernel source code
             // single-board computers like the orange pi usually require their own core
             "kernel_source_url": "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.18.7.tar.xz",
@@ -620,6 +626,8 @@ also, assembling a bootable img with an already installed system is also a separ
             "fork": true, 
 
             "name": "custom_amd64_debug_kernel",
+            "headers_name": "custom_amd64_debug_kernel_headers",
+            "modules_name": "custom_amd64_debug_kernel_modules",
 
             "patches": [
                 "disable_vt_swithing_from_keyboard.patch",
@@ -637,6 +645,9 @@ also, assembling a bootable img with an already installed system is also a separ
             "fork": true, 
 
             "name": "custom_arm64_kernel",
+            "headers_name": "custom_arm64_kernel_headers",
+            "modules_name": "custom_arm64_kernel_modules",
+
             "kernel_config": "my_arm_kernel_config"
         },
         {
@@ -644,6 +655,9 @@ also, assembling a bootable img with an already installed system is also a separ
             "fork": true, 
 
             "name": "custom_arm64_debug_kernel",
+            "headers_name": "custom_arm64_debug_kernel_headers",
+            "modules_name": "custom_arm64_debug_kernel_modules",
+
             "kernel_config": "my_arm_kernel_config",
 
             "patches": [

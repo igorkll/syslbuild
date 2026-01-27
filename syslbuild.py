@@ -173,6 +173,15 @@ def getItemPath(item):
     
     return path
 
+def getCustomItemPath(item, nameName, exportName):
+    if readBool(item, exportName):
+        path = pathConcat(path_output_target, item[nameName])
+    else:
+        os.makedirs(path_build, exist_ok=True)
+        path = pathConcat(path_build, item[nameName])
+    
+    return path
+
 def getItemChecksumPath(item):
     os.makedirs(path_build_checksums, exist_ok=True)
     return pathConcat(path_build_checksums, item["name"])
@@ -203,6 +212,13 @@ def getTempFolder(subdirectory):
 
 def getItemFolder(item):
     path = getItemPath(item)
+    deleteDirectory(path)
+    os.makedirs(path, exist_ok=True)
+    
+    return path
+
+def getCustomItemFolder(item, nameName, exportName):
+    path = getItemPath(item, nameName, exportName)
     deleteDirectory(path)
     os.makedirs(path, exist_ok=True)
     
@@ -950,7 +966,14 @@ def buildKernel(item):
         copyItemFiles(findItem(item["kernel_config"]), pathConcat(kernel_sources, ".config"))
 
     buildRawExecute(f"make {ARCH_STR} {CROSS_COMPILE_STR} -j$(nproc)")
-    buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "modules_install", "INSTALL_MOD_PATH="])
+
+    if "modules_name" in item:
+        export_path = getCustomItemFolder(item, "modules_name", "modules_export")
+        buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "modules_install", f"INSTALL_MOD_PATH={export_path}"])
+
+    if "headers_name" in item:
+        export_path = getCustomItemFolder(item, "headers_name", "headers_export")
+        buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "headers_install", f"INSTALL_HDR_PATH={export_path}"])
 
 buildActions = {
     "debian": buildDebian,
