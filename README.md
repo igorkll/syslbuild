@@ -56,6 +56,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * tar
 * make
 * update-initramfs
+* gzip / zcat
 
 ## docs
 * mmdebstrap: https://manpages.debian.org/testing/mmdebstrap/mmdebstrap.1.en.html
@@ -81,10 +82,10 @@ also, assembling a bootable img with an already installed system is also a separ
 * from-directory - extracts a file/directory from a directory
 * gcc-build - builds something through GCC
 * kernel - builds the core. you can provide a link to the kernel source code, patches for it, and the kernel config
-* initramfs - collects initramfs from a directory
 * grub-iso-image - collects the bootable iso
+* initramfs - collects initramfs from a directory
 * unpack-initramfs - unpacking initramfs
-* gzip / zcat
+* update-initramfs - allows you to update initramfs for the specified rootfs. this is necessary if you are building your kernel and you need to install its modules in rootfs first and only then update initramfs
 
 ## build items features
 * debian supports the "_min" variant, which is essentially a "custom" but with a minimal set package required for assembly
@@ -147,6 +148,7 @@ these changes to the kernel config are applied automatically when building the k
 * the ability to specify changes for kernel config parameters directly in the builditem of the kernel build
 * exporting the resulting kernel config when building the kernel
 * execution of arbitrary scripts in the system's chroot, with qemu-static support for execution during assembly for a different architecture
+* support for the operation (packing and unpacking) of initramfs with a multiblock structure
 
 ## project example
 ```json
