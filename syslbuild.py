@@ -967,7 +967,15 @@ def prepairBuild():
     os.makedirs(path_output_target, exist_ok=True)
 
 def forkCombine(builditem, forkbase, forkArraysCombine=False, keysBlackList=None)
-    pass
+    for k, v in forkbase.items():
+        if not keysBlackList or k not in keysBlackList:
+            if k not in builditem:
+                builditem[k] = v
+            elif isinstance(v, list):
+                if k not in builditem:
+                    builditem[k] = v
+                elif k in builditem and isinstance(builditem[k], list):
+                    if 
 
 def prepairBuildItems(builditems):
     forkbase=None
