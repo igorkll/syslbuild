@@ -1155,7 +1155,7 @@ def prepairBuildItems(builditems):
                 buildLog(f"an attempt to fork without a single forkbase before that")
                 sys.exit(1)
             
-            forkCombine(builditem, forkbase, builditem.get("forkArraysCombine", False), ["forkbase", "fork", "forkArraysCombine"])
+            forkCombine(builditem, forkbase, builditem.get("forkArraysCombine", False), ["forkbase", "fork", "forkArraysCombine", "template"])
         
         if builditem.get("forkbase", False):
             forkbase = builditem
@@ -1163,7 +1163,7 @@ def prepairBuildItems(builditems):
     i = len(builditems) - 1
     while i >= 0:
         builditem = builditems[i]
-        if "architectures" in builditem and not architecture in builditem["architectures"]:
+        if builditem.get("template", False) or ("architectures" in builditem and not architecture in builditem["architectures"]):
             del builditems[i]
         i -= 1
 

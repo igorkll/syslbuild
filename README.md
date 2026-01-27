@@ -114,11 +114,13 @@ also, assembling a bootable img with an already installed system is also a separ
 * forkbase - this element becomes the base for creating forks
 * fork - it takes as a basis (forks) the nearest previous element from forkbase. When dictionaries merge, the matching keys (including arrays) overwrite each other. if the forkArraysCombine flag is set when creating a fork (not in forkbase!!!) the arrays do not overwrite each other, but complement each other.
 * forkArraysCombine - if this flag is set in builditem when creating a fork (not in forkbase!!!) When creating a fork, arrays do not overwrite but complement each other. by default, this flag has the value false.
+* template - this key is used to exclude any builditem from the build. created for use with forkbase. if you set it to true, this element will not participate in the build, but it can still be forked via forkbase. this tag is not inherited during fork
 
 # keys that are not inherited by fork
 * forkbase - these are the control keys of the fork itself, they are not inherited by the fork
 * fork
 * forkArraysCombine
+* template - this key is used to exclude any builditem from the build. created for use with forkbase
 
 ## debug
 * full disk image | with graphic | x86_64 | BIOS: qemu-system-x86_64 \
@@ -678,6 +680,37 @@ also, assembling a bootable img with an already installed system is also a separ
                 // "disable_printk.patch"
             ]
         },
+
+        // ---------------- template example
+
+
+        {
+            "forkbase": true,
+            "template": true, // template means that this builditem itself will not be assembled
+
+            "type": "kernel",
+            "name": "bzImage",
+            "export": false,
+
+            "headers_name": "kernel_headers",
+            "headers_export": false,
+
+            "modules_name": "kernel_modules",
+            "modules_export": false,
+
+            "kernel_source_url": "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.18.7.tar.xz",
+            "kernel_output_file": "bzImage",
+        },
+        {
+            "fork": true,
+            "architectures": ["amd64"],
+            "kernel_config": "kernel_config_amd64"
+        },
+        {
+            "fork": true,
+            "architectures": ["arm64"],
+            "kernel_config": "kernel_config_arm64"
+        }
     ]
 }
 ```
