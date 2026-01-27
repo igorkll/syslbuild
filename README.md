@@ -102,6 +102,9 @@ also, assembling a bootable img with an already installed system is also a separ
 
 ## builditem universal keys
 * architectures - if the builditem has an array with that name, then the build will only be performed if it has an architecture for which it is being built
+* forkbase - this element becomes the base for creating forks
+* fork - it takes as a basis (forks) the nearest previous element from forkbase. When dictionaries merge, the matching keys (including arrays) overwrite each other. if the forkArraysCombine flag is set when creating a fork (not in forkbase!!!) the arrays do not overwrite each other, but complement each other.
+* forkArraysCombine - if this flag is set in builditem when creating a fork (not in forkbase!!!) When creating a fork, arrays do not overwrite but complement each other
 
 ## debug
 * full disk image | with graphic | x86_64 | BIOS: qemu-system-x86_64 \
@@ -158,6 +161,7 @@ also, assembling a bootable img with an already installed system is also a separ
         // you can create forks, and even multiple forks from a single forkbase. This can be used, for example, for cross-assembly, to set up the assembly of some complex element once and then reuse it with minor differences for different architectures or platforms.
         // note that during the creation of the fork, all elements (including arrays) replace the forkbase elements, however, the dictionary does not replace but "complements" as if mixing two objects and replacing only matching keys.
         // forks are also processed before filtering architectures, which allows, for example, to make a forkbase for a certain architecture and a fork for another, and for example, to replace the repository for downloading packages with a repository for another architecture.
+        // if forkArraysCombine flag is set in builditem when creating a fork (not in forkbase!!!) When creating a fork, arrays do not overwrite but complement each other
         {
             "fork": true,
             "name": "custom-executable-alt1",
@@ -181,6 +185,7 @@ also, assembling a bootable img with an already installed system is also a separ
                     "test2" : 2,
                     "test3" : 3
                 },
+                "testArray": ["test1", "test2"],
                 "test1" : 1,
                 "test2" : 2,
                 "test3" : 3
@@ -191,11 +196,20 @@ also, assembling a bootable img with an already installed system is also a separ
 
             "example_dictionary": {
                 "inline_dictionary": {
-                    "test2" : 7 //
+                    "test2" : 7 //here you are replacing only test2 inside the inline_dictionary, you are not overwriting the rest of the keys inside the inline_dictionary
                 },
-                "test1" : 1,
-                "test2" : 2,
-                "test3" : 3
+                //here you have completely overwritten the array, that is, there will only be: ["test7", "test8"] in the array, and the old elements will disappear
+                "testArray": ["test7", "test8"]
+                //you also haven't touched any other elements inside the example_dictionary
+            }
+        },
+        {
+            "fork": true,
+            "forkArraysCombine": true,
+
+            "example_dictionary": {
+                // here you are not overwriting the old array, but rather adding elements to the end (thanks to the forkArraysCombine flag)
+                "testArray": ["test7", "test8"]
             }
         },
 

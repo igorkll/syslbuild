@@ -969,14 +969,13 @@ def prepairBuild():
 def prepairBuildItems(builditems):
     forkbase=None
     for builditem in builditems:
-        if builditem.get("forkbase", False):
-            forkbase = builditem
-        elif builditem.get("fork", False):
+        if builditem.get("fork", False):
             if forkbase == None:
                 buildLog(f"an attempt to fork without a single forkbase before that")
                 sys.exit(1)
-
-            
+        
+        if builditem.get("forkbase", False):
+            forkbase = builditem
 
     i = len(builditems) - 1
     while i >= 0:
