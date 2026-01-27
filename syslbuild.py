@@ -1065,9 +1065,9 @@ def buildKernel(item):
 qemuStaticNames = {
     "amd64": "qemu-x86_64-static",
     "i386": "qemu-i386-static",
-    "arm64": "qemu-arm64-static",
-    "armhf": "qemu-armhf-static",
-    "armel": "qemu-armel-static"
+    "arm64": "qemu-aarch64-static",
+    "armhf": "qemu-arm-static",
+    "armel": "qemu-arm-static"
 }
 
 def rawCrossChroot(chrootDirectory, chrootCommand):
@@ -1085,10 +1085,15 @@ def rawCrossChroot(chrootDirectory, chrootCommand):
     qemuStaticPath = pathConcat(chrootDirectory, "usr/bin", qemuStaticName)
 
     if boolCopyQemuStatic:
-        os.makedirs(exist_ok=True)
-        buildExecute(["cp", "/usr/bin/", qemuStaticPath])
+        os.makedirs(os.path.dirname(qemuStaticPath), exist_ok=True)
+        buildExecute(["cp", "-a", f"/usr/bin/{qemuStaticName}", qemuStaticPath])
+        buildExecute(["chmod", "0755", qemuStaticPath])
+        buildExecute(["chown", "0:0", qemuStaticPath])
 
     buildExecute(["chroot", chrootDirectory, chrootCommand])
+
+    if boolCopyQemuStatic:
+        os.remove(qemuStaticPath)
 
     for bindPath in bindList:
         buildRawExecute(f"umount /{bindPath}")
