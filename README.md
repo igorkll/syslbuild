@@ -655,6 +655,11 @@ these changes to the kernel config are applied automatically when building the k
         {
             "type": "update-initramfs",
 
+            // even though this builditem doesn't export anything,
+            // you should still give it a unique name like any other builditem.
+            // syslbuild uses this for internal caching mechanisms.
+            "name": "update-initramfs-6.18.7-custom",
+
             // the version of the kernel for which initramfs is being created
             "kernel_version": "6.18.7-custom",
 
