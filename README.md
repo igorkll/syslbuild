@@ -591,9 +591,11 @@ also, assembling a bootable img with an already installed system is also a separ
 
         // ---------------- creating your own custom core
         {
+            "architectures": ["amd64"],
             "forkbase": true,
+
             "type": "kernel",
-            "name": "custom_kernel",
+            "name": "custom_amd64_kernel",
             "export": false,
 
             // the url for downloading the kernel source code
@@ -614,8 +616,10 @@ also, assembling a bootable img with an already installed system is also a separ
             "kernel_config": "my_kernel_config"
         },
         {
+            "architectures": ["amd64"],
             "fork": true, 
-            "name": "custom_debug_kernel",
+
+            "name": "custom_amd64_debug_kernel",
 
             "patches": [
                 "disable_vt_swithing_from_keyboard.patch",
@@ -630,12 +634,11 @@ also, assembling a bootable img with an already installed system is also a separ
         {
             // perhaps you want a different kernel configuration to be used for a particular architecture. you can do this by combining fork and architectures.
             "architectures": ["armhf"],
-
             "fork": true, 
-            "name": "custom_arm_kernel",
 
-            "kernel_config": "my_arm_kernel_config",
-            "kernel_config_auto_architecture_migrate": false // in this case, you will not need migration if the configuration is already prepared for this architecture
+            "name": "custom_arm64_kernel",
+
+            "kernel_config": "my_arm_kernel_config"
         }
     ]
 }

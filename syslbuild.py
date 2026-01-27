@@ -950,7 +950,7 @@ def buildKernel(item):
         copyItemFiles(findItem(item["kernel_config"]), pathConcat(kernel_sources, ".config"))
 
     buildRawExecute(f"make {ARCH_STR} {CROSS_COMPILE_STR} -j$(nproc)")
-    buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "modules_install", "INSTALL_MOD_PATH=/path/to/rootfs"])
+    buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "modules_install", "INSTALL_MOD_PATH="])
 
 buildActions = {
     "debian": buildDebian,
