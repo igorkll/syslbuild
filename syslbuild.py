@@ -966,7 +966,7 @@ def prepairBuild():
     deleteDirectory(path_output_target)
     os.makedirs(path_output_target, exist_ok=True)
 
-def forkCombine(builditem, forkbase, forkArraysCombine=False, keysBlackList=None)
+def forkCombine(builditem, forkbase, forkArraysCombine=False, keysBlackList=None):
     for k, v in forkbase.items():
         if not keysBlackList or k not in keysBlackList:
             if k not in builditem:
