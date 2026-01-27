@@ -1099,7 +1099,7 @@ def rawCrossChroot(chrootDirectory, chrootCommand):
         buildRawExecute(f"umount /{bindPath}")
 
 def updateInitramfs(item):
-    buildExecute(["update-initramfs", "-c", "-k", item["kernel_version"], "-b", findItem(item["rootfs"])])
+    rawCrossChroot(findItem(item["rootfs"]), f"update-initramfs -c -k {item["kernel_version"]}")
 
 buildActions = {
     "debian": buildDebian,
