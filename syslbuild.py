@@ -1005,7 +1005,10 @@ def update_kernel_config(kernel_sources):
 
 def modifyKernelConfig(item, kernel_sources):
     kernel_config_path = pathConcat(kernel_sources, ".config")
+
+    # I'm disabling this for some patches to work correctly
     set_kernel_config_parameter(kernel_config_path, "CONFIG_WERROR", "n")
+    
     update_kernel_config(kernel_sources)
 
 def buildKernel(item):
