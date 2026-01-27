@@ -52,6 +52,9 @@ also, assembling a bootable img with an already installed system is also a separ
 * arm-linux-gnueabihf-gcc
 * arm-linux-gnueabi-gcc
 * grub-mkrescue/xorriso - to build iso images
+* tar
+* make
+* update-initramfs
 
 ## docs
 * mmdebstrap: https://manpages.debian.org/testing/mmdebstrap/mmdebstrap.1.en.html
