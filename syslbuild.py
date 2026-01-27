@@ -1036,10 +1036,17 @@ def buildKernel(item):
     CROSS_COMPILE_STR = f"CROSS_COMPILE={CROSS_COMPILE}-"
     buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "defconfig"], True, None, kernel_sources)
 
+    kernel_config_path = pathConcat(kernel_sources, ".config")
+
     if "kernel_config" in item:
-        copyItemFiles(findItem(item["kernel_config"]), pathConcat(kernel_sources, ".config"))
+        copyItemFiles(findItem(item["kernel_config"]), kernel_config_path)
 
     modifyKernelConfig(item, kernel_sources)
+
+    if "result_config_name" in item:
+        buildLog(f"exporting result kernel config...")
+        export_path = getCustomItemPath(item, "result_config_name", "result_config_export")
+        copyItemFiles(kernel_config_path, export_path)
 
     buildRawExecute(f"make {ARCH_STR} {CROSS_COMPILE_STR} -j$(nproc)", True, kernel_sources)
 
