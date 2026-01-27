@@ -106,6 +106,11 @@ also, assembling a bootable img with an already installed system is also a separ
 * fork - it takes as a basis (forks) the nearest previous element from forkbase. When dictionaries merge, the matching keys (including arrays) overwrite each other. if the forkArraysCombine flag is set when creating a fork (not in forkbase!!!) the arrays do not overwrite each other, but complement each other.
 * forkArraysCombine - if this flag is set in builditem when creating a fork (not in forkbase!!!) When creating a fork, arrays do not overwrite but complement each other. by default, this flag has the value false.
 
+# keys that are not inherited by fork
+* forkbase - these are the control keys of the fork itself, they are not inherited by the fork
+* fork
+* forkArraysCombine
+
 ## debug
 * full disk image | with graphic | x86_64 | BIOS: qemu-system-x86_64 \
   -m 2048 -smp 4 \

@@ -973,7 +973,10 @@ def forkCombine(builditem, forkbase, forkArraysCombine=False, keysBlackList=None
                 builditem[k] = v
             elif isinstance(v, list):
                 if forkArraysCombine and isinstance(builditem[k], list):
-                    if 
+                    builditem[k] = v + builditem[k]
+            elif isinstance(v, dict):
+                if isinstance(builditem[k], dict):
+                    forkCombine(builditem[k], v, forkArraysCombine)
 
 def prepairBuildItems(builditems):
     forkbase=None
