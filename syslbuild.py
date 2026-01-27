@@ -1127,7 +1127,7 @@ def rawCrossChroot(chrootDirectory, chrootCommand):
         buildExecute(["chmod", "0755", qemuStaticPath])
         buildExecute(["chown", "0:0", qemuStaticPath])
 
-    buildExecute(["chroot", chrootDirectory, chrootCommand])
+    buildExecute(["chroot", chrootDirectory] + chrootCommand)
 
     if boolCopyQemuStatic:
         os.remove(qemuStaticPath)
@@ -1136,7 +1136,7 @@ def rawCrossChroot(chrootDirectory, chrootCommand):
         buildRawExecute(f"umount /{bindPath}")
 
 def updateInitramfs(item):
-    rawCrossChroot(findItem(item["rootfs"]), f"update-initramfs -c -k {item["kernel_version"]}")
+    rawCrossChroot(findItem(item["rootfs"]), ["update-initramfs", "-c" "-k", item["kernel_version"]])
 
 buildActions = {
     "debian": buildDebian,
