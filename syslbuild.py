@@ -1098,7 +1098,7 @@ def checkQemuStaticNeed():
         buildLog(f"the host architecture ({hostArchitecture}) is compatible with the target architecture ({architecture}) we do not use qemu-static")
         return False
 
-    buildLog(f"the host architecture ({hostArchitecture}) is compatible with the target architecture ({architecture}) we do not use qemu-static")
+    buildLog(f"the host architecture ({hostArchitecture}) is NOT compatible with the target architecture ({architecture}), we use qemu-static")
     return True
 
 def rawCrossChroot(chrootDirectory, chrootCommand):
@@ -1121,6 +1121,7 @@ def rawCrossChroot(chrootDirectory, chrootCommand):
         boolCopyQemuStatic = False
 
     if boolCopyQemuStatic:
+        buildLog(f"copying qemu-static ({qemuStaticName})")
         os.makedirs(os.path.dirname(qemuStaticPath), exist_ok=True)
         buildExecute(["cp", "-a", qemuStaticHostPath, qemuStaticPath])
         buildExecute(["chmod", "0755", qemuStaticPath])
