@@ -14,17 +14,28 @@ import hashlib
 
 path_output = "output"
 path_temp = ".temp"
-path_temp_cache = os.path.join(path_temp, "cache")
-path_temp_cache_pacman = os.path.join(path_temp_cache, "pacman")
+path_temp_temp = os.path.join(path_temp, "temp")
 path_logs = os.path.join(path_temp, "logs")
-path_build = os.path.join(path_temp, "build")
-path_build_checksums = os.path.join(path_temp, "build_checksums")
 path_mount = os.path.join(path_temp, "mount")
 path_mount2 = os.path.join(path_temp, "mount2")
-path_temp_temp = os.path.join(path_temp, "temp")
-path_temp_pacman_conf = os.path.join(path_temp, "pacman.conf")
-path_temp_cache_kernel_sources = os.path.join(path_temp_cache, "downloaded_kernel_sources")
-path_temp_kernel_build = os.path.join(path_temp, "last_kernel_build")
+path_temp_kernel_sources = os.path.join(path_temp, "downloaded_kernel_sources")
+
+def loadTempPaths():
+    global path_temp_architecture
+    global path_build
+    global path_build_checksums
+    global path_temp_cache_pacman
+    global path_temp_pacman_conf
+    global path_temp_kernel_build
+    
+    path_temp_architecture = os.path.join(path_temp, architecture)
+    os.makedirs(path_temp_architecture, exist_ok=True)
+    
+    path_build = os.path.join(path_temp_architecture, "build")
+    path_build_checksums = os.path.join(path_temp_architecture, "build_checksums")
+    path_temp_cache_pacman = os.path.join(path_temp_architecture, "pacman")
+    path_temp_pacman_conf = os.path.join(path_temp_architecture, "pacman.conf")
+    path_temp_kernel_build = os.path.join(path_temp_architecture, "last_kernel_build")
 
 aeval = asteval.Interpreter()
 
@@ -919,9 +930,9 @@ def buildInitramfs(item):
 
 def downloadKernel(url, unpacker):
     url_hash = hashlib.md5(url)
-    kernel_sources = pathConcat(path_temp_cache_kernel_sources, url_hash)
-    kernel_sources_downloaded_flag = pathConcat(path_temp_cache_kernel_sources, url_hash + ".downloaded")
-    kernel_sources_archive = pathConcat(path_temp_cache_kernel_sources, url_hash)
+    kernel_sources = pathConcat(path_temp_kernel_sources, url_hash)
+    kernel_sources_downloaded_flag = pathConcat(path_temp_kernel_sources, url_hash + ".downloaded")
+    kernel_sources_archive = pathConcat(path_temp_kernel_sources, url_hash)
 
     if os.path.isdir(kernel_sources) and os.path.isfile(kernel_sources_downloaded_flag):
         return kernel_sources
@@ -1143,6 +1154,7 @@ if __name__ == "__main__":
     requireRoot()
     
     architecture = args.arch
+    loadTempPaths()
     log_file = getLogFile()
 
     buildLog("Syslbuild info:")
@@ -1165,6 +1177,7 @@ if __name__ == "__main__":
                 
                 for arch in projectData["architectures"]:
                     architecture = arch
+                    loadTempPaths()
                     buildProject(args.json_path)
             else:
                 buildLog("Architectures list is not defined in project json")
