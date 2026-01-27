@@ -150,6 +150,7 @@ these changes to the kernel config are applied automatically when building the k
 * exporting the resulting kernel config when building the kernel
 * execution of arbitrary scripts in the system's chroot, with qemu-static support for execution during assembly for a different architecture
 * support for the operation (packing and unpacking) of initramfs with a multiblock structure
+* built-in export support for popular single-boarders and pine phone and librem 5. I want to make a builditem that downloads the bootloader for the specified single-board itself and builds the image using the transferred kernel, rootfs, initramfs and settings
 
 ## project example
 ```json
@@ -267,7 +268,7 @@ these changes to the kernel config are applied automatically when building the k
             "export": false,
 
             "source": "custom initramfs directory",
-            "compressor": "gzip -9"
+            "compressor": "gzip -9" //optional
         },
 
         // ---------------- making root fs
@@ -614,6 +615,8 @@ these changes to the kernel config are applied automatically when building the k
             "name": "custom_amd64_kernel",
             "export": false,
 
+            // note that "headers_name" and "modules_name" should usually be installed in the /usr subdirectory inside rootfs and not in /
+
             "headers_name": "custom_amd64_kernel_headers",
             "headers_export": false,
 
@@ -668,7 +671,9 @@ these changes to the kernel config are applied automatically when building the k
 
             // the rootfs (directory) where initramfs is created
             // this is not shown here, but the modules of the kernel for which you are generating initramfs should be installed in this rootfs
-            "rootfs": "my_rootfs_with_kernel_modules"
+            "rootfs": "my_rootfs_with_kernel_modules",
+
+            "compressor": "gzip -9" //optional
         },
         {
             "architectures": ["amd64"],

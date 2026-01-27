@@ -927,7 +927,7 @@ def buildInitramfs(item):
     buildRawExecute(f"find . -print0 | cpio --null -ov --format=newc > \"{outputPath}\"", True, source)
 
     if "compressor" in item:
-        buildRawExecute(f"gzip -9 < \"{outputPath}\" > \"{realOutputPath}\"", True)
+        buildRawExecute(f"{item["compressor"]} < \"{outputPath}\" > \"{realOutputPath}\"", True)
 
 def get_file_extension(url):
     path = urllib.parse.urlparse(url).path
@@ -1063,7 +1063,17 @@ def buildKernel(item):
         buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "headers_install", f"INSTALL_HDR_PATH={os.path.abspath(export_path)}"], True, None, kernel_sources)
 
 def updateInitramfs(item):
-    buildExecute(["update-initramfs", "-c", "-k", item["kernel_version"], "-b", findItem(item["rootfs"])])
+    realOutputPath = findItem(item["rootfs"])
+    
+    if "compressor" in item:
+        outputPath = os.path.abspath(getTempPath("temp.cpio"))
+    else:
+        outputPath = realOutputPath
+
+    buildExecute(["update-initramfs", "-c", "-k", item["kernel_version"], "-b", outputPath])
+
+    if "compressor" in item:
+        buildRawExecute(f"{item["compressor"]} < \"{outputPath}\" > \"{realOutputPath}\"", True)
 
 buildActions = {
     "debian": buildDebian,
