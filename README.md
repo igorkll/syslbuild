@@ -104,7 +104,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * architectures - if the builditem has an array with that name, then the build will only be performed if it has an architecture for which it is being built
 * forkbase - this element becomes the base for creating forks
 * fork - it takes as a basis (forks) the nearest previous element from forkbase. When dictionaries merge, the matching keys (including arrays) overwrite each other. if the forkArraysCombine flag is set when creating a fork (not in forkbase!!!) the arrays do not overwrite each other, but complement each other.
-* forkArraysCombine - if this flag is set in builditem when creating a fork (not in forkbase!!!) When creating a fork, arrays do not overwrite but complement each other
+* forkArraysCombine - if this flag is set in builditem when creating a fork (not in forkbase!!!) When creating a fork, arrays do not overwrite but complement each other. by default, this flag has the value false.
 
 ## debug
 * full disk image | with graphic | x86_64 | BIOS: qemu-system-x86_64 \

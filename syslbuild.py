@@ -966,6 +966,9 @@ def prepairBuild():
     deleteDirectory(path_output_target)
     os.makedirs(path_output_target, exist_ok=True)
 
+def forkCombine(builditem, forkbase, forkArraysCombine=False, keysBlackList=None)
+    pass
+
 def prepairBuildItems(builditems):
     forkbase=None
     for builditem in builditems:
@@ -973,6 +976,8 @@ def prepairBuildItems(builditems):
             if forkbase == None:
                 buildLog(f"an attempt to fork without a single forkbase before that")
                 sys.exit(1)
+            
+            forkCombine(builditem, forkbase, builditem.get("forkArraysCombine", False), ["forkbase", "fork", "forkArraysCombine"])
         
         if builditem.get("forkbase", False):
             forkbase = builditem
