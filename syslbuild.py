@@ -1143,7 +1143,7 @@ def rawCrossChroot(chrootDirectory, chrootCommand):
         os.remove(qemuStaticPath)
 
     for bindPath in bindList:
-        buildRawExecute(f"umount /{bindPath}")
+        buildRawExecute(f"umount \"{pathConcat(chrootDirectory, bindPath)}\"")
 
 def updateInitramfs(item):
     rawCrossChroot(findItem(item["rootfs"]), ["update-initramfs", "-c", "-k", item["kernel_version"]])
