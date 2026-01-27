@@ -484,9 +484,17 @@ def grubIsoImage(item):
     else:
         with open(grub_cfg_path, "w") as f:
             if "kernel" in item:
+                if item.get("show_boot_process", False):
+                    f.write("echo \"Loading linux kernel...\"\n")
                 f.write("linux /boot/vmlinuz " + item.get("kernel_args", "") + "\n")
+
             if "initramfs" in item:
+                if item.get("show_boot_process", False):
+                    f.write("echo \"Loading initramdisk...\"\n")
                 f.write("initrd /boot/initrd.img\n")
+
+            if item.get("show_boot_process", False):
+                f.write("echo \"Booting...\"\n")
             f.write("boot\n")
         changeAccessRights(grub_cfg_path, DEFAULT_RIGHTS)
 
