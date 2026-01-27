@@ -6,11 +6,12 @@ WARNING!!! if you read this text from GITHUB page please, download a release and
 * the program requires root access because it mounts images
 * WARNING! syslbuild runs from root during the build process, and the project can run code on the host system at the time of build.
 * for this reason, treat syslbuild projects as executable files with full access. since they can execute code from root on the host system at the time of build
-* if you don't want to run this on the host system to avoid providing root access, you can run this in a container
+* if you don't want to run this on the host system to avoid providing root access, you can run this in a container / VM
 * syslbuild allows you to automate the distribution build process, which is suitable for small custom distributions
 * syslbuild is focused on building distributions for embedded systems (kiosks, navigators, and DVRs)
 * in syslbuild, the build process is described by writing json with individual build elements (filesystems, kernels, bootloaders)
 * syslbuild is able to create a boot image with a partition table itself, which can be convenient for creating a complete firmware.
+* please note that in syslbuild, the runtime environment may affect the build result. a better solution would be to create one VM for the entire project and build the project on that VM. it is better that the architecture matches the target architecture of the assembly, although this is not necessary due to qemu-static
 
 ## you may also be interested in
 * https://github.com/igorkll/linux-embedded-patchs - a set of patches for using the linux kernel on embedded locked-down devices
