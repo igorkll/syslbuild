@@ -230,7 +230,7 @@ def getItemFolder(item):
     return path
 
 def getCustomItemFolder(item, nameName, exportName):
-    path = getItemPath(item, nameName, exportName)
+    path = getCustomItemPath(item, nameName, exportName)
     deleteDirectory(path)
     os.makedirs(path, exist_ok=True)
     
