@@ -23,6 +23,8 @@ path_mount = os.path.join(path_temp, "mount")
 path_mount2 = os.path.join(path_temp, "mount2")
 path_temp_temp = os.path.join(path_temp, "temp")
 path_temp_pacman_conf = os.path.join(path_temp, "pacman.conf")
+path_temp_cache_kernel_sources = os.path.join(path_temp_cache, "downloaded_kernel_sources")
+path_temp_kernel_build = os.path.join(path_temp, "last_kernel_build")
 
 aeval = asteval.Interpreter()
 
@@ -336,6 +338,10 @@ def makeChown(path, chownList):
         cmd.append(chownStr(chownAction[1], chownAction[2]))
         cmd.append(pathConcat(path, chownAction[0]))
         buildExecute(cmd)
+
+def emptyFile(path):
+    with open(path, "w") as f:
+        pass
 
 debianKernelArchitectureAliases = {
     "i386": "686"
@@ -891,6 +897,60 @@ def buildInitramfs(item):
     if "compressor" in item:
         buildRawExecute(f"gzip -9 < \"{outputPath}\" > \"{realOutputPath}\"", True)
 
+def downloadKernel(url, unpacker):
+    url_hash = hashlib.md5(url)
+    kernel_sources = pathConcat(path_temp_cache_kernel_sources, url_hash)
+    kernel_sources_downloaded_flag = pathConcat(path_temp_cache_kernel_sources, url_hash + ".downloaded")
+    kernel_sources_archive = pathConcat(path_temp_cache_kernel_sources, url_hash)
+
+    if os.path.isdir(kernel_sources) and os.path.isfile(kernel_sources_downloaded_flag):
+        return kernel_sources
+    else:
+        os.makedirs(kernel_sources, exist_ok=True)
+        downloadFile(url, kernel_sources_archive)
+        buildRawExecute(unpacker % (kernel_sources_archive, kernel_sources), True, source)
+        emptyFile(kernel_sources_downloaded_flag)
+    
+
+def copyKernel(kernel_sources):
+    deleteDirectory(path_temp_kernel_build)
+    os.makedirs(path_temp_kernel_build, exist_ok=True)
+    copyItemFiles(kernel_sources, path_temp_kernel_build)
+    return path_temp_kernel_build
+
+def patchKernel(kernel_sources, patches):
+    pass
+
+kernelArchitectures = {
+    "amd64": "x86_64",
+    "i386": "x86",
+    "arm64": "arm64",
+    "armhf": "arm",
+    "armel": "arm"
+}
+
+def buildKernel(item):
+    kernel_sources = copyKernel(
+        downloadKernel(
+            item["kernel_source_url"],
+            item.get("kernel_source_unpacker", "tar -xJf %s -C %s --strip-components=1")
+        )
+    )
+
+    if "patches" in item:
+        patchKernel(kernel_sources, item["patches"])
+
+    CROSS_COMPILE = gccNames[architecture]
+    ARCH = kernelArchitectures[architecture]
+
+    buildExecute(["make ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- defconfig"])
+
+    if "kernel_config" in item:
+        copyItemFiles(findItem(item["kernel_config"]), pathConcat(kernel_sources, ".config"))
+
+
+    
+
 buildActions = {
     "debian": buildDebian,
     "download": buildDownload,
@@ -904,7 +964,8 @@ buildActions = {
     "arch-linux": archLinuxBuild,
     "arch-package": archLinuxPackage,
     "grub-iso-image": grubIsoImage,
-    "unpack-initramfs": unpackInitramfs
+    "unpack-initramfs": unpackInitramfs,
+    "kernel": buildKernel
 }
 
 cachedBuildActions = [

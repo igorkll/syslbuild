@@ -131,6 +131,10 @@ also, assembling a bootable img with an already installed system is also a separ
   -drive if=pflash,format=raw,file=output/OVMF_VARS.fd
 * iso image | x86 | BIOS: qemu-system-i386 -cdrom output/i386/lifeimage.iso -boot d -m 2048
 
+## roadmap
+* make a normal caching system
+* add the ability to add additional files to the iso images
+
 ## project example
 ```json
 {
@@ -595,6 +599,8 @@ also, assembling a bootable img with an already installed system is also a separ
             // the url for downloading the kernel source code
             // single-board computers like the orange pi usually require their own core
             "kernel_source_url": "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.18.7.tar.xz",
+            // you can specify a custom unpacker for the kernel source code. by default "tar -xJf %s -C %s --strip-components=1"
+            "kernel_source_unpacker": "tar -xJf %s -C %s --strip-components=1",
 
             // examples are taken from here: https://github.com/igorkll/linux-embedded-patchs
             // these are quite real patches, and they work
@@ -605,9 +611,7 @@ also, assembling a bootable img with an already installed system is also a separ
                 "disable_printk.patch" // will make the kernel shut up
             ],
 
-            // specify your kernel configuration. you can also specify the "kernel_config_auto_architecture_migrate" flag (false by default) so that your config will automatically migrate to the architecture for which the build is being built.
-            "kernel_config": "my_kernel_config",
-            "kernel_config_auto_architecture_migrate": true
+            "kernel_config": "my_kernel_config"
         },
         {
             "fork": true, 
