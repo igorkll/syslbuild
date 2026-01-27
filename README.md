@@ -151,8 +151,54 @@ also, assembling a bootable img with an already installed system is also a separ
             //"sources": []
             "sources-dirs": ["my-sources"],
             "sources-dirs-extensions": [".c", ".cpp"], //optional. if this is not specified, syslbuild will take all files.
-            "sources-dirs-recursive": true
+            "sources-dirs-recursive": true,
+            
+            "forkbase": true //marking the builditem as the base for creating forks
         },
+        // you can create forks, and even multiple forks from a single forkbase. This can be used, for example, for cross-assembly, to set up the assembly of some complex element once and then reuse it with minor differences for different architectures or platforms.
+        // note that during the creation of the fork, all elements (including arrays) replace the forkbase elements, however, the dictionary does not replace but "complements" as if mixing two objects and replacing only matching keys.
+        // forks are also processed before filtering architectures, which allows, for example, to make a forkbase for a certain architecture and a fork for another, and for example, to replace the repository for downloading packages with a repository for another architecture.
+        {
+            "fork": true,
+            "name": "custom-executable-alt1",
+
+            "LDFLAGS": [
+                "-alt-gcc-ldflags"
+            ]
+        },
+        {
+            "fork": true,
+            "forkbase": true, //A builditem can be both a fork and a forkbase at the same time.
+            "name": "custom-executable-alt2",
+
+            "CFLAGS": [
+                "-alt-gcc-cflags"
+            ],
+
+            "example_dictionary": {
+                "inline_dictionary": {
+                    "test1" : 1,
+                    "test2" : 2,
+                    "test3" : 3
+                },
+                "test1" : 1,
+                "test2" : 2,
+                "test3" : 3
+            }
+        },
+        {
+            "fork": true, //here you fork the previous builditem because it is the closest forkbase
+
+            "example_dictionary": {
+                "inline_dictionary": {
+                    "test2" : 7 //
+                },
+                "test1" : 1,
+                "test2" : 2,
+                "test3" : 3
+            }
+        },
+
         {
             "type": "directory",
             "name": "custom initramfs directory",

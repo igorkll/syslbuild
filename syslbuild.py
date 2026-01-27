@@ -967,13 +967,23 @@ def prepairBuild():
     os.makedirs(path_output_target, exist_ok=True)
 
 def prepairBuildItems(builditems):
-    i = 0
-    while i < len(builditems):
+    forkbase=None
+    for builditem in builditems:
+        if builditem.get("forkbase", False):
+            forkbase = builditem
+        elif builditem.get("fork", False):
+            if forkbase == None:
+                buildLog(f"an attempt to fork without a single forkbase before that")
+                sys.exit(1)
+
+            
+
+    i = len(builditems) - 1
+    while i >= 0:
         builditem = builditems[i]
         if "architectures" in builditem and not architecture in builditem["architectures"]:
             del builditems[i]
-        else:
-            i += 1
+        i -= 1
 
     for index, item in enumerate(builditems):
         item["__item_index"] = index + 1
