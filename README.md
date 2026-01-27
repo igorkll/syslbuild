@@ -633,13 +633,26 @@ also, assembling a bootable img with an already installed system is also a separ
         },
         {
             // perhaps you want a different kernel configuration to be used for a particular architecture. you can do this by combining fork and architectures.
-            "architectures": ["armhf"],
+            "architectures": ["arm64"],
             "fork": true, 
 
             "name": "custom_arm64_kernel",
-
             "kernel_config": "my_arm_kernel_config"
-        }
+        },
+        {
+            "architectures": ["arm64"],
+            "fork": true, 
+
+            "name": "custom_arm64_debug_kernel",
+            "kernel_config": "my_arm_kernel_config",
+
+            "patches": [
+                "disable_vt_swithing_from_keyboard.patch",
+                "disable_sysrq.patch",
+                "disable_cad.patch"
+                // "disable_printk.patch"
+            ]
+        },
     ]
 }
 ```
