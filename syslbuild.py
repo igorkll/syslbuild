@@ -948,14 +948,13 @@ def downloadKernel(url, unpacker):
     kernel_sources_downloaded_flag = pathConcat(path_temp_kernel_sources, url_hash + ".downloaded")
     kernel_sources_archive = pathConcat(path_temp_kernel_sources, url_hash + get_file_extension(url))
 
-    if os.path.isdir(kernel_sources) and os.path.isfile(kernel_sources_downloaded_flag):
-        return kernel_sources
-    else:
+    if not os.path.isdir(kernel_sources) or not os.path.isfile(kernel_sources_downloaded_flag):
         os.makedirs(kernel_sources, exist_ok=True)
         downloadFile(url, kernel_sources_archive)
-        buildRawExecute(unpacker % (kernel_sources_archive, kernel_sources), True, source)
+        buildRawExecute(unpacker % (kernel_sources_archive, kernel_sources))
         emptyFile(kernel_sources_downloaded_flag)
     
+    return kernel_sources
 
 def copyKernel(kernel_sources):
     deleteDirectory(path_temp_kernel_build)
@@ -964,7 +963,8 @@ def copyKernel(kernel_sources):
     return path_temp_kernel_build
 
 def patchKernel(kernel_sources, patches):
-    pass
+    for patchPath in patches:
+        buildRawExecute(f"patch -p1 < {findItem(patchPath)}", True, kernel_sources)
 
 kernelArchitectures = {
     "amd64": "x86_64",
