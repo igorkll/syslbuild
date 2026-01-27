@@ -997,7 +997,7 @@ def buildKernel(item):
     buildRawExecute(f"make {ARCH_STR} {CROSS_COMPILE_STR} -j$(nproc)", True, kernel_sources)
 
     kernel_output_filename = item.get("kernel_output_file", "bzImage")
-    kernel_output_file = pathConcat(kernel_sources, "arch", kernelArchitectures[architecture], kernel_output_filename)
+    kernel_output_file = pathConcat(kernel_sources, "arch", kernelArchitectures[architecture], "boot", kernel_output_filename)
     if os.path.isfile(kernel_output_file):
         copyItemFiles(kernel_output_file, getItemPath(item))
     else:
