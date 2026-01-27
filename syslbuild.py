@@ -12,6 +12,7 @@ import math
 import re
 import hashlib
 import urllib.parse
+import platform
 
 path_output = "output"
 path_temp = ".temp"
