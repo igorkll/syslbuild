@@ -1111,7 +1111,7 @@ def rawCrossChroot(chrootDirectory, chrootCommand):
     for bindPath in bindList:
         buildRawExecute(f"mount --bind /{bindPath} \"{pathConcat(chrootDirectory, bindPath)}\"")
 
-    boolCopyQemuStatic = True
+    boolCopyQemuStatic = checkQemuStaticNeed()
     qemuStaticName = qemuStaticNames[architecture]
     qemuStaticHostPath = f"/usr/bin/{qemuStaticName}"
     qemuStaticPath = pathConcat(chrootDirectory, "usr/bin", qemuStaticName)
@@ -1136,7 +1136,7 @@ def rawCrossChroot(chrootDirectory, chrootCommand):
         buildRawExecute(f"umount /{bindPath}")
 
 def updateInitramfs(item):
-    rawCrossChroot(findItem(item["rootfs"]), ["update-initramfs", "-c" "-k", item["kernel_version"]])
+    rawCrossChroot(findItem(item["rootfs"]), ["update-initramfs", "-c", "-k", item["kernel_version"]])
 
 buildActions = {
     "debian": buildDebian,
