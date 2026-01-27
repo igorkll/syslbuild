@@ -940,10 +940,9 @@ def buildKernel(item):
     if "patches" in item:
         patchKernel(kernel_sources, item["patches"])
 
-    CROSS_COMPILE = gccNames[architecture]
     ARCH = kernelArchitectures[architecture]
-
-    buildExecute(["make ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- defconfig"])
+    CROSS_COMPILE = gccNames[architecture]
+    buildExecute(["make", f"ARCH={ARCH}", f"CROSS_COMPILE={CROSS_COMPILE}-", "defconfig"])
 
     if "kernel_config" in item:
         copyItemFiles(findItem(item["kernel_config"]), pathConcat(kernel_sources, ".config"))
