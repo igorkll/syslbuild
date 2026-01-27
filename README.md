@@ -136,6 +136,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * add the ability to add additional files to the iso images
 * the ability to specify changes for kernel config parameters directly in the builditem of the kernel build
 * exporting the resulting kernel config when building the kernel
+* execution of arbitrary scripts in the system's chroot, with qemu-static support for execution during assembly for a different architecture
 
 ## project example
 ```json
