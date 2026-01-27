@@ -1006,8 +1006,13 @@ def update_kernel_config(kernel_sources):
 def modifyKernelConfig(item, kernel_sources):
     kernel_config_path = pathConcat(kernel_sources, ".config")
 
-    # I'm disabling this for some patches to work correctly
-    set_kernel_config_parameter(kernel_config_path, "CONFIG_WERROR", "n")
+    if "kernel_config_changes" in item:
+        for change in item["kernel_config_changes"]:
+            set_kernel_config_parameter(kernel_config_path, change[0], change[1])
+
+    if not item.get("kernel_config_disable_default_changes", False):
+        # I'm disabling this for some patches to work correctly
+        set_kernel_config_parameter(kernel_config_path, "CONFIG_WERROR", "n")
     
     update_kernel_config(kernel_sources)
 
@@ -1057,7 +1062,8 @@ def buildKernel(item):
         export_path = getCustomItemFolder(item, "headers_name", "headers_export")
         buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "headers_install", f"INSTALL_HDR_PATH={os.path.abspath(export_path)}"], True, None, kernel_sources)
 
-    
+def updateInitramfs(item):
+    buildExecute(["update-initramfs", "-c", "-k", item["kernel_version"], "-b", findItem(item["rootfs"])])
 
 buildActions = {
     "debian": buildDebian,
@@ -1073,7 +1079,8 @@ buildActions = {
     "arch-package": archLinuxPackage,
     "grub-iso-image": grubIsoImage,
     "unpack-initramfs": unpackInitramfs,
-    "kernel": buildKernel
+    "kernel": buildKernel,
+    "update-initramfs": updateInitramfs
 }
 
 cachedBuildActions = [

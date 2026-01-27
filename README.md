@@ -80,7 +80,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * full-disk-image - creates a bootable image of a raw img disk that can be written to the root of the disk via dd or some etcher and it will immediately become bootable (the ability to boot depends on the settings)
 * from-directory - extracts a file/directory from a directory
 * gcc-build - builds something through GCC
-* kernel - NOT IMPLEMENTED NOW
+* kernel - builds the core. you can provide a link to the kernel source code, patches for it, and the kernel config
 * initramfs - collects initramfs from a directory
 * grub-iso-image - collects the bootable iso
 * unpack-initramfs - unpacking initramfs
@@ -116,11 +116,15 @@ also, assembling a bootable img with an already installed system is also a separ
 * forkArraysCombine - if this flag is set in builditem when creating a fork (not in forkbase!!!) When creating a fork, arrays do not overwrite but complement each other. by default, this flag has the value false.
 * template - this key is used to exclude any builditem from the build. created for use with forkbase. if you set it to true, this element will not participate in the build, but it can still be forked via forkbase. this tag is not inherited during fork
 
-# keys that are not inherited by fork
+## keys that are not inherited by fork
 * forkbase - these are the control keys of the fork itself, they are not inherited by the fork
 * fork
 * forkArraysCombine
 * template - this key is used to exclude any builditem from the build. created for use with forkbase
+
+## default kernel config changes
+these changes to the kernel config are applied automatically when building the kernel in syslbuild unless the "kernel_config_disable_default_changes" parameter is set to true
+* CONFIG_WERROR=n - this is necessary for the functionality of some of my patches
 
 ## debug
 * full disk image | with graphic | x86_64 | BIOS: qemu-system-x86_64 \
@@ -632,7 +636,31 @@ also, assembling a bootable img with an already installed system is also a separ
                 "disable_printk.patch" // will make the kernel shut up
             ],
 
-            "kernel_config": "my_kernel_config"
+            "kernel_config": "my_kernel_config",
+
+            // if set to true, syslbuild will not make the standard kernel config changes that it makes
+            // This list can be found above.
+            "kernel_config_disable_default_changes": false,
+            "kernel_config_changes": [
+                // these are standard changes to the kernel config that syslbuild makes by itself without saying anything unless the "kernel_config_disable_default_changes" parameter is set
+                // he does this for the health of some of my patches.
+                // ["CONFIG_WERROR", "n"],
+
+                // for example, you can set the LOCALVERSION for the kernel
+                // the values end up in the config as you describe them here. for this reason, you need to use the second quotation marks for the strings
+                ["CONFIG_LOCALVERSION", "\"-custom\""],
+                ["CONFIG_LOCALVERSION_AUTO", "n"]
+            ]
+        },
+        {
+            "type": "update-initramfs",
+
+            // the version of the kernel for which initramfs is being created
+            "kernel_version": "6.18.7-custom",
+
+            // the rootfs (directory) where initramfs is created
+            // this is not shown here, but the modules of the kernel for which you are generating initramfs should be installed in this rootfs
+            "rootfs": "my_rootfs_with_kernel_modules"
         },
         {
             "architectures": ["amd64"],
