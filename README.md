@@ -1,6 +1,7 @@
 # syslbuild 0.1.0
-an build system for creating Linux distributions. it is focused on embedded distributions 
-DOWNLOAD THE RELEASE, NOT THE REPOSITORY!
+an build system for creating Linux distributions. it is focused on embedded distributions  
+DOWNLOAD THE RELEASE, NOT THE REPOSITORY!  
+WARNING!!! if you read this text from GITHUB page please, download a release and read description there. on github this text is DEV syslbuild version (not released yet)  
 * the program requires root access because it mounts images
 * WARNING! syslbuild runs from root during the build process, and the project can run code on the host system at the time of build.
 * for this reason, treat syslbuild projects as executable files with full access. since they can execute code from root on the host system at the time of build
@@ -9,6 +10,10 @@ DOWNLOAD THE RELEASE, NOT THE REPOSITORY!
 * syslbuild is focused on building distributions for embedded systems (kiosks, navigators, and DVRs)
 * in syslbuild, the build process is described by writing json with individual build elements (filesystems, kernels, bootloaders)
 * syslbuild is able to create a boot image with a partition table itself, which can be convenient for creating a complete firmware.
+
+## you may also be interested in
+* https://github.com/igorkll/linux-embedded-patchs - a set of patches for using the linux kernel on embedded locked-down devices
+* https://github.com/igorkll/WinBox-Maker - a program for creating embedded Windows images
 
 ## build process
 you create a folder and in it a json file with a description of the project  
@@ -578,6 +583,55 @@ also, assembling a bootable img with an already installed system is also a separ
             "initramfs": "initrd.img", //the parameter is optional and is not required if initramdisk is embedded in the kernel
             "show_boot_process": false, //shows the download output. does not work with config parameters
             "config": "config.cfg" //if you specify your config, the kernel_args and show_boot_process parameters will not work, since the kernel parameters are set in your config
+        },
+
+        // ---------------- creating your own custom core
+        {
+            "forkbase": true,
+            "type": "kernel",
+            "name": "custom_kernel",
+            "export": false,
+
+            // the url for downloading the kernel source code
+            // single-board computers like the orange pi usually require their own core
+            "kernel_source_url": "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.18.7.tar.xz",
+
+            // examples are taken from here: https://github.com/igorkll/linux-embedded-patchs
+            // these are quite real patches, and they work
+            "patches": [
+                "disable_vt_swithing_from_keyboard.patch", // disables VT switching at the kernel level, but VT switching can still work from x11. it completely kills VT switching from the keyboard, but does not prevent VT switching from userspace (for example, via chvt). please note that if you disabled VT switching using the patch, it will only work in tty! switching processing can still occur at the graphics session level, it's easy to disable in x11, but it depends on the composer in wayland
+                "disable_sysrq.patch", // it completely prohibits the operation of sysrq, regardless of the kernel parameters
+                "disable_cad.patch", // blocks restarting by pressing ctrl+alt+del
+                "disable_printk.patch" // will make the kernel shut up
+            ],
+
+            // specify your kernel configuration. you can also specify the "kernel_config_auto_architecture_migrate" flag (false by default) so that your config will automatically migrate to the architecture for which the build is being built.
+            "kernel_config": "my_kernel_config",
+            "kernel_config_auto_architecture_migrate": true
+        },
+        {
+            "fork": true, 
+            "name": "custom_debug_kernel",
+
+            "patches": [
+                "disable_vt_swithing_from_keyboard.patch",
+                "disable_sysrq.patch",
+                "disable_cad.patch"
+                // you can build two kernels, one for debugging and one for release
+                // and use a different set of patches for them
+                // due to the fact that syslbuild first downloads the kernel sources and then copies them for each build, there will be no patch conflicts
+                // "disable_printk.patch"
+            ]
+        },
+        {
+            // perhaps you want a different kernel configuration to be used for a particular architecture. you can do this by combining fork and architectures.
+            "architectures": ["armhf"],
+
+            "fork": true, 
+            "name": "custom_arm_kernel",
+
+            "kernel_config": "my_arm_kernel_config",
+            "kernel_config_auto_architecture_migrate": false // in this case, you will not need migration if the configuration is already prepared for this architecture
         }
     ]
 }
