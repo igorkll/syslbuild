@@ -1154,7 +1154,6 @@ if __name__ == "__main__":
     requireRoot()
     
     architecture = args.arch
-    loadTempPaths()
     log_file = getLogFile()
 
     buildLog("Syslbuild info:")
@@ -1182,5 +1181,6 @@ if __name__ == "__main__":
             else:
                 buildLog("Architectures list is not defined in project json")
         else:
+            loadTempPaths()
             buildProject(args.json_path)
         
