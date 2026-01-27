@@ -1063,17 +1063,7 @@ def buildKernel(item):
         buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "headers_install", f"INSTALL_HDR_PATH={os.path.abspath(export_path)}"], True, None, kernel_sources)
 
 def updateInitramfs(item):
-    realOutputPath = findItem(item["rootfs"])
-    
-    if "compressor" in item:
-        outputPath = os.path.abspath(getTempPath("temp.cpio"))
-    else:
-        outputPath = realOutputPath
-
-    buildExecute(["update-initramfs", "-c", "-k", item["kernel_version"], "-b", outputPath])
-
-    if "compressor" in item:
-        buildRawExecute(f"{item["compressor"]} < \"{outputPath}\" > \"{realOutputPath}\"", True)
+    buildExecute(["update-initramfs", "-c", "-k", item["kernel_version"], "-b", findItem(item["rootfs"])])
 
 buildActions = {
     "debian": buildDebian,

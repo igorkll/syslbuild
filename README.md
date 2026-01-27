@@ -671,9 +671,7 @@ these changes to the kernel config are applied automatically when building the k
 
             // the rootfs (directory) where initramfs is created
             // this is not shown here, but the modules of the kernel for which you are generating initramfs should be installed in this rootfs
-            "rootfs": "my_rootfs_with_kernel_modules",
-
-            "compressor": "gzip -9" //optional
+            "rootfs": "my_rootfs_with_kernel_modules"
         },
         {
             "architectures": ["amd64"],
