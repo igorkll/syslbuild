@@ -1016,8 +1016,21 @@ def set_kernel_config_parameter(config_path, param, value):
 def update_kernel_config(kernel_sources):
     buildExecute(["make", "olddefconfig"], True, None, kernel_sources)
 
+def parse_kernel_config_changes(changes_file):
+    with open(changes_file, "r") as f:
+        lines = f.readlines()
+        for line in lines:
+            if not line.startswith("#"):
+                return line.split()
+    return []
+
 def modifyKernelConfig(item, kernel_sources):
     kernel_config_path = pathConcat(kernel_sources, ".config")
+
+    if "kernel_config_changes_files" in item:
+        for changes_file in item["kernel_config_changes_files"]:
+            for change in parse_kernel_config_changes(changes_file):
+                set_kernel_config_parameter(kernel_config_path, change[0], change[1])
 
     if "kernel_config_changes" in item:
         for change in item["kernel_config_changes"]:
@@ -1140,15 +1153,18 @@ def rawCrossChroot(chrootDirectory, chrootCommand):
     qemuStaticPath = pathConcat(chrootDirectory, "usr/bin", qemuStaticName)
 
     if boolCopyQemuStatic and not os.path.isfile(qemuStaticHostPath):
-        buildLog(f"WARNINGL: there is no suitable version of qemu-static ({qemuStaticName}) in the host system. we are trying without it")
+        buildLog(f"WARNING: there is no suitable version of qemu-static ({qemuStaticName}) in the host system. we are trying without it")
         boolCopyQemuStatic = False
 
     if boolCopyQemuStatic:
-        buildLog(f"copying qemu-static ({qemuStaticName})")
-        os.makedirs(os.path.dirname(qemuStaticPath), exist_ok=True)
-        buildExecute(["cp", "-a", qemuStaticHostPath, qemuStaticPath])
-        buildExecute(["chmod", "0755", qemuStaticPath])
-        buildExecute(["chown", "0:0", qemuStaticPath])
+        if os.path.isfile(qemuStaticPath):
+            buildLog(f"copying qemu-static ({qemuStaticName})")
+            os.makedirs(os.path.dirname(qemuStaticPath), exist_ok=True)
+            buildExecute(["cp", "-a", qemuStaticHostPath, qemuStaticPath])
+            buildExecute(["chmod", "0755", qemuStaticPath])
+            buildExecute(["chown", "0:0", qemuStaticPath])
+        else:
+            buildLog(f"qemu-static should have been copied, but the file with that name is already in the chroot directory. i'm skipping it ({qemuStaticName})")
 
     buildExecute(["chroot", chrootDirectory] + chrootCommand)
 
@@ -1160,6 +1176,13 @@ def rawCrossChroot(chrootDirectory, chrootCommand):
 
 def debianUpdateInitramfs(item):
     rawCrossChroot(findItem(item["rootfs"]), ["update-initramfs", "-c", "-k", item["kernel_version"]])
+
+def smartChroot(item):
+    for scriptPath in item["chroot_scripts"]:
+        chroot_script_path = pathConcat(item["chroot_directory"], ".syslbuild-smart-chroot.sh")
+        copyItemFiles(scriptPath, chroot_script_path, [0, 0, "0755"])
+        rawCrossChroot(item["chroot_directory"], chrootCommand)
+        os.remove(chroot_script_path)
 
 buildActions = {
     "debian": buildDebian,
@@ -1176,7 +1199,8 @@ buildActions = {
     "grub-iso-image": grubIsoImage,
     "unpack-initramfs": unpackInitramfs,
     "kernel": buildKernel,
-    "debian-update-initramfs": debianUpdateInitramfs
+    "debian-update-initramfs": debianUpdateInitramfs,
+    "smart-chroot": smartChroot
 }
 
 cachedBuildActions = [

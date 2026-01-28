@@ -86,6 +86,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * initramfs - collects initramfs from a directory
 * unpack-initramfs - unpacking initramfs
 * debian-update-initramfs - allows you to update initramfs (for debian systems) for the specified rootfs. this is necessary if you are building your kernel and you need to install its modules in rootfs first and only then update initramfs. the specified rootfs must also contain the kernel configuration for which the ramdisk is being updated
+* smart-chroot - executes scripts inside the chroot. if the processor architecture does not match, then this builditem itself will copy and then delete qemu-static from your chroot.
 
 ## build items features
 * debian supports the "_min" variant, which is essentially a "custom" but with a minimal set package required for assembly
@@ -650,9 +651,13 @@ these changes to the kernel config are applied automatically when building the k
 
             "kernel_config": "my_kernel_config",
 
-            // if set to true, syslbuild will not make the standard kernel config changes that it makes
-            // This list can be found above.
-            "kernel_config_disable_default_changes": false,
+            "kernel_config_changes_files": [
+                // you can list individual files with kernel config changes here
+                // the format is the same as in the regular kernel config. comments are not taken into account, to disable some parameter, set it as =n
+                "my_kernel_config_changes.txt"
+            ],
+            
+            // local changes are more important than files
             "kernel_config_changes": [
                 // these are standard changes to the kernel config that syslbuild makes by itself without saying anything unless the "kernel_config_disable_default_changes" parameter is set
                 // he does this for the health of some of my patches.
@@ -662,7 +667,11 @@ these changes to the kernel config are applied automatically when building the k
                 // the values end up in the config as you describe them here. for this reason, you need to use the second quotation marks for the strings
                 ["CONFIG_LOCALVERSION", "\"-custom\""],
                 ["CONFIG_LOCALVERSION_AUTO", "n"]
-            ]
+            ],
+
+            // if set to true, syslbuild will not make the standard kernel config changes that it makes
+            // This list can be found above.
+            "kernel_config_disable_default_changes": false,
         },
         {
             "type": "debian-update-initramfs",
@@ -756,6 +765,25 @@ these changes to the kernel config are applied automatically when building the k
             "fork": true,
             "architectures": ["arm64"],
             "kernel_config": "kernel_config_arm64"
+        },
+
+        // -----------------
+
+        // executes all the scripts listed in the list inside the chroot. it will copy qemu-static itself if necessary
+        // he performs the necessary bindings himself so that the script runs correctly
+        {
+            "type": "smart-chroot",
+
+            // even though this builditem doesn't export anything,
+            // you should still give it a unique name like any other builditem.
+            // syslbuild uses this for internal caching mechanisms.
+            "name": "smart-chroot-1",
+
+            "chroot_directory": "my_rootfs",
+            "chroot_scripts": [
+                "script_in_project.sh",
+                "script_in_project_2.sh"
+            ]
         }
     ]
 }
