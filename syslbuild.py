@@ -280,6 +280,8 @@ def buildExecute(cmd, checkValid=True, input_data=None, cwd=None):
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         bufsize=1,
         cwd=cwd
     )
@@ -316,6 +318,8 @@ def buildRawExecute(cmd, checkValid=True, cwd=None):
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         bufsize=1,
         cwd=cwd
     )
