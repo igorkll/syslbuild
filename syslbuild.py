@@ -1222,10 +1222,85 @@ buildActions = {
     "smart-chroot": smartChroot
 }
 
+def get_file_checksum(file_path, hash_algo="sha256"):
+    h = hashlib.new(hash_algo)
+    with open(file_path, "rb") as f:
+        while True:
+            chunk = f.read(8192)
+            if not chunk:
+                break
+            h.update(chunk)
+    return h.hexdigest()
+
+def get_dir_checksum(dir_path, hash_algo="sha256"):
+    # создаём хэш от всех файлов в директории
+    h = hashlib.new(hash_algo)
+    for root, dirs, files in os.walk(dir_path):
+        for name in sorted(files):  # сортировка для стабильности
+            file_path = os.path.join(root, name)
+            h.update(file_path.encode())  # путь влияет на хэш
+            h.update(get_file_checksum(file_path, hash_algo).encode())
+    return h.hexdigest()
+
+def getDependenciesFileOrDirectoryChecksum(path, hash_algo="sha256"):
+    if os.path.isfile(path):
+        return get_file_checksum(path, hash_algo)
+    elif os.path.isdir(path):
+        return get_dir_checksum(path, hash_algo)
+    else:
+        buildLog(f"{path} not exists")
+        sys.exit(1)
+    
 # если какое то поле зависимостей ссылается на массив массивов то в втором массиве учитываются только элементы с индексом 0
 # ТАК И ЗАДУМАНО!
-def getDependencies(item, items_and_files_fields, files_only_fields):
-    return 
+def getDependenciesFieldChecksum(fieldValue, filesOnly=False):
+    def inlineFindItem(inputPath):
+        if not filesOnly:
+            return findItem(inputPath)
+        return inputPath
+
+    if isinstance(fieldValue, str):
+        return getDependenciesFileOrDirectoryChecksum(inlineFindItem(fieldValue))
+    elif isinstance(fieldValue, list):
+        checkDict = {
+            "array": []
+        }
+
+        for inlineFieldValue in fieldValue:
+            if isinstance(inlineFieldValue, str):
+                checkDict["array"].append(getDependenciesFileOrDirectoryChecksum(inlineFindItem(inlineFieldValue)))
+            elif isinstance(inlineFieldValue, list):
+                checkDict["array"].append(getDependenciesFileOrDirectoryChecksum(inlineFindItem(inlineFieldValue[0])))
+
+        return dictChecksum(checkDict)
+    else:
+        buildLog("failed to get dependencies checksum")
+        sys.exit(1)
+
+def getDependencies(item, items_and_files_fields=None, files_only_fields=None):
+    files_dependencies = []
+    items_dependencies = []
+
+    if items_and_files_fields:
+        for fieldName in items_and_files_fields:
+            if fieldName in item:
+                items_dependencies.append(getDependenciesFieldChecksum(item[fieldName], False))
+            else:
+                items_dependencies.append("NONE")
+
+    if files_only_fields:
+        for fieldName in files_only_fields:
+            if fieldName in item:
+                items_dependencies.append(getDependenciesFieldChecksum(item[fieldName], True))
+            else:
+                items_dependencies.append("NONE")
+
+    checksumDict = {
+        "files_dependencies": files_dependencies,
+        "items_dependencies": items_dependencies
+    }
+
+    return dictChecksum(checksumDict)
 
 def getDependenciesDebian(item):
     return getDependencies(item, [], ["hooks"])
