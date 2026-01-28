@@ -1359,7 +1359,7 @@ def getDependenciesKernel(item):
     return rawGetDependencies(item, ["patches", "kernel_config", "kernel_config_changes_files"], [])
 
 def getDependenciesDebianUpdateInitramfs(item):
-    return rawGetDependencies(item, [], [], ["rootfs"])
+    return rawGetDependencies(item, ["rootfs"], [], ["rootfs"])
 
 def getDependenciesSmartChroot(item):
     return rawGetDependencies(item, ["chroot_scripts"], [], ["chroot_directory"])
