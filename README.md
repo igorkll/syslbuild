@@ -86,8 +86,8 @@ also, assembling a bootable img with an already installed system is also a separ
 * grub-iso-image - collects the bootable iso
 * initramfs - collects initramfs from a directory
 * unpack-initramfs - unpacking initramfs
-* debian-update-initramfs - allows you to update initramfs (for debian systems) for the specified rootfs. this is necessary if you are building your kernel and you need to install its modules in rootfs first and only then update initramfs. the specified rootfs must also contain the kernel configuration for which the ramdisk is being updated
-* smart-chroot - executes scripts inside the chroot. if the processor architecture does not match, then this builditem itself will copy and then delete qemu-static from your chroot.
+* debian-update-initramfs - allows you to update initramfs (for debian systems) for the specified rootfs. this is necessary if you are building your kernel and you need to install its modules in rootfs first and only then update initramfs. the specified rootfs must also contain the kernel configuration for which the ramdisk is being updated. exports new rootfs with initramfs, not initramfs itself.
+* smart-chroot - executes scripts inside the chroot. if the processor architecture does not match, then this builditem itself will copy and then delete qemu-static from your chroot. exports a new rootfs with executed chroot scripts inside
 
 ## build items features
 * debian supports the "_min" variant, which is essentially a "custom" but with a minimal set package required for assembly
@@ -155,11 +155,6 @@ these changes to the kernel config are applied automatically when building the k
 ## roadmap completed
 * execution of arbitrary scripts in the system's chroot, with qemu-static support for execution during assembly for a different architecture
 * make a normal caching system
-
-## how the caching system works
-the caching system in syslbuild has two types of dependencies between builditem
-* direct dependencies - simple dependency between assembly elements
-* back dependencies - it is used when an assembly element does not export anything, but modifies an existing builditem and says, "now this builditem depends on me, I have changed it."
 
 ## builditems that use back dependencies
 * debian-update-initramfs - applies an back dependencies to the "rootfs" field element
@@ -689,11 +684,8 @@ the caching system in syslbuild has two types of dependencies between builditem
         },
         {
             "type": "debian-update-initramfs",
-
-            // even though this builditem doesn't export anything,
-            // you should still give it a unique name like any other builditem.
-            // syslbuild uses this for internal caching mechanisms.
-            "name": "update-initramfs-6.18.7-custom",
+            "name": "rootfs-with-initramfs", //export new rootfs with initramfs, not initramfs
+            "export": false,
 
             // the version of the kernel for which initramfs is being created
             "kernel_version": "6.18.7-custom",
@@ -785,13 +777,11 @@ the caching system in syslbuild has two types of dependencies between builditem
 
         // executes all the scripts listed in the list inside the chroot. it will copy qemu-static itself if necessary
         // he performs the necessary bindings himself so that the script runs correctly
+        // exports a new rootfs with scripts executed inside the chroot
         {
             "type": "smart-chroot",
-
-            // even though this builditem doesn't export anything,
-            // you should still give it a unique name like any other builditem.
-            // syslbuild uses this for internal caching mechanisms.
-            "name": "smart-chroot-1",
+            "name": "my_rootfs_with_chroot_scripts",
+            "export": false,
 
             "chroot_directory": "my_rootfs",
             "chroot_scripts": [
