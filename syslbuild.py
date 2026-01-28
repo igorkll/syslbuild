@@ -1323,7 +1323,7 @@ def rawGetDependencies(item, items_and_files_fields=None, files_only_fields=None
         buildLog(f"back invalidate list:")
         for back_invalidate_object in back_invalidate:
             backInvalidate(item[back_invalidate_object])
-        buildLog(f"---- end;")
+        buildLog(f";")
 
     return files_dependencies, items_dependencies
 
@@ -1387,6 +1387,9 @@ def dictChecksum(tbl):
     return hashlib.md5(json5.dumps(filtered).encode('utf-8')).hexdigest()
 
 def getItemChecksum(item):
+    if "_checksum" in item:
+        return item["_checksum"]
+
     if item["type"] in getDependencies:
         files_dependencies, items_dependencies = getDependencies[item["type"]](item)
     else:
@@ -1398,7 +1401,8 @@ def getItemChecksum(item):
         "items_dependencies": items_dependencies
     }
 
-    return dictChecksum(checksumDict)
+    item["_checksum"] = dictChecksum(checksumDict)
+    return item["_checksum"]
 
 def writeCacheChecksum(item, checksum):
     checksum_path = getItemChecksumPath(item)
@@ -1423,6 +1427,14 @@ def buildItems(builditems):
                     item["_back_invalidate"] = True
                     getDependencies[item["type"]](item)
                     del item["_back_invalidate"]
+
+    buildLog("Item list:")
+    for item in builditems:
+        if not args.n and isCacheValid(item, getItemChecksum(item)):
+            buildItemLog(item, None, " (cache)")
+        else:
+            buildItemLog(item)
+    buildLog(";")
         
     for item in builditems:
         itemPath = getItemPath(item)
@@ -1506,11 +1518,6 @@ def buildProject(json_path):
     cleanup()
     prepairBuild()
     prepairBuildItems(builditems)
-
-    buildLog("Item list:")
-    for item in builditems:
-        buildItemLog(item, "")
-    buildLog(";")
     
     exported = buildItems(builditems)
     buildLog("The build was successful. export list:")
