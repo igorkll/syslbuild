@@ -161,6 +161,10 @@ the caching system in syslbuild has two types of dependencies between builditem
 * direct dependencies - simple dependency between assembly elements
 * back dependencies - it is used when an assembly element does not export anything, but modifies an existing builditem and says, "now this builditem depends on me, I have changed it."
 
+## builditems that use back dependencies
+* debian-update-initramfs - applies an back dependencies to the "rootfs" field element
+* smart-chroot - applies an back dependencies to the "chroot_directory" field element
+
 ## project example
 ```json
 {
