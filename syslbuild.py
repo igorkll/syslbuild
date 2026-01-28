@@ -1150,9 +1150,17 @@ def rawCrossChroot(chrootDirectory, chrootCommand):
         "proc",
         "sys"
     ]
+
+    makedDirectories = []
     
     for bindPath in bindList:
-        buildRawExecute(f"mount --bind /{bindPath} \"{pathConcat(chrootDirectory, bindPath)}\"")
+        chrootSubdirPath = pathConcat(chrootDirectory, bindPath)
+        if not os.path.isdir(chrootSubdirPath):
+            buildExecute(["mkdir", "-p", chrootSubdirPath])
+            buildExecute(["chmod", "1755", chrootSubdirPath])
+            buildExecute(["chown", "0:0", chrootSubdirPath])
+            makedDirectories.append(chrootSubdirPath)
+        buildRawExecute(f"mount --bind /{bindPath} \"{chrootSubdirPath}\"")
 
     boolCopyQemuStatic = checkQemuStaticNeed()
     qemuStaticName = qemuStaticNames[architecture]
@@ -1181,14 +1189,18 @@ def rawCrossChroot(chrootDirectory, chrootCommand):
     for bindPath in bindList:
         buildRawExecute(f"umount \"{pathConcat(chrootDirectory, bindPath)}\"")
 
+    for makedDirectoryBindPath in makedDirectories:
+        buildRawExecute(f"rm -rf \"{makedDirectoryBindPath}\"")
+
 def debianUpdateInitramfs(item):
     rawCrossChroot(findItem(item["rootfs"]), ["update-initramfs", "-c", "-k", item["kernel_version"]])
 
 def smartChroot(item):
+    chroot_directory = findItem(item["chroot_directory"])
     for scriptPath in item["chroot_scripts"]:
-        chroot_script_path = pathConcat(item["chroot_directory"], ".syslbuild-smart-chroot.sh")
+        chroot_script_path = pathConcat(chroot_directory, ".syslbuild-smart-chroot.sh")
         copyItemFiles(scriptPath, chroot_script_path, [0, 0, "0755"])
-        rawCrossChroot(item["chroot_directory"], "./.syslbuild-smart-chroot.sh")
+        rawCrossChroot(chroot_directory, "./.syslbuild-smart-chroot.sh")
         os.remove(chroot_script_path)
 
 buildActions = {
