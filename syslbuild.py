@@ -1398,6 +1398,13 @@ def isCacheValid(item, checksum):
 
 def buildItems(builditems):
     exported = []
+    
+    for item in builditems:
+        if item["type"] in getDependencies:
+            item["_back_invalidate"] = True
+            getDependencies[item["type"]](item)
+            del item["_back_invalidate"]
+        
     for item in builditems:
         itemPath = getItemPath(item)
         checksum = getItemChecksum(item)
@@ -1411,6 +1418,7 @@ def buildItems(builditems):
         
         if needExport(item):
             exported.append(item)
+    
     return exported
 
 def showProjectInfo(projectData):
