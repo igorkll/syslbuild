@@ -1246,6 +1246,9 @@ def get_dir_checksum(dir_path, hash_algo="sha256"):
     return h.hexdigest()
 
 def getDependenciesFileOrDirectoryChecksum(path, hash_algo="sha256"):
+    if path == "NOT CALCULATED":
+        return path
+    
     if os.path.isfile(path):
         return get_file_checksum(path, hash_algo)
     elif os.path.isdir(path):
@@ -1263,7 +1266,8 @@ def getDependenciesFieldChecksum(fieldValue, filesOnly=False):
                 checksumPath = getItemChecksumPathFromName(inputPath)
                 if os.path.exists(checksumPath):
                     return checksumPath
-            return findItem(inputPath)
+                else:
+                    return "NOT CALCULATED"
         return inputPath
 
     if isinstance(fieldValue, str):
@@ -1294,6 +1298,7 @@ def rawGetDependencies(item, items_and_files_fields=None, files_only_fields=None
 
     if items_and_files_fields:
         for fieldName in items_and_files_fields:
+            buildLog("ASD: " + fieldName)
             if fieldName in item:
                 items_dependencies.append(getDependenciesFieldChecksum(item[fieldName], False))
             else:
@@ -1301,6 +1306,7 @@ def rawGetDependencies(item, items_and_files_fields=None, files_only_fields=None
 
     if files_only_fields:
         for fieldName in files_only_fields:
+            buildLog("QWE: " + fieldName)
             if fieldName in item:
                 items_dependencies.append(getDependenciesFieldChecksum(item[fieldName], True))
             else:
