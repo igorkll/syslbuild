@@ -1246,6 +1246,9 @@ def get_dir_checksum(dir_path, hash_algo="sha256"):
     return h.hexdigest()
 
 def getDependenciesFileOrDirectoryChecksum(path, hash_algo="sha256"):
+    if path.startswith("@"):
+        return path
+    
     if os.path.isfile(path):
         return get_file_checksum(path, hash_algo)
     elif os.path.isdir(path):
@@ -1259,7 +1262,13 @@ def getDependenciesFileOrDirectoryChecksum(path, hash_algo="sha256"):
 def getDependenciesFieldChecksum(fieldValue, filesOnly=False):
     def inlineFindItem(inputPath):
         if not filesOnly:
-            return findItem(inputPath)
+            path = pathConcat(path_build, inputPath)
+            if os.path.exists(path):
+                return path
+            else:
+                path = pathConcat(path_output, inputPath)
+                if os.path.exists(path):
+                    return path
         return inputPath
 
     if isinstance(fieldValue, str):
@@ -1362,7 +1371,7 @@ getDependencies = {
     "grub-iso-image": getDependenciesGrubIsoImage,
     "unpack-initramfs": getDependenciesUnpackInitramfs,
     "kernel": getDependenciesKernel,
-    "debian-update-initramfs", getDependenciesDebianUpdateInitramfs,
+    "debian-update-initramfs": getDependenciesDebianUpdateInitramfs,
     "smart-chroot": getDependenciesSmartChroot
 }
 
