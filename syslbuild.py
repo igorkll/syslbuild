@@ -979,6 +979,14 @@ kernelArchitectures = {
     "armel": "arm"
 }
 
+kernelArchitectureConfigs = {
+    "amd64": "x86_64_defconfig",
+    "i386": "i386_defconfig",
+    "arm64": "arm64_defconfig",
+    "armhf": "multi_v7_defconfig",
+    "armel": "multi_v5_defconfig"
+}
+
 import os
 import subprocess
 
@@ -1038,7 +1046,8 @@ def buildKernel(item):
     CROSS_COMPILE = gccNames[architecture]
     ARCH_STR = f"ARCH={ARCH}"
     CROSS_COMPILE_STR = f"CROSS_COMPILE={CROSS_COMPILE}-"
-    buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "defconfig"], True, None, kernel_sources)
+    DEFCONFIG_NAME = item.get("defconfig", kernelArchitectureConfigs.get(architecture, "defconfig"))
+    buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, DEFCONFIG_NAME], True, None, kernel_sources)
 
     kernel_config_path = pathConcat(kernel_sources, ".config")
 

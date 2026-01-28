@@ -645,6 +645,9 @@ these changes to the kernel config are applied automatically when building the k
                 "disable_printk.patch" // will make the kernel shut up
             ],
 
+            // optional. by default, syslbuild chooses defconfig itself based on the architecture for which it is being built. but you can specify it yourself.
+            //"defconfig": "i386_defconfig",
+
             "kernel_config": "my_kernel_config",
 
             // if set to true, syslbuild will not make the standard kernel config changes that it makes
