@@ -1200,7 +1200,7 @@ def smartChroot(item):
     for scriptPath in item["chroot_scripts"]:
         chroot_script_path = pathConcat(chroot_directory, ".syslbuild-smart-chroot.sh")
         copyItemFiles(scriptPath, chroot_script_path, [0, 0, "0755"])
-        rawCrossChroot(chroot_directory, "./.syslbuild-smart-chroot.sh")
+        rawCrossChroot(chroot_directory, ["./.syslbuild-smart-chroot.sh"])
         os.remove(chroot_script_path)
 
 buildActions = {
