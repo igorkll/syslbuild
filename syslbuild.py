@@ -1246,9 +1246,6 @@ def get_dir_checksum(dir_path, hash_algo="sha256"):
     return h.hexdigest()
 
 def getDependenciesFileOrDirectoryChecksum(path, hash_algo="sha256"):
-    if path.startswith("@"):
-        return path
-    
     if os.path.isfile(path):
         return get_file_checksum(path, hash_algo)
     elif os.path.isdir(path):
@@ -1262,13 +1259,11 @@ def getDependenciesFileOrDirectoryChecksum(path, hash_algo="sha256"):
 def getDependenciesFieldChecksum(fieldValue, filesOnly=False):
     def inlineFindItem(inputPath):
         if not filesOnly:
-            path = pathConcat(path_build, inputPath)
-            if os.path.exists(path):
-                return path
-            else:
-                path = pathConcat(path_output, inputPath)
-                if os.path.exists(path):
-                    return path
+            if os.path.exists(pathConcat(path_build, inputPath)) or os.path.exists(pathConcat(path_output, inputPath)):
+                checksumPath = getItemChecksumPathFromName(inputPath)
+                if os.path.exists(checksumPath):
+                    return checksumPath
+            return findItem(inputPath)
         return inputPath
 
     if isinstance(fieldValue, str):
@@ -1315,7 +1310,7 @@ def rawGetDependencies(item, items_and_files_fields=None, files_only_fields=None
         buildLog(f"back invalidate cache for builditem: {item["name"]}")
         buildLog(f"back invalidate list:")
         for back_invalidate_object in back_invalidate:
-            backInvalidate(back_invalidate_object)
+            backInvalidate(item[back_invalidate_object])
         buildLog(f"---- end;")
 
     return files_dependencies, items_dependencies
