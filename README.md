@@ -88,7 +88,6 @@ also, assembling a bootable img with an already installed system is also a separ
 * unpack-initramfs - unpacking initramfs
 * debian-update-initramfs - allows you to update initramfs (for debian systems) for the specified rootfs. this is necessary if you are building your kernel and you need to install its modules in rootfs first and only then update initramfs. the specified rootfs must also contain the kernel configuration for which the ramdisk is being updated
 * smart-chroot - executes scripts inside the chroot. if the processor architecture does not match, then this builditem itself will copy and then delete qemu-static from your chroot.
-* modify-directory - modifies an existing directory
 
 ## build items features
 * debian supports the "_min" variant, which is essentially a "custom" but with a minimal set package required for assembly
@@ -165,7 +164,6 @@ the caching system in syslbuild has two types of dependencies between builditem
 ## builditems that use back dependencies
 * debian-update-initramfs - applies an back dependencies to the "rootfs" field element
 * smart-chroot - applies an back dependencies to the "chroot_directory" field element
-* modify-directory - applies an back dependencies to the "modify_directory" field element
 
 ## project example
 ```json
@@ -358,35 +356,6 @@ the caching system in syslbuild has two types of dependencies between builditem
                 // for example, you can build one system and want to use it in the second initrd, for example, for recovery mode
                 // in this case, you will no longer need the initrd and the kernel in it, so delete them
                 //"/any path"
-            ]
-        },
-        {
-            "type": "modify-directory",
-            "name": "modify-directory-1", //even though this builditem doesn't export anything, you still need to have a unique name.
-
-            // modifies an existing directory
-            // in all other respects, it works similarly to "directory"
-            "modify_directory": "rootfs directory",
-
-            "directories": [
-                ["/home/MY EMPTY DIR", [0, 0, "0755"]]
-            ],
-
-            "items": [
-                ["debian directory", "."],
-                ["downloaded file", "/home/test.mp3", [0, 0, "0755"]],
-                ["userfile.txt", "/home/userfile.txt", [0, 0, "0755"]] //file from the project folder
-            ],
-
-            "chmod": [
-                ["/home/MY EMPTY DIR", "1777", false]
-            ],
-
-            "chown": [
-                ["/home/MY EMPTY DIR", 0, 0, false]
-            ],
-
-            "delete": [
             ]
         },
 

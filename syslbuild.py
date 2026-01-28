@@ -670,7 +670,9 @@ def umountFilesystem(mount_path):
             buildExecute(["losetup", "-d", loop_device])
         deleteDirectory(mount_path)
 
-def rawDirectoryChange(item, buildDirectoryPath):
+def buildDirectory(item):
+    buildDirectoryPath = getItemFolder(item)
+
     if "directories" in item:
         for directoryData in item["directories"]:
             directoryPath = pathConcat(buildDirectoryPath, directoryData[0])
@@ -706,13 +708,6 @@ def rawDirectoryChange(item, buildDirectoryPath):
     if "delete" in item:
         for deletePath in item["delete"]:
             deleteAny(pathConcat(buildDirectoryPath, deletePath))
-
-def buildDirectory(item):
-    buildDirectoryPath = getItemFolder(item)
-    rawDirectoryChange(item, buildDirectoryPath)
-
-def buildModifyDirectory(item):
-    rawDirectoryChange(item, findDirectoryFromSource(item["modify_directory"]))
 
 def findDirectoryFromSource(source):
     dirpath = findItem(source)
@@ -1223,8 +1218,7 @@ buildActions = {
     "unpack-initramfs": unpackInitramfs,
     "kernel": buildKernel,
     "debian-update-initramfs": debianUpdateInitramfs,
-    "smart-chroot": smartChroot,
-    "modify-directory": buildModifyDirectory
+    "smart-chroot": smartChroot
 }
 
 def get_file_checksum(file_path, hash_algo="sha256"):
@@ -1328,17 +1322,6 @@ def rawGetDependencies(item, items_and_files_fields=None, files_only_fields=None
                 backDependenciesAdd(item[back_invalidate_object], selfChecksum, item)
             buildLog(f";")
 
-    if item.get("_back_direct_invalidate", False):
-        selfChecksum = item["_back_direct_invalidate"]
-
-        if item["name"] in backDependenciesNames:
-            index = 0
-            for directDepend in backDependenciesNames[item["name"]]:
-                if not isCacheValid(item, selfChecksum):
-                    deleteAny(getItemChecksumPathFromName(directDepend))
-                    buildLog(f"back-direct invalidate cache: {item["name"]} > {directDepend}")
-                index += 1
-
     return dependencies
 
 def getDependenciesDebian(item):
@@ -1380,9 +1363,6 @@ def getDependenciesDebianUpdateInitramfs(item):
 def getDependenciesSmartChroot(item):
     return rawGetDependencies(item, ["chroot_scripts"], [], ["chroot_directory"])
 
-def getDependenciesModifyDirectory(item):
-    return rawGetDependencies(item, ["items"], [], ["modify_directory"])
-
 getDependencies = {
     "debian": getDependenciesDebian,
     "directory": getDependenciesDirectory,
@@ -1396,8 +1376,7 @@ getDependencies = {
     "unpack-initramfs": getDependenciesUnpackInitramfs,
     "kernel": getDependenciesKernel,
     "debian-update-initramfs": getDependenciesDebianUpdateInitramfs,
-    "smart-chroot": getDependenciesSmartChroot,
-    "modify-directory": getDependenciesModifyDirectory
+    "smart-chroot": getDependenciesSmartChroot
 }
 
 def filter_underscored(d):
