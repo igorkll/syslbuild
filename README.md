@@ -156,6 +156,11 @@ these changes to the kernel config are applied automatically when building the k
 * execution of arbitrary scripts in the system's chroot, with qemu-static support for execution during assembly for a different architecture
 * make a normal caching system
 
+## how the caching system works
+the caching system in syslbuild has two types of dependencies between builditem
+* direct dependencies - simple dependency between assembly elements
+* back dependencies - it is used when an assembly element does not export anything, but modifies an existing builditem and says, "now this builditem depends on me, I have changed it."
+
 ## project example
 ```json
 {
