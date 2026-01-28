@@ -1149,7 +1149,7 @@ def rawCrossChroot(chrootDirectory, chrootCommand):
     for bindPath in bindList:
         buildRawExecute(f"umount \"{pathConcat(chrootDirectory, bindPath)}\"")
 
-def updateInitramfs(item):
+def debianUpdateInitramfs(item):
     rawCrossChroot(findItem(item["rootfs"]), ["update-initramfs", "-c", "-k", item["kernel_version"]])
 
 buildActions = {
@@ -1167,7 +1167,7 @@ buildActions = {
     "grub-iso-image": grubIsoImage,
     "unpack-initramfs": unpackInitramfs,
     "kernel": buildKernel,
-    "update-initramfs": updateInitramfs
+    "debian-update-initramfs": debianUpdateInitramfs
 }
 
 cachedBuildActions = [

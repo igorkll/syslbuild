@@ -85,7 +85,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * grub-iso-image - collects the bootable iso
 * initramfs - collects initramfs from a directory
 * unpack-initramfs - unpacking initramfs
-* update-initramfs - allows you to update initramfs for the specified rootfs. this is necessary if you are building your kernel and you need to install its modules in rootfs first and only then update initramfs
+* debian-update-initramfs - allows you to update initramfs (for debian systems) for the specified rootfs. this is necessary if you are building your kernel and you need to install its modules in rootfs first and only then update initramfs. the specified rootfs must also contain the kernel configuration for which the ramdisk is being updated
 
 ## build items features
 * debian supports the "_min" variant, which is essentially a "custom" but with a minimal set package required for assembly
@@ -662,7 +662,7 @@ these changes to the kernel config are applied automatically when building the k
             ]
         },
         {
-            "type": "update-initramfs",
+            "type": "debian-update-initramfs",
 
             // even though this builditem doesn't export anything,
             // you should still give it a unique name like any other builditem.
