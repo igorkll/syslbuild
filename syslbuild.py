@@ -712,17 +712,20 @@ def buildDirectory(item):
     rawDirectoryChange(item, buildDirectoryPath)
 
 def buildModifyDirectory(item):
-    rawDirectoryChange(item, findItem(item["modify_directory"]))
+    rawDirectoryChange(item, findDirectoryFromSource(item["modify_directory"]))
+
+def findDirectoryFromSource(source):
+    dirpath = findItem(source)
+    if not os.path.isdir(dirpath):
+        buildLog(f"ERROR: item \"{dirpath}\" is not a directory")
+        sys.exit(1)
+    return dirpath
 
 def findDirectory(item):
     if not "source" in item:
         return None
 
-    dirpath = findItem(item["source"])
-    if not os.path.isdir(dirpath):
-        buildLog(f"ERROR: item \"{dirpath}\" is not a directory")
-        sys.exit(1)
-    return dirpath
+    return findDirectoryFromSource(item["source"])
 
 def buildTar(item):
     tar_files = findDirectory(item)
@@ -878,16 +881,9 @@ def buildUnknown(item):
     buildLog(f"ERROR: unknown build item type: {item["type"]}")
     sys.exit(1)
 
-def getSourceDirectory(item):
-    source = findItem(item["source"])
-    if not os.path.isdir(source):
-        buildLog("ERROR: source item is not a directory")
-        sys.exit(1)
-    return source
-
 def buildFromDirectory(item):
     path = getItemPath(item)
-    source = getSourceDirectory(item)
+    source = findDirectory(item)
     sourcePath = pathConcat(source, item["path"])
     copyItemFiles(sourcePath, path, [0, 0, "0755"])
 
@@ -929,7 +925,7 @@ def gccBuild(item):
     )
 
 def buildInitramfs(item):
-    source = getSourceDirectory(item)
+    source = findDirectory(item)
     realOutputPath = os.path.abspath(getItemPath(item))
     
     if "compressor" in item:
@@ -1368,6 +1364,9 @@ def getDependenciesDebianUpdateInitramfs(item):
 def getDependenciesSmartChroot(item):
     return rawGetDependencies(item, ["chroot_scripts"], [], ["chroot_directory"])
 
+def getDependenciesModifyDirectory(item):
+    return rawGetDependencies(item, ["items"], [], ["modify_directory"])
+
 getDependencies = {
     "debian": getDependenciesDebian,
     "directory": getDependenciesDirectory,
@@ -1381,7 +1380,8 @@ getDependencies = {
     "unpack-initramfs": getDependenciesUnpackInitramfs,
     "kernel": getDependenciesKernel,
     "debian-update-initramfs": getDependenciesDebianUpdateInitramfs,
-    "smart-chroot": getDependenciesSmartChroot
+    "smart-chroot": getDependenciesSmartChroot,
+    "modify-directory": getDependenciesModifyDirectory
 }
 
 def filter_underscored(d):
