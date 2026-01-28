@@ -1294,26 +1294,21 @@ def backInvalidate(name):
 
 def rawGetDependencies(item, items_and_files_fields=None, files_only_fields=None, back_invalidate=None):
     dependencies = []
-    # buildLog(f"rawGetDependencies check for: {item["name"]}")
 
     if items_and_files_fields:
         for fieldName in items_and_files_fields:
-            # buildLog("items and files field : " + fieldName)
             if fieldName in item:
                 add_str = getDependenciesFieldChecksum(item[fieldName], False)
             else:
                 add_str = "NONE"
-            # buildLog("result: " + add_str)
             dependencies.append(add_str)
 
     if files_only_fields:
         for fieldName in files_only_fields:
-            # buildLog("files only field: " + fieldName)
             if fieldName in item:
                 add_str = getDependenciesFieldChecksum(item[fieldName], True)
             else:
                 add_str = "NONE"
-            # buildLog("result: " + add_str)
             dependencies.append(add_str)
 
     if back_invalidate and item.get("_back_invalidate", False):
