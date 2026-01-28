@@ -145,7 +145,6 @@ these changes to the kernel config are applied automatically when building the k
 * iso image | x86 | BIOS: qemu-system-i386 -cdrom output/i386/lifeimage.iso -boot d -m 2048
 
 ## roadmap
-* make a normal caching system
 * add the ability to add additional files to the iso images
 * the ability to specify changes for kernel config parameters directly in the builditem of the kernel build
 * exporting the resulting kernel config when building the kernel
@@ -154,6 +153,7 @@ these changes to the kernel config are applied automatically when building the k
 
 ## roadmap completed
 * execution of arbitrary scripts in the system's chroot, with qemu-static support for execution during assembly for a different architecture
+* make a normal caching system
 
 ## project example
 ```json
