@@ -81,7 +81,7 @@ def _pathConcat(path1, path2):
     abs_path1 = os.path.abspath(path1)
     abs_full = os.path.abspath(full_path)
     if not abs_full.startswith(abs_path1):
-        buildLog(f"Building outside the sandbox: {path1} | {path2}")
+        buildLog(f"ERROR: building outside the sandbox: {path1} | {path2}")
         sys.exit(1)
 
     return full_path
@@ -147,7 +147,7 @@ def calcSize(sizeLitteral, folderOrFilelist):
     number, unit = splitNumberUnit(sizeLitteral)
 
     if not unit in SIZE_UNITS:
-        buildLog(f"Unknown size unit: {unit}")
+        buildLog(f"ERROR: unknown size unit: {unit}")
         sys.exit(1)
 
     return math.ceil(number * SIZE_UNITS[unit])
@@ -253,7 +253,7 @@ def findItem(itemName):
             if os.path.exists(path):
                 return path
 
-    buildLog(f"Failed to find item: {itemName}")
+    buildLog(f"ERROR: failed to find item: {itemName}")
     sys.exit(1)
 
 def isUserItem(itemName):
@@ -304,7 +304,7 @@ def buildExecute(cmd, checkValid=True, input_data=None, cwd=None):
     returncode = process.wait()
 
     if returncode != 0 and checkValid:
-        buildLog("failed to build")
+        buildLog("ERROR: failed to build")
         sys.exit(1)
 
     return "\n".join(output_lines)
@@ -336,7 +336,7 @@ def buildRawExecute(cmd, checkValid=True, cwd=None):
     returncode = process.wait()
 
     if returncode != 0 and checkValid:
-        buildLog("failed to build")
+        buildLog("ERROR: failed to build")
         sys.exit(1)
 
     return "\n".join(output_lines)
@@ -394,7 +394,7 @@ def getDebianKernelName(kernelType):
     elif kernelType == "realtime":
         kernelName += "rt-"
     else:
-        buildLog(f"Unknown kernel type: {kernelType}")
+        buildLog(f"ERROR: unknown kernel type: {kernelType}")
         sys.exit(1)
 
     kernelName += debianKernelArchitectureAliases.get(architecture, architecture)
@@ -670,9 +670,7 @@ def umountFilesystem(mount_path):
             buildExecute(["losetup", "-d", loop_device])
         deleteDirectory(mount_path)
 
-def buildDirectory(item):
-    buildDirectoryPath = getItemFolder(item)
-
+def rawDirectoryChange(item, buildDirectoryPath):
     if "directories" in item:
         for directoryData in item["directories"]:
             directoryPath = pathConcat(buildDirectoryPath, directoryData[0])
@@ -709,13 +707,20 @@ def buildDirectory(item):
         for deletePath in item["delete"]:
             deleteAny(pathConcat(buildDirectoryPath, deletePath))
 
+def buildDirectory(item):
+    buildDirectoryPath = getItemFolder(item)
+    rawDirectoryChange(item, buildDirectoryPath)
+
+def buildModifyDirectory(item):
+    rawDirectoryChange(item, findItem(item["modify_directory"]))
+
 def findDirectory(item):
     if not "source" in item:
         return None
 
     dirpath = findItem(item["source"])
     if not os.path.isdir(dirpath):
-        buildLog(f"Item \"{dirpath}\" is not a directory")
+        buildLog(f"ERROR: item \"{dirpath}\" is not a directory")
         sys.exit(1)
     return dirpath
 
@@ -786,7 +791,7 @@ def getGrubTarget(item, efi):
         target = defaultGrubTargets_bios.get(architecture)
 
     if target == None:
-        buildLog(f"Unknown grub target for {architecture} ({"efi" if efi else "bios"})")
+        buildLog(f"ERROR: unknown grub target for {architecture} ({"efi" if efi else "bios"})")
         sys.exit(1)
 
     return target
@@ -826,7 +831,7 @@ def installBootloader(item, path, partitionsOffsets):
         if efi:
             umountFilesystem(path_mount2)
     else:
-        buildLog("Unknown bootloader type")
+        buildLog("ERROR: unknown bootloader type")
         sys.exit(1)
 
 def buildFullDiskImage(item):
@@ -870,13 +875,13 @@ def buildFullDiskImage(item):
         installBootloader(item, path, partitionsOffsets)
 
 def buildUnknown(item):
-    buildLog(f"unknown build item type: {item["type"]}")
+    buildLog(f"ERROR: unknown build item type: {item["type"]}")
     sys.exit(1)
 
 def getSourceDirectory(item):
     source = findItem(item["source"])
     if not os.path.isdir(source):
-        buildLog("Source item is not a directory")
+        buildLog("ERROR: source item is not a directory")
         sys.exit(1)
     return source
 
@@ -1095,7 +1100,7 @@ def buildKernel(item):
         if os.path.isfile(kernel_output_file):
             copyItemFiles(kernel_output_file, getItemPath(item))
         else:
-            buildLog(f"failed to find \"{kernel_output_filename}\" kernel output file")
+            buildLog(f"ERROR: failed to find \"{kernel_output_filename}\" kernel output file")
             sys.exit(1)
 
     if "modules_name" in item:
@@ -1222,7 +1227,8 @@ buildActions = {
     "unpack-initramfs": unpackInitramfs,
     "kernel": buildKernel,
     "debian-update-initramfs": debianUpdateInitramfs,
-    "smart-chroot": smartChroot
+    "smart-chroot": smartChroot,
+    "modify-directory": buildModifyDirectory
 }
 
 def get_file_checksum(file_path, hash_algo="sha256"):
@@ -1285,7 +1291,7 @@ def getDependenciesFieldChecksum(fieldValue, filesOnly=False):
 
         return dictChecksum(checkDict)
     else:
-        buildLog("failed to get dependencies checksum")
+        buildLog("ERROR: failed to get dependencies checksum")
         sys.exit(1)
 
 def backDependenciesAdd(name, selfChecksum):
@@ -1395,7 +1401,7 @@ def getItemChecksum(item):
 
     checksumDict = {
         "item": item,
-        "dependencies": dependencies,
+        "dependencies": dependencies, # direct dependencies
         "backDependencies": backDependencies.get(item["name"], [])
     }
 
@@ -1480,7 +1486,7 @@ def prepairBuildItems(builditems):
     for builditem in builditems:
         if builditem.get("fork", False):
             if forkbase == None:
-                buildLog(f"an attempt to fork without a single forkbase before that")
+                buildLog(f"ERROR: an attempt to fork without a single forkbase before that")
                 sys.exit(1)
             
             forkCombine(builditem, forkbase, builditem.get("forkArraysCombine", False), ["forkbase", "fork", "forkArraysCombine", "template"])
@@ -1509,9 +1515,21 @@ def buildProject(json_path):
     prepairBuild()
     prepairBuildItems(builditems)
 
+    namesExists = []
     buildLog("Item list:")
     for item in builditems:
-        buildItemLog(item)
+        if "name" not in item:
+            buildLog(f"ERROR: builditem without a name")
+            sys.exit(1)
+        elif "type" not in item:
+            buildLog(f"ERROR: builditem without a type")
+            sys.exit(1)
+        elif item["name"] not in namesExists:
+            buildItemLog(item)
+            namesExists.append(item["name"])
+        else:
+            buildLog(f"ERROR: more than one builditem named {item["name"]}")
+            sys.exit(1)
     buildLog(";")
     
     exported = buildItems(builditems)
@@ -1546,7 +1564,7 @@ if __name__ == "__main__":
         projectData = json5.load(f)
         showProjectInfo(projectData)
         if not checkVersion(projectData):
-            buildLog(f"the project requires at least the syslbuild {formatVersion(projectData["min-syslbuild-version"])} version. you have {formatVersion(VERSION)} installed")
+            buildLog(f"ERROR: the project requires at least the syslbuild {formatVersion(projectData["min-syslbuild-version"])} version. you have {formatVersion(VERSION)} installed")
             sys.exit(1)
 
         if architecture == "ALL":
