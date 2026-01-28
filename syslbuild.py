@@ -1192,14 +1192,17 @@ def rawCrossChroot(chrootDirectory, chrootCommand):
         buildRawExecute(f"rm -rf \"{makedDirectoryBindPath}\"")
 
 def debianUpdateInitramfs(item):
-    rawCrossChroot(findItem(item["rootfs"]), ["update-initramfs", "-c", "-k", item["kernel_version"]])
+    itemPath = getItemFolder(item)
+    copyItemFiles(findItem(item["rootfs"]), itemPath)
+    rawCrossChroot(itemPath, ["update-initramfs", "-c", "-k", item["kernel_version"]])
 
 def smartChroot(item):
-    chroot_directory = findItem(item["chroot_directory"])
+    itemPath = getItemFolder(item)
+    copyItemFiles(findItem(item["chroot_directory"]), itemPath)
     for scriptPath in item["chroot_scripts"]:
-        chroot_script_path = pathConcat(chroot_directory, ".syslbuild-smart-chroot.sh")
+        chroot_script_path = pathConcat(itemPath, ".syslbuild-smart-chroot.sh")
         copyItemFiles(scriptPath, chroot_script_path, [0, 0, "0755"])
-        rawCrossChroot(chroot_directory, ["./.syslbuild-smart-chroot.sh"])
+        rawCrossChroot(itemPath, ["./.syslbuild-smart-chroot.sh"])
         os.remove(chroot_script_path)
 
 buildActions = {
@@ -1284,16 +1287,7 @@ def getDependenciesFieldChecksum(fieldValue, filesOnly=False):
         buildLog("ERROR: failed to get dependencies checksum")
         sys.exit(1)
 
-def backDependenciesAdd(name, selfChecksum, item):
-    buildLog(name)
-    if name not in backDependencies:
-        backDependencies[name] = []
-        backDependenciesNames[name] = []
-    
-    backDependencies[name].append(selfChecksum)
-    backDependenciesNames[name].append(item["name"])
-
-def rawGetDependencies(item, items_and_files_fields=None, files_only_fields=None, back_invalidate=None):
+def rawGetDependencies(item, items_and_files_fields=None, files_only_fields=None):
     dependencies = []
 
     if items_and_files_fields:
@@ -1311,16 +1305,6 @@ def rawGetDependencies(item, items_and_files_fields=None, files_only_fields=None
             else:
                 add_str = "NONE"
             dependencies.append(add_str)
-
-    if item.get("_back_invalidate", False):
-        selfChecksum = item["_back_invalidate"]
-
-        if back_invalidate:
-            buildLog(f"back dependencies for builditem: {item["name"]}")
-            buildLog(f"back dependencies list:")
-            for back_invalidate_object in back_invalidate:
-                backDependenciesAdd(item[back_invalidate_object], selfChecksum, item)
-            buildLog(f";")
 
     return dependencies
 
@@ -1358,10 +1342,10 @@ def getDependenciesKernel(item):
     return rawGetDependencies(item, ["patches", "kernel_config", "kernel_config_changes_files"], [])
 
 def getDependenciesDebianUpdateInitramfs(item):
-    return rawGetDependencies(item, [], [], ["rootfs"])
+    return rawGetDependencies(item, ["rootfs"], [])
 
 def getDependenciesSmartChroot(item):
-    return rawGetDependencies(item, ["chroot_scripts"], [], ["chroot_directory"])
+    return rawGetDependencies(item, ["chroot_scripts", "chroot_directory"], [])
 
 getDependencies = {
     "debian": getDependenciesDebian,
@@ -1396,8 +1380,7 @@ def getItemChecksum(item):
 
     checksumDict = {
         "item": item,
-        "dependencies": dependencies, # direct dependencies
-        "backDependencies": backDependencies.get(item["name"], [])
+        "dependencies": dependencies
     }
 
     return dictChecksum(checksumDict)
@@ -1415,26 +1398,7 @@ def isCacheValid(item, checksum):
     return False
 
 def buildItems(builditems):
-    global backDependencies
-    backDependencies = {}
-
-    global backDependenciesNames
-    backDependenciesNames = {}
-
     exported = []
-    
-    if not args.n:
-        for item in builditems:
-            if item["type"] in getDependencies:
-                item["_back_invalidate"] = getItemChecksum(item)
-                getDependencies[item["type"]](item)
-                del item["_back_invalidate"]
-
-        for item in builditems:
-            if item["type"] in getDependencies:
-                item["_back_direct_invalidate"] = getItemChecksum(item)
-                getDependencies[item["type"]](item)
-                del item["_back_direct_invalidate"]
         
     for item in builditems:
         itemPath = getItemPath(item)
