@@ -195,9 +195,12 @@ def getCustomItemPath(item, nameName, exportName):
     
     return path
 
-def getItemChecksumPath(item):
+def getItemChecksumPathFromName(itemName):
     os.makedirs(path_build_checksums, exist_ok=True)
-    return pathConcat(path_build_checksums, item["name"])
+    return pathConcat(path_build_checksums, itemName)
+
+def getItemChecksumPath(item):
+    return getItemChecksumPathFromName(item["name"])
 
 def deleteDirectory(path):
     if os.path.isdir(path):
@@ -1277,7 +1280,11 @@ def getDependenciesFieldChecksum(fieldValue, filesOnly=False):
         buildLog("failed to get dependencies checksum")
         sys.exit(1)
 
-def rawGetDependencies(item, items_and_files_fields=None, files_only_fields=None):
+def backInvalidate(name):
+    buildLog(name)
+    deleteAny(getItemChecksumPathFromName(name))
+
+def rawGetDependencies(item, items_and_files_fields=None, files_only_fields=None, back_invalidate=None):
     files_dependencies = []
     items_dependencies = []
 
@@ -1294,6 +1301,13 @@ def rawGetDependencies(item, items_and_files_fields=None, files_only_fields=None
                 items_dependencies.append(getDependenciesFieldChecksum(item[fieldName], True))
             else:
                 items_dependencies.append("NONE")
+
+    if back_invalidate and item.get("_back_invalidate", False):
+        buildLog(f"back invalidate cache for builditem: {item["name"]}")
+        buildLog(f"back invalidate list:")
+        for back_invalidate_object in back_invalidate:
+            backInvalidate(back_invalidate_object)
+        buildLog(f"---- end;")
 
     return files_dependencies, items_dependencies
 
@@ -1330,8 +1344,11 @@ def getDependenciesUnpackInitramfs(item):
 def getDependenciesKernel(item):
     return rawGetDependencies(item, ["patches", "kernel_config", "kernel_config_changes_files"], [])
 
+def getDependenciesDebianUpdateInitramfs(item):
+    return rawGetDependencies(item, [], [], ["rootfs"])
+
 def getDependenciesSmartChroot(item):
-    return rawGetDependencies(item, ["chroot_scripts"], [])
+    return rawGetDependencies(item, ["chroot_scripts"], [], ["chroot_directory"])
 
 getDependencies = {
     "debian": getDependenciesDebian,
@@ -1345,6 +1362,7 @@ getDependencies = {
     "grub-iso-image": getDependenciesGrubIsoImage,
     "unpack-initramfs": getDependenciesUnpackInitramfs,
     "kernel": getDependenciesKernel,
+    "debian-update-initramfs", getDependenciesDebianUpdateInitramfs,
     "smart-chroot": getDependenciesSmartChroot
 }
 
