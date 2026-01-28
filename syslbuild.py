@@ -1222,13 +1222,53 @@ buildActions = {
     "smart-chroot": smartChroot
 }
 
-cachedBuildActions = [
-    "debian"
-]
+def getDependencies(item, items_and_files_fields, files_only_fields):
+    return 
+
+def getDependenciesDebian(item):
+    return getDependencies(item, [], ["hooks"])
+
+def getDependenciesDirectory(item):
+    return getDependencies(item, ["items"], [])
+
+def getDependenciesTar(item):
+    return getDependencies(item, ["source"], [])
+
+getDependencies = {
+    "debian": getDependenciesDebian,
+    "directory": getDependenciesDirectory,
+    "tar": getDependenciesTar,
+    "filesystem": ,
+    "full-disk-image": ,
+    "from-directory": ,
+    "gcc-build": ,
+    "initramfs": ,
+    "arch-linux": ,
+    "arch-package": ,
+    "grub-iso-image": ,
+    "unpack-initramfs": ,
+    "kernel": ,
+    "debian-update-initramfs": ,
+    "smart-chroot": 
+}
 
 def dictChecksum(tbl):
     filtered = {k: v for k, v in tbl.items() if not k.startswith("_")}
     return hashlib.md5(json5.dumps(filtered).encode('utf-8')).hexdigest()
+
+def getItemChecksum(item):
+    if item["type"] in getDependencies:
+        files_dependencies, items_dependencies = getDependencies[item["type"]](item)
+    else:
+        files_dependencies, items_dependencies = [], []
+
+    checksumDict = {
+        "item": item,
+        "files_dependencies": files_dependencies,
+        "items_dependencies": items_dependencies
+    }
+
+    return dictChecksum(checksumDict)
 
 def writeCacheChecksum(item, checksum):
     checksum_path = getItemChecksumPath(item)
@@ -1246,16 +1286,15 @@ def buildItems(builditems):
     exported = []
     for item in builditems:
         itemPath = getItemPath(item)
-        checksum = dictChecksum(item)
-        if item["type"] in cachedBuildActions and os.path.exists(itemPath) and (isCacheValid(item, checksum) and not args.n):
+        checksum = getItemChecksum(item)
+        if os.path.exists(itemPath) and (isCacheValid(item, checksum) and not args.n):
             buildItemLog(item, None, " (cache)")
         else:
             writeCacheChecksum(item, checksum)
             deleteAny(itemPath)
             buildItemLog(item)
             buildActions.get(item["type"], buildUnknown)(item)
-            
-
+        
         if needExport(item):
             exported.append(item)
     return exported
