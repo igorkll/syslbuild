@@ -1288,9 +1288,11 @@ def getDependenciesFieldChecksum(fieldValue, filesOnly=False):
         buildLog("failed to get dependencies checksum")
         sys.exit(1)
 
-def backInvalidate(name):
+def backDependenciesAdd(name, selfChecksum):
     buildLog(name)
-    deleteAny(getItemChecksumPathFromName(name))
+    if name not in backDependencies:
+        backDependencies[name] = []
+    backDependencies[name].append(selfChecksum)
 
 def rawGetDependencies(item, items_and_files_fields=None, files_only_fields=None, back_invalidate=None):
     dependencies = []
@@ -1312,10 +1314,11 @@ def rawGetDependencies(item, items_and_files_fields=None, files_only_fields=None
             dependencies.append(add_str)
 
     if back_invalidate and item.get("_back_invalidate", False):
-        buildLog(f"back invalidate cache for builditem: {item["name"]}")
-        buildLog(f"back invalidate list:")
+        buildLog(f"back dependencies for builditem: {item["name"]}")
+        buildLog(f"back dependencies list:")
+        selfChecksum = item["_back_invalidate"]
         for back_invalidate_object in back_invalidate:
-            backInvalidate(item[back_invalidate_object])
+            backDependenciesAdd(item[back_invalidate_object], selfChecksum)
         buildLog(f";")
 
     return dependencies
@@ -1392,7 +1395,8 @@ def getItemChecksum(item):
 
     checksumDict = {
         "item": item,
-        "dependencies": dependencies
+        "dependencies": dependencies,
+        "backDependencies": backDependencies.get(item["name"], [])
     }
 
     return dictChecksum(checksumDict)
@@ -1410,16 +1414,17 @@ def isCacheValid(item, checksum):
     return False
 
 def buildItems(builditems):
+    global backDependencies
+    backDependencies = {}
+
     exported = []
     
     if not args.n:
         for item in builditems:
-            checksum = getItemChecksum(item)
-            if not isCacheValid(item, checksum):
-                if item["type"] in getDependencies:
-                    item["_back_invalidate"] = True
-                    getDependencies[item["type"]](item)
-                    del item["_back_invalidate"]
+            if item["type"] in getDependencies:
+                item["_back_invalidate"] = getItemChecksum(item)
+                getDependencies[item["type"]](item)
+                del item["_back_invalidate"]
         
     for item in builditems:
         itemPath = getItemPath(item)
