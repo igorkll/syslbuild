@@ -1022,10 +1022,11 @@ def parse_kernel_config_changes(changes_file):
         lines = f.readlines()
         for line in lines:
             if not line.startswith("#"):
-                try:
-                    changes.append(line.split("=", 1))
-                except ValueError:
-                    pass
+                change = line.split("=", 1)
+                if len(change) == 2:
+                    change[0] = change[0].strip()
+                    change[1] = change[1].strip()
+                    changes.append(change)            
         return changes
     return []
 
