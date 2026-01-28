@@ -1296,21 +1296,27 @@ def rawGetDependencies(item, items_and_files_fields=None, files_only_fields=None
     files_dependencies = []
     items_dependencies = []
 
+    buildLog(f"rawGetDependencies check for: {item["name"]}")
+
     if items_and_files_fields:
         for fieldName in items_and_files_fields:
-            buildLog("ASD: " + fieldName)
+            buildLog("items and files field : " + fieldName)
             if fieldName in item:
-                items_dependencies.append(getDependenciesFieldChecksum(item[fieldName], False))
+                add_str = getDependenciesFieldChecksum(item[fieldName], False)
             else:
-                items_dependencies.append("NONE")
+                add_str = "NONE"
+            buildLog("result: " + add_str)
+            items_dependencies.append(add_str)
 
     if files_only_fields:
         for fieldName in files_only_fields:
-            buildLog("QWE: " + fieldName)
+            buildLog("files only field: " + fieldName)
             if fieldName in item:
-                items_dependencies.append(getDependenciesFieldChecksum(item[fieldName], True))
+                add_str = getDependenciesFieldChecksum(item[fieldName], True)
             else:
-                items_dependencies.append("NONE")
+                add_str = "NONE"
+            buildLog("result: " + add_str)
+            items_dependencies.append(add_str)
 
     if back_invalidate and item.get("_back_invalidate", False):
         buildLog(f"back invalidate cache for builditem: {item["name"]}")
@@ -1451,8 +1457,8 @@ def cleanup():
 def prepairBuild():
     global path_output_target
     path_output_target = pathConcat(path_output, architecture)
-    recursionUmount(path_output_target)
-    deleteDirectory(path_output_target)
+    # recursionUmount(path_output_target)
+    # deleteDirectory(path_output_target)
     os.makedirs(path_output_target, exist_ok=True)
 
 def forkCombine(builditem, forkbase, forkArraysCombine=False, keysBlackList=None):
