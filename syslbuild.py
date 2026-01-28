@@ -1021,6 +1021,7 @@ def parse_kernel_config_changes(changes_file):
         changes = []
         lines = f.readlines()
         for line in lines:
+            line = line.strip()
             if not line.startswith("#"):
                 change = line.split("=", 1)
                 if len(change) == 2:
