@@ -1399,16 +1399,19 @@ def isCacheValid(item, checksum):
 def buildItems(builditems):
     exported = []
     
-    for item in builditems:
-        if item["type"] in getDependencies:
-            item["_back_invalidate"] = True
-            getDependencies[item["type"]](item)
-            del item["_back_invalidate"]
+    if not args.n:
+        for item in builditems:
+            checksum = getItemChecksum(item)
+            if not isCacheValid(item, checksum):
+                if item["type"] in getDependencies:
+                    item["_back_invalidate"] = True
+                    getDependencies[item["type"]](item)
+                    del item["_back_invalidate"]
         
     for item in builditems:
         itemPath = getItemPath(item)
         checksum = getItemChecksum(item)
-        if os.path.exists(itemPath) and (isCacheValid(item, checksum) and not args.n):
+        if isCacheValid(item, checksum) and not args.n:
             buildItemLog(item, None, " (cache)")
         else:
             writeCacheChecksum(item, checksum)
