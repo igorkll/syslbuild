@@ -1036,7 +1036,7 @@ def modifyKernelConfig(item, kernel_sources):
 
     if "kernel_config_changes_files" in item:
         for changes_file in item["kernel_config_changes_files"]:
-            for change in parse_kernel_config_changes(changes_file):
+            for change in parse_kernel_config_changes(findItem(changes_file)):
                 set_kernel_config_parameter(kernel_config_path, change[0], change[1])
 
     if "kernel_config_changes" in item:
@@ -1251,6 +1251,18 @@ def getDependenciesGccBuild(item):
 def getDependenciesInitramfs(item):
     return getDependencies(item, ["source"], [])
 
+def getDependenciesGrubIsoImage(item):
+    return getDependencies(item, ["vmlinuz", "initramfs", "config"], [])
+
+def getDependenciesUnpackInitramfs(item):
+    return getDependencies(item, ["initramfs"], [])
+
+def getDependenciesKernel(item):
+    return getDependencies(item, ["patches", "kernel_config", "kernel_config_changes_files"], [])
+
+def getDependenciesSmartChroot(item):
+    return getDependencies(item, ["chroot_scripts"], [])
+
 getDependencies = {
     "debian": getDependenciesDebian,
     "directory": getDependenciesDirectory,
@@ -1260,13 +1272,10 @@ getDependencies = {
     "from-directory": getDependenciesFromDirectory,
     "gcc-build": getDependenciesGccBuild,
     "initramfs": getDependenciesInitramfs,
-    "arch-linux": ,
-    "arch-package": ,
-    "grub-iso-image": ,
-    "unpack-initramfs": ,
-    "kernel": ,
-    "debian-update-initramfs": ,
-    "smart-chroot": 
+    "grub-iso-image": getDependenciesGrubIsoImage,
+    "unpack-initramfs": getDependenciesUnpackInitramfs,
+    "kernel": getDependenciesKernel,
+    "smart-chroot": getDependenciesSmartChroot
 }
 
 def dictChecksum(tbl):
