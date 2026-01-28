@@ -156,10 +156,6 @@ these changes to the kernel config are applied automatically when building the k
 * execution of arbitrary scripts in the system's chroot, with qemu-static support for execution during assembly for a different architecture
 * make a normal caching system
 
-## builditems that use back dependencies
-* debian-update-initramfs - applies an back dependencies to the "rootfs" field element
-* smart-chroot - applies an back dependencies to the "chroot_directory" field element
-
 ## project example
 ```json
 {
@@ -693,7 +689,7 @@ these changes to the kernel config are applied automatically when building the k
             // the rootfs (directory) where initramfs is created
             // this is not shown here, but the modules of the kernel for which you are generating initramfs should be installed in this rootfs
             // there should also be a "config-<kernel_version>" kernel config in the "/boot" directory, you can export the resulting kernel config with all changes via "result_config_name"
-            "rootfs": "my_rootfs_with_kernel_modules"
+            "source": "my_rootfs_with_kernel_modules"
         },
         {
             "architectures": ["amd64"],
@@ -783,8 +779,8 @@ these changes to the kernel config are applied automatically when building the k
             "name": "my_rootfs_with_chroot_scripts",
             "export": false,
 
-            "chroot_directory": "my_rootfs",
-            "chroot_scripts": [
+            "source": "my_rootfs",
+            "scripts": [
                 "script_in_project.sh",
                 "script_in_project_2.sh"
             ]

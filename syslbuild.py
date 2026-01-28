@@ -1193,13 +1193,13 @@ def rawCrossChroot(chrootDirectory, chrootCommand):
 
 def debianUpdateInitramfs(item):
     itemPath = getItemFolder(item)
-    copyItemFiles(findItem(item["rootfs"]), itemPath)
+    copyItemFiles(findItem(item["source"]), itemPath)
     rawCrossChroot(itemPath, ["update-initramfs", "-c", "-k", item["kernel_version"]])
 
 def smartChroot(item):
     itemPath = getItemFolder(item)
-    copyItemFiles(findItem(item["chroot_directory"]), itemPath)
-    for scriptPath in item["chroot_scripts"]:
+    copyItemFiles(findItem(item["source"]), itemPath)
+    for scriptPath in item["scripts"]:
         chroot_script_path = pathConcat(itemPath, ".syslbuild-smart-chroot.sh")
         copyItemFiles(scriptPath, chroot_script_path, [0, 0, "0755"])
         rawCrossChroot(itemPath, ["./.syslbuild-smart-chroot.sh"])
@@ -1342,10 +1342,10 @@ def getDependenciesKernel(item):
     return rawGetDependencies(item, ["patches", "kernel_config", "kernel_config_changes_files"], [])
 
 def getDependenciesDebianUpdateInitramfs(item):
-    return rawGetDependencies(item, ["rootfs"], [])
+    return rawGetDependencies(item, ["source"], [])
 
 def getDependenciesSmartChroot(item):
-    return rawGetDependencies(item, ["chroot_scripts", "chroot_directory"], [])
+    return rawGetDependencies(item, ["scripts", "source"], [])
 
 getDependencies = {
     "debian": getDependenciesDebian,
