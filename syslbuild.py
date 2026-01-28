@@ -1222,6 +1222,8 @@ buildActions = {
     "smart-chroot": smartChroot
 }
 
+# если какое то поле зависимостей ссылается на массив массивов то в втором массиве учитываются только элементы с индексом 0
+# ТАК И ЗАДУМАНО!
 def getDependencies(item, items_and_files_fields, files_only_fields):
     return 
 
@@ -1234,15 +1236,30 @@ def getDependenciesDirectory(item):
 def getDependenciesTar(item):
     return getDependencies(item, ["source"], [])
 
+def getDependenciesFilesystem(item):
+    return getDependencies(item, ["source"], [])
+
+def getDependenciesFullDiskImage(item):
+    return getDependencies(item, ["partitions"], [])
+
+def getDependenciesFromDirectory(item):
+    return getDependencies(item, ["source"], [])
+
+def getDependenciesGccBuild(item):
+    return getDependencies(item, [], ["my-sources"])
+
+def getDependenciesInitramfs(item):
+    return getDependencies(item, ["source"], [])
+
 getDependencies = {
     "debian": getDependenciesDebian,
     "directory": getDependenciesDirectory,
     "tar": getDependenciesTar,
-    "filesystem": ,
-    "full-disk-image": ,
-    "from-directory": ,
-    "gcc-build": ,
-    "initramfs": ,
+    "filesystem": getDependenciesFilesystem,
+    "full-disk-image": getDependenciesFullDiskImage,
+    "from-directory": getDependenciesFromDirectory,
+    "gcc-build": getDependenciesGccBuild,
+    "initramfs": getDependenciesInitramfs,
     "arch-linux": ,
     "arch-package": ,
     "grub-iso-image": ,
