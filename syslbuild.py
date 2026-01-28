@@ -1381,14 +1381,16 @@ getDependencies = {
     "smart-chroot": getDependenciesSmartChroot
 }
 
+def filter_underscored(d):
+    if not isinstance(d, dict):
+        return d
+    return {k: filter_underscored(v) for k, v in d.items() if not k.startswith("_")}
+
 def dictChecksum(tbl):
-    filtered = {k: v for k, v in tbl.items() if not k.startswith("_")}
+    filtered = filter_underscored(tbl)
     return hashlib.md5(json5.dumps(filtered).encode('utf-8')).hexdigest()
 
 def getItemChecksum(item):
-    if "_checksum" in item:
-        return item["_checksum"]
-
     if item["type"] in getDependencies:
         files_dependencies, items_dependencies = getDependencies[item["type"]](item)
     else:
