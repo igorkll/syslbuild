@@ -1277,7 +1277,7 @@ def getDependenciesFieldChecksum(fieldValue, filesOnly=False):
         buildLog("failed to get dependencies checksum")
         sys.exit(1)
 
-def getDependencies(item, items_and_files_fields=None, files_only_fields=None):
+def rawGetDependencies(item, items_and_files_fields=None, files_only_fields=None):
     files_dependencies = []
     items_dependencies = []
 
@@ -1295,48 +1295,43 @@ def getDependencies(item, items_and_files_fields=None, files_only_fields=None):
             else:
                 items_dependencies.append("NONE")
 
-    checksumDict = {
-        "files_dependencies": files_dependencies,
-        "items_dependencies": items_dependencies
-    }
-
-    return dictChecksum(checksumDict)
+    return files_dependencies, items_dependencies
 
 def getDependenciesDebian(item):
-    return getDependencies(item, [], ["hooks"])
+    return rawGetDependencies(item, [], ["hooks"])
 
 def getDependenciesDirectory(item):
-    return getDependencies(item, ["items"], [])
+    return rawGetDependencies(item, ["items"], [])
 
 def getDependenciesTar(item):
-    return getDependencies(item, ["source"], [])
+    return rawGetDependencies(item, ["source"], [])
 
 def getDependenciesFilesystem(item):
-    return getDependencies(item, ["source"], [])
+    return rawGetDependencies(item, ["source"], [])
 
 def getDependenciesFullDiskImage(item):
-    return getDependencies(item, ["partitions"], [])
+    return rawGetDependencies(item, ["partitions"], [])
 
 def getDependenciesFromDirectory(item):
-    return getDependencies(item, ["source"], [])
+    return rawGetDependencies(item, ["source"], [])
 
 def getDependenciesGccBuild(item):
-    return getDependencies(item, [], ["my-sources"])
+    return rawGetDependencies(item, [], ["my-sources"])
 
 def getDependenciesInitramfs(item):
-    return getDependencies(item, ["source"], [])
+    return rawGetDependencies(item, ["source"], [])
 
 def getDependenciesGrubIsoImage(item):
-    return getDependencies(item, ["vmlinuz", "initramfs", "config"], [])
+    return rawGetDependencies(item, ["vmlinuz", "initramfs", "config"], [])
 
 def getDependenciesUnpackInitramfs(item):
-    return getDependencies(item, ["initramfs"], [])
+    return rawGetDependencies(item, ["initramfs"], [])
 
 def getDependenciesKernel(item):
-    return getDependencies(item, ["patches", "kernel_config", "kernel_config_changes_files"], [])
+    return rawGetDependencies(item, ["patches", "kernel_config", "kernel_config_changes_files"], [])
 
 def getDependenciesSmartChroot(item):
-    return getDependencies(item, ["chroot_scripts"], [])
+    return rawGetDependencies(item, ["chroot_scripts"], [])
 
 getDependencies = {
     "debian": getDependenciesDebian,
