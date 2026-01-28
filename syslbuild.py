@@ -1018,10 +1018,15 @@ def update_kernel_config(kernel_sources):
 
 def parse_kernel_config_changes(changes_file):
     with open(changes_file, "r") as f:
+        changes = []
         lines = f.readlines()
         for line in lines:
             if not line.startswith("#"):
-                return line.split()
+                try:
+                    changes.append(line.split("=", 1))
+                except ValueError:
+                    pass
+        return changes
     return []
 
 def modifyKernelConfig(item, kernel_sources):
