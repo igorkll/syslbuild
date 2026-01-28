@@ -1245,14 +1245,14 @@ def get_dir_checksum(dir_path, hash_algo="sha256"):
             h.update(get_file_checksum(file_path, hash_algo).encode())
     return h.hexdigest()
 
-def getDependenciesFileOrDirectoryChecksum(path, hash_algo="sha256"):
-    if path == "NOT CALCULATED":
-        return path
+def getDependenciesFileOrDirectoryChecksum(pathOrChecksum, hash_algo="sha256"):
+    if pathOrChecksum.startswith("@") or pathOrChecksum == "NOT CALCULATED":
+        return pathOrChecksum
     
-    if os.path.isfile(path):
-        return get_file_checksum(path, hash_algo)
-    elif os.path.isdir(path):
-        return get_dir_checksum(path, hash_algo)
+    if os.path.isfile(pathOrChecksum):
+        return get_file_checksum(pathOrChecksum, hash_algo)
+    elif os.path.isdir(pathOrChecksum):
+        return get_dir_checksum(pathOrChecksum, hash_algo)
     
     return "NOT EXISTS"
     
@@ -1264,7 +1264,8 @@ def getDependenciesFieldChecksum(fieldValue, filesOnly=False):
             if os.path.exists(pathConcat(path_build, inputPath)) or os.path.exists(pathConcat(path_output, inputPath)):
                 checksumPath = getItemChecksumPathFromName(inputPath)
                 if os.path.exists(checksumPath):
-                    return checksumPath
+                    with open(checksumPath, "r") as f:
+                        return "@" + f.read()
                 else:
                     return "NOT CALCULATED"
         return inputPath
