@@ -1290,11 +1290,14 @@ def getDependenciesFieldChecksum(fieldValue, filesOnly=False):
         buildLog("ERROR: failed to get dependencies checksum")
         sys.exit(1)
 
-def backDependenciesAdd(name, selfChecksum):
+def backDependenciesAdd(name, selfChecksum, item):
     buildLog(name)
     if name not in backDependencies:
         backDependencies[name] = []
+        backDependenciesNames[name] = []
+    
     backDependencies[name].append(selfChecksum)
+    backDependenciesNames[name].append(item["name"])
 
 def rawGetDependencies(item, items_and_files_fields=None, files_only_fields=None, back_invalidate=None):
     dependencies = []
@@ -1315,13 +1318,26 @@ def rawGetDependencies(item, items_and_files_fields=None, files_only_fields=None
                 add_str = "NONE"
             dependencies.append(add_str)
 
-    if back_invalidate and item.get("_back_invalidate", False):
-        buildLog(f"back dependencies for builditem: {item["name"]}")
-        buildLog(f"back dependencies list:")
+    if item.get("_back_invalidate", False):
         selfChecksum = item["_back_invalidate"]
-        for back_invalidate_object in back_invalidate:
-            backDependenciesAdd(item[back_invalidate_object], selfChecksum)
-        buildLog(f";")
+
+        if back_invalidate:
+            buildLog(f"back dependencies for builditem: {item["name"]}")
+            buildLog(f"back dependencies list:")
+            for back_invalidate_object in back_invalidate:
+                backDependenciesAdd(item[back_invalidate_object], selfChecksum, item)
+            buildLog(f";")
+
+    if item.get("_back_direct_invalidate", False):
+        selfChecksum = item["_back_direct_invalidate"]
+
+        if item["name"] in backDependenciesNames:
+            index = 0
+            for directDepend in backDependenciesNames[item["name"]]:
+                if not isCacheValid(item, selfChecksum):
+                    deleteAny(getItemChecksumPathFromName(directDepend))
+                    buildLog(f"back-direct invalidate cache: {item["name"]} > {directDepend}")
+                index += 1
 
     return dependencies
 
@@ -1423,6 +1439,9 @@ def buildItems(builditems):
     global backDependencies
     backDependencies = {}
 
+    global backDependenciesNames
+    backDependenciesNames = {}
+
     exported = []
     
     if not args.n:
@@ -1431,6 +1450,12 @@ def buildItems(builditems):
                 item["_back_invalidate"] = getItemChecksum(item)
                 getDependencies[item["type"]](item)
                 del item["_back_invalidate"]
+
+        for item in builditems:
+            if item["type"] in getDependencies:
+                item["_back_direct_invalidate"] = getItemChecksum(item)
+                getDependencies[item["type"]](item)
+                del item["_back_direct_invalidate"]
         
     for item in builditems:
         itemPath = getItemPath(item)
