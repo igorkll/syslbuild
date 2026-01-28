@@ -1,4 +1,4 @@
-# syslbuild 0.1.0
+# syslbuild 0.2.0
 an build system for creating Linux distributions. it is focused on embedded distributions  
 DOWNLOAD THE RELEASE, NOT THE REPOSITORY!  
 WARNING!!! if you read this text from GITHUB page please, download a release and read description there. on github this text is DEV syslbuild version (not released yet)  
@@ -156,7 +156,7 @@ these changes to the kernel config are applied automatically when building the k
 ## project example
 ```json
 {
-    "min-syslbuild-version": [0, 1, 0],
+    "min-syslbuild-version": [0, 2, 0],
 
     // you can announce this list and build a system for all architectures at once
     // just specify --arch ALL when starting syslbuild
@@ -656,7 +656,7 @@ these changes to the kernel config are applied automatically when building the k
                 // the format is the same as in the regular kernel config. comments are not taken into account, to disable some parameter, set it as =n
                 "my_kernel_config_changes.txt"
             ],
-            
+
             // local changes are more important than files
             "kernel_config_changes": [
                 // these are standard changes to the kernel config that syslbuild makes by itself without saying anything unless the "kernel_config_disable_default_changes" parameter is set
