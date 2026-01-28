@@ -29,7 +29,8 @@ also, assembling a bootable img with an already installed system is also a separ
 ## arguments
 * -h - show help info
 * --arch ARCHITECTURE - set the output architecture of the build
-* -n - does the build anew, does not use the cache
+* -n - does the build anew, does not use the cache (syslbuild caches the kernel source code anyway, even in this mode. use -d if you want to download the kernel again)
+* -d - do not use the download cache of the kernel sources
 
 ## dependencies
 * python3

@@ -956,7 +956,7 @@ def downloadKernel(url, unpacker):
     kernel_sources_downloaded_flag = pathConcat(path_temp_kernel_sources, url_hash + ".downloaded")
     kernel_sources_archive = pathConcat(path_temp_kernel_sources, url_hash + get_file_extension(url))
 
-    if not os.path.isdir(kernel_sources) or not os.path.isfile(kernel_sources_downloaded_flag):
+    if args.d or not os.path.isdir(kernel_sources) or not os.path.isfile(kernel_sources_downloaded_flag):
         os.makedirs(kernel_sources, exist_ok=True)
         downloadFile(url, kernel_sources_archive)
         buildRawExecute(unpacker % (kernel_sources_archive, kernel_sources))
@@ -1534,6 +1534,7 @@ if __name__ == "__main__":
     parser.add_argument("--arch", choices=["ALL", "amd64", "i386", "arm64", "armhf", "armel"], type=str, required=True, help="the processor architecture for which the build will be made")
     parser.add_argument("json_path", type=str, help="the path to the json file of the project")
     parser.add_argument("-n", action="store_true", help="does the build anew, does not use the cache")
+    parser.add_argument("-d", action="store_true", help="do not use the download cache of the kernel sources")
     args = parser.parse_args()
     
     requireRoot()
