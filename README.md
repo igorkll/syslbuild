@@ -776,7 +776,7 @@ these changes to the kernel config are applied automatically when building the k
         // exports a new rootfs with scripts executed inside the chroot
         {
             "type": "smart-chroot",
-            "name": "my_rootfs_with_chroot_scripts",
+            "name": "my_rootfs_with_chroot_scripts_changes",
             "export": false,
 
             "source": "my_rootfs",
