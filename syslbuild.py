@@ -1253,9 +1253,8 @@ def getDependenciesFileOrDirectoryChecksum(path, hash_algo="sha256"):
         return get_file_checksum(path, hash_algo)
     elif os.path.isdir(path):
         return get_dir_checksum(path, hash_algo)
-    else:
-        buildLog(f"{path} not exists")
-        sys.exit(1)
+    
+    return "NOT EXISTS"
     
 # если какое то поле зависимостей ссылается на массив массивов то в втором массиве учитываются только элементы с индексом 0
 # ТАК И ЗАДУМАНО!
@@ -1346,13 +1345,13 @@ def getDependenciesFromDirectory(item):
     return rawGetDependencies(item, ["source"], [])
 
 def getDependenciesGccBuild(item):
-    return rawGetDependencies(item, [], ["my-sources"])
+    return rawGetDependencies(item, [], ["sources-dirs"])
 
 def getDependenciesInitramfs(item):
     return rawGetDependencies(item, ["source"], [])
 
 def getDependenciesGrubIsoImage(item):
-    return rawGetDependencies(item, ["vmlinuz", "initramfs", "config"], [])
+    return rawGetDependencies(item, ["kernel", "initramfs", "config"], [])
 
 def getDependenciesUnpackInitramfs(item):
     return rawGetDependencies(item, ["initramfs"], [])
@@ -1442,10 +1441,10 @@ def buildItems(builditems):
         if isCacheValid(item, checksum) and not args.n:
             buildItemLog(item, None, " (cache)")
         else:
-            writeCacheChecksum(item, checksum)
             deleteAny(itemPath)
             buildItemLog(item)
             buildActions.get(item["type"], buildUnknown)(item)
+            writeCacheChecksum(item, checksum)
         
         if needExport(item):
             exported.append(item)
