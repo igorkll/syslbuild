@@ -710,18 +710,15 @@ def buildDirectory(item):
         for deletePath in item["delete"]:
             deleteAny(pathConcat(buildDirectoryPath, deletePath))
 
-def findDirectoryFromSource(source):
-    dirpath = findItem(source)
-    if not os.path.isdir(dirpath):
-        buildLog(f"ERROR: item \"{dirpath}\" is not a directory")
-        sys.exit(1)
-    return dirpath
-
 def findDirectory(item):
     if not "source" in item:
         return None
 
-    return findDirectoryFromSource(item["source"])
+    dirpath = findItem(item["source"])
+    if not os.path.isdir(dirpath):
+        buildLog(f"ERROR: item \"{dirpath}\" is not a directory")
+        sys.exit(1)
+    return dirpath
 
 def buildTar(item):
     tar_files = findDirectory(item)
