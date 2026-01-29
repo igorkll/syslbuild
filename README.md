@@ -86,7 +86,8 @@ also, assembling a bootable img with an already installed system is also a separ
 * grub-iso-image - collects the bootable iso
 * initramfs - collects initramfs from a directory
 * unpack-initramfs - unpacking initramfs
-* debian-update-initramfs - allows you to update initramfs (for debian systems) for the specified rootfs. this is necessary if you are building your kernel and you need to install its modules in rootfs first and only then update initramfs. the specified rootfs must also contain the kernel configuration for which the ramdisk is being updated. exports new rootfs with initramfs, not initramfs itself.
+* debian-update-initramfs - allows you to update initramfs (for debian systems) for the specified rootfs. this is necessary if you are building your kernel and you need to install its modules in rootfs first and only then update initramfs. the specified rootfs must also contain the kernel configuration for which the ramdisk is being updated. exports new rootfs with initramfs, not initramfs itself. your rootfs must have the "initramfs-tools" package and the kernel modules installed.
+* debian-export-initramfs - it works the same way as debian-update-initramfs, but accepts the kernel config separately (not required if the config is already in your rootfs) and exports initramfs itself, not the entire rootfs with it. your rootfs must have the "initramfs-tools" package and the kernel modules installed.
 * smart-chroot - executes scripts inside the chroot. if the processor architecture does not match, then this builditem itself will copy and then delete qemu-static from your chroot. exports a new rootfs with executed chroot scripts inside
 
 ## build items features
@@ -679,8 +680,11 @@ these changes to the kernel config are applied automatically when building the k
             "kernel_config_disable_default_changes": false,
         },
         {
+            // export new rootfs with initramfs, not initramfs
+            // for it to work, the "source" must be debian with the "initramfs-tools" package
+
             "type": "debian-update-initramfs",
-            "name": "rootfs-with-initramfs", //export new rootfs with initramfs, not initramfs
+            "name": "rootfs-with-initramfs",
             "export": false,
 
             // the version of the kernel for which initramfs is being created
@@ -688,9 +692,21 @@ these changes to the kernel config are applied automatically when building the k
 
             // the rootfs (directory) where initramfs is created
             // this is not shown here, but the modules of the kernel for which you are generating initramfs should be installed in this rootfs
-            // there should also be a "config-<kernel_version>" kernel config in the "/boot" directory, you can export the resulting kernel config with all changes via "result_config_name"
-            "source": "my_rootfs_with_kernel_modules"
+            // there should also be a "config-<kernel_version>" kernel config in the "/boot" directory, you can export the resulting kernel config with all changes via "result_config_name" in "kernel" builditem
+            "source": "my_rootfs_with_kernel_modules" // your rootfs must have the "initramfs-tools" package and the kernel modules installed.
         },
+        {
+            // it works the same way as debian-update-initramfs, but accepts the kernel config separately (not required if the config is already in your rootfs) and exports initramfs itself, not the entire rootfs with it
+
+            "type": "debian-export-initramfs",
+            "name": "initramfs.img",
+            "export": false,
+
+            // you can export the resulting kernel config with all changes via "result_config_name" in "kernel" builditem
+            "kernel_config": "kernel_config",
+            "kernel_version": "6.18.7-custom",
+            "source": "my_rootfs_with_kernel_modules" // your rootfs must have the "initramfs-tools" package and the kernel modules installed.
+        }
         {
             "architectures": ["amd64"],
             "fork": true, 

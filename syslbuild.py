@@ -42,6 +42,7 @@ def loadTempPaths():
 aeval = asteval.Interpreter()
 
 DEFAULT_RIGHTS = [0, 0, "0000"]
+DEFAULT_RIGHTS_0755 = [0, 0, "0755"]
 
 SIZE_UNITS = {
     "":   1,
@@ -880,7 +881,7 @@ def buildFromDirectory(item):
     path = getItemPath(item)
     source = findDirectory(item)
     sourcePath = pathConcat(source, item["path"])
-    copyItemFiles(sourcePath, path, [0, 0, "0755"])
+    copyItemFiles(sourcePath, path, DEFAULT_RIGHTS_0755)
 
 gccNames = {
     "amd64": "x86_64-linux-gnu",
@@ -1191,17 +1192,60 @@ def rawCrossChroot(chrootDirectory, chrootCommand):
     for makedDirectoryBindPath in makedDirectories:
         buildRawExecute(f"rm -rf \"{makedDirectoryBindPath}\"")
 
+def rawUpdateInitramfs(path, item):
+    rawCrossChroot(path, ["update-initramfs", "-c", "-k", item["kernel_version"]])
+
 def debianUpdateInitramfs(item):
     itemPath = getItemFolder(item)
     copyItemFiles(findItem(item["source"]), itemPath)
-    rawCrossChroot(itemPath, ["update-initramfs", "-c", "-k", item["kernel_version"]])
+    rawUpdateInitramfs(itemPath, item["kernel_version"])
+
+def debianExportInitramfs(item):
+    tempRootfs = getTempFolder("export_initramfs_rootfs")
+    copyItemFiles(findItem(item["source"]), tempRootfs)
+
+    kernel_version = item["kernel_version"]
+
+    if "kernel_config" in item:
+        newKernelConfigPath = pathConcat(tempRootfs, f"boot/config-{kernel_version}")
+        
+        bootDirectoryPath = pathConcat(tempRootfs, "boot")
+        if not os.path.isdir(bootDirectoryPath):
+            os.makedirs(bootDirectoryPath)
+            bootDirectoryCreated = True
+
+        copyItemFiles(findItem(item["kernel_config"]), newKernelConfigPath, DEFAULT_RIGHTS_0755)
+
+    rawUpdateInitramfs(tempRootfs, item["kernel_version"])
+
+    initramfsPaths = [
+        pathConcat(tempRootfs, f"boot/initrd.img-{kernel_version}"),
+        pathConcat(tempRootfs, f"boot/initramfs.img-{kernel_version}"),
+        pathConcat(tempRootfs, f"initrd.img-{kernel_version}"),
+        pathConcat(tempRootfs, f"initramfs.img-{kernel_version}"),
+        pathConcat(tempRootfs, f"boot/initrd.img"),
+        pathConcat(tempRootfs, f"boot/initramfs.img"),
+        pathConcat(tempRootfs, f"initrd.img"),
+        pathConcat(tempRootfs, f"initramfs.img")
+    ]
+    exportInitramfsPath = getItemPath(item)
+    for initramfsPath in initramfsPaths:
+        if os.path.isfile(initramfsPath):
+            copyItemFiles(initramfsPath, exportInitramfsPath, DEFAULT_RIGHTS_0755)
+            break
+
+    if "kernel_config" in item:
+        if bootDirectoryCreated:
+            deleteAny(bootDirectoryPath)
+        else:
+            deleteAny(newKernelConfigPath)
 
 def smartChroot(item):
     itemPath = getItemFolder(item)
     copyItemFiles(findItem(item["source"]), itemPath)
     for scriptPath in item["scripts"]:
         chroot_script_path = pathConcat(itemPath, ".syslbuild-smart-chroot.sh")
-        copyItemFiles(scriptPath, chroot_script_path, [0, 0, "0755"])
+        copyItemFiles(scriptPath, chroot_script_path, DEFAULT_RIGHTS_0755)
         rawCrossChroot(itemPath, ["./.syslbuild-smart-chroot.sh"])
         os.remove(chroot_script_path)
 
@@ -1221,6 +1265,7 @@ buildActions = {
     "unpack-initramfs": unpackInitramfs,
     "kernel": buildKernel,
     "debian-update-initramfs": debianUpdateInitramfs,
+    "debian-export-initramfs": debianExportInitramfs,
     "smart-chroot": smartChroot
 }
 
@@ -1309,7 +1354,7 @@ def rawGetDependencies(item, items_and_files_fields=None, files_only_fields=None
     return dependencies
 
 def getDependenciesDebian(item):
-    return rawGetDependencies(item, [], ["hooks"])
+    return rawGetDependencies(item, [], ["hook-directory"])
 
 def getDependenciesDirectory(item):
     return rawGetDependencies(item, ["items"], [])
@@ -1344,6 +1389,9 @@ def getDependenciesKernel(item):
 def getDependenciesDebianUpdateInitramfs(item):
     return rawGetDependencies(item, ["source"], [])
 
+def getDependenciesDebianExportInitramfs(item):
+    return rawGetDependencies(item, ["kernel_config", "source"], [])
+
 def getDependenciesSmartChroot(item):
     return rawGetDependencies(item, ["scripts", "source"], [])
 
@@ -1360,6 +1408,7 @@ getDependencies = {
     "unpack-initramfs": getDependenciesUnpackInitramfs,
     "kernel": getDependenciesKernel,
     "debian-update-initramfs": getDependenciesDebianUpdateInitramfs,
+    "debian-export-initramfs": getDependenciesDebianExportInitramfs,
     "smart-chroot": getDependenciesSmartChroot
 }
 
