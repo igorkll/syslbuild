@@ -1228,16 +1228,28 @@ def rawCrossChroot(chrootDirectory, chrootCommand):
 def rawUpdateInitramfs(path, kernel_version):
     rawCrossChroot(path, ["update-initramfs", "-c", "-k", kernel_version])
 
+def getKernelVersion(item, rootfsPath):
+    if "kernel_version" in item:
+        return item["kernel_version"]
+    else:
+        modulesDirectory = pathConcat(rootfsPath, "lib/modules")
+        if os.path.isdir(modulesDirectory):
+            for directory in os.listdir(modulesDirectory):
+                if os.path.isdir(directory):
+                    return directory
+        buildLog("the directory of kernel modules was not found in the system (/lib/modules)")
+        sys.exit(1)
+
 def debianUpdateInitramfs(item):
     itemPath = getItemFolder(item)
     copyItemFiles(findItem(item["source"]), itemPath)
-    rawUpdateInitramfs(itemPath, item["kernel_version"])
+    rawUpdateInitramfs(itemPath, getKernelVersion(item, itemPath))
 
 def debianExportInitramfs(item):
     tempRootfs = getTempFolder("export_initramfs_rootfs")
     copyItemFiles(findItem(item["source"]), tempRootfs)
 
-    kernel_version = item["kernel_version"]
+    kernel_version = getKernelVersion(item, tempRootfs)
 
     if "kernel_config" in item:
         newKernelConfigPath = pathConcat(tempRootfs, f"boot/config-{kernel_version}")
@@ -1248,7 +1260,7 @@ def debianExportInitramfs(item):
 
         copyItemFiles(findItem(item["kernel_config"]), newKernelConfigPath, DEFAULT_RIGHTS_0755)
 
-    rawUpdateInitramfs(tempRootfs, item["kernel_version"])
+    rawUpdateInitramfs(tempRootfs, kernel_version)
 
     initramfsPaths = [
         pathConcat(tempRootfs, f"boot/initrd.img-{kernel_version}"),
