@@ -174,26 +174,19 @@ def readBool(tbl, name):
     
     return False
 
-def needExport(item):
-    return readBool(item, "export")
-
-
-def getItemPath(item):
-    if needExport(item):
-        path = pathConcat(path_output_target, item["name"])
-    else:
-        os.makedirs(path_build, exist_ok=True)
-        path = pathConcat(path_build, item["name"])
-    
-    return path
-
-def getCustomItemPath(item, nameName, exportName):
+def getItemPath(item, nameName="name", exportName="export"):
     if readBool(item, exportName):
         path = pathConcat(path_output_target, item[nameName])
     else:
         os.makedirs(path_build, exist_ok=True)
         path = pathConcat(path_build, item[nameName])
     
+    return path
+
+def getItemFolder(item, nameName="name", exportName="export"):
+    path = getItemPath(item, nameName, exportName)
+    deleteDirectory(path)
+    os.makedirs(path, exist_ok=True)
     return path
 
 def getItemChecksumPathFromName(itemName):
@@ -225,20 +218,6 @@ def getTempFolder(subdirectory):
     path = getTempPath(subdirectory)
     deleteDirectory(path)
     os.makedirs(path, exist_ok=True)
-    return path
-
-def getItemFolder(item):
-    path = getItemPath(item)
-    deleteDirectory(path)
-    os.makedirs(path, exist_ok=True)
-    
-    return path
-
-def getCustomItemFolder(item, nameName, exportName):
-    path = getCustomItemPath(item, nameName, exportName)
-    deleteDirectory(path)
-    os.makedirs(path, exist_ok=True)
-    
     return path
 
 def findItem(itemName):
@@ -1075,7 +1054,7 @@ def buildKernel(item):
 
     if "result_config_name" in item:
         buildLog(f"exporting result kernel config...")
-        export_path = getCustomItemPath(item, "result_config_name", "result_config_export")
+        export_path = getItemPath(item, "result_config_name", "result_config_export")
         copyItemFiles(kernel_config_path, export_path)
 
     buildRawExecute(f"make {ARCH_STR} {CROSS_COMPILE_STR} -j$(nproc)", True, kernel_sources)
@@ -1094,12 +1073,12 @@ def buildKernel(item):
 
     if "modules_name" in item:
         buildLog(f"exporting modules...")
-        export_path = getCustomItemFolder(item, "modules_name", "modules_export")
+        export_path = getItemFolder(item, "modules_name", "modules_export")
         buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "modules_install", f"INSTALL_MOD_PATH={os.path.abspath(export_path)}"], True, None, kernel_sources)
 
     if "headers_name" in item:
         buildLog(f"exporting headers...")
-        export_path = getCustomItemFolder(item, "headers_name", "headers_export")
+        export_path = getItemFolder(item, "headers_name", "headers_export")
         buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "headers_install", f"INSTALL_HDR_PATH={os.path.abspath(export_path)}"], True, None, kernel_sources)
 
 def get_host_arch():
@@ -1457,7 +1436,7 @@ def buildItems(builditems):
             buildActions.get(item["type"], buildUnknown)(item)
             writeCacheChecksum(item, checksum)
         
-        if needExport(item):
+        if readBool(item, "export"):
             exported.append(item)
     
     return exported
