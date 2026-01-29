@@ -1217,7 +1217,7 @@ def rawCrossChroot(chrootDirectory, chrootCommand):
     buildExecute(["chroot", chrootDirectory] + chrootCommand)
 
     if boolCopyQemuStatic:
-        os.remove(qemuStaticPath)
+        deleteAny(qemuStaticPath)
 
     for bindPath in bindList:
         buildRawExecute(f"umount \"{pathConcat(chrootDirectory, bindPath)}\"")

@@ -742,7 +742,7 @@ these changes to the kernel config are applied automatically when building the k
             "export": false,
 
             // the version of the kernel for which initramfs is being created
-            "kernel_version": "6.18.7-custom",
+            "kernel_version": "6.18.7-custom", //it is optional if you have only one core in the system.
 
             // the rootfs (directory) where initramfs is created
             // this is not shown here, but the modules of the kernel for which you are generating initramfs should be installed in this rootfs
@@ -758,7 +758,7 @@ these changes to the kernel config are applied automatically when building the k
 
             // you can export the resulting kernel config with all changes via "result_config_name" in "kernel" builditem
             "kernel_config": "kernel_config",
-            "kernel_version": "6.18.7-custom",
+            "kernel_version": "6.18.7-custom", //it is optional if you have only one core in the system.
             "source": "my_rootfs_with_kernel_modules" // your rootfs must have the "initramfs-tools" package and the kernel modules installed.
         }
         {
