@@ -1192,8 +1192,8 @@ def rawCrossChroot(chrootDirectory, chrootCommand):
     for makedDirectoryBindPath in makedDirectories:
         buildRawExecute(f"rm -rf \"{makedDirectoryBindPath}\"")
 
-def rawUpdateInitramfs(path, item):
-    rawCrossChroot(path, ["update-initramfs", "-c", "-k", item["kernel_version"]])
+def rawUpdateInitramfs(path, kernel_version):
+    rawCrossChroot(path, ["update-initramfs", "-c", "-k", kernel_version])
 
 def debianUpdateInitramfs(item):
     itemPath = getItemFolder(item)
@@ -1210,9 +1210,9 @@ def debianExportInitramfs(item):
         newKernelConfigPath = pathConcat(tempRootfs, f"boot/config-{kernel_version}")
         
         bootDirectoryPath = pathConcat(tempRootfs, "boot")
-        if not os.path.isdir(bootDirectoryPath):
+        bootDirectoryCreated = not os.path.isdir(bootDirectoryPath)
+        if bootDirectoryCreated:
             os.makedirs(bootDirectoryPath)
-            bootDirectoryCreated = True
 
         copyItemFiles(findItem(item["kernel_config"]), newKernelConfigPath, DEFAULT_RIGHTS_0755)
 
