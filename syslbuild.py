@@ -990,8 +990,8 @@ def set_kernel_config_parameter(config_path, param, value):
     with open(config_path, "w") as f:
         f.writelines(new_lines)
 
-def update_kernel_config(kernel_sources):
-    buildExecute(["make", "olddefconfig"], True, None, kernel_sources)
+def update_kernel_config(kernel_sources, ARCH_STR, CROSS_COMPILE_STR):
+    buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "olddefconfig"], True, None, kernel_sources)
 
 def parse_kernel_config_changes(changes_file):
     with open(changes_file, "r") as f:
@@ -1008,7 +1008,7 @@ def parse_kernel_config_changes(changes_file):
         return changes
     return []
 
-def modifyKernelConfig(item, kernel_sources):
+def modifyKernelConfig(item, kernel_sources, ARCH_STR, CROSS_COMPILE_STR):
     kernel_config_path = pathConcat(kernel_sources, ".config")
 
     if "kernel_config_changes_files" in item:
@@ -1026,7 +1026,7 @@ def modifyKernelConfig(item, kernel_sources):
 
         set_kernel_config_parameter(kernel_config_path, "CONFIG_RD_GZIP", "y")
     
-    update_kernel_config(kernel_sources)
+    update_kernel_config(kernel_sources, ARCH_STR, CROSS_COMPILE_STR)
 
 def buildKernel(item):
     if "kernel_source_url" in item:
@@ -1055,7 +1055,7 @@ def buildKernel(item):
     if "kernel_config" in item:
         copyItemFiles(findItem(item["kernel_config"]), kernel_config_path)
 
-    modifyKernelConfig(item, kernel_sources)
+    modifyKernelConfig(item, kernel_sources, ARCH_STR, CROSS_COMPILE_STR)
 
     if "result_config_name" in item:
         buildLog(f"exporting result kernel config...")
@@ -1462,8 +1462,7 @@ def prepairBuild():
 
 def forkCombine(builditem, forkbase, forkArraysCombine=False, keysBlackList=None, recursionKeyBlackList=None):
     for k, v in forkbase.items():
-        if (not keysBlackList or k not in keysBlackList) and
-            (not recursionKeyBlackList or k not in recursionKeyBlackList):
+        if (not keysBlackList or k not in keysBlackList) and (not recursionKeyBlackList or k not in recursionKeyBlackList):
             if k not in builditem:
                 builditem[k] = v
             elif isinstance(v, list):
