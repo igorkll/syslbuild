@@ -57,7 +57,7 @@ SIZE_UNITS = {
     "TB": 1024**4,
 }
 
-VERSION = [0, 4, 0]
+VERSION = [0, 5, 0]
 
 def formatVersion(version):
     return '.'.join(str(n) for n in version)
@@ -1186,8 +1186,7 @@ def debianExportInitramfs(item):
         newKernelConfigPath = pathConcat(tempRootfs, f"boot/config-{kernel_version}")
         
         bootDirectoryPath = pathConcat(tempRootfs, "boot")
-        bootDirectoryCreated = not os.path.isdir(bootDirectoryPath)
-        if bootDirectoryCreated:
+        if not os.path.isdir(bootDirectoryPath):
             os.makedirs(bootDirectoryPath)
 
         copyItemFiles(findItem(item["kernel_config"]), newKernelConfigPath, DEFAULT_RIGHTS_0755)
@@ -1209,12 +1208,6 @@ def debianExportInitramfs(item):
         if os.path.isfile(initramfsPath):
             copyItemFiles(initramfsPath, exportInitramfsPath, DEFAULT_RIGHTS_0755)
             break
-
-    if "kernel_config" in item:
-        if bootDirectoryCreated:
-            deleteAny(bootDirectoryPath)
-        else:
-            deleteAny(newKernelConfigPath)
 
 def smartChroot(item):
     itemPath = getItemFolder(item)
