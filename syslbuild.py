@@ -1455,9 +1455,10 @@ def prepairBuild():
     # deleteDirectory(path_output_target)
     os.makedirs(path_output_target, exist_ok=True)
 
-def forkCombine(builditem, forkbase, forkArraysCombine=False, keysBlackList=None):
+def forkCombine(builditem, forkbase, forkArraysCombine=False, keysBlackList=None, recursionKeyBlackList=None):
     for k, v in forkbase.items():
-        if not keysBlackList or k not in keysBlackList:
+        if (not keysBlackList or k not in keysBlackList) and
+            (not recursionKeyBlackList or k not in recursionKeyBlackList):
             if k not in builditem:
                 builditem[k] = v
             elif isinstance(v, list):
@@ -1465,7 +1466,7 @@ def forkCombine(builditem, forkbase, forkArraysCombine=False, keysBlackList=None
                     builditem[k] = v + builditem[k]
             elif isinstance(v, dict):
                 if isinstance(builditem[k], dict):
-                    forkCombine(builditem[k], v, forkArraysCombine)
+                    forkCombine(builditem[k], v, forkArraysCombine, None, recursionKeyBlackList)
 
 def prepairBuildItems(builditems):
     forkbase=None
@@ -1475,7 +1476,7 @@ def prepairBuildItems(builditems):
                 buildLog(f"ERROR: an attempt to fork without a single forkbase before that")
                 sys.exit(1)
             
-            forkCombine(builditem, forkbase, builditem.get("forkArraysCombine", False), ["forkbase", "fork", "forkArraysCombine", "template"])
+            forkCombine(builditem, forkbase, builditem.get("forkArraysCombine", False), ["forkbase", "fork", "forkArraysCombine", "template"], ["deleteBuildItemKeys"])
         
         if builditem.get("forkbase", False):
             forkbase = builditem
