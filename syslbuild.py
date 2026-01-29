@@ -1235,7 +1235,7 @@ def getKernelVersion(item, rootfsPath):
         modulesDirectory = pathConcat(rootfsPath, "lib/modules")
         if os.path.isdir(modulesDirectory):
             for directory in os.listdir(modulesDirectory):
-                if os.path.isdir(directory):
+                if os.path.isdir(pathConcat(modulesDirectory, directory)):
                     return directory
         buildLog("the directory of kernel modules was not found in the system (/lib/modules)")
         sys.exit(1)
