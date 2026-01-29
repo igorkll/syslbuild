@@ -162,6 +162,7 @@ these changes to the kernel config are applied automatically when building the k
 * exporting the resulting kernel config when building the kernel
 * support for the operation (packing and unpacking) of initramfs with a multiblock structure
 * built-in export support for popular single-boarders and pine phone and librem 5. I want to make a builditem that downloads the bootloader for the specified single-board itself and builds the image using the transferred kernel, rootfs, initramfs and settings
+* the ability to add custom files when building the kernel. sometimes it is necessary, for example, for boards with wifi to download the regulatory.db or, for example, to build the ubuntu kernel, where you need a couple of .pem files
 
 ## roadmap completed
 * execution of arbitrary scripts in the system's chroot, with qemu-static support for execution during assembly for a different architecture
