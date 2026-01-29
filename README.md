@@ -32,6 +32,13 @@ also, assembling a bootable img with an already installed system is also a separ
 * -n - does the build anew, does not use the cache (syslbuild caches the kernel source code anyway, even in this mode. use -d if you want to download the kernel again)
 * -d - do not use the download cache of the kernel sources
 
+## supported architectures
+* amd64
+* i386
+* arm64
+* armhf
+* armel
+
 ## dependencies
 * python3
 * mmdebstrap - to build debian based systems
@@ -119,6 +126,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * fork - it takes as a basis (forks) the nearest previous element from forkbase. When dictionaries merge, the matching keys (including arrays) overwrite each other. if the forkArraysCombine flag is set when creating a fork (not in forkbase!!!) the arrays do not overwrite each other, but complement each other.
 * forkArraysCombine - if this flag is set in builditem when creating a fork (not in forkbase!!!) When creating a fork, arrays do not overwrite but complement each other. by default, this flag has the value false.
 * template - this key is used to exclude any builditem from the build. created for use with forkbase. if you set it to true, this element will not participate in the build, but it can still be forked via forkbase. this tag is not inherited during fork
+* deleteBuildItemKeys - deletes the keys. created for use with fork. it can be placed in any subject inside the builditem
 
 ## keys that are not inherited by fork
 * forkbase - these are the control keys of the fork itself, they are not inherited by the fork
@@ -237,6 +245,21 @@ these changes to the kernel config are applied automatically when building the k
                 //here you have completely overwritten the array, that is, there will only be: ["test7", "test8"] in the array, and the old elements will disappear
                 "testArray": ["test7", "test8"]
                 //you also haven't touched any other elements inside the example_dictionary
+            }
+        },
+        {
+            "fork": true,
+
+            // deleteBuildItemKeys will allow you to delete any tags inside the builditem along with the fork
+            "deleteBuildItemKeys": [
+                "CFLAGS"
+            ],
+
+            "example_dictionary": {
+                // it also works for nested dicts
+                "deleteBuildItemKeys": [
+                    "inline_dictionary"
+                ]
             }
         },
         {
