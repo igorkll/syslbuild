@@ -941,7 +941,7 @@ def downloadKernel(url, unpacker):
 def downloadKernelFromGit(item):
     url = item["kernel_source_git"]
 
-    url_hash = hashlib.md5(url.encode('utf-8')).hexdigest()
+    url_hash = hashlib.md5(url.encode('utf-8') + item.get("kernel_source_git_branch", "").encode('utf-8') + item.get("kernel_source_git_checkout", "").encode('utf-8')).hexdigest()
     kernel_sources = pathConcat(path_temp_kernel_sources, url_hash)
     kernel_sources_downloaded_flag = pathConcat(path_temp_kernel_sources, url_hash + ".downloaded")
 
