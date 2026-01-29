@@ -958,7 +958,7 @@ kernelArchitectures = {
 kernelArchitectureConfigs = {
     "amd64": "x86_64_defconfig",
     "i386": "i386_defconfig",
-    "arm64": "arm64_defconfig",
+    "arm64": "defconfig",
     "armhf": "multi_v7_defconfig",
     "armel": "multi_v5_defconfig"
 }
