@@ -1468,6 +1468,15 @@ def forkCombine(builditem, forkbase, forkArraysCombine=False, keysBlackList=None
                 if isinstance(builditem[k], dict):
                     forkCombine(builditem[k], v, forkArraysCombine, None, recursionKeyBlackList)
 
+def deleteBuildItemKeysProcess(builditemDict):
+    if "deleteBuildItemKeys" in builditemDict:
+        for deleteBuildItemKey in builditemDict["deleteBuildItemKeys"]:
+            del builditemDict[deleteBuildItemKey]
+
+    for k, v in builditemDict.items():
+        if isinstance(v, dict):
+            deleteBuildItemKeysProcess(v)
+
 def prepairBuildItems(builditems):
     forkbase=None
     for builditem in builditems:
@@ -1487,6 +1496,9 @@ def prepairBuildItems(builditems):
         if builditem.get("template", False) or ("architectures" in builditem and not architecture in builditem["architectures"]):
             del builditems[i]
         i -= 1
+
+    for builditem in builditems:
+        deleteBuildItemKeysProcess(builditem)
 
     for index, item in enumerate(builditems):
         item["__item_index"] = index + 1
