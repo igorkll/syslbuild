@@ -951,6 +951,7 @@ def downloadKernelFromGit(item):
         
         cmd = ["git", "clone"]
         if "kernel_source_git_branch" in item:
+            cmd.append("--single-branch")
             cmd.append("-b")
             cmd.append(item["kernel_source_git_branch"])
         cmd.append(url)
