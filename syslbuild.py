@@ -650,6 +650,24 @@ def umountFilesystem(mount_path):
             buildExecute(["losetup", "-d", loop_device])
         deleteDirectory(mount_path)
 
+def rawItemsProcess(items, itemsDirectory):
+    for itemObj in items:
+        itemPath = findItem(itemObj[0])
+        outputPath = pathConcat(itemsDirectory, itemObj[1])
+        buildLog(f"Copy item: {itemPath} > {outputPath}")
+
+        changeRights = None
+        if len(itemObj) >= 3:
+            changeRights = itemObj[2]
+        
+        if not changeRights and isUserItem(itemObj[0]):
+            changeRights = DEFAULT_RIGHTS
+        
+        if changeRights:
+            buildLog(f"With custom rights: {changeRights}")
+        
+        copyItemFiles(itemPath, outputPath, changeRights)
+
 def buildDirectory(item):
     buildDirectoryPath = getItemFolder(item)
 
@@ -662,22 +680,7 @@ def buildDirectory(item):
             makedirsChangeRights(directoryPath, changeRights)
 
     if "items" in item:
-        for itemObj in item["items"]:
-            itemPath = findItem(itemObj[0])
-            outputPath = pathConcat(buildDirectoryPath, itemObj[1])
-            buildLog(f"Copy item to filesystem: {itemPath} > {outputPath}")
-
-            changeRights = None
-            if len(itemObj) >= 3:
-                changeRights = itemObj[2]
-            
-            if not changeRights and isUserItem(itemObj[0]):
-                changeRights = DEFAULT_RIGHTS
-            
-            if changeRights:
-                buildLog(f"With custom rights: {changeRights}")
-            
-            copyItemFiles(itemPath, outputPath, changeRights)
+        rawItemsProcess(item["items"], buildDirectoryPath)
 
     if "chmod" in item:
         makeChmod(buildDirectoryPath, item["chmod"])
@@ -1055,6 +1058,9 @@ def modifyKernelConfig(item, kernel_sources, ARCH_STR, CROSS_COMPILE_STR):
     
     update_kernel_config(kernel_sources, ARCH_STR, CROSS_COMPILE_STR)
 
+def additionalExportProcess(additional_export):
+    pass
+
 def buildKernel(item):
     if "kernel_source_url" in item:
         downloaded_kernel_sources = downloadKernel(
@@ -1068,6 +1074,9 @@ def buildKernel(item):
         sys.exit(1)
 
     kernel_sources = copyKernel(downloaded_kernel_sources)
+
+    if "items" in item:
+        rawItemsProcess(item["items"], kernel_sources)
 
     if "patches" in item:
         patchKernel(kernel_sources, item["patches"])
@@ -1387,7 +1396,7 @@ def getDependenciesUnpackInitramfs(item):
     return rawGetDependencies(item, ["initramfs"], [])
 
 def getDependenciesKernel(item):
-    return rawGetDependencies(item, ["patches", "kernel_config", "kernel_config_changes_files"], [])
+    return rawGetDependencies(item, ["patches", "kernel_config", "kernel_config_changes_files", "items"], [])
 
 def getDependenciesDebianUpdateInitramfs(item):
     return rawGetDependencies(item, ["source"], [])

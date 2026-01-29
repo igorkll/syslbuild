@@ -705,6 +705,23 @@ these changes to the kernel config are applied automatically when building the k
             // if set to true, syslbuild will not make the standard kernel config changes that it makes
             // This list can be found above.
             "kernel_config_disable_default_changes": false,
+
+            // It allows you to copy files to the kernel directory before building. it may be necessary in some cases.
+            // for example, sometimes when building a core for single-board devices, additional files are required for wifi to work
+            // The ubuntu kernel may also require *.pem files to verify digital signatures.
+            "items": [
+                ["myproject/regulatory.db", "firmware/regulatory.db"]
+            ],
+
+            // additional export files
+            // you can export any files from the kernel project after the build
+            // this can be used to export *.dtb files for ARM platforms
+            // first, the path inside the kernel project is specified,
+            // then the name of the exported object,
+            // and then whether it needs to be exported to the output directory, making it available to the user.
+            "additional_export": [
+                ["arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts", "sun50i-a64-pine64.dts", false]
+            ]
         },
         {
             "type": "kernel",
