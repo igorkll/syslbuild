@@ -712,7 +712,7 @@ these changes to the kernel config are applied automatically when building the k
             // you can get the kernel source code from the git repository
             "kernel_source_git": "https://github.com/armbian/linux",
             "kernel_source_git_branch": "example", //optional
-            "kernel_source_git_tag": "example" //optional
+            "kernel_source_git_checkout": "example" //optional
         },
         {
             // export new rootfs with initramfs, not initramfs

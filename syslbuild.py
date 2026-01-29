@@ -956,8 +956,8 @@ def downloadKernelFromGit(item):
         cmd.append(url)
         buildExecute(cmd)
 
-        if "kernel_source_git_tag" in item:
-            buildExecute(["git", "checkout", item["kernel_source_git_tag"]])
+        if "kernel_source_git_checkout" in item:
+            buildExecute(["git", "checkout", item["kernel_source_git_checkout"]])
 
         emptyFile(kernel_sources_downloaded_flag)
     
