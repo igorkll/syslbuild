@@ -679,6 +679,7 @@ these changes to the kernel config are applied automatically when building the k
             // optional. by default, syslbuild chooses defconfig itself based on the architecture for which it is being built. but you can specify it yourself.
             //"defconfig": "i386_defconfig",
 
+            // optional. use custom kernel config
             "kernel_config": "my_kernel_config",
 
             "kernel_config_changes_files": [
@@ -702,6 +703,16 @@ these changes to the kernel config are applied automatically when building the k
             // if set to true, syslbuild will not make the standard kernel config changes that it makes
             // This list can be found above.
             "kernel_config_disable_default_changes": false,
+        },
+        {
+            "type": "kernel",
+            "name": "custom_kernel_from_git",
+            "export": false,
+
+            // you can get the kernel source code from the git repository
+            "kernel_source_git": "https://github.com/armbian/linux",
+            "kernel_source_git_branch": "example", //optional
+            "kernel_source_git_tag": "example" //optional
         },
         {
             // export new rootfs with initramfs, not initramfs

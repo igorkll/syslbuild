@@ -938,6 +938,31 @@ def downloadKernel(url, unpacker):
     
     return kernel_sources
 
+def downloadKernelFromGit(item):
+    url = item["kernel_source_git"]
+
+    url_hash = hashlib.md5(url.encode('utf-8')).hexdigest()
+    kernel_sources = pathConcat(path_temp_kernel_sources, url_hash)
+    kernel_sources_downloaded_flag = pathConcat(path_temp_kernel_sources, url_hash + ".downloaded")
+
+    if args.d or not os.path.isdir(kernel_sources) or not os.path.isfile(kernel_sources_downloaded_flag):
+        deleteAny(kernel_sources)
+        os.makedirs(kernel_sources, exist_ok=True)
+        
+        cmd = ["git", "clone"]
+        if "kernel_source_git_branch" in item:
+            cmd.append("-b")
+            cmd.append(item["kernel_source_git_branch"])
+        cmd.append(url)
+        buildExecute(cmd)
+
+        if "kernel_source_git_tag" in item:
+            buildExecute(["git", "checkout", item["kernel_source_git_tag"]])
+
+        emptyFile(kernel_sources_downloaded_flag)
+    
+    return kernel_sources
+
 def copyKernel(kernel_sources):
     deleteDirectory(path_temp_kernel_build)
     os.makedirs(path_temp_kernel_build, exist_ok=True)
@@ -1034,6 +1059,8 @@ def buildKernel(item):
             item["kernel_source_url"],
             item.get("kernel_source_unpacker", "tar -xJf %s -C %s --strip-components=1")
         )
+    elif "kernel_source_git" in item:
+        downloaded_kernel_sources = downloadKernelFromGit(item)
     else:
         buildLog("ERROR: it is impossible to build a kernel without specifying the source code download source")
         sys.exit(1)
