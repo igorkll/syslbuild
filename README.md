@@ -720,7 +720,8 @@ these changes to the kernel config are applied automatically when building the k
             // then the name of the exported object,
             // and then whether it needs to be exported to the output directory, making it available to the user.
             "additional_export": [
-                ["arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts", "sun50i-a64-pine64.dts", false]
+                ["arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts", "sun50i-a64-pine64.dts", false],
+                ["arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero3.dts", "sun50i-h618-orangepi-zero3.dts", false]
             ]
         },
         {
