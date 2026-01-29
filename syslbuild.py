@@ -930,6 +930,7 @@ def downloadKernel(url, unpacker):
     kernel_sources_archive = pathConcat(path_temp_kernel_sources, url_hash + get_file_extension(url))
 
     if args.d or not os.path.isdir(kernel_sources) or not os.path.isfile(kernel_sources_downloaded_flag):
+        deleteAny(kernel_sources)
         os.makedirs(kernel_sources, exist_ok=True)
         downloadFile(url, kernel_sources_archive)
         buildRawExecute(unpacker % (kernel_sources_archive, kernel_sources))
@@ -1028,12 +1029,16 @@ def modifyKernelConfig(item, kernel_sources):
     update_kernel_config(kernel_sources)
 
 def buildKernel(item):
-    kernel_sources = copyKernel(
-        downloadKernel(
+    if "kernel_source_url" in item:
+        downloaded_kernel_sources = downloadKernel(
             item["kernel_source_url"],
             item.get("kernel_source_unpacker", "tar -xJf %s -C %s --strip-components=1")
         )
-    )
+    else:
+        buildLog("ERROR: it is impossible to build a kernel without specifying the source code download source")
+        sys.exit(1)
+
+    kernel_sources = copyKernel(downloaded_kernel_sources)
 
     if "patches" in item:
         patchKernel(kernel_sources, item["patches"])
@@ -1471,7 +1476,7 @@ def forkCombine(builditem, forkbase, forkArraysCombine=False, keysBlackList=None
 def deleteBuildItemKeysProcess(builditemDict):
     if "deleteBuildItemKeys" in builditemDict:
         for deleteBuildItemKey in builditemDict["deleteBuildItemKeys"]:
-            del builditemDict[deleteBuildItemKey]
+            builditemDict.pop(deleteBuildItemKey, None)
 
     for k, v in builditemDict.items():
         if isinstance(v, dict):

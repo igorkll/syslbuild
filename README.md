@@ -65,6 +65,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * tar
 * make
 * gzip / zcat
+* git
 
 ## docs
 * mmdebstrap: https://manpages.debian.org/testing/mmdebstrap/mmdebstrap.1.en.html
