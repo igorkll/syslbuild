@@ -183,6 +183,15 @@ def getItemPath(item, nameName="name", exportName="export"):
     
     return path
 
+def getCustomItemPath(nameValue, exportValue):
+    if exportValue:
+        path = pathConcat(path_output_target, nameValue)
+    else:
+        os.makedirs(path_build, exist_ok=True)
+        path = pathConcat(path_build, nameValue)
+    
+    return path
+
 def getItemFolder(item, nameName="name", exportName="export"):
     path = getItemPath(item, nameName, exportName)
     deleteDirectory(path)
@@ -1058,8 +1067,10 @@ def modifyKernelConfig(item, kernel_sources, ARCH_STR, CROSS_COMPILE_STR):
     
     update_kernel_config(kernel_sources, ARCH_STR, CROSS_COMPILE_STR)
 
-def additionalExportProcess(additional_export):
-    pass
+def additionalExportProcess(export_from, additional_export_list):
+    for additional_export_item in additional_export_list:
+        object_path = pathConcat(export_from, additional_export_item[0])
+        copyItemFiles(object_path, getCustomItemPath(additional_export_item[1], additional_export_item[2]))
 
 def buildKernel(item):
     if "kernel_source_url" in item:
@@ -1123,6 +1134,9 @@ def buildKernel(item):
         buildLog(f"exporting headers...")
         export_path = getItemFolder(item, "headers_name", "headers_export")
         buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "headers_install", f"INSTALL_HDR_PATH={os.path.abspath(export_path)}"], True, None, kernel_sources)
+
+    if "additional_export" in item:
+        additionalExportProcess(kernel_sources, item["additional_export"])
 
 def get_host_arch():
     m = platform.machine().lower()
