@@ -1375,7 +1375,7 @@ def singleboardBuild(item):
 
         # boot config
         bootDirectory = findItem(bootdirName)
-        extlinuxPath = pathConcat(bootDirectory, "extlinux.conf")
+        extlinuxPath = pathConcat(bootDirectory, "extlinux/extlinux.conf")
         
         with open(extlinuxPath, "w") as f:
             f.write("LABEL linux\n")
