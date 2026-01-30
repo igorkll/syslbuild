@@ -111,6 +111,7 @@ also, assembling a bootable img with an already installed system is also a separ
 
 ## supported bootloaders
 * grub
+* binary - just insert the binary bootloader to the specified address in the full-disk-image. required for signleboard
 
 ## aliases of names for partitions IDs (GPT / MBR)
 * linux - 0FC63DAF-8483-4772-8E79-3D69D8477DE4 / 83
@@ -594,6 +595,32 @@ these changes to the kernel config are applied automatically when building the k
                     "part_gpt",
                     "ext2",
                     "configfile"
+                ]
+            }
+        },
+
+        // ------ build with uboot (example for ARM devices)
+        {
+            "type": "full-disk-image",
+            "name": "my singleboard image.img",
+            "export": true,
+
+            "size": "auto + (1 * 1024 * 1024)",
+
+            "partitions_start_sectors": 8192,
+            "partitionTable": "mbr",
+            "partitions": [
+                ["my singleboard boot.img", "bios"],
+                ["example-distro rootfs.img", "linux"]
+            ],
+
+            "bootloader": {
+                "type": "binary",
+                "binaries": [
+                    {
+                        "file": "my_uboot.bin",
+                        "sector": 16
+                    }
                 ]
             }
         },

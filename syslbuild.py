@@ -783,7 +783,7 @@ def getGrubTarget(item, efi):
 
     return target
 
-def installBootloader(item, path, partitionsOffsets):
+def installBootloader(item, path, partitionsOffsets, sectorsize):
     bootloaderInfo = item["bootloader"]
     bootloaderType = bootloaderInfo["type"]
 
@@ -817,6 +817,27 @@ def installBootloader(item, path, partitionsOffsets):
 
         if efi:
             umountFilesystem(path_mount2)
+    elif bootloaderType == "binary":
+        if "sector" not in bootloaderInfo:
+            buildLog("bootloader sector must be specified")
+            sys.exit(1)
+
+        sector = bootloaderInfo["sector"]
+        firstPartitionOffset = min(partitionsOffsets)
+        blOffsetBytes = sector * sectorsize
+        if blOffsetBytes >= firstPartitionOffset:
+            buildLog("Bootloader overlaps first partition")
+            sys.exit(1)
+
+        bootloaderPath = findItem(bootloaderInfo["file"])
+        buildExecute([
+            "dd",
+            f"if={bootloaderPath}",
+            f"of={path}",
+            f"bs={sectorsize}",
+            f"seek={sector}",
+            "conv=notrunc"
+        ])
     else:
         buildLog("ERROR: unknown bootloader type")
         sys.exit(1)
@@ -834,6 +855,10 @@ def buildFullDiskImage(item):
 
     # make paritition table
     partitionTable = f"label: {item["partitionTable"]}"
+
+    if "partitions_start_sectors" in item:
+        patritionTable += f"\nfirst-lba: {item[partitions_start_sectors]}"
+
     for i, partition in enumerate(item["partitions"]):
         partitionTable += f"\nsize={math.ceil(partitionsSizes[i] / 1024 / 1024)}MiB, type={getParititionType(item, partition[1])}"
 
@@ -859,7 +884,7 @@ def buildFullDiskImage(item):
 
     # install bootloader
     if "bootloader" in item:
-        installBootloader(item, path, partitionsOffsets)
+        installBootloader(item, path, partitionsOffsets, resultSectorsize)
 
 def buildUnknown(item):
     buildLog(f"ERROR: unknown build item type: {item["type"]}")
