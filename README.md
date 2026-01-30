@@ -171,6 +171,7 @@ these changes to the kernel config are applied automatically when building the k
 * built-in export support for popular single-boarders and pine phone and librem 5. I want to make a builditem that downloads the bootloader for the specified single-board itself and builds the image using the transferred kernel, rootfs, initramfs and settings
 * the ability to include additional files with builditems
 * account for "binaries" files in caching in the "full-disk-image" builditem
+* support "architectures" and "template" for "include" builditem
 
 ## roadmap completed
 * execution of arbitrary scripts in the system's chroot, with qemu-static support for execution during assembly for a different architecture
