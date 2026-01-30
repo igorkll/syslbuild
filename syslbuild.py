@@ -1369,15 +1369,14 @@ def singleboardBuild(item):
             "label": "BOOT"
         })
 
-        buildFullDiskImage({
+        buildFullDiskImageBuilditem = {
             "name": builditemName,
             "export": readBool(item, "export"),
 
             "partitionsStartSector": 8192,
             "partitionTable": "dos",
             "partitions": [
-                [bootfsName, "linux"],
-                [item["rootfs"], "linux"]
+                [bootfsName, "linux"]
             ],
 
             "bootloader": {
@@ -1389,7 +1388,10 @@ def singleboardBuild(item):
                     }
                 ]
             }
-        })
+        }
+        if "rootfs" is item:
+            buildFullDiskImageBuilditem["partitions"].append([item["rootfs"], "linux"])
+        buildFullDiskImage(buildFullDiskImageBuilditem)
 
 buildActions = {
     "debian": buildDebian,

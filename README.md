@@ -646,9 +646,9 @@ these changes to the kernel config are applied automatically when building the k
             "singleboardType": "uboot-16",
 
             "bootloader": "u-boot-sunxi-with-spl.bin",
-            "initramfs": "initramfs.img",
             "kernel": "kernel.img",
-            "rootfs": "rootfs.img"
+            "initramfs": "initramfs.img", //optional
+            "rootfs": "rootfs.img" //optional
         },
 
         // ---------------- some bootloaders can only load the kernel from the raw partition
