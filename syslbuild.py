@@ -1340,15 +1340,22 @@ def singleboardBuild(item):
         bootfsName = builditemName + "_bootfs"
 
         bootloaderFileName = os.path.basename(item["bootloader"])
-        buildDirectory({
+        kernelFileName = os.path.basename(item["kernel"])
+        if "initramfs" in item:
+            initramfsFileName = os.path.basename(item["initramfs"])
+
+        buildDirectoryBuilditem = {
             "name": bootdirName,
             "export": False,
 
             "items": [
                 [item["bootloader"], bootloaderFileName, [0, 0, "0644"]],
-                
+                [item["kernel"], kernelFileName, [0, 0, "0644"]]
             ]
-        })
+        }
+        if initramfsFileName is not None:
+            buildDirectoryBuilditem["items"].append([item["initramfs"], initramfsFileName, [0, 0, "0644"]])
+        buildDirectory(buildDirectoryBuilditem)
 
         buildFilesystem({
             "name": bootfsName,
