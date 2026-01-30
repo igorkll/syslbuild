@@ -1316,6 +1316,15 @@ def singleboardBuild(item):
     builditemName = item["name"]
 
     if singleboardType == "uboot-16":
+        bootdirName = builditemName + "_bootdir"
+        bootfsName = builditemName + "_bootfs"
+        
+        buildFilesystem({
+            "name": bootfsName,
+            "export": False,
+
+            
+        })
 
         buildFullDiskImage({
             "name": builditemName,
@@ -1324,6 +1333,7 @@ def singleboardBuild(item):
             "partitionsStartSector": 8192,
             "partitionTable": "dos",
             "partitions": [
+                [item["rootfs"], "linux"],
                 [item["rootfs"], "linux"]
             ],
 
