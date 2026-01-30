@@ -607,10 +607,10 @@ these changes to the kernel config are applied automatically when building the k
 
             "size": "auto + (1 * 1024 * 1024)",
 
-            "partitions_start_sectors": 8192,
+            "partitionsStartSector": 8192,
             "partitionTable": "mbr",
             "partitions": [
-                ["my singleboard boot.img", "bios"],
+                ["my singleboard boot.img", "linux"],
                 ["example-distro rootfs.img", "linux"]
             ],
 

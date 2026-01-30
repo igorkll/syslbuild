@@ -818,26 +818,24 @@ def installBootloader(item, path, partitionsOffsets, sectorsize):
         if efi:
             umountFilesystem(path_mount2)
     elif bootloaderType == "binary":
-        if "sector" not in bootloaderInfo:
-            buildLog("bootloader sector must be specified")
-            sys.exit(1)
-
-        sector = bootloaderInfo["sector"]
         firstPartitionOffset = min(partitionsOffsets)
-        blOffsetBytes = sector * sectorsize
-        if blOffsetBytes >= firstPartitionOffset:
-            buildLog("Bootloader overlaps first partition")
-            sys.exit(1)
 
-        bootloaderPath = findItem(bootloaderInfo["file"])
-        buildExecute([
-            "dd",
-            f"if={bootloaderPath}",
-            f"of={path}",
-            f"bs={sectorsize}",
-            f"seek={sector}",
-            "conv=notrunc"
-        ])
+        for binary in item["binaries"]:
+            bootloaderSector = binary["sector"]
+            bootloaderOffsetBytes = bootloaderSector * sectorsize
+            if bootloaderOffsetBytes >= firstPartitionOffset:
+                buildLog("Bootloader overlaps first partition")
+                sys.exit(1)
+
+            bootloaderPath = findItem(binary["file"])
+            buildExecute([
+                "dd",
+                f"if={bootloaderPath}",
+                f"of={path}",
+                f"bs={sectorsize}",
+                f"seek={bootloaderSector}",
+                "conv=notrunc"
+            ])
     else:
         buildLog("ERROR: unknown bootloader type")
         sys.exit(1)
@@ -856,8 +854,8 @@ def buildFullDiskImage(item):
     # make paritition table
     partitionTable = f"label: {item["partitionTable"]}"
 
-    if "partitions_start_sectors" in item:
-        patritionTable += f"\nfirst-lba: {item[partitions_start_sectors]}"
+    if "partitionsStartSector" in item:
+        patritionTable += f"\nfirst-lba: {item["partitionsStartSector"]}"
 
     for i, partition in enumerate(item["partitions"]):
         partitionTable += f"\nsize={math.ceil(partitionsSizes[i] / 1024 / 1024)}MiB, type={getParititionType(item, partition[1])}"
