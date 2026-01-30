@@ -1375,8 +1375,25 @@ def singleboardBuild(item):
 
         # boot config
         bootDirectory = findItem(bootdirName)
+        extlinuxPath = pathConcat(bootDirectory, "extlinux.conf")
         
-
+        with open(extlinuxPath, "w") as f:
+            f.write("LABEL linux\n")
+            f.write(f"KERNEL /{kernelFileName}\n")
+            if "bootloaderDtb" in item:
+                f.write(f"FDT /dtbs/{item["bootloaderDtb"]}\n")
+            
+            kernel_args = item.get("kernel_args", "")
+            
+            if item.get("kernel_args_auto", False):
+                if "initramfs" in item:
+                    kernel_args = f"initrd=/{initramfsFileName} " + kernel_args
+            
+            if item.get("kernel_args_auto", False):
+                if "initramfs" in item:
+                    kernel_args = f"initrd=/{initramfsFileName} " + kernel_args
+            
+            f.write(f"APPEND {kernel_args}")
 
         # boot partition
         buildFilesystem({
