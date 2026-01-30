@@ -1583,7 +1583,12 @@ def includeProcess(builditems, included=None):
         for builditem in builditems:
             if "type" in builditem and builditem["type"] == "include":
                 includeFilePath = builditem["file"]
-                with open(builditem["file"], "r", encoding="utf-8") as f:
+                if includeFilePath in included:
+                    buildLog(f"double include the \"{includeFilePath}\" file")
+                    sys.exit(1)
+                included.append(includeFilePath)
+
+                with open(includeFilePath, "r", encoding="utf-8") as f:
                     newLocalBuilditems = json5.load(f)
                     if not isinstance(newLocalBuilditems, list):
                         buildLog(f"there is no \"{includeFilePath}\" array in the root of the attached file")
@@ -1625,6 +1630,8 @@ def prepairBuildItems(builditems):
         item["__item_index"] = index + 1
         item["__items_count"] = len(builditems)
 
+    return builditems
+
 def buildProject(json_path):
     with open(json_path, "r", encoding="utf-8") as f:
         projectData = json5.load(f)
@@ -1633,7 +1640,7 @@ def buildProject(json_path):
     builditems = projectData["builditems"]
     cleanup()
     prepairBuild()
-    prepairBuildItems(builditems)
+    builditems = prepairBuildItems(builditems)
 
     namesExists = []
     buildLog("Item list:")
