@@ -1311,6 +1311,33 @@ def smartChroot(item):
         rawCrossChroot(itemPath, ["./.syslbuild-smart-chroot.sh"])
         os.remove(chroot_script_path)
 
+def singleboardBuild(item):
+    singleboardType = item["singleboardType"]
+    builditemName = item["name"]
+
+    if singleboardType == "uboot-16":
+
+        buildFullDiskImage({
+            "name": builditemName,
+            "export": readBool(item, "export"),
+
+            "partitionsStartSector": 8192,
+            "partitionTable": "dos",
+            "partitions": [
+                [item["rootfs"], "linux"]
+            ],
+
+            "bootloader": {
+                "type": "binary",
+                "binaries": [
+                    {
+                        "file": item["bootloader"],
+                        "sector": 16
+                    }
+                ]
+            }
+        })
+
 buildActions = {
     "debian": buildDebian,
     "download": buildDownload,
@@ -1328,7 +1355,8 @@ buildActions = {
     "kernel": buildKernel,
     "debian-update-initramfs": debianUpdateInitramfs,
     "debian-export-initramfs": debianExportInitramfs,
-    "smart-chroot": smartChroot
+    "smart-chroot": smartChroot,
+    "singleboard": singleboardBuild
 }
 
 def get_file_checksum(file_path, hash_algo="sha256"):
@@ -1400,18 +1428,11 @@ def rawGetDependencies(item, items_and_files_fields=None, files_only_fields=None
     if items_and_files_fields:
         for fieldName in items_and_files_fields:
             if fieldName in item:
-                add_str = getDependenciesFieldChecksum(item[fieldName], False)
-            else:
-                add_str = "NONE"
-            dependencies.append(add_str)
+                dependencies.append(getDependenciesFieldChecksum(item[fieldName], False))
 
     if files_only_fields:
         for fieldName in files_only_fields:
-            if fieldName in item:
-                add_str = getDependenciesFieldChecksum(item[fieldName], True)
-            else:
-                add_str = "NONE"
-            dependencies.append(add_str)
+            dependencies.append(getDependenciesFieldChecksum(item[fieldName], True))
 
     return dependencies
 
@@ -1457,6 +1478,9 @@ def getDependenciesDebianExportInitramfs(item):
 def getDependenciesSmartChroot(item):
     return rawGetDependencies(item, ["scripts", "source"], [])
 
+def getDependenciesSingleboard(item):
+    return rawGetDependencies(item, ["bootloader", "initramfs", "kernel", "rootfs"], [])
+
 getDependencies = {
     "debian": getDependenciesDebian,
     "directory": getDependenciesDirectory,
@@ -1471,7 +1495,8 @@ getDependencies = {
     "kernel": getDependenciesKernel,
     "debian-update-initramfs": getDependenciesDebianUpdateInitramfs,
     "debian-export-initramfs": getDependenciesDebianExportInitramfs,
-    "smart-chroot": getDependenciesSmartChroot
+    "smart-chroot": getDependenciesSmartChroot,
+    "singleboard": getDependenciesSingleboard
 }
 
 def filter_underscored(d):
