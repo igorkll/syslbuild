@@ -1344,19 +1344,35 @@ def singleboardBuild(item):
         if "initramfs" in item:
             initramfsFileName = item.get("initramfs_filename_override", os.path.basename(item["initramfs"]))
 
+        # boot directory
         buildDirectoryBuilditem = {
             "name": bootdirName,
             "export": False,
+
+            "directories": [
+                ["/dtbs/overlay", [0, 0, "0755"]]
+            ]
 
             "items": [
                 [item["bootloader"], bootloaderFileName, [0, 0, "0644"]],
                 [item["kernel"], kernelFileName, [0, 0, "0644"]]
             ]
         }
+        
         if initramfsFileName is not None:
             buildDirectoryBuilditem["items"].append([item["initramfs"], initramfsFileName, [0, 0, "0644"]])
+        
+        if "dtbList" in item:
+            for dtb in item["dtbList"]
+                buildDirectoryBuilditem["items"].append([dtb, pathConcat("/dtbs", dtb), [0, 0, "0644"]])
+
+        if "dtboList" in item:
+            for dtb in item["dtboList"]
+                buildDirectoryBuilditem["items"].append([dtb, pathConcat("/dtbs/overlay", dtb), [0, 0, "0644"]])
+
         buildDirectory(buildDirectoryBuilditem)
 
+        # boot partition
         buildFilesystem({
             "name": bootfsName,
             "export": False,
@@ -1369,6 +1385,7 @@ def singleboardBuild(item):
             "label": "BOOT"
         })
 
+        # bootable image
         buildFullDiskImageBuilditem = {
             "name": builditemName,
             "export": readBool(item, "export"),
