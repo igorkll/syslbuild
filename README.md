@@ -163,6 +163,7 @@ these changes to the kernel config are applied automatically when building the k
   -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.fd \
   -drive if=pflash,format=raw,file=output/OVMF_VARS.fd
 * iso image | x86 | BIOS: qemu-system-i386 -cdrom output/i386/lifeimage.iso -boot d -m 2048
+* debug singleboard: picocom -b 115200 /dev/ttyUSB0
 
 ## roadmap
 * add the ability to add additional files to the iso images
