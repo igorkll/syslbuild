@@ -178,6 +178,9 @@ these changes to the kernel config are applied automatically when building the k
 * exporting the resulting kernel config when building the kernel
 * the ability to specify changes for kernel config parameters directly in the builditem of the kernel build
 
+## singleboards whose assembly is guaranteed to work
+* orange pi zero 3
+
 ## project example
 ```json
 {
