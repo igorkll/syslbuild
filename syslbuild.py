@@ -1350,7 +1350,8 @@ def singleboardBuild(item):
             "export": False,
 
             "directories": [
-                ["/dtbs/overlay", [0, 0, "0755"]]
+                ["/dtbs/overlay", [0, 0, "0755"]],
+                ["/extlinux", [0, 0, "0755"]]
             ]
 
             "items": [
@@ -1371,6 +1372,11 @@ def singleboardBuild(item):
                 buildDirectoryBuilditem["items"].append([dtb, pathConcat("/dtbs/overlay", dtb), [0, 0, "0644"]])
 
         buildDirectory(buildDirectoryBuilditem)
+
+        # boot config
+        bootDirectory = findItem(bootdirName)
+        
+
 
         # boot partition
         buildFilesystem({

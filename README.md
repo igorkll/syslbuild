@@ -654,13 +654,15 @@ these changes to the kernel config are applied automatically when building the k
             // the easiest way to get the bootloader is to get it from the original boot image. it is usually not only installed, but also lies as a separate file in the boot partition
             // due to the fact that the file size is extremely small, it can be stored in the project repository
             "bootloader": "u-boot-sunxi-with-spl.bin",
-            "bootloaderDtb": "sun50i-h618-orangepi-zero3.dts", //default dtb
+            
             "dtbList": [ //device tree
                 "sun50i-h618-orangepi-zero3.dts"
             ],
             "dtboList": [ //device tree overlays. optional
                 "sun50i-h616-disable-leds.dtbo" //example
             ],
+
+            "bootloaderDtb": "sun50i-h618-orangepi-zero3.dts", //default dtb
 
             "kernel": "kernel.img",
             "initramfs": "initramfs.img", //optional
