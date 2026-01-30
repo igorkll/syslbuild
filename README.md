@@ -659,15 +659,13 @@ these changes to the kernel config are applied automatically when building the k
             "bootloader": "u-boot-sunxi-with-spl.bin",
             
             "dtbList": [ //device tree
-                "sun50i-h618-orangepi-zero3.dts"
+                "sun50i-h618-orangepi-zero3.dtb"
             ],
             "dtboList": [ //device tree overlays. optional
                 "sun50i-h616-disable-leds.dtbo" //example
             ],
 
-            //default dtb
-            //as practice shows, it is better to extract dtb from official single-board images rather than from the kernel build, even if you built the kernel yourself (for example, to apply patches)
-            "bootloaderDtb": "sun50i-h618-orangepi-zero3.dts",
+            "bootloaderDtb": "sun50i-h618-orangepi-zero3.dtb", //default dtb
 
             "kernel": "kernel.img",
             "initramfs": "initramfs.img", //optional
@@ -806,7 +804,7 @@ these changes to the kernel config are applied automatically when building the k
             // and then whether it needs to be exported to the output directory, making it available to the user.
             "additional_export": [
                 ["arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts", "sun50i-a64-pine64.dts", false],
-                ["arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero3.dts", "sun50i-h618-orangepi-zero3.dts", false]
+                ["arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero3.dtb", "sun50i-h618-orangepi-zero3.dtb", false]
             ]
         },
         {
