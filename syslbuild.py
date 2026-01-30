@@ -840,7 +840,7 @@ def installBootloader(item, path, partitionsOffsets, sectorsize):
     elif bootloaderType == "binary":
         firstPartitionOffset = min(partitionsOffsets)
 
-        for binary in item["binaries"]:
+        for binary in bootloaderInfo["binaries"]:
             bootloaderSector = binary["sector"]
             bootloaderOffsetBytes = bootloaderSector * sectorsize
             if bootloaderOffsetBytes >= firstPartitionOffset:
@@ -875,7 +875,7 @@ def buildFullDiskImage(item):
     partitionTable = f"label: {item["partitionTable"]}"
 
     if "partitionsStartSector" in item:
-        patritionTable += f"\nfirst-lba: {item["partitionsStartSector"]}"
+        partitionTable += f"\nfirst-lba: {item["partitionsStartSector"]}"
 
     for i, partition in enumerate(item["partitions"]):
         partitionTable += f"\nsize={math.ceil(partitionsSizes[i] / 1024 / 1024)}MiB, type={getParititionType(item, partition[1])}"
@@ -1372,6 +1372,8 @@ def singleboardBuild(item):
         buildFullDiskImageBuilditem = {
             "name": builditemName,
             "export": readBool(item, "export"),
+
+            "size": "auto + (1 * 1024 * 1024)",
 
             "partitionsStartSector": 8192,
             "partitionTable": "dos",
