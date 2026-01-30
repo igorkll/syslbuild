@@ -1389,7 +1389,7 @@ def singleboardBuild(item):
                 ]
             }
         }
-        if "rootfs" is item:
+        if "rootfs" in item:
             buildFullDiskImageBuilditem["partitions"].append([item["rootfs"], "linux"])
         buildFullDiskImage(buildFullDiskImageBuilditem)
 
