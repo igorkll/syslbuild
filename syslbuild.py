@@ -57,7 +57,7 @@ SIZE_UNITS = {
     "TB": 1024**4,
 }
 
-VERSION = [0, 5, 0]
+VERSION = [0, 6, 0]
 
 def formatVersion(version):
     return '.'.join(str(n) for n in version)
@@ -1365,11 +1365,11 @@ def singleboardBuild(item):
         
         if "dtbList" in item:
             for dtb in item["dtbList"]:
-                buildDirectoryBuilditem["items"].append([dtb, pathConcat("/dtbs", dtb), [0, 0, "0644"]])
+                buildDirectoryBuilditem["items"].append([dtb, pathConcat("/dtbs", os.path.basename(dtb)), [0, 0, "0644"]])
 
         if "dtboList" in item:
             for dtb in item["dtboList"]:
-                buildDirectoryBuilditem["items"].append([dtb, pathConcat("/dtbs/overlay", dtb), [0, 0, "0644"]])
+                buildDirectoryBuilditem["items"].append([dtb, pathConcat("/dtbs/overlay", os.path.basename(dtb)), [0, 0, "0644"]])
 
         buildDirectory(buildDirectoryBuilditem)
 
