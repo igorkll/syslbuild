@@ -633,6 +633,23 @@ these changes to the kernel config are applied automatically when building the k
             }
         },
 
+        // ---------------- creating an image for a singleboard
+
+        // this is a simpler option than with a full-disk image
+        // specifically, this example is for the orange pi zero 3
+        {
+            "type": "singleboard",
+            "name": "my singleboard image 2.img",
+            "export": true,
+
+            "singleboardType": "uboot-16",
+
+            "bootloader": "u-boot-sunxi-with-spl.bin",
+            "initramfs": "initramfs.img",
+            "kernel": "kernel.img",
+            "rootfs": "rootfs.img"
+        },
+
         // ---------------- some bootloaders can only load the kernel from the raw partition
         {
             "type": "from-directory",
