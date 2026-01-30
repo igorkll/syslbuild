@@ -26,6 +26,9 @@ for a computer, you can build a kernel, but not export it, but assemble the debi
 the build in syslbuild is heavily divided into items, for example, you can't just assemble a module into a file system. First, you need to create a separate item directory and then add it to the file system  
 also, assembling a bootable img with an already installed system is also a separate build item in which you must add file systems, etc  
 
+## warnings
+* remember that if the result of building your OS is .img with an already installed system (via "full-disk-image" for PCs or "singleboard" for boards like orangepi), then your initramfs should expand the data partition or rootfs to the maximum when the device is turned on for the first time.  
+
 ## arguments
 * -h - show help info
 * --arch ARCHITECTURE - set the output architecture of the build
