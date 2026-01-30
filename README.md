@@ -762,6 +762,11 @@ these changes to the kernel config are applied automatically when building the k
                 "disable_printk.patch" // will make the kernel shut up
             ],
 
+            // optional
+            // if set to true, errors when applying patches will be ignored. This is done to apply whole bundles of patches at once (for example, from armbian) and let those that fit be applied
+            // default: false
+            "patches_ignore_errors": true,
+
             // optional. by default, syslbuild chooses defconfig itself based on the architecture for which it is being built. but you can specify it yourself.
             //"defconfig": "i386_defconfig",
 
