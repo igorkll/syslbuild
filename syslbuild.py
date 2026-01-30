@@ -126,7 +126,7 @@ def splitNumberUnit(s):
         return float(number), unit.upper()
     return 0, ""
 
-def calcSize(sizeLitteral, folderOrFilelist):
+def calcSize(sizeLitteral, folderOrFilelist=None):
     if isinstance(sizeLitteral, (int, float)):
         return math.ceil(sizeLitteral)
     
@@ -600,6 +600,17 @@ def allocateFile(path, size):
 
 def formatFilesystem(path, item):
     fs_type = item["fs_type"]
+    fs_subtype = None
+    if fs_type == "fat12":
+        fs_type = "vfat"
+        fs_subtype = 12
+    elif fs_type == "fat32":
+        fs_type = "vfat"
+        fs_subtype = 32
+    elif fs_type == "fat64":
+        fs_type = "vfat"
+        fs_subtype = 64
+
     cmd = [f"mkfs.{fs_type}"]
 
     if "fs_arg" in item:
@@ -617,7 +628,11 @@ def formatFilesystem(path, item):
             cmd.append("-i")
         else:
             cmd.append("-U")
-        cmd.append(item["fsid"])
+        cmd.append(str(item["fsid"]))
+
+    if fs_subtype is not None:
+        cmd.append("-F")
+        cmd.append(str(fs_subtype))
     
     cmd.append(path)
     buildExecute(cmd)
@@ -724,7 +739,12 @@ def buildFilesystem(item):
     fs_files = findDirectory(item)
 
     fs_path = getItemPath(item)
-    allocateFile(fs_path, calcSize(item['size'], fs_files))
+    fs_size = calcSize(item["size"], fs_files)
+    if "minsize" in item:
+        minsize = calcSize(item["minsize"])
+        if minsize > fs_size:
+            fs_size = minsize
+    allocateFile(fs_path, fs_size)
 
     if "fs_type" in item:
         formatFilesystem(fs_path, item)
@@ -1318,12 +1338,24 @@ def singleboardBuild(item):
     if singleboardType == "uboot-16":
         bootdirName = builditemName + "_bootdir"
         bootfsName = builditemName + "_bootfs"
-        
+
+        buildDirectory({
+            "name": bootdirName,
+            "export": False,
+
+            
+        })
+
         buildFilesystem({
             "name": bootfsName,
             "export": False,
 
-            
+            "source": bootdirName,
+
+            "fs_type": "fat32",
+            "size": "(auto * 1.2) + (100 * 1024 * 1024)",
+            "minsize": "64MB",
+            "label": "BOOT"
         })
 
         buildFullDiskImage({
@@ -1333,7 +1365,7 @@ def singleboardBuild(item):
             "partitionsStartSector": 8192,
             "partitionTable": "dos",
             "partitions": [
-                [item["rootfs"], "linux"],
+                [bootfsName, "linux"],
                 [item["rootfs"], "linux"]
             ],
 

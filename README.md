@@ -441,6 +441,7 @@ these changes to the kernel config are applied automatically when building the k
 
             "fs_type": "ext4",
             "size": "(auto * 1.2) + (100 * 1024 * 1024)", // could be a constant like 1G or 100M. when specified as auto, you operate with the value in bytes and can specify any eval
+            "minsize": "64MB", //optional
             "label": "example-distro"
         },
         {
