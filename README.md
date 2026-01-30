@@ -648,12 +648,26 @@ these changes to the kernel config are applied automatically when building the k
             "name": "my singleboard image 2.img",
             "export": true,
 
+            // a mode compatible with your board must be selected
             "singleboardType": "uboot-16",
 
+            // the easiest way to get the bootloader is to get it from the original boot image. it is usually not only installed, but also lies as a separate file in the boot partition
+            // due to the fact that the file size is extremely small, it can be stored in the project repository
             "bootloader": "u-boot-sunxi-with-spl.bin",
+            "dtb": [ //device tree
+                "sun50i-h618-orangepi-zero3.dts"
+            ],
+            "dtbo": [ //device tree overlays. optional
+                "sun50i-h616-disable-leds.dtbo" //example
+            ],
+
             "kernel": "kernel.img",
             "initramfs": "initramfs.img", //optional
-            "rootfs": "rootfs.img" //optional
+            "rootfs": "rootfs.img", //optional
+
+            // you can redefine the name under which the kernel and initramfs will be located in the boot partition. by default, they have the same name as the original files.
+            "kernel_filename_override": "kernel.img", //optional
+            "initramfs_filename_override": "initramfs.img" //optional
         },
 
         // ---------------- some bootloaders can only load the kernel from the raw partition

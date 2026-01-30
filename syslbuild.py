@@ -1340,9 +1340,9 @@ def singleboardBuild(item):
         bootfsName = builditemName + "_bootfs"
 
         bootloaderFileName = os.path.basename(item["bootloader"])
-        kernelFileName = os.path.basename(item["kernel"])
+        kernelFileName = item.get("kernel_filename_override", os.path.basename(item["kernel"]))
         if "initramfs" in item:
-            initramfsFileName = os.path.basename(item["initramfs"])
+            initramfsFileName = item.get("initramfs_filename_override", os.path.basename(item["initramfs"]))
 
         buildDirectoryBuilditem = {
             "name": bootdirName,
