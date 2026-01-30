@@ -1582,8 +1582,13 @@ def includeProcess(builditems, included=None):
         newBuilditems = []
         for builditem in builditems:
             if "type" in builditem and builditem["type"] == "include":
-                with open(builditem["file"], "r") as f:
-                    newBuilditems.append(builditem)
+                includeFilePath = builditem["file"]
+                with open(builditem["file"], "r", encoding="utf-8") as f:
+                    newLocalBuilditems = json5.load(f)
+                    if not isinstance(newLocalBuilditems, list):
+                        buildLog(f"there is no \"{includeFilePath}\" array in the root of the attached file")
+                        sys.exit(1)
+                    newBuilditems.extend(newLocalBuilditems)
             else:
                 newBuilditems.append(builditem)
 
