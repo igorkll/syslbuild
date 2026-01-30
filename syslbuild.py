@@ -1569,7 +1569,31 @@ def deleteBuildItemKeysProcess(builditemDict):
         if isinstance(v, dict):
             deleteBuildItemKeysProcess(v)
 
+def includeProcess(builditems, included=None):
+    includeDetected=False
+    for builditem in builditems:
+        if "type" in builditem and builditem["type"] == "include":
+            includeDetected=True
+
+    if includeDetected:
+        if included is None:
+            included = []
+
+        newBuilditems = []
+        for builditem in builditems:
+            if "type" in builditem and builditem["type"] == "include":
+                with open(builditem["file"], "r") as f:
+                    newBuilditems.append(builditem)
+            else:
+                newBuilditems.append(builditem)
+
+        return includeProcess(newBuilditems, included)
+    
+    return builditems
+
 def prepairBuildItems(builditems):
+    builditems = includeProcess(builditems)
+
     forkbase=None
     for builditem in builditems:
         if builditem.get("fork", False):
