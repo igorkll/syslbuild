@@ -1339,11 +1339,15 @@ def singleboardBuild(item):
         bootdirName = builditemName + "_bootdir"
         bootfsName = builditemName + "_bootfs"
 
+        bootloaderFileName = os.path.basename(item["bootloader"])
         buildDirectory({
             "name": bootdirName,
             "export": False,
 
-            
+            "items": [
+                [item["bootloader"], bootloaderFileName, [0, 0, "0644"]],
+                
+            ]
         })
 
         buildFilesystem({
