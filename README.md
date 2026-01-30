@@ -99,6 +99,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * debian-export-initramfs - it works the same way as debian-update-initramfs, but accepts the kernel config separately (not required if the config is already in your rootfs) and exports initramfs itself, not the entire rootfs with it. your rootfs must have the "initramfs-tools" package and the kernel modules installed.
 * smart-chroot - executes scripts inside the chroot. if the processor architecture does not match, then this builditem itself will copy and then delete qemu-static from your chroot. exports a new rootfs with executed chroot scripts inside
 * include - it allows you to connect another json file from the project, which in turn should contain only an array of builditems and nothing more at its root. In this case, the builditems array must be at the very root and immediately contain the builditem dictionaries.
+* singleboard - a specially created builditem for creating images for single-board computers like the orange pi
 
 ## build items features
 * debian supports the "_min" variant, which is essentially a "custom" but with a minimal set package required for assembly
