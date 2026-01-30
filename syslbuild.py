@@ -1385,9 +1385,9 @@ def singleboardBuild(item):
             
             kernel_args = item.get("kernel_args", "")
             
-            if item.get("kernel_args_auto", False):
-                if "initramfs" in item:
-                    kernel_args = f"initrd=/{initramfsFileName} " + kernel_args
+            if item.get("kernel_rootfs_auto", False):
+                if "rootfs" in item:
+                    kernel_args = f"root=root=/dev/mmcblk0p2 {item.get("kernel_rootfs_auto")} " + kernel_args
             
             if item.get("kernel_args_auto", False):
                 if "initramfs" in item:
