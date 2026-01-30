@@ -1352,7 +1352,7 @@ def singleboardBuild(item):
             "directories": [
                 ["/dtbs/overlay", [0, 0, "0755"]],
                 ["/extlinux", [0, 0, "0755"]]
-            ]
+            ],
 
             "items": [
                 [item["bootloader"], bootloaderFileName, [0, 0, "0644"]],
@@ -1364,11 +1364,11 @@ def singleboardBuild(item):
             buildDirectoryBuilditem["items"].append([item["initramfs"], initramfsFileName, [0, 0, "0644"]])
         
         if "dtbList" in item:
-            for dtb in item["dtbList"]
+            for dtb in item["dtbList"]:
                 buildDirectoryBuilditem["items"].append([dtb, pathConcat("/dtbs", dtb), [0, 0, "0644"]])
 
         if "dtboList" in item:
-            for dtb in item["dtboList"]
+            for dtb in item["dtboList"]:
                 buildDirectoryBuilditem["items"].append([dtb, pathConcat("/dtbs/overlay", dtb), [0, 0, "0644"]])
 
         buildDirectory(buildDirectoryBuilditem)
