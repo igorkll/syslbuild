@@ -654,6 +654,7 @@ these changes to the kernel config are applied automatically when building the k
             // the easiest way to get the bootloader is to get it from the original boot image. it is usually not only installed, but also lies as a separate file in the boot partition
             // due to the fact that the file size is extremely small, it can be stored in the project repository
             "bootloader": "u-boot-sunxi-with-spl.bin",
+            "bootloaderDtb": "sun50i-h618-orangepi-zero3.dts", //default dtb
             "dtbList": [ //device tree
                 "sun50i-h618-orangepi-zero3.dts"
             ],
@@ -664,6 +665,10 @@ these changes to the kernel config are applied automatically when building the k
             "kernel": "kernel.img",
             "initramfs": "initramfs.img", //optional
             "rootfs": "rootfs.img", //optional
+
+            "kernel_args_auto": true, //tells syslbuild to specify some kernel arguments itself, such as initrd=XXX
+            "kernel_rootfs_auto": "rw", //tells syslbuild to set root=XXX itself
+            "kernel_args": "rootwait console=ttyS0,115200 splash plymouth.ignore-serial-consoles",
 
             // you can redefine the name under which the kernel and initramfs will be located in the boot partition. by default, they have the same name as the original files.
             "kernel_filename_override": "kernel.img", //optional

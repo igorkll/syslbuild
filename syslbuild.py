@@ -1553,7 +1553,7 @@ def getDependenciesSmartChroot(item):
     return rawGetDependencies(item, ["scripts", "source"], [])
 
 def getDependenciesSingleboard(item):
-    return rawGetDependencies(item, ["bootloader", "initramfs", "kernel", "rootfs"], [])
+    return rawGetDependencies(item, ["bootloader", "initramfs", "kernel", "rootfs", "dtbList", "dtboList", "bootloaderDtb"], [])
 
 getDependencies = {
     "debian": getDependenciesDebian,
