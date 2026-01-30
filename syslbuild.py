@@ -1413,7 +1413,7 @@ def singleboardBuild(item):
             "name": builditemName,
             "export": readBool(item, "export"),
 
-            "size": "auto + (1 * 1024 * 1024)",
+            "size": "auto + (16 * 1024 * 1024)",
 
             "partitionsStartSector": 8192,
             "partitionTable": "dos",

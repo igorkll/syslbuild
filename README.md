@@ -624,7 +624,7 @@ these changes to the kernel config are applied automatically when building the k
             "name": "my singleboard image.img",
             "export": true,
 
-            "size": "auto + (1 * 1024 * 1024)",
+            "size": "auto + (16 * 1024 * 1024)",
 
             "partitionsStartSector": 8192,
             "partitionTable": "dos",
