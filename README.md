@@ -665,7 +665,9 @@ these changes to the kernel config are applied automatically when building the k
                 "sun50i-h616-disable-leds.dtbo" //example
             ],
 
-            "bootloaderDtb": "sun50i-h618-orangepi-zero3.dts", //default dtb
+            //default dtb
+            //as practice shows, it is better to extract dtb from official single-board images rather than from the kernel build, even if you built the kernel yourself (for example, to apply patches)
+            "bootloaderDtb": "sun50i-h618-orangepi-zero3.dts",
 
             "kernel": "kernel.img",
             "initramfs": "initramfs.img", //optional
