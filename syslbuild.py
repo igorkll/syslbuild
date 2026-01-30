@@ -1105,6 +1105,7 @@ def buildKernel(item):
         copyItemFiles(findItem(item["kernel_config"]), kernel_config_path)
 
     modifyKernelConfig(item, kernel_sources, ARCH_STR, CROSS_COMPILE_STR)
+    buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "modules_prepare"], True, None, kernel_sources)
 
     if "result_config_name" in item:
         buildLog(f"exporting result kernel config...")
