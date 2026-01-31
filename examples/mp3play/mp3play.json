@@ -19,7 +19,8 @@
                 "pulseaudio",
                 "pulseaudio-utils",
                 "systemd",
-                "systemd-sysv"
+                "systemd-sysv",
+                "dbus"
             ],
     
             "variant": "minbase",
