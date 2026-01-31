@@ -1628,12 +1628,27 @@ def writeCacheChecksum(item, checksum):
     with open(checksum_path, "w") as f:
         f.write(checksum)
 
+def writeCacheChecksumForName(itemName, checksum):
+    checksum_path = getItemChecksumPathFromName(itemName)
+    with open(checksum_path, "w") as f:
+        f.write(checksum)
+
 def isCacheValid(item, checksum):
     checksum_path = getItemChecksumPath(item)
     if os.path.exists(checksum_path):
         with open(checksum_path, "r") as f:
             return f.read() == checksum
     return False
+
+def writeOtherChecksums(item):
+    if "headers_name" in item:
+        writeCacheChecksumForName(item["headers_name"], checksum)
+    
+    if "modules_name" in item:
+        writeCacheChecksumForName(item["modules_name"], checksum)
+    
+    if "result_config_name" in item:
+        writeCacheChecksumForName(item["result_config_name"], checksum)
 
 def buildItems(builditems):
     exported = []
@@ -1648,6 +1663,7 @@ def buildItems(builditems):
             buildItemLog(item)
             buildActions.get(item["type"], buildUnknown)(item)
             writeCacheChecksum(item, checksum)
+            writeOtherChecksums(item)
         
         if readBool(item, "export"):
             exported.append(item)
