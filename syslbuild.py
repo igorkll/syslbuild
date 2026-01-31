@@ -1640,7 +1640,7 @@ def isCacheValid(item, checksum):
             return f.read() == checksum
     return False
 
-def writeOtherChecksums(item):
+def writeOtherChecksums(item, checksum):
     if "headers_name" in item:
         writeCacheChecksumForName(item["headers_name"], checksum)
     
@@ -1663,7 +1663,7 @@ def buildItems(builditems):
             buildItemLog(item)
             buildActions.get(item["type"], buildUnknown)(item)
             writeCacheChecksum(item, checksum)
-            writeOtherChecksums(item)
+            writeOtherChecksums(item, checksum)
         
         if readBool(item, "export"):
             exported.append(item)
