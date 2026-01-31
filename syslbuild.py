@@ -561,6 +561,9 @@ def changeAccessRights(path, changeRights):
     if chownString:
         buildExecute(["chown", "-R", chownString, path])
 
+def recursionDeleleSymlinks(directoryPath):
+    buildRawExecute("find . -type l -exec rm -f {} +", True, directoryPath)
+
 def copyItemFiles(fromPath, toPath, changeRights=None):
     if os.path.isdir(fromPath):
         makedirsChangeRights(toPath)
@@ -1173,11 +1176,13 @@ def buildKernel(item):
         buildLog(f"exporting modules...")
         export_path = getItemFolder(item, "modules_name", "modules_export")
         buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "modules_install", f"INSTALL_MOD_PATH={os.path.abspath(export_path)}"], True, None, kernel_sources)
+        recursionDeleleSymlinks(export_path)
 
     if "headers_name" in item:
         buildLog(f"exporting headers...")
         export_path = getItemFolder(item, "headers_name", "headers_export")
         buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "headers_install", f"INSTALL_HDR_PATH={os.path.abspath(export_path)}"], True, None, kernel_sources)
+        recursionDeleleSymlinks(export_path)
 
     if "additional_export" in item:
         additionalExportProcess(kernel_sources, item["additional_export"])
