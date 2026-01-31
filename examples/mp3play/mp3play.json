@@ -15,7 +15,9 @@
             "kernel": "default",
             "include": [
                 "initramfs-tools",
-                "mpg123"
+                "mpg123",
+                "pulseaudio",
+                "pulseaudio-utils"
             ],
     
             "variant": "minbase",
