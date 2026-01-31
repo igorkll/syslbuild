@@ -1534,7 +1534,8 @@ def rawGetDependencies(item, items_and_files_fields=None, files_only_fields=None
 
     if files_only_fields:
         for fieldName in files_only_fields:
-            dependencies.append(getDependenciesFieldChecksum(item[fieldName], True))
+            if fieldName in item:
+                dependencies.append(getDependenciesFieldChecksum(item[fieldName], True))
 
     return dependencies
 
