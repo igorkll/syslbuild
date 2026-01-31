@@ -1,0 +1,14 @@
+[Unit]
+Description=MP3 Player
+
+[Service]
+Type=simple
+ExecStart=/main.sh
+Restart=always
+StandardOutput=tty
+StandardError=tty
+TTYPath=/dev/tty1
+User=mp3player
+
+[Install]
+WantedBy=default.target

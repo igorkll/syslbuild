@@ -17,7 +17,9 @@
                 "initramfs-tools",
                 "mpg123",
                 "pulseaudio",
-                "pulseaudio-utils"
+                "pulseaudio-utils",
+                "systemd",
+                "systemd-sysv"
             ],
     
             "variant": "minbase",
@@ -34,7 +36,9 @@
             "items": [
                 ["rootfs directory", "."],
                 ["files/main.sh", "/main.sh", [0, 0, "0755"]],
-                ["files/sound.mp3", "/sound.mp3", [0, 0, "0644"]]
+                ["files/sound.mp3", "/sound.mp3", [0, 0, "0644"]],
+                ["files/mp3player.service", "/etc/systemd/system/mp3player.service", [0, 0, "0644"]],
+                ["files/custom_init.sh", "/usr/share/initramfs-tools/init", [0, 0, "0755"]]
             ]
         },
         {
@@ -44,7 +48,7 @@
 
             "source": "rootfs directory x2",
             "scripts": [
-                "chroot/cleanup.sh"
+                "chroot/setup.sh"
             ]
         },
         {
