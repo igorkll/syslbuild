@@ -32,7 +32,7 @@
             "items": [
                 ["rootfs directory", "."],
                 ["files/main.sh", "/main.sh", [0, 0, "0755"]],
-                ["files/sound.mp3", "/sound.mp3", [0, 0, "0755"]]
+                ["files/sound.mp3", "/sound.mp3", [0, 0, "0644"]]
             ]
         },
         {
