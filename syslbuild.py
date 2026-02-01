@@ -1024,9 +1024,19 @@ def downloadKernelFromGit(item):
     return kernel_sources
 
 def copyKernel(kernel_sources):
+    current_kernel_sources_file = pathConcat(path_temp_kernel_build, ".current_kernel_sources")
+    if os.path.isdir(path_temp_kernel_build) and os.path.isfile(current_kernel_sources_file):
+        with open(current_kernel_sources_file, "r") as f:
+            if f.read().strip() == kernel_sources:
+                return path_temp_kernel_build
+
     deleteDirectory(path_temp_kernel_build)
     os.makedirs(path_temp_kernel_build, exist_ok=True)
     copyItemFiles(kernel_sources, path_temp_kernel_build)
+
+    with open(current_kernel_sources_file, "w") as f:
+        f.write(kernel_sources.strip())
+
     return path_temp_kernel_build
 
 def patchKernel(kernel_sources, patches, patches_ignore_errors=False):
