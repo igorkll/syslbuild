@@ -4,36 +4,39 @@
 # by klibc dash.  Make it consistent.
 export PATH=/sbin:/usr/sbin:/bin:/usr/bin
 
-[ -d /dev ] || mkdir -m 0755 /dev
-[ -d /root ] || mkdir -m 0700 /root
-[ -d /sys ] || mkdir /sys
 [ -d /proc ] || mkdir /proc
-[ -d /tmp ] || mkdir /tmp
-mkdir -p /var/lock
-mount -t sysfs -o nodev,noexec,nosuid sysfs /sys
 mount -t proc -o nodev,noexec,nosuid proc /proc
-mount -t tmpfs -o "nodev,nosuid,size=${RUNSIZE:-10%},mode=1777" tmpfs /tmp
 
-# shellcheck disable=SC2013
 for x in $(cat /proc/cmdline); do
 	case $x in
-	initramfs.clear)
+	clear)
 		printf "\033[2J\033[H"
 		;;
-	initramfs.noCursorBlink)
+	noCursorBlink)
 		printf "\033[?25l"
 		;;
 	quiet)
 		quiet=y
 		;;
 	splash*)
-		SPLASH="true"
+		SPLASH=true
 		;;
-	nosplash*|plymouth.enable=0)
-		SPLASH="false"
+	noctrlaltdel)
+		echo 0 > /proc/sys/kernel/ctrl-alt-del
+		;;
+	nosysrq)
+		echo 0 > /proc/sys/kernel/sysrq
 		;;
 	esac
 done
+
+[ -d /dev ] || mkdir -m 0755 /dev
+[ -d /root ] || mkdir -m 0700 /root
+[ -d /sys ] || mkdir /sys
+[ -d /tmp ] || mkdir /tmp
+mkdir -p /var/lock
+mount -t sysfs -o nodev,noexec,nosuid sysfs /sys
+mount -t tmpfs -o "nodev,nosuid,size=${RUNSIZE:-10%},mode=1777" tmpfs /tmp
 
 if [ "$quiet" != "y" ]; then
 	quiet=n
@@ -202,6 +205,12 @@ for x in $(cat /proc/cmdline); do
 	fsck.repair=no)
 		fsckfix=n
 		;;
+	makevartmp)
+		makevartmp=true
+		;;
+	makehometmp)
+		makehometmp=true
+		;;
 	esac
 done
 
@@ -332,8 +341,29 @@ unset forcefsck
 unset fsckfix
 unset starttime
 
+make_temp() {
+	local dirname=$1
+	local olddir="/${dirname}.old"
+	local target="${rootmnt}/${dirname}/"
+
+	if [ -d "${target}" ]; then
+		mkdir -p $olddir
+		cp -a "${target}/." $olddir 2>/dev/null || true
+		mount -t tmpfs -o mode=1777,nodev,nosuid tmpfs "$target"
+		cp -a "${olddir}/." $target 2>/dev/null || true
+		rm -rf $olddir
+	fi
+}
+
 # make /var tmpfs
-mount -t tmpfs -o mode=1777,nodev,nosuid tmpfs ${rootmnt}/var
+if [ "$makevartmp" = "true" ] && [ -d "${rootmnt}/var" ]; then
+    make_temp "var"
+fi
+
+# make /home tmpfs
+if [ "$makehometmp" = "true" ] && [ -d "${rootmnt}/home" ]; then
+    make_temp "home"
+fi
 
 # Move virtual filesystems over to the real filesystem
 mount -n -o move /sys ${rootmnt}/sys
