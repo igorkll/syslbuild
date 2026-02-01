@@ -9,17 +9,19 @@ mount -t proc -o nodev,noexec,nosuid proc /proc
 
 for x in $(cat /proc/cmdline); do
 	case $x in
+	quiet)
+		quiet=y
+		;;
+
+	# custom init parameters
 	clear)
 		printf "\033[2J\033[H"
 		;;
 	noCursorBlink)
 		printf "\033[?25l"
 		;;
-	quiet)
-		quiet=y
-		;;
-	splash*)
-		SPLASH=true
+	earlysplash*)
+		EARLYSPLASH=true
 		;;
 	noctrlaltdel)
 		echo 0 > /proc/sys/kernel/ctrl-alt-del
@@ -57,6 +59,18 @@ mount -t devtmpfs -o nosuid,mode=0755 udev /dev
 mkdir /dev/pts
 mount -t devpts -o noexec,nosuid,gid=5,mode=0620 devpts /dev/pts || true
 mount -t tmpfs -o "nodev,noexec,nosuid,size=${RUNSIZE:-10%},mode=0755" tmpfs /run
+
+# initialization of plymouth has been moved to an earlier stage
+if [ "${EARLYSPLASH}" = "true" ]
+then
+	if [ -e /dev/fb0 ]; then
+		mkdir -m 0755 /run/plymouth
+		/usr/sbin/plymouthd --mode=boot --attach-to-session --pid-file=/run/plymouth/pid
+		/usr/bin/plymouth --show-splash
+	else
+		PLYMOUTH_FAILED=true
+	fi
+fi
 
 # Export the dpkg architecture
 export DPKG_ARCH=
@@ -205,6 +219,27 @@ for x in $(cat /proc/cmdline); do
 	fsck.repair=no)
 		fsckfix=n
 		;;
+	splash*)
+		SPLASH="true"
+		;;
+	nosplash*|plymouth.enable=0)
+		SPLASH="false"
+		;;
+	
+	# custom init parameters
+    loop=*)
+        LOOP="${x#loop=}"
+        ;;
+    loopflags=*)
+		LOOPFLAGS="-o ${x#loopflags=}"
+		;;
+	loopfstype=*)
+		LOOPFSTYPE="${x#loopfstype=}"
+		;;
+    loopreadonly=y)
+        LOOPREADONLY=y
+        ;;
+	
 	makevartmp)
 		makevartmp=true
 		;;
@@ -213,6 +248,15 @@ for x in $(cat /proc/cmdline); do
 		;;
 	makeroothometmp)
 		makeroothometmp=true
+		;;
+		
+	logodelay=*)
+		LOGODELAY="${x#logodelay=}"
+		case ${LOGODELAY} in
+		*[![:digit:].]*)
+			LOGODELAY=
+			;;
+		esac
 		;;
 	esac
 done
