@@ -230,6 +230,11 @@ for x in $(cat /proc/cmdline); do
 	nosplash*|plymouth.enable=0)
 		SPLASH="false"
 		;;
+
+	# it doesn't seem to be working at all. So I'll make my own
+	initramfs.clear)
+		clear
+		;;
 	
 	# custom init parameters
     loop=*)
