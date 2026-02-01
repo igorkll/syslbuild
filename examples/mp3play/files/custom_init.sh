@@ -350,11 +350,13 @@ make_temp() {
 	local target="${rootmnt}/${dirname}/"
 
 	if [ -d "${target}" ]; then
-		mkdir -p $olddir
-		cp -a "${target}/." $olddir 2>/dev/null || true
+		mkdir -p "$olddir"
+		mount -t tmpfs tmpfs "$olddir"
+		cp -a "${target}/." $olddir
 		mount -t tmpfs -o mode=1777,nodev,nosuid tmpfs "$target"
-		cp -a "${olddir}/." $target 2>/dev/null || true
-		rm -rf $olddir
+		cp -a "${olddir}/." $target
+		umount "$olddir"
+		rm -rf "$olddir"
 	fi
 }
 
