@@ -211,6 +211,9 @@ for x in $(cat /proc/cmdline); do
 	makehometmp)
 		makehometmp=true
 		;;
+	makeroothometmp)
+		makeroothometmp=true
+		;;
 	esac
 done
 
@@ -356,13 +359,18 @@ make_temp() {
 }
 
 # make /var tmpfs
-if [ "$makevartmp" = "true" ] && [ -d "${rootmnt}/var" ]; then
+if [ "$makevartmp" = "true" ]; then
     make_temp "var"
 fi
 
 # make /home tmpfs
-if [ "$makehometmp" = "true" ] && [ -d "${rootmnt}/home" ]; then
+if [ "$makehometmp" = "true" ]; then
     make_temp "home"
+fi
+
+# make /root tmpfs
+if [ "$makeroothometmp" = "true" ]; then
+    make_temp "root"
 fi
 
 # Move virtual filesystems over to the real filesystem
