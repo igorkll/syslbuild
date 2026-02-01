@@ -1651,9 +1651,9 @@ def writeOtherChecksums(item, checksum):
     if "result_config_name" in item:
         writeCacheChecksumForName(item["result_config_name"], checksum)
 
-    # if "additional_export" in item:
-    #    for additional_export_item in item["additional_export"]:
-    #        writeCacheChecksumForName(additional_export_item[1], checksum)
+    if "additional_export" in item:
+        for additional_export_item in item["additional_export"]:
+            writeCacheChecksumForName(additional_export_item[1], checksum)
 
 def buildItems(builditems):
     exported = []
