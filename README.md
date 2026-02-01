@@ -15,6 +15,7 @@ WARNING!!! if you read this text from GITHUB page please, download a release and
 
 ## you may also be interested in
 * https://github.com/igorkll/linux-embedded-patchs - a set of patches for using the linux kernel on embedded locked-down devices
+* https://github.com/igorkll/custom-debian-initramfs-init - custom /init script for debian initramfs
 * https://github.com/igorkll/WinBox-Maker - a program for creating embedded Windows images
 
 ## build process
