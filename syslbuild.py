@@ -57,7 +57,7 @@ SIZE_UNITS = {
     "TB": 1024**4,
 }
 
-VERSION = [0, 6, 0]
+VERSION = [0, 7, 0]
 
 def formatVersion(version):
     return '.'.join(str(n) for n in version)
