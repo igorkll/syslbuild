@@ -1859,5 +1859,3 @@ if __name__ == "__main__":
         else:
             loadTempPaths()
             buildProject(args.json_path)
-    
-    buildExecute(["chmod", "-R", "0755", "output"])
