@@ -20,7 +20,7 @@ for x in $(cat /proc/cmdline); do
 	noCursorBlink)
 		printf "\033[?25l"
 		;;
-	earlysplash*)
+	earlysplash)
 		EARLYSPLASH=true
 		;;
 	noctrlaltdel)
@@ -60,13 +60,18 @@ mkdir /dev/pts
 mount -t devpts -o noexec,nosuid,gid=5,mode=0620 devpts /dev/pts || true
 mount -t tmpfs -o "nodev,noexec,nosuid,size=${RUNSIZE:-10%},mode=0755" tmpfs /run
 
+plymouth_init() {
+	mkdir -m 0755 /run/plymouth
+	/usr/sbin/plymouthd --mode=boot --attach-to-session --pid-file=/run/plymouth/pid
+	/usr/bin/plymouth --show-splash
+}
+
 # initialization of plymouth has been moved to an earlier stage
 if [ "${EARLYSPLASH}" = "true" ]
 then
 	if [ -e /dev/fb0 ]; then
-		mkdir -m 0755 /run/plymouth
-		/usr/sbin/plymouthd --mode=boot --attach-to-session --pid-file=/run/plymouth/pid
-		/usr/bin/plymouth --show-splash
+		plymouth_init
+		PLYMOUTH_FAILED=false
 	else
 		PLYMOUTH_FAILED=true
 	fi
@@ -290,6 +295,16 @@ maybe_break modules
 load_modules
 [ "$quiet" != "y" ] && log_end_msg
 
+if [ "${PLYMOUTH_FAILED}" = "true" ]
+then
+	if [ -e /dev/fb0 ]; then
+		plymouth_init
+		PLYMOUTH_FAILED=false
+	else
+		PLYMOUTH_FAILED=true
+	fi
+fi
+
 starttime="$(_uptime)"
 starttime=$((starttime + 1)) # round up
 export starttime
@@ -314,6 +329,67 @@ parse_numeric "${ROOT}"
 maybe_break mountroot
 mount_top
 mount_premount
+
+if [ "${PLYMOUTH_FAILED}" = "true" ]
+then
+	if [ -e /dev/fb0 ]; then
+		plymouth_init
+		PLYMOUTH_FAILED=false
+	else
+		PLYMOUTH_FAILED=true
+	fi
+fi
+
+if [ "$LOGODELAY" ]; then
+	sleep "$LOGODELAY"
+fi
+
+# custom init options
+if [ -n "$LOOP" ]; then
+    mountroot()
+    {
+        log_begin_msg "Mount loop root filesystem"
+
+        if [ -n "$ROOT" ]; then
+            if [ "$BOOT" = "nfs" ]; then
+                nfs_mount_root
+            else
+                local_mount_root
+            fi
+
+            mkdir -m 0700 /realroot
+            mount -n -o move "${rootmnt}" /realroot
+        fi
+
+        if [ "$readonly" = y ]; then
+			roflag=-r
+		else
+            if [ -n "$LOOPREADONLY" ]; then
+			    roflag=-r
+            else
+                roflag=-w
+            fi
+		fi
+
+        FSTYPE="$LOOPFSTYPE"
+		if [ -z "$FSTYPE" ] || [ "$FSTYPE" = "unknown" ]; then
+			FSTYPE=$(/sbin/blkid -s TYPE -o value "$LOOP")
+			[ -z "$FSTYPE" ] && FSTYPE="unknown"
+		fi
+
+        modprobe loop
+        mknod /dev/loop-root b 7 0
+        losetup /dev/loop-root "$LOOP"
+        mount ${roflag} -t ${FSTYPE} ${LOOPFLAGS} /dev/loop-root "${rootmnt}"
+
+        if [ -d "/realroot" ] && [ -d "${rootmnt}/realroot" ]; then
+            mount -n -o move /realroot ${rootmnt}/realroot
+        fi
+
+        log_end_msg
+    }
+fi
+
 mountroot
 log_end_msg
 
