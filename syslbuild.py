@@ -1820,9 +1820,14 @@ if __name__ == "__main__":
     parser.add_argument("json_path", type=str, help="the path to the json file of the project")
     parser.add_argument("-n", action="store_true", help="does the build anew, does not use the cache")
     parser.add_argument("-d", action="store_true", help="do not use the download cache of the kernel sources")
+    parser.add_argument("-e", action="store_true", help="completely clears the entire cache before building")
     args = parser.parse_args()
     
     requireRoot()
+
+    if args.e:
+        deleteAny(".temp")
+        deleteAny("output")
     
     architecture = args.arch
     log_file = getLogFile()
@@ -1854,4 +1859,5 @@ if __name__ == "__main__":
         else:
             loadTempPaths()
             buildProject(args.json_path)
-        
+    
+    buildExecute(["chmod", "-R", "0755", "output"])
