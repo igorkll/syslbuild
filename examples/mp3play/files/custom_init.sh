@@ -237,18 +237,18 @@ for x in $(cat /proc/cmdline); do
 		;;
 	
 	# custom init parameters
-    loop=*)
-        LOOP="${x#loop=}"
-        ;;
-    loopflags=*)
+	loop=*)
+		LOOP="${x#loop=}"
+		;;
+	loopflags=*)
 		LOOPFLAGS="-o ${x#loopflags=}"
 		;;
 	loopfstype=*)
 		LOOPFSTYPE="${x#loopfstype=}"
 		;;
-    loopreadonly=y)
-        LOOPREADONLY=y
-        ;;
+	loopreadonly=y)
+		LOOPREADONLY=y
+		;;
 	
 	makevartmp)
 		makevartmp=true
@@ -267,6 +267,13 @@ for x in $(cat /proc/cmdline); do
 			LOGODELAY=
 			;;
 		esac
+		;;
+
+	root_processing=y)
+		ROOT_PROCESSING=y
+		;;
+	root_expand=y)
+		ROOT_EXPAND=y
 		;;
 	esac
 done
@@ -345,54 +352,67 @@ then
 	fi
 fi
 
+# custom init paramenters
 if [ "$LOGODELAY" ]; then
 	sleep "$LOGODELAY"
 fi
 
-# custom init options
+if [ -n "$ROOT" ] && [ -n "$ROOT_PROCESSING" ]; then
+	local_device_setup "${ROOT}" "root file system"
+	PART_NUM="${DEV##*[!0-9]}"
+	DISK="${DEV%$PART_NUM}"
+	
+	if [ -n "$ROOT_EXPAND" ]; then
+		log_begin_msg "Expanding root partition"
+		growpart "$DISK" "$PART_NUM"
+		resize2fs "$DEV"
+		log_end_msg
+	fi
+fi
+
 if [ -n "$LOOP" ]; then
-    mountroot()
-    {
-        log_begin_msg "Mount loop root filesystem"
+	mountroot()
+	{
+		log_begin_msg "Mount loop root filesystem"
 
-        if [ -n "$ROOT" ]; then
-            if [ "$BOOT" = "nfs" ]; then
-                nfs_mount_root
-            else
-                local_mount_root
-            fi
+		if [ -n "$ROOT" ]; then
+			if [ "$BOOT" = "nfs" ]; then
+				nfs_mount_root
+			else
+				local_mount_root
+			fi
 
-            mkdir -m 0700 /realroot
-            mount -n -o move "${rootmnt}" /realroot
-        fi
-
-        if [ "$readonly" = y ]; then
-			roflag=-r
-		else
-            if [ -n "$LOOPREADONLY" ]; then
-			    roflag=-r
-            else
-                roflag=-w
-            fi
+			mkdir -m 0700 /realroot
+			mount -n -o move "${rootmnt}" /realroot
 		fi
 
-        FSTYPE="$LOOPFSTYPE"
+		if [ "$readonly" = y ]; then
+			roflag=-r
+		else
+			if [ -n "$LOOPREADONLY" ]; then
+				roflag=-r
+			else
+				roflag=-w
+			fi
+		fi
+
+		FSTYPE="$LOOPFSTYPE"
 		if [ -z "$FSTYPE" ] || [ "$FSTYPE" = "unknown" ]; then
 			FSTYPE=$(/sbin/blkid -s TYPE -o value "$LOOP")
 			[ -z "$FSTYPE" ] && FSTYPE="unknown"
 		fi
 
-        modprobe loop
-        mknod /dev/loop-root b 7 0
-        losetup /dev/loop-root "$LOOP"
-        mount ${roflag} -t ${FSTYPE} ${LOOPFLAGS} /dev/loop-root "${rootmnt}"
+		modprobe loop
+		mknod /dev/loop-root b 7 0
+		losetup /dev/loop-root "$LOOP"
+		mount ${roflag} -t ${FSTYPE} ${LOOPFLAGS} /dev/loop-root "${rootmnt}"
 
-        if [ -d "/realroot" ] && [ -d "${rootmnt}/realroot" ]; then
-            mount -n -o move /realroot ${rootmnt}/realroot
-        fi
+		if [ -d "/realroot" ] && [ -d "${rootmnt}/realroot" ]; then
+			mount -n -o move /realroot ${rootmnt}/realroot
+		fi
 
-        log_end_msg
-    }
+		log_end_msg
+	}
 fi
 
 mountroot
@@ -487,17 +507,17 @@ make_temp() {
 
 # make /var tmpfs
 if [ "$makevartmp" = "true" ]; then
-    make_temp "var"
+	make_temp "var"
 fi
 
 # make /home tmpfs
 if [ "$makehometmp" = "true" ]; then
-    make_temp "home"
+	make_temp "home"
 fi
 
 # make /root tmpfs
 if [ "$makeroothometmp" = "true" ]; then
-    make_temp "root"
+	make_temp "root"
 fi
 
 # Move virtual filesystems over to the real filesystem
