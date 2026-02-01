@@ -1023,12 +1023,20 @@ def downloadKernelFromGit(item):
     
     return kernel_sources
 
-def copyKernel(kernel_sources):
+def copyKernel(item, kernel_sources):
     current_kernel_sources_file = pathConcat(path_temp_kernel_build, ".current_kernel_sources")
-    if os.path.isdir(path_temp_kernel_build) and os.path.isfile(current_kernel_sources_file):
+    patches_checksum_file = pathConcat(path_temp_kernel_build, ".patches_checksum")
+    patches_checksum = {"array": []}
+    if "patches" in item:
+        for file in item["patches"]:
+            patches_checksum["array"].append(get_file_checksum(findItem(file)))
+    patches_checksum = dictChecksum(patches_checksum)
+
+    if os.path.isdir(path_temp_kernel_build) and os.path.isfile(current_kernel_sources_file) and os.path.isfile(patches_checksum_file):
         with open(current_kernel_sources_file, "r") as f:
-            if f.read().strip() == kernel_sources:
-                return path_temp_kernel_build
+            with open(patches_checksum_file, "r") as f2:
+                if f.read().strip() == kernel_sources.strip() and f2.read().strip() == patches_checksum.strip():
+                    return path_temp_kernel_build, False
 
     deleteDirectory(path_temp_kernel_build)
     os.makedirs(path_temp_kernel_build, exist_ok=True)
@@ -1037,7 +1045,10 @@ def copyKernel(kernel_sources):
     with open(current_kernel_sources_file, "w") as f:
         f.write(kernel_sources.strip())
 
-    return path_temp_kernel_build
+    with open(patches_checksum_file, "w") as f:
+        f.write(patches_checksum.strip())
+
+    return path_temp_kernel_build, True
 
 def patchKernel(kernel_sources, patches, patches_ignore_errors=False):
     for patchPath in patches:
@@ -1140,12 +1151,12 @@ def buildKernel(item):
         buildLog("ERROR: it is impossible to build a kernel without specifying the source code download source")
         sys.exit(1)
 
-    kernel_sources = copyKernel(downloaded_kernel_sources)
+    kernel_sources, realCopied = copyKernel(item, downloaded_kernel_sources)
 
     if "items" in item:
         rawItemsProcess(item["items"], kernel_sources)
 
-    if "patches" in item:
+    if realCopied and "patches" in item:
         patchKernel(kernel_sources, item["patches"], item.get("patches_ignore_errors", False))
 
     ARCH = kernelArchitectures[architecture]
