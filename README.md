@@ -152,15 +152,11 @@ these changes to the kernel config are applied automatically when building the k
 * CONFIG_RD_GZIP=y
 
 ## debug
-* full disk image | with graphic | x86_64 | BIOS: qemu-system-x86_64 \
+* full disk image | x86_64 | BIOS: qemu-system-x86_64 \
   -m 2048 -smp 4 \
-  -device virtio-gpu \
-  -vga virtio \
   -drive file=output/amd64/disk.img,format=raw
-* full disk image | with graphic | x86_64 | UEFI: qemu-system-x86_64 \
+* full disk image | x86_64 | UEFI: qemu-system-x86_64 \
   -m 2048 -smp 4 \
-  -device virtio-gpu \
-  -vga virtio \
   -drive file=output/amd64/disk.img,format=raw \
   -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.fd \
   -drive if=pflash,format=raw,file=output/OVMF_VARS.fd
