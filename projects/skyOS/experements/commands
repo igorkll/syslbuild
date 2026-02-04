@@ -1,4 +1,0 @@
-kexec -l -p /boot/vmlinuz-panic \
-       --initrd=/boot/initramfs-panic.img \
-       --reuse-cmdline \
-       --append="panic=1 init=/kernel_panic"

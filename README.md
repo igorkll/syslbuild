@@ -107,6 +107,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * smart-chroot - executes scripts inside the chroot. if the processor architecture does not match, then this builditem itself will copy and then delete qemu-static from your chroot. exports a new rootfs with executed chroot scripts inside
 * include - it allows you to connect another json file from the project, which in turn should contain only an array of builditems and nothing more at its root. In this case, the builditems array must be at the very root and immediately contain the builditem dictionaries.
 * singleboard - a specially created builditem for creating images for single-board computers like the orange pi
+* gitclone - clones the repository from git. it allows you to specify a branch and checkout
 
 ## build items features
 * debian supports the "_min" variant, which is essentially a "custom" but with a minimal set package required for assembly
@@ -944,6 +945,10 @@ these changes to the kernel config are applied automatically when building the k
                 "script_in_project.sh",
                 "script_in_project_2.sh"
             ]
+        },
+
+        {
+            "type": "gitclone",
         }
     ]
 }
