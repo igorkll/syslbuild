@@ -1461,6 +1461,22 @@ def singleboardBuild(item):
             buildFullDiskImageBuilditem["partitions"].append([item["rootfs"], "linux"])
         buildFullDiskImage(buildFullDiskImageBuilditem)
 
+def gitcloneBuild(item):
+    url = item["git_url"]
+    output_folder = getItemFolder(item)
+    
+    cmd = ["git", "clone"]
+    if "git_branch" in item:
+        cmd.append("--single-branch")
+        cmd.append("-b")
+        cmd.append(item["git_branch"])
+    cmd.append(url)
+    cmd.append(".")
+    buildExecute(cmd, True, None, output_folder)
+
+    if "git_checkout" in item:
+        buildExecute(["git", "checkout", item["git_checkout"]], True, None, output_folder)
+
 buildActions = {
     "debian": buildDebian,
     "download": buildDownload,
@@ -1479,7 +1495,8 @@ buildActions = {
     "debian-update-initramfs": debianUpdateInitramfs,
     "debian-export-initramfs": debianExportInitramfs,
     "smart-chroot": smartChroot,
-    "singleboard": singleboardBuild
+    "singleboard": singleboardBuild,
+    "gitclone": gitcloneBuild
 }
 
 def get_file_checksum(file_path, hash_algo="sha256"):

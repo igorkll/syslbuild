@@ -949,6 +949,12 @@ these changes to the kernel config are applied automatically when building the k
 
         {
             "type": "gitclone",
+            "name": "gitclone_repo",
+            "export": false,
+
+            "git_url": "https://github.com/armbian/linux",
+            "git_branch": "example", //optional
+            "git_checkout": "example" //optional
         }
     ]
 }
