@@ -1247,12 +1247,15 @@ def checkQemuStaticNeed():
     buildLog(f"the host architecture ({hostArchitecture}) is NOT compatible with the target architecture ({architecture}), we use qemu-static")
     return True
 
-def rawCrossChroot(chrootDirectory, chrootCommand):
-    bindList = [
-        "dev",
-        "proc",
-        "sys"
-    ]
+def rawCrossChroot(chrootDirectory, chrootCommand, useSystemd=False):
+    if useSystemd:
+        bindList = []
+    else:
+        bindList = [
+            "dev",
+            "proc",
+            "sys"
+        ]
 
     makedDirectories = []
     
@@ -1284,7 +1287,16 @@ def rawCrossChroot(chrootDirectory, chrootCommand):
         else:
             buildLog(f"qemu-static should have been copied, but the file with that name is already in the chroot directory. i'm skipping it ({qemuStaticName})")
 
-    buildExecute(["chroot", chrootDirectory] + chrootCommand)
+    if useSystemd:
+        machineName = "smartchroot"
+        buildRawExecute(f"""systemd-nspawn --boot --machine={machineName} --directory="{chrootDirectory}" &
+CONTAINER_PID=$!
+sleep 10
+machinectl shell root@{machineName} {chrootCommand[0]}
+machinectl terminate {machineName}
+wait $CONTAINER_PID""")
+    else:
+        buildExecute(["chroot", chrootDirectory] + chrootCommand)
 
     if boolCopyQemuStatic:
         deleteAny(qemuStaticPath)
@@ -1354,7 +1366,7 @@ def smartChroot(item):
     for scriptPath in item["scripts"]:
         chroot_script_path = pathConcat(itemPath, ".syslbuild-smart-chroot.sh")
         copyItemFiles(scriptPath, chroot_script_path, DEFAULT_RIGHTS_0755)
-        rawCrossChroot(itemPath, ["./.syslbuild-smart-chroot.sh"])
+        rawCrossChroot(itemPath, ["/.syslbuild-smart-chroot.sh"], item.get("use_systemd_container", False))
         os.remove(chroot_script_path)
 
 def singleboardBuild(item):

@@ -74,6 +74,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * gzip / zcat
 * git
 * mkimage (u-boot-tools)
+* systemd-container
 
 ## docs
 * mmdebstrap: https://manpages.debian.org/testing/mmdebstrap/mmdebstrap.1.en.html
@@ -940,6 +941,20 @@ these changes to the kernel config are applied automatically when building the k
             "name": "my_rootfs_with_chroot_scripts_changes",
             "export": false,
 
+            "source": "my_rootfs",
+            "scripts": [
+                "script_in_project.sh",
+                "script_in_project_2.sh"
+            ]
+        },
+
+        // runs the script via "systemd-nspawn" in the systemd-container. it is necessary if you will interact with systemd inside the container (for example, you need to change its settings)
+        {
+            "type": "smart-chroot",
+            "name": "my_rootfs_with_chroot_scripts_changes",
+            "export": false,
+
+            "use_systemd_container": true,
             "source": "my_rootfs",
             "scripts": [
                 "script_in_project.sh",
