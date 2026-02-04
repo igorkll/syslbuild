@@ -1756,7 +1756,7 @@ def deleteBuildItemKeysProcess(builditemDict):
             deleteBuildItemKeysProcess(v)
 
 def includeArchitectureCheck(builditem):
-    return "architectures" is not builditem or architecture in builditem["architectures"]
+    return ("architectures" not in builditem) or (architecture in builditem["architectures"])
 
 def includeProcess(builditems, included=None):
     includeDetected=False
