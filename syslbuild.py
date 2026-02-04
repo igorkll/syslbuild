@@ -234,7 +234,7 @@ def findItem(itemName):
     if os.path.exists(path):
         return path
     else:
-        path = pathConcat(path_output, itemName)
+        path = pathConcat(path_output_target, itemName)
         if os.path.exists(path):
             return path
         else:
@@ -250,7 +250,7 @@ def isUserItem(itemName):
     if os.path.exists(path):
         return False
     else:
-        path = pathConcat(path_output, itemName)
+        path = pathConcat(path_output_target, itemName)
         if os.path.exists(path):
             return False
         else:
@@ -1535,7 +1535,7 @@ def getDependenciesFileOrDirectoryChecksum(pathOrChecksum, hash_algo="sha256"):
 def getDependenciesFieldChecksum(fieldValue, filesOnly=False):
     def inlineFindItem(inputPath):
         if not filesOnly:
-            if os.path.exists(pathConcat(path_build, inputPath)) or os.path.exists(pathConcat(path_output, inputPath)):
+            if os.path.exists(pathConcat(path_build, inputPath)) or os.path.exists(pathConcat(path_output_target, inputPath)):
                 checksumPath = getItemChecksumPathFromName(inputPath)
                 if os.path.exists(checksumPath):
                     with open(checksumPath, "r") as f:
