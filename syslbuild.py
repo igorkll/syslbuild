@@ -1738,10 +1738,13 @@ def deleteBuildItemKeysProcess(builditemDict):
         if isinstance(v, dict):
             deleteBuildItemKeysProcess(v)
 
+def includeArchitectureCheck(builditem):
+    return "architectures" is not builditem or architecture in builditem["architectures"]
+
 def includeProcess(builditems, included=None):
     includeDetected=False
     for builditem in builditems:
-        if "type" in builditem and builditem["type"] == "include":
+        if "type" in builditem and builditem["type"] == "include" and includeArchitectureCheck(builditem):
             includeDetected=True
 
     if includeDetected:
@@ -1751,18 +1754,19 @@ def includeProcess(builditems, included=None):
         newBuilditems = []
         for builditem in builditems:
             if "type" in builditem and builditem["type"] == "include":
-                includeFilePath = builditem["file"]
-                if includeFilePath in included:
-                    buildLog(f"double include the \"{includeFilePath}\" file")
-                    sys.exit(1)
-                included.append(includeFilePath)
-
-                with open(includeFilePath, "r", encoding="utf-8") as f:
-                    newLocalBuilditems = json5.load(f)
-                    if not isinstance(newLocalBuilditems, list):
-                        buildLog(f"there is no \"{includeFilePath}\" array in the root of the attached file")
+                if includeArchitectureCheck(builditem):
+                    includeFilePath = builditem["file"]
+                    if includeFilePath in included:
+                        buildLog(f"double include the \"{includeFilePath}\" file")
                         sys.exit(1)
-                    newBuilditems.extend(newLocalBuilditems)
+                    included.append(includeFilePath)
+
+                    with open(includeFilePath, "r", encoding="utf-8") as f:
+                        newLocalBuilditems = json5.load(f)
+                        if not isinstance(newLocalBuilditems, list):
+                            buildLog(f"there is no \"{includeFilePath}\" array in the root of the attached file")
+                            sys.exit(1)
+                        newBuilditems.extend(newLocalBuilditems)
             else:
                 newBuilditems.append(builditem)
 
