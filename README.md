@@ -155,15 +155,17 @@ these changes to the kernel config are applied automatically when building the k
 
 ## debug
 * full disk image | x86_64 | BIOS: qemu-system-x86_64 \
+  -enable-kvm -cpu host \
   -m 2048 -smp 4 \
   -drive file=output/amd64/disk.img,format=raw
 * full disk image | x86_64 | UEFI: qemu-system-x86_64 \
+  -enable-kvm -cpu host \
   -m 2048 -smp 4 \
   -drive file=output/amd64/disk.img,format=raw \
   -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.fd \
   -drive if=pflash,format=raw,file=output/OVMF_VARS.fd
-* iso image | x86 | BIOS: qemu-system-i386 -cdrom output/i386/lifeimage.iso -boot d -m 2048
-* with sound: qemu-system-x86_64 -m 2048 -smp 4   -device virtio-gpu   -vga virtio   -drive file=output/i386/mp3play.img,format=raw   -audiodev pa,id=snd0   -device intel-hda   -device hda-duplex,audiodev=snd0
+* iso image | x86 | BIOS: qemu-system-i386 -enable-kvm -cpu host -cdrom output/i386/lifeimage.iso -boot d -m 2048
+* with sound: qemu-system-x86_64 -enable-kvm -cpu host -m 2048 -smp 4   -device virtio-gpu   -vga virtio   -drive file=output/i386/mp3play.img,format=raw   -audiodev pa,id=snd0   -device intel-hda   -device hda-duplex,audiodev=snd0
 * debug singleboard: picocom -b 115200 /dev/ttyUSB0
 
 ## roadmap
@@ -359,6 +361,13 @@ these changes to the kernel config are applied automatically when building the k
             "name": "rootfs directory",
             "export": false,
 
+            "delete": [
+                // at this stage, you can delete unnecessary files or directories
+                // for example, you can build one system and want to use it in the second initrd, for example, for recovery mode
+                // in this case, you will no longer need the initrd and the kernel in it, so delete them
+                //"/any path"
+            ],
+
             "directories": [
                 // empty directories that will be created before adding items can be listed here
                 // this is not necessary, since all directories are created automatically when adding items, but it can be used if you need an empty directory
@@ -388,13 +397,6 @@ these changes to the kernel config are applied automatically when building the k
 
             "chown": [
                 ["/home/MY EMPTY DIR", 0, 0, false]
-            ],
-
-            "delete": [
-                // at this stage, you can delete unnecessary files or directories
-                // for example, you can build one system and want to use it in the second initrd, for example, for recovery mode
-                // in this case, you will no longer need the initrd and the kernel in it, so delete them
-                //"/any path"
             ]
         },
 

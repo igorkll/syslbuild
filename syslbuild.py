@@ -698,6 +698,10 @@ def rawItemsProcess(items, itemsDirectory):
 def buildDirectory(item):
     buildDirectoryPath = getItemFolder(item)
 
+    if "delete" in item:
+        for deletePath in item["delete"]:
+            deleteAny(pathConcat(buildDirectoryPath, deletePath))
+
     if "directories" in item:
         for directoryData in item["directories"]:
             directoryPath = pathConcat(buildDirectoryPath, directoryData[0])
@@ -714,10 +718,6 @@ def buildDirectory(item):
 
     if "chown" in item:
         makeChown(buildDirectoryPath, item["chown"])
-
-    if "delete" in item:
-        for deletePath in item["delete"]:
-            deleteAny(pathConcat(buildDirectoryPath, deletePath))
 
 def findDirectory(item):
     if not "source" in item:
