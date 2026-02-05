@@ -361,7 +361,7 @@ these changes to the kernel config are applied automatically when building the k
             "name": "rootfs directory",
             "export": false,
 
-            "delete": [
+            "deleteBeforeAdd": [
                 // at this stage, you can delete unnecessary files or directories
                 // for example, you can build one system and want to use it in the second initrd, for example, for recovery mode
                 // in this case, you will no longer need the initrd and the kernel in it, so delete them
@@ -397,6 +397,13 @@ these changes to the kernel config are applied automatically when building the k
 
             "chown": [
                 ["/home/MY EMPTY DIR", 0, 0, false]
+            ],
+
+            "delete": [
+                // at this stage, you can delete unnecessary files or directories
+                // for example, you can build one system and want to use it in the second initrd, for example, for recovery mode
+                // in this case, you will no longer need the initrd and the kernel in it, so delete them
+                //"/any path"
             ]
         },
 
