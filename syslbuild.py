@@ -569,6 +569,8 @@ def copyItemFiles(fromPath, toPath, changeRights=None):
         makedirsChangeRights(toPath)
         if changeRights:
             tempFolder = getTempFolder("changeRights")
+            buildExecute(["chmod", "--reference=" + toPath, tempFolder])
+            buildExecute(["chown", "--reference=" + toPath, tempFolder])
             buildExecute(["cp", "-a", fromPath + "/.", tempFolder])
             changeAccessRights(tempFolder, changeRights)
             buildExecute(["cp", "-a", tempFolder + "/.", toPath])
