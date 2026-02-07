@@ -1519,13 +1519,15 @@ buildActions = {
 
 def get_file_checksum(file_path, hash_algo="sha256"):
     h = hashlib.new(hash_algo)
-    with open(file_path, "rb") as f:
-        while True:
-            chunk = f.read(8192)
-            if not chunk:
-                break
-            h.update(chunk)
+    try:
+        with open(file_path, "rb") as f:
+            for chunk in iter(lambda: f.read(8192), b""):
+                h.update(chunk)
+    except OSError:
+        return "failed_checksum"
+
     return h.hexdigest()
+
 
 def get_dir_checksum(dir_path, hash_algo="sha256"):
     # создаём хэш от всех файлов в директории
