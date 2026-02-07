@@ -17,6 +17,7 @@ WARNING!!! if you read this text from GITHUB page please, download a release and
 * https://github.com/igorkll/linux-embedded-patchs - a set of patches for using the linux kernel on embedded locked-down devices
 * https://github.com/igorkll/custom-debian-initramfs-init - custom /init script for debian initramfs
 * https://github.com/igorkll/WinBox-Maker - a program for creating embedded Windows images
+* https://github.com/igorkll/embedded-plymouth - plymouth with a patch to disable ESC key processing (so that the console cannot be displayed during boot)
 
 ## build process
 you create a folder and in it a json file with a description of the project  
@@ -175,6 +176,7 @@ these changes to the kernel config are applied automatically when building the k
 * the ability to include additional files with builditems
 * account for "binaries" files in caching in the "full-disk-image" builditem
 * support "architectures" and "template" for "include" builditem
+* the ability to specify a filesystem revision
 
 ## roadmap completed
 * execution of arbitrary scripts in the system's chroot, with qemu-static support for execution during assembly for a different architecture
