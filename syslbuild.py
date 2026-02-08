@@ -1373,6 +1373,7 @@ def smartChroot(item):
         chroot_script_path = pathConcat(itemPath, ".syslbuild-smart-chroot.sh")
         copyItemFiles(scriptPath, chroot_script_path, DEFAULT_RIGHTS_0755)
         rawCrossChroot(itemPath, ["/.syslbuild-smart-chroot.sh"], item.get("use_systemd_container", False))
+        buildExecute("reset")
         os.remove(chroot_script_path)
 
 def singleboardBuild(item):
