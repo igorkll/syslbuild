@@ -1253,7 +1253,7 @@ def checkQemuStaticNeed():
     buildLog(f"the host architecture ({hostArchitecture}) is NOT compatible with the target architecture ({architecture}), we use qemu-static")
     return True
 
-def rawCrossChroot(chrootDirectory, chrootCommand, useSystemd=False):
+def rawCrossChroot(chrootDirectory, chrootCommand, useSystemd=False, manualValidation=False):
     if useSystemd:
         bindList = []
     else:
@@ -1312,6 +1312,16 @@ wait $CONTAINER_PID""")
 
     for makedDirectoryBindPath in makedDirectories:
         buildRawExecute(f"rm -rf \"{makedDirectoryBindPath}\"")
+
+
+    if manualValidation:
+        checkObjPath = pathConcat(chrootDirectory, ".chrootend")
+        if os.path.exists(checkObjPath):
+            deleteAny(checkObjPath)
+        else:
+            return False
+
+    return True
 
 def rawUpdateInitramfs(path, kernel_version):
     rawCrossChroot(path, ["update-initramfs", "-c", "-k", kernel_version])
@@ -1372,8 +1382,12 @@ def smartChroot(item):
     for scriptPath in item["scripts"]:
         chroot_script_path = pathConcat(itemPath, ".syslbuild-smart-chroot.sh")
         copyItemFiles(scriptPath, chroot_script_path, DEFAULT_RIGHTS_0755)
-        rawCrossChroot(itemPath, ["/.syslbuild-smart-chroot.sh"], item.get("use_systemd_container", False))
-        buildExecute("reset")
+        if rawCrossChroot(itemPath, ["/.syslbuild-smart-chroot.sh"], item.get("use_systemd_container", False), item.get("manual_validation", False)):
+            buildExecute("reset")
+        else:
+            buildLog(f"ERROR: with \"manual_validation\" enabled, the chroot script \"{os.path.basename(scriptPath)}\" did not create a file or directory on the path \"/.chrootend\"")
+            sys.exit(1)
+
         os.remove(chroot_script_path)
 
 def singleboardBuild(item):

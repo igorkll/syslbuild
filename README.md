@@ -967,6 +967,13 @@ these changes to the kernel config are applied automatically when building the k
             "export": false,
 
             "use_systemd_container": true,
+
+            // default: false
+            // I highly recommend enabling this for "use_systemd_container" because if your script fails, the build will continue as if there were no errors.
+            // if you enable this option, then in each of your chroot scripts you must create a file or directory along the path "/.chrootend", syslbuild will delete it and consider that everything is fine.
+            // if there is no file or directory on this path, the build will fail.
+            "manual_validation": false,
+
             "source": "my_rootfs",
             "scripts": [
                 "script_in_project.sh",
