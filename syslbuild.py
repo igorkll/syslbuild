@@ -954,7 +954,10 @@ def buildFromDirectory(item):
     path = getItemPath(item)
     source = findDirectory(item)
     sourcePath = pathConcat(source, item["path"])
-    copyItemFiles(sourcePath, path, DEFAULT_RIGHTS_0755)
+    if item.get("save_rights", False):
+        copyItemFiles(sourcePath, path)
+    else:
+        copyItemFiles(sourcePath, path, DEFAULT_RIGHTS_0755)
 
 gccNames = {
     "amd64": "x86_64-linux-gnu",

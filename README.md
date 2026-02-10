@@ -729,6 +729,10 @@ these changes to the kernel config are applied automatically when building the k
             "name": "initrd.img",
             "export": true,
 
+            // default: false
+            // if true, the original access rights will be saved
+            "save_rights": false,
+
             "source": "rootfs directory",
             "path": "/initrd.img"
         }
