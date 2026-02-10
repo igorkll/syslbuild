@@ -448,7 +448,7 @@ def buildDebian(item):
     path_hosts = pathConcat(path_etc, "hosts")
     path_resolv_conf = pathConcat(path_etc, "resolv.conf")
 
-    if not os.path.exists(path_hosts):
+    if not os.path.exists(path_hosts) and not os.path.lexists(path_hosts):
         with open(path_hosts, "w") as f:
             f.write("127.0.0.1 localhost\n")
             f.write("127.0.1.1 hostname\n")
@@ -462,7 +462,7 @@ def buildDebian(item):
 
         changeAccessRights(path_hosts, [0, 0, "0644"])
 
-    if not os.path.exists(path_resolv_conf):
+    if not os.path.exists(path_resolv_conf) and not os.path.lexists(path_resolv_conf):
         with open(path_resolv_conf, "w") as f:
             f.write("nameserver 1.1.1.1\n")
             f.write("nameserver 1.0.0.1\n")
