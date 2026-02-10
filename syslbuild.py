@@ -423,12 +423,13 @@ def buildDebian(item):
     cmd = ["mmdebstrap", "--arch", architecture, "--variant", variant]
     if include_arg: cmd.append(include_arg)
     # if exclude_arg: cmd.append(exclude_arg)
+    itemFolder = getItemFolder(item)
     cmd += [
         "--aptopt=Acquire::Check-Valid-Until false",
         "--aptopt=Acquire::AllowInsecureRepositories true",
         "--aptopt=APT::Get::AllowUnauthenticated true",
         item["suite"],
-        getItemFolder(item),
+        itemFolder,
         item["url"]
     ]
     cmd.append(f"--customize-hook=echo hostname > \"$1/etc/hostname\"")
@@ -437,6 +438,37 @@ def buildDebian(item):
         makeAllFilesExecutable(item["hook-directory"])
         cmd.append(f"--hook-directory={item["hook-directory"]}")
     buildExecute(cmd)
+
+    hostsFile = """127.0.0.1 localhost
+    127.0.1.1 hostname"""
+
+    path_etc = pathConcat(itemFolder, "etc")
+    makedirsChangeRights(path_etc, [0, 0, "0755"])
+
+    path_hosts = pathConcat(path_etc, "hosts")
+    path_resolv_conf = pathConcat(path_etc, "resolv.conf")
+
+    if not os.path.exists(path_hosts):
+        with open(path_hosts, "w") as f:
+            f.write("127.0.0.1 localhost\n")
+            f.write("127.0.1.1 hostname\n")
+            f.write("\n")
+            f.write("# The following lines are desirable for IPv6 capable hosts\n")
+            f.write("::1     ip6-localhost ip6-loopback\n")
+            f.write("fe00::0 ip6-localnet\n")
+            f.write("ff00::0 ip6-mcastprefix\n")
+            f.write("ff02::1 ip6-allnodes\n")
+            f.write("ff02::2 ip6-allrouters\n")
+
+        changeAccessRights(path_hosts, [0, 0, "0755"])
+
+    if not os.path.exists(path_resolv_conf):
+        with open(path_resolv_conf, "w") as f:
+            f.write("nameserver 127.0.0.53\n")
+            f.write("options edns0 trust-ad\n")
+            f.write("search .\n")
+        
+        changeAccessRights(path_resolv_conf, [0, 0, "0755"])
 
 def makePacmanConfig(pacman_conf):
     lines = []
