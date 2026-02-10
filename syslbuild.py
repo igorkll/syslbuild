@@ -460,15 +460,16 @@ def buildDebian(item):
             f.write("ff02::1 ip6-allnodes\n")
             f.write("ff02::2 ip6-allrouters\n")
 
-        changeAccessRights(path_hosts, [0, 0, "0755"])
+        changeAccessRights(path_hosts, [0, 0, "0644"])
 
     if not os.path.exists(path_resolv_conf):
         with open(path_resolv_conf, "w") as f:
-            f.write("nameserver 127.0.0.53\n")
-            f.write("options edns0 trust-ad\n")
-            f.write("search .\n")
+            f.write("nameserver 1.1.1.1\n")
+            f.write("nameserver 1.0.0.1\n")
+            f.write("nameserver 2606:4700:4700::1111\n")
+            f.write("nameserver 2606:4700:4700::1001\n")
         
-        changeAccessRights(path_resolv_conf, [0, 0, "0755"])
+        changeAccessRights(path_resolv_conf, [0, 0, "0644"])
 
 def makePacmanConfig(pacman_conf):
     lines = []
