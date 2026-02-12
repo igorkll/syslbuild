@@ -504,7 +504,8 @@ def run_syslbuild():
         f"cd {path_temp_syslbuild!r} && {sys.executable!r} {os.path.abspath('syslbuild.py')!r} "
         f"--arch ALL {path_temp_syslbuild_file!r} "
         f"--temp {os.path.join(currentProjectDirectory, '.temp')!r} "
-        f"--output {os.path.join(currentProjectDirectory, 'output')!r}"
+        f"--output {os.path.join(currentProjectDirectory, 'output')!r} "
+        f"--lastlog {os.path.join(currentProjectDirectory, 'last.log')!r}"
     ]
     subprocess.run(cmd)
 
@@ -577,6 +578,7 @@ def run_editor(path):
         with open(gitignore_path, "w", encoding="utf-8") as f:
             f.write("output\n")
             f.write(".temp\n")
+            f.write("last.log\n")
 
     show_frame(frame_editor)
 

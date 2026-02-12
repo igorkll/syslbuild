@@ -108,8 +108,13 @@ def buildLog(logstr, quiet=False):
         logstr = f"-------- SYSLBUILD: {logstr}"
     
     print(logstr)
+
     log_file.write(logstr + "\n")
     log_file.flush()
+
+    if log_file2:
+        log_file2.write(logstr + "\n")
+        log_file2.flush()
 
 def getSize(path):
     if os.path.isfile(path):
@@ -1942,6 +1947,7 @@ if __name__ == "__main__":
     parser.add_argument("--arch", choices=["ALL", "amd64", "i386", "arm64", "armhf", "armel"], type=str, required=True, help="the processor architecture for which the build will be made")
     parser.add_argument("--output", type=str, help="path to output directory")
     parser.add_argument("--temp", type=str, help="path to .temp directory")
+    parser.add_argument("--lastlog", type=str, help="additional log file")
     parser.add_argument("json_path", type=str, help="the path to the json file of the project")
     parser.add_argument("-n", action="store_true", help="does the build anew, does not use the cache")
     parser.add_argument("-d", action="store_true", help="do not use the download cache of the kernel sources")
@@ -1962,6 +1968,11 @@ if __name__ == "__main__":
         deleteAny(path_temp)
         deleteAny(path_output)
     log_file = getLogFile()
+    
+    if "lastlog" in args and args.lastlog:
+        log_file2 = open(args.lastlog, "w")
+    else:
+        log_file2 = None
 
     buildLog("Syslbuild info:")
     buildLog(f"Syslbuild version: {formatVersion(VERSION)}")
