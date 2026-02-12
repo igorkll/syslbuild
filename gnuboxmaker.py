@@ -149,7 +149,8 @@ def setup_chroot_script():
             )
 
     with open(os.path.join(chroot_scripts_directory, "aaa_setup.sh"), "w") as f:
-        f.write("#!/bin/bash\n")
+        f.write("#!/bin/bash\ntouch /.chrootend")
+    scripts.append(f"chroot/aaa_setup.sh")
 
     return scripts
 
@@ -204,12 +205,14 @@ def setup_download(builditems):
     addExtract("custom-debian-initramfs-init", "custom_init.sh")
     addExtract("custom-debian-initramfs-init", "custom_init_hook.sh")
 
-def setup_write_configs():
+def setup_write_files():
     etc_config = os.path.join(path_temp_syslbuild, "files", "etc_config")
     systemd_config = os.path.join(path_temp_syslbuild, "files", "systemd_config")
+    user_files = os.path.join(path_temp_syslbuild, "files", "user_files")
 
     os.makedirs(etc_config, exist_ok=True)
     os.makedirs(systemd_config, exist_ok=True)
+    os.makedirs(user_files, exist_ok=True)
 
     with open(os.path.join(systemd_config, "logind.conf"), "w") as f:
         f.write(f"""[Login]
@@ -238,6 +241,8 @@ HandleLidSwitch={currentProject.HandleLidSwitch}
 HandleLidSwitchExternalPower={currentProject.HandleLidSwitch}
 HandleLidSwitchDocked={currentProject.HandleLidSwitch}
 LidSwitchIgnoreInhibited=no""")
+
+    buildExecute(["cp", "-a", os.path.join(currentProjectDirectory, "files") + "/.", user_files])
 
 def copy_bins(name):
     output_path = os.path.join(path_temp_syslbuild, name)
@@ -310,7 +315,7 @@ def setup_export_initramfs(builditems):
 
 def setup_build_base(builditems):
     setup_build_distro(builditems)
-    setup_write_configs()
+    setup_write_files()
 
     builditems.append({
         "type": "directory",
@@ -324,7 +329,9 @@ def setup_build_base(builditems):
             ["files/systemd_config", "/etc/systemd", [0, 0, "0644"]],
 
             ["custom_init.sh", "/usr/share/initramfs-tools/init", [0, 0, "0755"]],
-            ["custom_init_hook.sh", "/etc/initramfs-tools/hooks/custom_init_hook.sh", [0, 0, "0755"]]
+            ["custom_init_hook.sh", "/etc/initramfs-tools/hooks/custom_init_hook.sh", [0, 0, "0755"]],
+
+            ["files/user_files", "/", [0, 0, "0755"]],
         ]
     })
 
@@ -620,6 +627,7 @@ def run_editor(path):
     os.makedirs(path_temp_syslbuild, exist_ok=True)
 
     os.makedirs(os.path.join(path_resources, "chroot"), exist_ok=True)
+    os.makedirs(os.path.join(path_resources, "files"), exist_ok=True)
 
     gitignore_path = os.path.join(currentProjectDirectory, ".gitignore")
     if not os.path.isfile(gitignore_path):

@@ -885,7 +885,7 @@ def installBootloader(item, path, partitionsOffsets, sectorsize):
             buildExecute(["cp", "-a", os.path.join(path_mount2, "efi", "boot") + "/.", grubdir])
 
             if readBool(bootloaderInfo, "efiAndBios"):
-                buildExecute(["grub-install", f"--modules={modulesString}", f"--target={getGrubTarget(item, False)}", path])
+                buildExecute(["grub-install", f"--modules={modulesString}", f"--target={getGrubTarget(item, False)}", f"--boot-directory={bootDirectory}", path])
         else:
             buildExecute(["grub-install", f"--modules={modulesString}", f"--target={getGrubTarget(item, False)}", f"--boot-directory={bootDirectory}", path])
 
