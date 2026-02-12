@@ -326,13 +326,8 @@ def setup_autologin():
 
     if currentProject.session_mode == "tty":
         writeText(os.path.join(systemd_config, "system", "getty@tty1.service.d", "autologin.conf"), f"""[Service]
-User={currentProject.session_user}
-StandardInput=tty
-StandardOutput=tty
-StandardError=tty
-TTYPath=/dev/tty1
-ExecStart=/runshell.sh
-Restart=always""")
+ExecStart=
+ExecStart=-/sbin/mingetty --nonewline --noissue --nonewline --autologin {currentProject.session_user} --noclear %I $TERM""")
     else:
         session = "weston.desktop"
         if currentProject.session_mode == "x11":
