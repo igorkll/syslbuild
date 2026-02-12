@@ -25,7 +25,10 @@ def show_frame(frame):
 
 @dataclass
 class Project:
-    name: str
+    distro: str = "debian"
+    debian_variant: str = "minbase"
+    debian_suite: str = "bookworm"
+    debian_snapshot: str = "http://snapshot.debian.org/archive/debian/20250809T133719Z"
 
 def raw_load_project(path):
     with open(path, "r", encoding="utf-8") as f:
@@ -45,6 +48,7 @@ def run_editor(path):
 
     if os.path.isfile(path):
         currentProject = raw_load_project(path)
+        print(currentProject)
     else:
         currentProject = Project()
         raw_save_project(path, currentProject)
