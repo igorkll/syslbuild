@@ -376,7 +376,7 @@ def setup_build_targets(builditems):
             "name": f"{currentProjectName} BIOS MBR.img",
             "export": True,
 
-            "size": "auto + (1 * 1024 * 1024)",
+            "size": "auto + (10 * 1024 * 1024)",
 
             "partitionTable": "dos",
             "partitions": [
@@ -416,7 +416,7 @@ def setup_build_targets(builditems):
             "name": f"{currentProjectName} BIOS GPT.img",
             "export": True,
 
-            "size": "auto + (1 * 1024 * 1024)",
+            "size": "auto + (10 * 1024 * 1024)",
 
             "partitionTable": "gpt",
             "partitions": [
@@ -460,7 +460,7 @@ def setup_build_targets(builditems):
             "name": f"{currentProjectName} UEFI GPT.img",
             "export": True,
 
-            "size": "auto + (1 * 1024 * 1024)",
+            "size": "auto + (10 * 1024 * 1024)",
 
             "partitionTable": "gpt",
             "partitions": [
@@ -491,7 +491,7 @@ def setup_build_targets(builditems):
             "name": f"{currentProjectName} BIOS UEFI GPT.img",
             "export": True,
 
-            "size": "auto + (1 * 1024 * 1024)",
+            "size": "auto + (10 * 1024 * 1024)",
 
             "partitionTable": "gpt",
             "partitions": [
