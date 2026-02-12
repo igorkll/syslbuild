@@ -3,6 +3,8 @@ import tkinter as tk
 import os
 from tkinter import filedialog, messagebox
 from PIL import Image, ImageTk
+from dataclasses import dataclass, asdict
+import json
 
 window = tk.Tk()
 window.title("Gnubox maker")
@@ -19,15 +21,45 @@ for frame in (frame_openproject, frame_editor):
 def show_frame(frame):
     frame.tkraise()
 
+# ---------------------------------------- builder
+
+@dataclass
+class Project:
+    name: str
+
+def raw_load_project(path):
+    with open(path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+        return Project(**data)
+
+def raw_save_project(path, proj):
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(asdict(proj), f, indent=2, ensure_ascii=False)
+
 # ---------------------------------------- editor frame
 
+currentProject = None
+
 def run_editor(path):
+    global currentProject
+
+    if os.path.isfile(path):
+        currentProject = raw_load_project(path)
+    else:
+        currentProject = Project()
+        raw_save_project(path, currentProject)
+
     show_frame(frame_editor)
 
 # ---------------------------------------- open project frame
 
 def open_project():
-    print("Open Project clicked")
+    file_path = filedialog.askopenfilename(
+        title="Open project (*.gnb)",
+        filetypes=[("GNB files", "*.gnb")]
+    )
+    if file_path:
+        run_editor(file_path)
 
 def new_project():
     folder_path = filedialog.askdirectory(title="Select empty directory for new project")
