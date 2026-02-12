@@ -1945,25 +1945,25 @@ def requireRoot():
 def changeOutputRights(path):
     """
     Для указанной папки:
-    - Ставит 755 на саму папку.
-    - Рекурсивно ставит 755 на все подпапки.
-    - Для файлов внутри этих подпапок (но не дальше) ставит 755.
+    - Ставит 777 на саму папку.
+    - Рекурсивно ставит 777 на все подпапки.
+    - Для файлов внутри этих подпапок (но не дальше) ставит 777.
     """
     path = os.path.abspath(path)
 
-    # Ставим 755 на саму папку
-    os.chmod(path, 0o755)
+    # Ставим 777 на саму папку
+    os.chmod(path, 0o777)
 
     # Проходим по подпапкам
     for entry in os.listdir(path):
         sub_path = os.path.join(path, entry)
         if os.path.isdir(sub_path):
-            os.chmod(sub_path, 0o755)  # права на подпапку
+            os.chmod(sub_path, 0o777)  # права на подпапку
             # файлы внутри этой подпапки (не рекурсивно)
             for f in os.listdir(sub_path):
                 file_path = os.path.join(sub_path, f)
                 if os.path.isfile(file_path):
-                    os.chmod(file_path, 0o755)
+                    os.chmod(file_path, 0o777)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="an assembly system for creating Linux distributions. it is focused on embedded distributions")

@@ -65,15 +65,55 @@ def raw_save_project(path, proj):
 
 # ---------------------------------------- functions
 
+def buildLog(log):
+    print(log)
+
 def stop_error(err):
     err = "ERROR: " + err
-    print(err)
+    buildLog(err)
 
 def deleteAny(path):
     if os.path.isdir(path):
         shutil.rmtree(path)
     elif os.path.exists(path):
         os.remove(path)
+
+def buildExecute(cmd, checkValid=True, input_data=None, cwd=None):
+    if cwd != None:
+        buildLog(f"Execute command from directory ({cwd}): {cmd}")
+    else:
+        buildLog(f"Execute command: {cmd}")
+    
+    process = subprocess.Popen(
+        cmd,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        bufsize=1,
+        cwd=cwd
+    )
+
+    if process.stdin:
+        if input_data:
+            buildLog(f"With input: {input_data}")
+            process.stdin.write(input_data)
+        process.stdin.close()
+
+    output_lines = []
+    for line in process.stdout:
+        buildLog(line.rstrip(), True)
+        output_lines.append(line)
+
+    process.stdout.close()
+    returncode = process.wait()
+
+    if returncode != 0 and checkValid:
+        stop_error("failed to build")
+
+    return "\n".join(output_lines)
 
 # ---------------------------------------- builder
 
@@ -202,10 +242,11 @@ LidSwitchIgnoreInhibited=no""")
 def copy_bins(name):
     output_path = os.path.join(path_temp_syslbuild, name)
     deleteAny(output_path)
-    shutil.copytree(os.path.join("gnuboxmaker", name), output_path)
+    buildExecute(["cp", "-a", os.path.join("gnuboxmaker", name) + "/.", output_path])
 
 def setup_write_bins(builditems):
     copy_bins("kernel_image")
+    copy_bins("embedded-plymouth")
 
     builditems.append({
         "architectures": ["amd64"],
@@ -218,7 +259,9 @@ def setup_write_bins(builditems):
             ["rootfs directory x2", "."],
 
             ["kernel_image/amd64/kernel_modules", "/usr"],
-            ["kernel_image/amd64/kernel.img", "/kernel.img", [0, 0, "0755"]]
+            ["kernel_image/amd64/kernel.img", "/kernel.img", [0, 0, "0755"]],
+
+            ["embedded-plymouth/x86_64", "/", [0, 0, "0755"]]
         ]
     })
 
@@ -233,7 +276,9 @@ def setup_write_bins(builditems):
             ["rootfs directory x2", "."],
 
             ["kernel_image/i386/kernel_modules", "/usr"],
-            ["kernel_image/i386/kernel.img", "/kernel.img", [0, 0, "0755"]]
+            ["kernel_image/i386/kernel.img", "/kernel.img", [0, 0, "0755"]],
+
+            ["embedded-plymouth/x86", "/", [0, 0, "0755"]]
         ]
     })
 
