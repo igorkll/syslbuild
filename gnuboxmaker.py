@@ -137,11 +137,18 @@ def run_editor(path):
         currentProject = Project()
         raw_save_project(path, currentProject)
 
-    path_temp = os.path.join(os.path.dirname(path), ".temp")
+    basedir = os.path.dirname(path)
+    path_temp = os.path.join(basedir, ".temp")
     path_temp_syslbuild = os.path.join(path_temp, "syslbuild")
     path_temp_syslbuild_file = os.path.join(path_temp_syslbuild, "project.json")
     os.makedirs(path_temp, exist_ok=True)
     os.makedirs(path_temp_syslbuild, exist_ok=True)
+
+    gitignore_path = os.path.join(basedir, ".gitignore")
+    if not os.path.isfile(gitignore_path):
+        with open(gitignore_path, "w", encoding="utf-8") as f:
+            f.write("output\n")
+            f.write(".temp\n")
 
     show_frame(frame_editor)
 
