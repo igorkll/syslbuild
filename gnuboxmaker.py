@@ -66,6 +66,8 @@ def raw_save_project(path, proj):
 
 currentProject = None
 currentProjectName = None
+currentProjectDirectory = None
+
 path_temp = None
 path_temp_syslbuild = None
 path_temp_syslbuild_file = None
@@ -78,17 +80,17 @@ def setup_build_architectures(architectures):
         architectures.append("i386")
 
 def setup_chroot_script():
+    chroot_project_directory = os.join.path(currentProjectDirectory, "chroot")
     chroot_scripts_directory = os.join.path(path_temp_syslbuild, "chroot")
     scripts = []
 
     os.makedirs(chroot_scripts_directory, exist_ok=True)
 
-    def addScript():
-        pass
-
-    for f in Path("каталог").iterdir():
+    for f in Path(chroot_project_directory).iterdir():
         if f.is_file():
-            print(f)
+            scripts.append(f"chroot/{name}")
+
+    return scripts
 
 def setup_build_base(builditems):
     if currentProject.distro == "debian":
@@ -351,6 +353,7 @@ def updateProgress(value=0, text=None):
 def run_editor(path):
     global currentProject
     global currentProjectName
+    global currentProjectDirectory
     global path_temp
     global path_temp_syslbuild
     global path_temp_syslbuild_file
@@ -361,15 +364,15 @@ def run_editor(path):
         currentProject = Project()
         raw_save_project(path, currentProject)
 
-    basedir = os.path.dirname(path)
-    currentProjectName = "TEST"
-    path_temp = os.path.join(basedir, ".temp")
+    currentProjectDirectory = os.path.dirname(path)
+    currentProjectName = os.path.basename(currentProjectDirectory)
+    path_temp = os.path.join(currentProjectDirectory, ".temp")
     path_temp_syslbuild = os.path.join(path_temp, "syslbuild")
     path_temp_syslbuild_file = os.path.join(path_temp_syslbuild, "project.json")
     os.makedirs(path_temp, exist_ok=True)
     os.makedirs(path_temp_syslbuild, exist_ok=True)
 
-    gitignore_path = os.path.join(basedir, ".gitignore")
+    gitignore_path = os.path.join(currentProjectDirectory, ".gitignore")
     if not os.path.isfile(gitignore_path):
         with open(gitignore_path, "w", encoding="utf-8") as f:
             f.write("output\n")
