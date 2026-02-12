@@ -12,21 +12,6 @@ import subprocess
 import sys
 import time
 
-window = tk.Tk()
-window.title("Gnubox maker")
-window.geometry("800x600")
-
-container = tk.Frame(window)
-container.pack(fill="both", expand=True)
-frame_openproject = tk.Frame(container)
-frame_editor = tk.Frame(container)
-
-for frame in (frame_openproject, frame_editor):
-    frame.place(relwidth=1, relheight=1)
-
-def show_frame(frame):
-    frame.tkraise()
-
 # ---------------------------------------- data
 
 HandlyeKeyVarians = ["ignore", "poweroff", "reboot", "suspend", "hibernate", "lock"]
@@ -45,6 +30,9 @@ class Project:
     HandleSuspendKey: str = "ignore"
     HandleHibernateKey: str = "ignore"
     HandleLidSwitch: str = "ignore"
+
+    boot_quiet: bool = True
+    boot_splash: bool = True
 
     root_expand: bool = True
     allow_updatescript: bool = True
@@ -533,13 +521,19 @@ def setup_build_targets(builditems):
         })
 
 def generate_syslbuild_project():
-    cmdline = "rw rootwait=60 systemd.show_status=false rd.udev.log_level=0 minlogotime=5 clear noCursorBlink vt.global_cursor_default=0" # quiet splash earlysplash
+    cmdline = "rw rootwait=60"
 
     if currentProject.root_expand:
         cmdline += " root_processing root_expand"
 
     if currentProject.allow_updatescript:
         cmdline += " allow_updatescript"
+
+    if currentProject.boot_quiet:
+        cmdline += " systemd.show_status=false rd.udev.log_level=0 clear noCursorBlink vt.global_cursor_default=0 quiet"
+
+    if currentProject.boot_splash:
+        cmdline += " minlogotime=5 splash earlysplash"
 
     architectures = []
     builditems = []
@@ -579,6 +573,9 @@ def run_syslbuild():
     ]
     subprocess.run(cmd)
 
+def updateProgress(value=0, text=None): # updateProgress stub
+    pass
+
 def build_project():
     updateProgress(10, "Generating the syslbuild project...")
     generate_syslbuild_project()
@@ -590,32 +587,7 @@ def build_project():
     time.sleep(2)
     updateProgress()
 
-# ---------------------------------------- editor frame
-
-bottom_frame = tk.Frame(frame_editor)
-bottom_frame.pack(side="bottom", fill="x", padx=10, pady=10)
-
-progress_label = tk.Label(bottom_frame, text="Nothing")
-progress_label.grid(row=0, column=0, columnspan=2, sticky="w", pady=(0,5))
-
-progress = ttk.Progressbar(bottom_frame, orient="horizontal", mode="determinate")
-progress.grid(row=1, column=0, sticky="ew")
-progress["maximum"] = 100
-
-build_btn = tk.Button(bottom_frame, text="Build", command=build_project)
-build_btn.grid(row=1, column=1, padx=10)
-
-bottom_frame.grid_columnconfigure(0, weight=1)
-
-def updateProgress(value=0, text=None):
-    if text is None:
-        text = "Nothing"
-    
-    progress["value"] = value
-    progress_label["text"] = text
-    window.update_idletasks()
-
-def run_editor(path):
+def load_project(path):
     global currentProject
     global currentProjectName
     global currentProjectDirectory
@@ -651,6 +623,59 @@ def run_editor(path):
             f.write(".temp\n")
             f.write("last.log\n")
 
+# ---------------------------------------- console build
+
+guiLoaded = False
+if len(sys.argv) > 1:
+    load_project(sys.argv[1])
+    build_project()
+    sys.exit(0)
+
+# ---------------------------------------- gui base
+
+guiLoaded = True
+window = tk.Tk()
+window.title("Gnubox maker")
+window.geometry("800x600")
+
+container = tk.Frame(window)
+container.pack(fill="both", expand=True)
+frame_openproject = tk.Frame(container)
+frame_editor = tk.Frame(container)
+
+for frame in (frame_openproject, frame_editor):
+    frame.place(relwidth=1, relheight=1)
+
+def show_frame(frame):
+    frame.tkraise()
+
+# ---------------------------------------- editor frame
+
+bottom_frame = tk.Frame(frame_editor)
+bottom_frame.pack(side="bottom", fill="x", padx=10, pady=10)
+
+progress_label = tk.Label(bottom_frame, text="Nothing")
+progress_label.grid(row=0, column=0, columnspan=2, sticky="w", pady=(0,5))
+
+progress = ttk.Progressbar(bottom_frame, orient="horizontal", mode="determinate")
+progress.grid(row=1, column=0, sticky="ew")
+progress["maximum"] = 100
+
+build_btn = tk.Button(bottom_frame, text="Build", command=build_project)
+build_btn.grid(row=1, column=1, padx=10)
+
+bottom_frame.grid_columnconfigure(0, weight=1)
+
+def updateProgress(value=0, text=None):
+    if text is None:
+        text = "Nothing"
+    
+    progress["value"] = value
+    progress_label["text"] = text
+    window.update_idletasks()
+
+def run_editor(path):
+    load_project(path)
     show_frame(frame_editor)
 
 # ---------------------------------------- open project frame

@@ -23,3 +23,11 @@ sudo apt install -y grub-efi-ia32-bin grub-common
 sudo pip install json5 --break-system-packages
 sudo pip install asteval --break-system-packages
 
+DEST="/opt/syslbuild"
+sudo mkdir -p "$DEST"
+sudo cp -r ./* "$DEST"
+sudo chmod -R 755 "$DEST"
+
+sudo cp -f "gnuboxmaker.desktop" "/usr/share/applications/gnuboxmaker.desktop"
+
+sudo update-desktop-database
