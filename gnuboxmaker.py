@@ -42,9 +42,9 @@ class Project:
     screen_idle_time: int = 0
     HandlePowerKey: str = "poweroff"
     HandleRebootKey: str = "reboot"
-    HandleSuspendKey: str = "suspend"
-    HandleHibernateKey: str = "hibernate"
-    HandleLidSwitch: str = "lock"
+    HandleSuspendKey: str = "ignore"
+    HandleHibernateKey: str = "ignore"
+    HandleLidSwitch: str = "ignore"
 
     export_x86_64: bool = True
     export_x86: bool = False
