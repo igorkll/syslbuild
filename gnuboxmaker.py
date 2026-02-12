@@ -69,6 +69,12 @@ def stop_error(err):
     err = "ERROR: " + err
     print(err)
 
+def deleteAny(path):
+    if os.path.isdir(path):
+        shutil.rmtree(path)
+    elif os.path.exists(path):
+        os.remove(path)
+
 # ---------------------------------------- builder
 
 currentProject = None
@@ -149,7 +155,7 @@ def setup_download(builditems):
         builditems.append({
             "type": "from-directory",
             "name": name,
-            "export": false,
+            "export": False,
 
             "source": fromdir,
             "path": f"/{name}"
@@ -159,8 +165,8 @@ def setup_download(builditems):
     addExtract("custom-debian-initramfs-init", "custom_init_hook.sh")
 
 def setup_write_configs():
-    etc_config = os.path.join(currentProjectDirectory, "files", "etc_config")
-    systemd_config = os.path.join(currentProjectDirectory, "files", "systemd_config")
+    etc_config = os.path.join(path_temp_syslbuild, "files", "etc_config")
+    systemd_config = os.path.join(path_temp_syslbuild, "files", "systemd_config")
 
     os.makedirs(etc_config, exist_ok=True)
     os.makedirs(systemd_config, exist_ok=True)
@@ -193,7 +199,14 @@ HandleLidSwitchExternalPower={currentProject.HandleLidSwitch}
 HandleLidSwitchDocked={currentProject.HandleLidSwitch}
 LidSwitchIgnoreInhibited=no""")
 
+def copy_bins(name):
+    output_path = os.path.join(path_temp_syslbuild, name)
+    deleteAny(output_path)
+    shutil.copytree(os.path.join("gnuboxmaker", name), output_path)
+
 def setup_write_bins(builditems):
+    copy_bins("kernel_image")
+
     builditems.append({
         "architectures": ["amd64"],
 
@@ -446,6 +459,9 @@ def generate_syslbuild_project():
 
     architectures = []
     builditems = []
+
+    deleteAny(os.path.join(path_temp_syslbuild, "files"))
+    deleteAny(os.path.join(path_temp_syslbuild, "chroot"))
     
     setup_build_architectures(architectures)
     setup_download(builditems)
@@ -470,13 +486,13 @@ boot""")
 
 def run_syslbuild():
     cmd = [
-        "pkexec", sys.executable, os.path.abspath("syslbuild.py"),
-        "--arch", "ALL", path_temp_syslbuild_file,
-        "--temp", os.path.join(currentProjectDirectory, ".temp"),
-        "--output", os.path.join(currentProjectDirectory, "output")
+        "pkexec", "bash", "-c",
+        f"cd {path_temp_syslbuild!r} && {sys.executable!r} {os.path.abspath('syslbuild.py')!r} "
+        f"--arch ALL {path_temp_syslbuild_file!r} "
+        f"--temp {os.path.join(currentProjectDirectory, '.temp')!r} "
+        f"--output {os.path.join(currentProjectDirectory, 'output')!r}"
     ]
-
-    subprocess.run(cmd, cwd=path_temp_syslbuild)
+    subprocess.run(cmd)
 
 def build_project():
     updateProgress(10, "Generating the syslbuild project...")
