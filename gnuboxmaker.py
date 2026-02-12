@@ -213,7 +213,6 @@ systemctl mask getty@tty6.service
 
 chmod -x /sbin/agetty"""
 
-
     aaa_setup += "\n"
     aaa_setup += "\ntouch /.chrootend"
 
@@ -329,6 +328,7 @@ HandleLidSwitchDocked={currentProject.HandleLidSwitch}
 LidSwitchIgnoreInhibited=no""")
 
     buildExecute(["cp", "-a", os.path.join(path_resources, "files") + "/.", user_files])
+    shutil.copy(os.path.join(path_resources, "runshell.sh"), os.path.join(path_temp_syslbuild, "files", "runshell.sh"))
 
 def copy_bins(name):
     output_path = os.path.join(path_temp_syslbuild, name)
@@ -413,6 +413,7 @@ def setup_build_base(builditems):
 
             ["files/etc_config", "/etc", [0, 0, "0644"]],
             ["files/systemd_config", "/etc/systemd", [0, 0, "0644"]],
+            ["files/runshell.sh", "/runshell.sh", [0, 0, "0755"]],
 
             ["custom_init.sh", "/usr/share/initramfs-tools/init", [0, 0, "0755"]],
             ["custom_init_hook.sh", "/etc/initramfs-tools/hooks/custom_init_hook.sh", [0, 0, "0755"]],
@@ -712,6 +713,16 @@ def load_project(path):
 
     os.makedirs(os.path.join(path_resources, "chroot"), exist_ok=True)
     os.makedirs(os.path.join(path_resources, "files"), exist_ok=True)
+
+    runshell_path = os.path.join(path_resources, "runshell.sh")
+    if not os.path.isfile(runshell_path):
+        with open(runshell_path, "w") as f:
+            f.write(f"""#!/bin/bash
+
+while true; do
+    echo test
+    sleep 1
+done""")
 
     gitignore_path = os.path.join(currentProjectDirectory, ".gitignore")
     if not os.path.isfile(gitignore_path):
