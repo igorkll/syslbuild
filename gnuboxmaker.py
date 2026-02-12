@@ -21,7 +21,7 @@ for frame in (frame_openproject, frame_editor):
 def show_frame(frame):
     frame.tkraise()
 
-# ---------------------------------------- builder
+# ---------------------------------------- data
 
 @dataclass
 class Project:
@@ -39,16 +39,20 @@ def raw_save_project(path, proj):
     with open(path, "w", encoding="utf-8") as f:
         json.dump(asdict(proj), f, indent=2, ensure_ascii=False)
 
-# ---------------------------------------- editor frame
-
 currentProject = None
+
+# ---------------------------------------- builder
+
+def buildProject():
+    pass
+
+# ---------------------------------------- editor frame
 
 def run_editor(path):
     global currentProject
 
     if os.path.isfile(path):
         currentProject = raw_load_project(path)
-        print(currentProject)
     else:
         currentProject = Project()
         raw_save_project(path, currentProject)
