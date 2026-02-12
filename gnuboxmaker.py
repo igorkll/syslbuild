@@ -107,7 +107,7 @@ def setup_chroot_script():
 
     return scripts
 
-def setup_build_distro():
+def setup_build_distro(builditems):
     if currentProject.distro == "debian":
         include = [
             "initramfs-tools",
@@ -135,23 +135,37 @@ def setup_build_distro():
     else:
         stop_error(f"unknown distro \"{currentProject.distro}\"")
 
-def setup_build_base(builditems):
+def setup_download(builditems):
+    builditems.append({
+        "type": "gitclone",
+        "name": "custom-debian-initramfs-init",
+        "export": False,
 
+        "git_url": "https://github.com/igorkll/custom-debian-initramfs-init",
+        "git_checkout": "1.5.2"
+    })
+
+    def addExtract(fromdir, name):
+        builditems.append({
+            "type": "from-directory",
+            "name": name,
+            "export": false,
+
+            "source": fromdir,
+            "path": f"/{name}"
+        })
+
+    addExtract("custom-debian-initramfs-init", "custom_init.sh")
+    addExtract("custom-debian-initramfs-init", "custom_init_hook.sh")
+
+
+def setup_build_base(builditems):
+    setup_build_distro(builditems)
 
     builditems.append({
         "type": "directory",
         "name": "rootfs directory x2",
         "export": False,
-
-        "directories": [
-            ["/system", [0, 0, "0755"]],
-            ["/system/media", [0, 0, "0700"]],
-
-            ["/realrootroot", [0, 0, "0755"]],
-
-            ["/data", [10000, 10000, "0700"]],
-            ["/home/user/.config", [10000, 10000, "0700"]]
-        ],
 
         "items": [
             ["rootfs directory x1", "."],
@@ -328,6 +342,7 @@ def generate_syslbuild_project():
     builditems = []
     
     setup_build_architectures(architectures)
+    setup_download(builditems)
     setup_build_base(builditems)
     setup_build_targets(builditems)
 
