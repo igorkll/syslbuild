@@ -1955,14 +1955,12 @@ if __name__ == "__main__":
     
     if "output" in args and args.output:
         path_output = args.output
-
+    
+    architecture = args.arch
     loadTempPaths()
-
     if args.e:
         deleteAny(path_temp)
         deleteAny(path_output)
-    
-    architecture = args.arch
     log_file = getLogFile()
 
     buildLog("Syslbuild info:")
