@@ -1944,10 +1944,10 @@ if __name__ == "__main__":
     
     requireRoot()
 
-    if "temp" in args:
+    if "temp" in args and args.temp:
         path_temp = args.temp
     
-    if "output" in args:
+    if "output" in args and args.output:
         path_output = args.output
 
     if args.e:
