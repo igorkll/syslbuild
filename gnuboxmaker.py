@@ -46,6 +46,9 @@ class Project:
     HandleHibernateKey: str = "ignore"
     HandleLidSwitch: str = "ignore"
 
+    root_expand: bool = True
+    allow_updatescript: bool = True
+
     export_x86_64: bool = True
     export_x86: bool = False
 
@@ -524,7 +527,13 @@ def setup_build_targets(builditems):
         })
 
 def generate_syslbuild_project():
-    cmdline = "rw rootwait=60 systemd.show_status=false rd.udev.log_level=0 minlogotime=5 clear noCursorBlink vt.global_cursor_default=0 root_processing root_expand allow_updatescript" # quiet splash earlysplash
+    cmdline = "rw rootwait=60 systemd.show_status=false rd.udev.log_level=0 minlogotime=5 clear noCursorBlink vt.global_cursor_default=0" # quiet splash earlysplash
+
+    if currentProject.root_expand:
+        cmdline += " root_processing root_expand"
+
+    if currentProject.allow_updatescript:
+        cmdline += " allow_updatescript"
 
     architectures = []
     builditems = []
