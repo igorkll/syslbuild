@@ -22,11 +22,11 @@ weston_shell_variants = ["kiosk", "desktop"]
 @dataclass
 class Project:
     distro: str = "debian"
+    user_packages: list[str] = field(default_factory=list)
     
     debian_variant: str = "minbase"
     debian_suite: str = "bookworm"
     debian_snapshot: str = "http://snapshot.debian.org/archive/debian/20250809T133719Z"
-    user_packages: list[str] = field(default_factory=list)
 
     screen_idle_time: int = 0
     HandlePowerKey: str = "poweroff"

@@ -4,6 +4,7 @@ the easiest way is to create an embedded/kiosk linux distribution with a single 
 it uses a patched linux kernel, which prevents switching VT and using ctrl+alt+del  
 the source code of gnubox maker is located in the syslbuild repository as it is part of a single project: https://github.com/igorkll/syslbuild  
 Attention! since the gnubox maker projects are building from root in the host system, be careful what you build  
+Gnubox Maker creates a special Linux system for a single application. After launching, you cannot exit it or switch to other programs. Everything you need to work is assembled automatically from files and scripts, and the system is immediately ready for use  
 
 ## projects used
 * syslbuild: https://github.com/igorkll/syslbuild
