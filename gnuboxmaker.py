@@ -401,7 +401,10 @@ def setup_build_targets(builditems):
             "name": "uefi boot.img",
             "export": False,
 
-            "size": "1M"
+            "fs_arg": "-F32",
+            "fs_type": "fat",
+            "size": "256M",
+            "label": "EFI"
         })
 
     if currentProject.export_img_uefi_gpt:
