@@ -162,6 +162,9 @@ def setup_write_configs():
     etc_config = os.path.join(currentProjectDirectory, "files", "etc_config")
     systemd_config = os.path.join(currentProjectDirectory, "files", "systemd_config")
 
+    with open(os.path.join(systemd_config, ""), "w") as f:
+
+
 def setup_build_base(builditems):
     setup_build_distro(builditems)
     setup_write_configs()
@@ -173,6 +176,10 @@ def setup_build_base(builditems):
 
         "items": [
             ["rootfs directory x1", "."],
+
+            ["kernel_modules", "/usr"],
+            ["kernel.img", "/kernel.img", [0, 0, "0755"]],
+            ["initramfs.img", "/initramfs.img", [0, 0, "0755"]],
 
             ["files/etc_config", "/etc", [0, 0, "0644"]],
             ["files/systemd_config", "/etc/systemd", [0, 0, "0644"]],
