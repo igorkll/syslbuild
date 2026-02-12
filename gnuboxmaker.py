@@ -68,6 +68,7 @@ def buildLog(logstr, quiet=False):
 def stop_error(err):
     err = "ERROR: " + err
     buildLog(err)
+    sys.exit(1)
 
 def deleteAny(path):
     if os.path.isdir(path):
@@ -574,18 +575,29 @@ def run_syslbuild():
     subprocess.run(cmd)
 
 def updateProgress(value=0, text=None): # updateProgress stub
-    pass
+    if text is None:
+        text = "Nothing"
+    
+    buildLog(f"{value} : {text}")
 
 def build_project():
     updateProgress(10, "Generating the syslbuild project...")
     generate_syslbuild_project()
 
     updateProgress(50, "Launching syslbuild...")
-    run_syslbuild()
+    if run_syslbuild():
+        updateProgress(100, "Completed")
+        time.sleep(2)
+        updateProgress()
+    else:
+        if guiLoaded:
+            updateProgress(100, "Failed")
+            time.sleep(2)
+            updateProgress()
 
-    updateProgress(100, "Completed")
-    time.sleep(2)
-    updateProgress()
+            messagebox.showwarning("Error", "Failed to build")
+        else:
+            stop_error("Failed to build")
 
 def load_project(path):
     global currentProject
@@ -669,6 +681,8 @@ bottom_frame.grid_columnconfigure(0, weight=1)
 def updateProgress(value=0, text=None):
     if text is None:
         text = "Nothing"
+
+    buildLog(f"{value} : {text}")
     
     progress["value"] = value
     progress_label["text"] = text
