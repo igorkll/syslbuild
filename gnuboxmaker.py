@@ -5,6 +5,7 @@ from tkinter import filedialog, messagebox
 from PIL import Image, ImageTk
 from dataclasses import dataclass, asdict
 from tkinter import ttk
+from pathlib import Path
 import json
 import subprocess
 import sys
@@ -76,6 +77,19 @@ def setup_build_architectures(architectures):
     if currentProject.export_x86:
         architectures.append("i386")
 
+def setup_chroot_script():
+    chroot_scripts_directory = os.join.path(path_temp_syslbuild, "chroot")
+    scripts = []
+
+    os.makedirs(chroot_scripts_directory, exist_ok=True)
+
+    def addScript():
+        pass
+
+    for f in Path("каталог").iterdir():
+        if f.is_file():
+            print(f)
+
 def setup_build_base(builditems):
     if currentProject.distro == "debian":
         include = [
@@ -92,8 +106,8 @@ def setup_build_base(builditems):
 
         builditems.append({
             "type": "debian",
-            "name": "root directory x1",
-            "export": false,
+            "name": "rootfs directory x1",
+            "export": False,
 
             "include": include,
 
@@ -103,6 +117,18 @@ def setup_build_base(builditems):
         })
     else:
         stop_error(f"unknown distro \"{currentProject.distro}\"")
+
+    builditems.append({
+        "type": "smart-chroot",
+        "name": "rootfs directory x2",
+        "export": False,
+
+        "manual_validation": true,
+        "use_systemd_container": true,
+        "source": "rootfs directory x1",
+        "scripts": setup_chroot_script()
+    },)
+    
 
 def setup_build_targets(builditems):
     if currentProject.export_img_bios_mbr:
