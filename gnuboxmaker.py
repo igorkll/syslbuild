@@ -308,6 +308,19 @@ def setup_build_base(builditems):
         "scripts": setup_chroot_script()
     })
 
+    builditems.append({
+        "type": "filesystem",
+        "name": "rootfs.img",
+        "export": False,
+
+        "source": "rootfs directory x5",
+
+        "fs_type": "ext4",
+        "size": "(auto * 1.2) + (100 * 1024 * 1024)", 
+        "minsize": "64MB",
+        "label": "rootfs"
+    })
+
 def setup_build_targets(builditems):
     if currentProject.export_img_bios_mbr:
         builditems.append({
