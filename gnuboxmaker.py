@@ -257,6 +257,13 @@ def setup_build_distro(builditems):
             "dbus-user-session"
         ]
 
+        if currentProject.session_mode == "wayland" and
+        currentProject.session_mode == "x11":
+            include.append("sddm")
+
+        if currentProject.session_mode == "weston":
+            include.append("weston")
+
         builditems.append({
             "type": "debian",
             "name": "rootfs directory x1",
@@ -300,7 +307,7 @@ def setup_autologin():
     if currentProject.session_mode == "tty":
         writeText(os.path.join(systemd_config, "system", "getty@tty1.service.d", "autologin.conf"), f"""[Service]
 ExecStart=
-ExecStart=-/sbin/agetty -o '-p -f -- \\u' --noclear --autologin {currentProject.session_user} - $TERM""")
+ExecStart=-/sbin/agetty -o '-p -f -- \\u' --noclear --skip-login --autologin {currentProject.session_user} - $TERM""")
 
 def setup_write_files():
     etc_config = os.path.join(path_temp_syslbuild, "files", "etc_config")
