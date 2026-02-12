@@ -26,6 +26,7 @@ class Project:
     debian_variant: str = "minbase"
     debian_suite: str = "bookworm"
     debian_snapshot: str = "http://snapshot.debian.org/archive/debian/20250809T133719Z"
+    user_packages: list[str] = field(default_factory=list)
 
     screen_idle_time: int = 0
     HandlePowerKey: str = "poweroff"
@@ -269,6 +270,8 @@ def setup_build_distro(builditems):
             include.append("xserver-xorg")
             include.append("xinit")
             include.append("x11-xserver-utils")
+
+        include += currentProject.user_packages
 
         builditems.append({
             "type": "debian",
