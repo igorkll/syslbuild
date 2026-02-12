@@ -3,7 +3,7 @@ import tkinter as tk
 import os
 from tkinter import filedialog, messagebox
 from PIL import Image, ImageTk
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, field
 from tkinter import ttk
 from pathlib import Path
 import shutil
@@ -261,7 +261,9 @@ def setup_build_distro(builditems):
             "dbus-user-session"
         ]
 
-        if currentProject.session_mode != "tty":
+        if currentProject.session_mode == "tty":
+            include.append("mingetty")
+        else:
             include.append("sddm")
 
         if currentProject.session_mode == "weston":
@@ -317,7 +319,7 @@ def setup_autologin():
     if currentProject.session_mode == "tty":
         writeText(os.path.join(systemd_config, "system", "getty@tty1.service.d", "autologin.conf"), f"""[Service]
 ExecStart=
-ExecStart=-/sbin/agetty --skip-login --nonewline --nohints --noissue --nonewline --autologin {currentProject.session_user} --noclear %I $TERM""")
+ExecStart=-/sbin/mingetty --skip-login --nonewline --nohints --noissue --nonewline --autologin {currentProject.session_user} --noclear %I $TERM""")
     else:
         session = "weston.desktop"
         if currentProject.session_mode == "x11":
