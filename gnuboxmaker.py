@@ -168,13 +168,12 @@ EOF
 
 usermod -s /runshell.sh root
 useradd -m -u 10000 -s /runshell.sh user
-usermod -aG video,input,audio,render user
-"""
+usermod -aG video,input,audio,render user"""
 
     if True: # template for future setting
         aaa_setup += "\nusermod -aG sudo user"
 
-    aaa_setup += "\n"
+    aaa_setup += "\n\n"
 
     if currentProject.session_mode == "tty":
         aaa_setup += f"""systemctl disable getty@tty2.service
@@ -215,9 +214,7 @@ systemctl mask getty@tty6.service
 
 chmod -x /sbin/agetty"""
 
-    aaa_setup += "\n"
-    aaa_setup += "\ntouch /.chrootend"
-
+    aaa_setup += "\n\ntouch /.chrootend"
     return aaa_setup
 
 def setup_chroot_script():
