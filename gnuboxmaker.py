@@ -385,7 +385,7 @@ def run_editor(path):
     os.makedirs(path_temp, exist_ok=True)
     os.makedirs(path_temp_syslbuild, exist_ok=True)
 
-    os.makedirs(os.path.join(path_resources, "chroot"))
+    os.makedirs(os.path.join(path_resources, "chroot"), exist_ok=True)
 
     gitignore_path = os.path.join(currentProjectDirectory, ".gitignore")
     if not os.path.isfile(gitignore_path):

@@ -1944,8 +1944,11 @@ if __name__ == "__main__":
     
     requireRoot()
 
-    path_temp = args.temp
-    path_output = args.output
+    if "temp" in args:
+        path_temp = os.path.abspath(args.temp)
+    
+    if "output" in args:
+        path_output = os.path.abspath(args.output)
 
     if args.e:
         deleteAny(path_temp)
