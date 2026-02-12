@@ -56,6 +56,9 @@ def raw_save_project(path, proj):
 
 # ---------------------------------------- functions
 
+class CancelGUI(Exception):
+    pass
+
 def buildLog(logstr, quiet=False):
     if not quiet:
         logstr = f"---------------- GNUBOX MAKER: {logstr}"
@@ -65,10 +68,21 @@ def buildLog(logstr, quiet=False):
     # log_file.write(logstr + "\n")
     # log_file.flush()
 
+def failed_to_build():
+    updateProgress(100, "Failed")
+    time.sleep(2)
+    updateProgress()
+
+    messagebox.showwarning("Error", "Failed to build")
+
 def stop_error(err):
     err = "ERROR: " + err
     buildLog(err)
-    sys.exit(1)
+    if guiLoaded:
+        failed_to_build()
+        raise CancelGUI()
+    else:
+        sys.exit(1)
 
 def deleteAny(path):
     if os.path.isdir(path):
@@ -240,7 +254,7 @@ HandleLidSwitchExternalPower={currentProject.HandleLidSwitch}
 HandleLidSwitchDocked={currentProject.HandleLidSwitch}
 LidSwitchIgnoreInhibited=no""")
 
-    buildExecute(["cp", "-a", os.path.join(currentProjectDirectory, "files") + "/.", user_files])
+    buildExecute(["cp", "-a", os.path.join(path_resources, "files") + "/.", user_files])
 
 def copy_bins(name):
     output_path = os.path.join(path_temp_syslbuild, name)
@@ -572,7 +586,8 @@ def run_syslbuild():
         f"--output {os.path.join(currentProjectDirectory, 'output')!r} "
         f"--lastlog {os.path.join(currentProjectDirectory, 'last.log')!r}"
     ]
-    subprocess.run(cmd)
+    res = subprocess.run(cmd)
+    return res.returncode == 0
 
 def updateProgress(value=0, text=None): # updateProgress stub
     if text is None:
@@ -591,11 +606,7 @@ def build_project():
         updateProgress()
     else:
         if guiLoaded:
-            updateProgress(100, "Failed")
-            time.sleep(2)
-            updateProgress()
-
-            messagebox.showwarning("Error", "Failed to build")
+            failed_to_build()
         else:
             stop_error("Failed to build")
 

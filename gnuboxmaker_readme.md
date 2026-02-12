@@ -3,6 +3,7 @@
 the easiest way is to create an embedded/kiosk linux distribution with a single application that cannot be exited  
 it uses a patched linux kernel, which prevents switching VT and using ctrl+alt+del  
 the source code of gnubox maker is located in the syslbuild repository as it is part of a single project: https://github.com/igorkll/syslbuild  
+Attention! since the gnubox maker projects are building from root in the host system, be careful what you build  
 
 ## projects used
 * syslbuild: https://github.com/igorkll/syslbuild
@@ -30,6 +31,7 @@ the source code of gnubox maker is located in the syslbuild repository as it is 
 * at the end of each script, you must create an empty file or directory from the chroot folder at the end using the path "/.chrootend" to make sure that the script is executed correctly. if you don't do this, the build will fail
 * "files" that will be copied to rootfs before executing chroot scripts. please note that all your files and directories from this directory will have rights 755 and belong to root, regardless of what rights they have during the build. this is necessary for repeatable assembly on different machines. if you need to change the permissions on the target system, use the "chroot" scripts.
 * "chroot" is executed in systemd-nspawn
+* Attention! since the gnubox maker projects are building from root in the host system, be careful what you build
 
 ## notes
 * please note that by default, the first time you turn on the created root image, the partition will be enlarged to the maximum possible size for the current media. this is done because I cannot know what size of drive the *.img image will be written to
