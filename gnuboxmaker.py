@@ -162,12 +162,49 @@ def setup_write_configs():
     etc_config = os.path.join(currentProjectDirectory, "files", "etc_config")
     systemd_config = os.path.join(currentProjectDirectory, "files", "systemd_config")
 
-    with open(os.path.join(systemd_config, ""), "w") as f:
+    with open(os.path.join(systemd_config, "logind.conf"), "w") as f:
+        f.write(f"""[Login]
+NAutoVTs=0
+ReserveVT=0
 
+IdleAction=ignore
+
+HandlePowerKey={currentProject.HandlePowerKey}
+HandlePowerKeyLongPress={currentProject.HandlePowerKey}
+PowerKeyIgnoreInhibited=no
+
+HandleRebootKey={currentProject.HandleRebootKey}
+HandleRebootKeyLongPress={currentProject.HandleRebootKey}
+RebootKeyIgnoreInhibited=no
+
+HandleSuspendKey={currentProject.HandleSuspendKey}
+HandleSuspendKeyLongPress={currentProject.HandleSuspendKey}
+SuspendKeyIgnoreInhibited=no
+
+HandleHibernateKey={currentProject.HandleHibernateKey}
+HandleHibernateKeyLongPress={currentProject.HandleHibernateKey}
+HibernateKeyIgnoreInhibited=no
+
+HandleLidSwitch={currentProject.HandleLidSwitch}
+HandleLidSwitchExternalPower={currentProject.HandleLidSwitch}
+HandleLidSwitchDocked={currentProject.HandleLidSwitch}
+LidSwitchIgnoreInhibited=no""")
 
 def setup_build_base(builditems):
     setup_build_distro(builditems)
     setup_write_configs()
+
+    if currentProject.distro == "debian":
+        builditems.append({
+            "type": "debian-export-initramfs",
+            "name": "initramfs.img",
+            "export": False,
+
+            "kernel_config": "kernel_config",
+            "source": "rootfs directory x1"
+        })
+    else:
+        stop_error(f"unknown distro \"{currentProject.distro}\"")
 
     builditems.append({
         "type": "directory",
