@@ -16,11 +16,6 @@ import platform
 
 path_output = "output"
 path_temp = ".temp"
-path_temp_temp = os.path.join(path_temp, "temp")
-path_logs = os.path.join(path_temp, "logs")
-path_mount = os.path.join(path_temp, "mount")
-path_mount2 = os.path.join(path_temp, "mount2")
-path_temp_kernel_sources = os.path.join(path_temp, "downloaded_kernel_sources")
 
 def loadTempPaths():
     global path_temp_architecture
@@ -29,6 +24,11 @@ def loadTempPaths():
     global path_temp_cache_pacman
     global path_temp_pacman_conf
     global path_temp_kernel_build
+    global path_temp_temp
+    global path_logs
+    global path_mount
+    global path_mount2
+    global path_temp_kernel_sources
     
     path_temp_architecture = os.path.join(path_temp, architecture)
     os.makedirs(path_temp_architecture, exist_ok=True)
@@ -38,6 +38,12 @@ def loadTempPaths():
     path_temp_cache_pacman = os.path.join(path_temp_architecture, "pacman")
     path_temp_pacman_conf = os.path.join(path_temp_architecture, "pacman.conf")
     path_temp_kernel_build = os.path.join(path_temp_architecture, "last_kernel_build")
+
+    path_temp_temp = os.path.join(path_temp, "temp")
+    path_logs = os.path.join(path_temp, "logs")
+    path_mount = os.path.join(path_temp, "mount")
+    path_mount2 = os.path.join(path_temp, "mount2")
+    path_temp_kernel_sources = os.path.join(path_temp, "downloaded_kernel_sources")
 
 aeval = asteval.Interpreter()
 
@@ -1949,6 +1955,8 @@ if __name__ == "__main__":
     
     if "output" in args and args.output:
         path_output = args.output
+
+    loadTempPaths()
 
     if args.e:
         deleteAny(path_temp)
