@@ -37,6 +37,9 @@ class Project:
     root_expand: bool = True
     allow_updatescript: bool = True
 
+    session_user: str = "user",
+    session_mode: str = "tty",
+
     export_x86_64: bool = True
     export_x86: bool = False
 
@@ -145,6 +148,77 @@ def setup_build_architectures(architectures):
     if currentProject.export_x86:
         architectures.append("i386")
 
+def gen_default_chroot_script():
+    aaa_setup = f"""#!/bin/bash
+set -e
+
+# ------------
+
+ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+
+cat > /etc/adjtime <<'EOF'
+0.0 0 0.0
+0
+LOCAL
+EOF
+
+# ------------
+
+usermod -s /runshell.sh root
+useradd -m -u 10000 -s /runshell.sh user
+usermod -aG video,input,audio,render user
+"""
+
+    if True: # template for future setting
+        aaa_setup += "\nusermod -aG sudo user"
+
+    aaa_setup += "\n"
+
+    if currentProject.session_mode == "tty":
+        aaa_setup += f"""systemctl disable getty@tty2.service
+systemctl mask getty@tty2.service
+
+systemctl disable getty@tty3.service
+systemctl mask getty@tty3.service
+
+systemctl disable getty@tty4.service
+systemctl mask getty@tty4.service
+
+systemctl disable getty@tty5.service
+systemctl mask getty@tty5.service
+
+systemctl disable getty@tty6.service
+systemctl mask getty@tty6.service"""
+    else:
+        aaa_setup += f"""systemctl disable getty.target
+systemctl mask getty.target
+
+systemctl disable getty@tty1.service
+systemctl mask getty@tty1.service
+
+systemctl disable getty@tty2.service
+systemctl mask getty@tty2.service
+
+systemctl disable getty@tty3.service
+systemctl mask getty@tty3.service
+
+systemctl disable getty@tty4.service
+systemctl mask getty@tty4.service
+
+systemctl disable getty@tty5.service
+systemctl mask getty@tty5.service
+
+systemctl disable getty@tty6.service
+systemctl mask getty@tty6.service
+
+chmod -x /sbin/agetty"""
+
+
+    aaa_setup += "\n"
+    aaa_setup += "\ntouch /.chrootend"
+
+    return aaa_setup
+
 def setup_chroot_script():
     chroot_project_directory = os.path.join(path_resources, "chroot")
     chroot_scripts_directory = os.path.join(path_temp_syslbuild, "chroot")
@@ -161,8 +235,8 @@ def setup_chroot_script():
             )
 
     with open(os.path.join(chroot_scripts_directory, "aaa_setup.sh"), "w") as f:
-        f.write("#!/bin/bash\ntouch /.chrootend")
-    scripts.append(f"chroot/aaa_setup.sh")
+        scripts.append(f"chroot/aaa_setup.sh")
+        f.write(gen_default_chroot_script())
 
     return scripts
 
