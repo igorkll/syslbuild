@@ -6,6 +6,8 @@ from PIL import Image, ImageTk
 from dataclasses import dataclass, asdict
 from tkinter import ttk
 import json
+import subprocess
+import sys
 
 window = tk.Tk()
 window.title("Gnubox maker")
@@ -45,12 +47,28 @@ def raw_save_project(path, proj):
 currentProject = None
 path_temp = None
 path_temp_syslbuild = None
+path_temp_syslbuild_file = None
 
-def buildProject():
+def generate_syslbuild_project():
+    builditems = []
+    architectures = []
+    
+
+    syslbuild_project = {
+        "architectures": architectures,
+        "builditems": builditems
+    }
+    with open(path_temp_syslbuild_file, "w") as f:
+        json.dump(syslbuild_project, f, indent=2, ensure_ascii=False)
+
+def run_syslbuild():
+    subprocess.run([sys.executable, os.path.abspath("syslbuild.py"), "--arch", "ALL", path_temp_syslbuild_file], cwd=path_temp_syslbuild)
+
+def build_project():
     updateProgress(10, "Generating the syslbuild project...")
 
     updateProgress(50, "Launching syslbuild...")
-    
+    run_syslbuild()
 
     updateProgress()
 
@@ -66,7 +84,7 @@ progress = ttk.Progressbar(bottom_frame, orient="horizontal", mode="determinate"
 progress.grid(row=1, column=0, sticky="ew")
 progress["maximum"] = 100
 
-build_btn = tk.Button(bottom_frame, text="Build", command=buildProject)
+build_btn = tk.Button(bottom_frame, text="Build", command=build_project)
 build_btn.grid(row=1, column=1, padx=10)
 
 bottom_frame.grid_columnconfigure(0, weight=1)
@@ -91,6 +109,7 @@ def run_editor(path):
 
     path_temp = os.path.join(os.path.dirname(path), ".temp")
     path_temp_syslbuild = os.path.join(path_temp, "syslbuild")
+    path_temp_syslbuild_file = os.path.join(path_temp_syslbuild, "project.json")
     os.makedirs(path_temp, exist_ok=True)
 
     show_frame(frame_editor)
