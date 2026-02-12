@@ -77,31 +77,32 @@ def setup_build_architectures(architectures):
         architectures.append("i386")
 
 def setup_build_base(builditems):
-    builditems.append({
-        "type": "full-disk-image",
-        "name": f"{currentProjectName} BIOS MBR.img",
-        "export": True,
+    if currentProject.distro == "debian":
+        include = [
+            "initramfs-tools",
+            "plymouth", # install basic plymouth files. The part will later be replaced by embedded plymouth.
+            "plymouth-themes",
 
-        "size": "auto + (1 * 1024 * 1024)",
+            "systemd",
+            "systemd-sysv",
+            "systemd-resolved",
+            "dbus",
+            "dbus-user-session"
+        ]
 
-        "partitionTable": "dos",
-        "partitions": [
-            ["rootfs.img", "linux"]
-        ],
+        builditems.append({
+            "type": "debian",
+            "name": "root directory x1",
+            "export": false,
 
-        "bootloader": {
-            "type": "grub",
-            "config": "grub.cfg",
-            "boot": 0,
-            "modules": [
-                "normal",
-                "part_msdos",
-                "part_gpt",
-                "ext2",
-                "configfile"
-            ]
-        }
-    })
+            "include": include,
+
+            "variant": currentProject.debian_variant,
+            "suite": currentProject.debian_suite,
+            "url": currentProject.debian_snapshot
+        })
+    else:
+        stop_error(f"unknown distro \"{currentProject.distro}\"")
 
 def setup_build_targets(builditems):
     if currentProject.export_img_bios_mbr:
