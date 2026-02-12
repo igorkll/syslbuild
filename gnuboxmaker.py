@@ -97,31 +97,112 @@ def setup_build_targets(builditems):
             }
         })
 
+    if currentProject.export_img_bios_gpt or currentProject.export_img_bios_and_uefi_gpt:
+        builditems.append({
+            "architectures": ["amd64", "i386"],
+
+            "type": "filesystem",
+            "name": "bios boot.img",
+            "export": False,
+
+            "size": "1M"
+        })
+
     if currentProject.export_img_bios_gpt:
         builditems.append({
             "architectures": ["amd64", "i386"],
 
-            
-        })
-
-        builditems.append({
-            "architectures": ["amd64", "i386"],
-
             "type": "full-disk-image",
-            "name": f"{currentProjectName} BIOS MBR.img",
+            "name": f"{currentProjectName} BIOS GPT.img",
             "export": True,
 
             "size": "auto + (1 * 1024 * 1024)",
 
-            "partitionTable": "dos",
+            "partitionTable": "gpt",
             "partitions": [
+                ["bios boot.img", "bios"],
                 ["rootfs.img", "linux"]
             ],
 
             "bootloader": {
                 "type": "grub",
                 "config": "grub.cfg",
-                "boot": 0,
+                "boot": 1,
+                "modules": [
+                    "normal",
+                    "part_msdos",
+                    "part_gpt",
+                    "ext2",
+                    "configfile"
+                ]
+            }
+        })
+
+    if currentProject.export_img_uefi_gpt or currentProject.export_img_bios_and_uefi_gpt:
+        builditems.append({
+            "architectures": ["amd64", "i386"],
+
+            "type": "filesystem",
+            "name": "uefi boot.img",
+            "export": False,
+
+            "size": "1M"
+        })
+
+    if currentProject.export_img_uefi_gpt:
+        builditems.append({
+            "architectures": ["amd64", "i386"],
+
+            "type": "full-disk-image",
+            "name": f"{currentProjectName} UEFI GPT.img",
+            "export": True,
+
+            "size": "auto + (1 * 1024 * 1024)",
+
+            "partitionTable": "gpt",
+            "partitions": [
+                ["uefi boot.img", "efi"],
+                ["rootfs.img", "linux"]
+            ],
+
+            "bootloader": {
+                "type": "grub",
+                "config": "grub.cfg",
+                "esp": 0,
+                "boot": 1,
+                "modules": [
+                    "normal",
+                    "part_msdos",
+                    "part_gpt",
+                    "ext2",
+                    "configfile"
+                ]
+            }
+        })
+
+    if currentProject.export_img_bios_and_uefi_gpt:
+        builditems.append({
+            "architectures": ["amd64", "i386"],
+
+            "type": "full-disk-image",
+            "name": f"{currentProjectName} BIOS UEFI GPT.img",
+            "export": True,
+
+            "size": "auto + (1 * 1024 * 1024)",
+
+            "partitionTable": "gpt",
+            "partitions": [
+                ["bios boot.img", "bios"],
+                ["uefi boot.img", "efi"],
+                ["rootfs.img", "linux"]
+            ],
+
+            "bootloader": {
+                "type": "grub",
+                "config": "grub.cfg",
+                "esp": 1,
+                "boot": 2,
+                "efiAndBios": True,
                 "modules": [
                     "normal",
                     "part_msdos",
