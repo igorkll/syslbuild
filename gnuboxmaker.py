@@ -257,8 +257,7 @@ def setup_build_distro(builditems):
             "dbus-user-session"
         ]
 
-        if currentProject.session_mode == "wayland" and
-        currentProject.session_mode == "x11":
+        if currentProject.session_mode == "wayland" and currentProject.session_mode == "x11":
             include.append("sddm")
 
         if currentProject.session_mode == "weston":
@@ -307,7 +306,7 @@ def setup_autologin():
     if currentProject.session_mode == "tty":
         writeText(os.path.join(systemd_config, "system", "getty@tty1.service.d", "autologin.conf"), f"""[Service]
 ExecStart=
-ExecStart=-/sbin/agetty -o '-p -f -- \\u' --noclear --skip-login --autologin {currentProject.session_user} - $TERM""")
+ExecStart=-/sbin/agetty -o '-p -f -- \\u' --noclear --skip-login --noissue --nohostname --autologin {currentProject.session_user} - $TERM""")
 
 def setup_write_files():
     etc_config = os.path.join(path_temp_syslbuild, "files", "etc_config")
@@ -673,15 +672,20 @@ initrd /initramfs.img
 boot""")
 
 def run_syslbuild():
-    # надо сделать чтобы если прога уже запущена от рута не использовался pkexec, чтобы сборка могла быть автоматизирована через аргументы запуска и не было GUI
-    cmd = [
-        "pkexec", "bash", "-c",
+    cmd_base = [
+        "bash", "-c",
         f"cd {path_temp_syslbuild!r} && {sys.executable!r} {os.path.abspath('syslbuild.py')!r} "
         f"--arch ALL {path_temp_syslbuild_file!r} "
         f"--temp {os.path.join(currentProjectDirectory, '.temp')!r} "
         f"--output {os.path.join(currentProjectDirectory, 'output')!r} "
         f"--lastlog {os.path.join(currentProjectDirectory, 'last.log')!r}"
     ]
+
+    if os.geteuid() != 0:
+        cmd = ["pkexec"] + cmd_base
+    else:
+        cmd = cmd_base
+
     res = subprocess.run(cmd)
     return res.returncode == 0
 
