@@ -29,4 +29,4 @@ the source code of gnubox maker is located in the syslbuild repository as it is 
 * "chroot" is executed in systemd-nspawn
 
 ## notes
-* please note that by omission, the first time you turn on the created root image, the partition will be enlarged to the maximum possible size for the current media. this is done because I cannot know what size of drive the *.img image will be written to
+* please note that by default, the first time you turn on the created root image, the partition will be enlarged to the maximum possible size for the current media. this is done because I cannot know what size of drive the *.img image will be written to
