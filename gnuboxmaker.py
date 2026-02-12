@@ -63,6 +63,12 @@ def raw_save_project(path, proj):
     with open(path, "w", encoding="utf-8") as f:
         json.dump(asdict(proj), f, indent=2, ensure_ascii=False)
 
+# ---------------------------------------- functions
+
+def stop_error(err):
+    err = "ERROR: " + err
+    print(err)
+
 # ---------------------------------------- builder
 
 currentProject = None
@@ -101,7 +107,7 @@ def setup_chroot_script():
 
     return scripts
 
-def setup_build_base(builditems):
+def setup_build_distro():
     if currentProject.distro == "debian":
         include = [
             "initramfs-tools",
@@ -129,17 +135,45 @@ def setup_build_base(builditems):
     else:
         stop_error(f"unknown distro \"{currentProject.distro}\"")
 
+def setup_build_base(builditems):
+
+
+    builditems.append({
+        "type": "directory",
+        "name": "rootfs directory x2",
+        "export": False,
+
+        "directories": [
+            ["/system", [0, 0, "0755"]],
+            ["/system/media", [0, 0, "0700"]],
+
+            ["/realrootroot", [0, 0, "0755"]],
+
+            ["/data", [10000, 10000, "0700"]],
+            ["/home/user/.config", [10000, 10000, "0700"]]
+        ],
+
+        "items": [
+            ["rootfs directory x1", "."],
+
+            ["files/etc_config", "/etc", [0, 0, "0644"]],
+            ["files/systemd_config", "/etc/systemd", [0, 0, "0644"]],
+
+            ["custom_init.sh", "/usr/share/initramfs-tools/init", [0, 0, "0755"]],
+            ["custom_init_hook.sh", "/etc/initramfs-tools/hooks/custom_init_hook.sh", [0, 0, "0755"]]
+        ]
+    },)
+
     builditems.append({
         "type": "smart-chroot",
-        "name": "rootfs directory x2",
+        "name": "rootfs directory x3",
         "export": False,
 
         "manual_validation": True,
         "use_systemd_container": True,
-        "source": "rootfs directory x1",
+        "source": "rootfs directory x2",
         "scripts": setup_chroot_script()
-    },)
-    
+    })
 
 def setup_build_targets(builditems):
     if currentProject.export_img_bios_mbr:
@@ -317,8 +351,8 @@ def run_syslbuild():
     cmd = [
         "pkexec", sys.executable, os.path.abspath("syslbuild.py"),
         "--arch", "ALL", path_temp_syslbuild_file,
-        "--temp", "../../.temp",
-        "--output", "../../output"
+        "--temp", os.path.join(currentProjectDirectory, ".temp"),
+        "--output", os.path.join(currentProjectDirectory, "output")
     ]
 
     subprocess.run(cmd, cwd=path_temp_syslbuild)
