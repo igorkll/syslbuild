@@ -225,7 +225,11 @@ systemctl mask getty@tty5.service
 systemctl disable getty@tty6.service
 systemctl mask getty@tty6.service
 
-chmod -x /sbin/agetty"""
+chmod -x /sbin/agetty
+
+systemctl enable sddm
+echo "sddm shared/default-display-manager select sddm" | debconf-set-selections
+systemctl set-default graphical.target"""
 
     aaa_setup += "\n\ntouch /.chrootend"
     return aaa_setup
@@ -265,9 +269,7 @@ def setup_build_distro(builditems):
             "dbus-user-session"
         ]
 
-        if currentProject.session_mode == "tty":
-            include.append("mingetty")
-        else:
+        if currentProject.session_mode != "tty":
             include.append("sddm")
 
         if currentProject.session_mode == "weston":
@@ -322,8 +324,13 @@ def setup_autologin():
 
     if currentProject.session_mode == "tty":
         writeText(os.path.join(systemd_config, "system", "getty@tty1.service.d", "autologin.conf"), f"""[Service]
-ExecStart=
-ExecStart=-/sbin/mingetty --nonewline --noissue --nonewline --autologin {currentProject.session_user} --noclear %I $TERM""")
+User={currentProject.session_user}
+StandardInput=tty
+StandardOutput=tty
+StandardError=tty
+TTYPath=/dev/tty1
+ExecStart=/runshell.sh
+Restart=always""")
     else:
         session = "weston.desktop"
         if currentProject.session_mode == "x11":
