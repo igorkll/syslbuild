@@ -265,6 +265,10 @@ def setup_build_distro(builditems):
 
         if currentProject.session_mode == "weston":
             include.append("weston")
+        elif currentProject.session_mode == "x11":
+            include.append("xserver-xorg")
+            include.append("xinit")
+            include.append("x11-xserver-utils")
 
         builditems.append({
             "type": "debian",
@@ -673,11 +677,14 @@ def generate_syslbuild_project():
     if currentProject.allow_updatescript:
         cmdline += " allow_updatescript"
 
+    if currentProject.boot_splash:
+        cmdline += " minlogotime=5"
+
     if currentProject.boot_quiet:
         cmdline += " systemd.show_status=false rd.udev.log_level=0 clear noCursorBlink vt.global_cursor_default=0 quiet"
 
     if currentProject.boot_splash:
-        cmdline += " minlogotime=5 splash earlysplash"
+        cmdline += " splash earlysplash"
 
     architectures = []
     builditems = []
