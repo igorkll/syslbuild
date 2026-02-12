@@ -202,7 +202,9 @@ systemctl disable getty@tty5.service
 systemctl mask getty@tty5.service
 
 systemctl disable getty@tty6.service
-systemctl mask getty@tty6.service"""
+systemctl mask getty@tty6.service
+
+chmod -x /sbin/agetty"""
     else:
         aaa_setup += f"""systemctl disable getty.target
 systemctl mask getty.target
