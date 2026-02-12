@@ -517,7 +517,7 @@ def setup_build_targets(builditems):
         })
 
 def generate_syslbuild_project():
-    cmdline = "rw rootwait=60 systemd.show_status=false rd.udev.log_level=0 minlogotime=5 clear noCursorBlink vt.global_cursor_default=0 root_processing root_expand allow_updatescript quiet splash earlysplash"
+    cmdline = "rw rootwait=60 systemd.show_status=false rd.udev.log_level=0 minlogotime=5 clear noCursorBlink vt.global_cursor_default=0 root_processing root_expand allow_updatescript" # quiet splash earlysplash
 
     architectures = []
     builditems = []
