@@ -284,28 +284,29 @@ def setup_build_base(builditems):
     })
 
     setup_write_bins(builditems)
-    setup_export_initramfs(builditems)
-
-    builditems.append({
-        "type": "directory",
-        "name": "rootfs directory x4",
-        "export": False,
-
-        "items": [
-            ["rootfs directory x3", "."],
-            ["initramfs.img", "/initramfs.img", [0, 0, "0755"]]
-        ]
-    })
 
     builditems.append({
         "type": "smart-chroot",
-        "name": "rootfs directory x5",
+        "name": "rootfs directory x4",
         "export": False,
 
         "manual_validation": True,
         "use_systemd_container": True,
-        "source": "rootfs directory x4",
+        "source": "rootfs directory x3",
         "scripts": setup_chroot_script()
+    })
+
+    setup_export_initramfs(builditems)
+
+    builditems.append({
+        "type": "directory",
+        "name": "rootfs directory x5",
+        "export": False,
+
+        "items": [
+            ["rootfs directory x4", "."],
+            ["initramfs.img", "/initramfs.img", [0, 0, "0755"]]
+        ]
     })
 
     builditems.append({
