@@ -1,0 +1,322 @@
+'\" t
+.\"     Title: plymouth
+.\"    Author: Kristian Høgsberg
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 02/07/2026
+.\"    Manual: User Commands
+.\"    Source: plymouth
+.\"  Language: English
+.\"
+.TH "PLYMOUTH" "1" "" "plymouth" "User Commands"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+plymouth \- Send commands to plymouthd
+.SH "SYNOPSIS"
+.HP \w'\fBplymouth\ \fR\fB[OPTION...]\fR\ 'u
+\fBplymouth \fR\fB[OPTION...]\fR
+.HP \w'\fBplymouth\ \fR\fBCOMMAND\ [OPTION...]\ \fR\ 'u
+\fBplymouth \fR\fBCOMMAND\ [OPTION...] \fR
+.SH "DESCRIPTION"
+.PP
+The
+\fBplymouth\fR
+sends commands to a running
+\fBplymouthd\fR\&. This is used during the boot process to control the display of the graphical boot splash\&.
+.SH "OPTIONS"
+.PP
+The following options are understood\&. These options are supported for compatibility with the old
+\fBrhgb\-client\fR
+interface, and have been replaced by the commands that are described in the next section\&.
+.PP
+\fB\-\-help\fR
+.RS 4
+Show summary of options\&.
+.RE
+.PP
+\fB\-\-debug\fR
+.RS 4
+Enable verbose debug logging\&.
+.RE
+.PP
+\fB\-\-get\-splash\-plugin\-path\fR
+.RS 4
+Get directory where splash plugins are installed\&.
+.RE
+.PP
+\fB\-\-newroot=\fR\fB[STRING]\fR
+.RS 4
+Tell plymouthd that the new root filesystem is mounted\&.
+.RE
+.PP
+\fB\-\-quit\fR
+.RS 4
+Tell plymouthd to quit\&.
+.RE
+.PP
+\fB\-\-ping\fR
+.RS 4
+Check if plymouthd is running\&.
+.RE
+.PP
+\fB\-\-has\-active\-vt\fR
+.RS 4
+Check if plymouthd has an active vt\&.
+.RE
+.PP
+\fB\-\-sysinit\fR
+.RS 4
+Tell plymouthd root filesystem is mounted read\-write\&.
+.RE
+.PP
+\fB\-\-show\-splash\fR
+.RS 4
+Show the splash screen\&.
+.RE
+.PP
+\fB\-\-hide\-splash\fR
+.RS 4
+Hide the splash screen\&.
+.RE
+.PP
+\fB\-\-ask\-for\-password\fR
+.RS 4
+Ask the user for a password\&.
+.RE
+.PP
+\fB\-\-ignore\-keystroke=\fR\fB[STRING]\fR
+.RS 4
+Remove sensitivity to a keystroke\&.
+.RE
+.PP
+\fB\-\-update=\fR\fB[STRING]\fR
+.RS 4
+Tell plymouthd an update about boot progress\&.
+.RE
+.PP
+\fB\-\-details\fR
+.RS 4
+Tell plymouthd there were errors during boot\&.
+.RE
+.PP
+\fB\-\-wait\fR
+.RS 4
+Wait for plymouthd to quit\&.
+.RE
+.SH "COMMANDS"
+.PP
+The following commands are understood:
+.PP
+\fBchange\-mode \fR\fBOPTION\fR
+.RS 4
+Change the operation mode\&.
+.PP
+\fB\-\-boot\-up\fR
+.RS 4
+Start the system up
+.RE
+.PP
+\fB\-\-shutdown\fR
+.RS 4
+Shutting the system up
+.RE
+.PP
+\fB\-\-updates\fR
+.RS 4
+Applying updates
+.RE
+.RE
+.PP
+\fBsystem\-update \fR\fBOPTION\fR
+.RS 4
+Tell plymouthd about boot progress\&.
+.PP
+\fB\-\-progress=INTEGER\fR
+.RS 4
+The percentage progress of the updates
+.RE
+.RE
+.PP
+\fBupdate \fR\fBOPTION\fR
+.RS 4
+Tell plymouthd about boot status changes\&.
+.PP
+\fB\-\-status=STRING\fR
+.RS 4
+Tell plymouthd the current boot status
+.RE
+.RE
+.PP
+\fBupdate\-root\-fs \fR\fBOPTION\fR
+.RS 4
+Tell plymouthd about root filesystem changes\&.
+.PP
+\fB\-\-new\-root\-dir=STRING\fR
+.RS 4
+Root filesystem is about to change
+.RE
+.PP
+\fB\-\-read\-write\fR
+.RS 4
+Root filesystem is no longer read\-only
+.RE
+.RE
+.PP
+\fBshow\-splash\fR
+.RS 4
+Tell plymouthd to show splash screen\&.
+.RE
+.PP
+\fBhide\-splash\fR
+.RS 4
+Tell plymouthd to hide splash screen\&.
+.RE
+.PP
+\fBask\-for\-password \fR\fBOPTION\fR
+.RS 4
+Ask the user for a password\&.
+.PP
+\fB\-\-command=STRING\fR
+.RS 4
+Command to send password to via standard input
+.RE
+.PP
+\fB\-\-prompt=STRING\fR
+.RS 4
+Message to display when asking for password
+.RE
+.PP
+\fB\-\-number\-of\-tries=INTEGER\fR
+.RS 4
+Number of times to ask before giving up (requires
+\fB\-\-command\fR)
+.RE
+.PP
+\fB\-\-dont\-pause\-progress\fR
+.RS 4
+Don\*(Aqt pause boot progress bar while asking
+.RE
+.RE
+.PP
+\fBask\-question\fR
+.RS 4
+Ask the user a question\&.
+.PP
+\fB\-\-command=STRING\fR
+.RS 4
+Command to send the answer to via standard input
+.RE
+.PP
+\fB\-\-prompt=STRING\fR
+.RS 4
+Message to display when asking the question
+.RE
+.PP
+\fB\-\-dont\-pause\-progress\fR
+.RS 4
+Don\*(Aqt pause boot progress bar while asking
+.RE
+.RE
+.PP
+\fBdisplay\-message \fR\fBOPTION\fR
+.RS 4
+Display a message\&.
+.PP
+\fB\-\-text=STRING\fR
+.RS 4
+The message text
+.RE
+.RE
+.PP
+\fBhide\-message \fR\fBOPTION\fR
+.RS 4
+Hide a message\&.
+.PP
+\fB\-\-text=STRING\fR
+.RS 4
+The message text
+.RE
+.RE
+.PP
+\fBwatch\-keystroke \fR\fBOPTION\fR
+.RS 4
+Become sensitive to a keystroke\&.
+.PP
+\fB\-\-command=STRING\fR
+.RS 4
+Command to send keystroke to via standard input
+.RE
+.PP
+\fB\-\-keys=STRING\fR
+.RS 4
+Keys to become sensitive to
+.RE
+.RE
+.PP
+\fBignore\-keystroke \fR\fBOPTION\fR
+.RS 4
+Remove sensitivity to a keystroke\&.
+.PP
+\fB\-\-keys=STRING\fR
+.RS 4
+Keys to remove sensitivity from
+.RE
+.RE
+.PP
+\fBpause\-progress\fR
+.RS 4
+Pause boot progress bar\&.
+.RE
+.PP
+\fBunpause\-progress\fR
+.RS 4
+Unpause boot progress bar\&.
+.RE
+.PP
+\fBreport\-error\fR
+.RS 4
+Tell plymouthd there were errors during boot\&.
+.RE
+.PP
+\fBdeactivate\fR
+.RS 4
+Tell plymouthd to deactivate\&.
+.RE
+.PP
+\fBreactivate\fR
+.RS 4
+Tell plymouthd to reactivate\&.
+.RE
+.PP
+\fBquit \fR\fBOPTION\fR
+.RS 4
+Tell plymouthd to quit\&.
+.PP
+\fB\-\-retain\-splash\fR
+.RS 4
+Don\*(Aqt explicitly hide boot splash on exit
+.RE
+.RE
+.SH "SEE ALSO"
+.PP
+\fBgrub\fR(8),
+\fBplymouth\fR(8),
+\fBplymouthd\fR(8),
+\m[blue]\fBhttp://www\&.freedesktop\&.org/wiki/Software/Plymouth\fR\m[]

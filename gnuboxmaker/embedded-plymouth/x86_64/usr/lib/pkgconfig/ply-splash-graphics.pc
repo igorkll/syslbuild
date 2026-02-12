@@ -1,0 +1,13 @@
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+pluginsdir=/usr/lib/plymouth/
+themesdir=/usr/share/plymouth/themes/
+
+Name: Plymouth
+Description: Graphics Utility Library for Boot Splash Plugins
+Version: 22.02.122
+Requires: ply-splash-core
+Libs: -L${libdir} -lply-splash-graphics
+Cflags: -I${includedir}/plymouth-1/ply-splash-graphics

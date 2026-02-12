@@ -1,0 +1,75 @@
+'\" t
+.\"     Title: plymouth-set-default-theme
+.\"    Author: Kristian Høgsberg
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 02/07/2026
+.\"    Manual: User Commands
+.\"    Source: plymouth
+.\"  Language: English
+.\"
+.TH "PLYMOUTH\-SET\-DEFAU" "1" "" "plymouth" "User Commands"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+plymouth-set-default-theme \- Set the plymouth theme
+.SH "SYNOPSIS"
+.HP \w'\fBplymouth\-set\-default\-theme\ \fR\fB[OPTION...]\fR\fB\ \fR\fB[THEME]\fR\ 'u
+\fBplymouth\-set\-default\-theme \fR\fB[OPTION...]\fR\fB \fR\fB[THEME]\fR
+.SH "DESCRIPTION"
+.PP
+When called with a
+\fBTHEME\fR
+argument, the
+\fBplymouth\-set\-default\-theme\fR
+command changes the preferred boot theme and also performs the necessary regeneration of the initial ramdisk (initrd) since plymouth is loaded from the boot loader from the initrd prior to the mounting of the root filesystem\&.
+.PP
+If
+\fBplymouth\-set\-default\-theme\fR
+is invoked with no options or parameters, it shows the currently selected theme by default\&. This output is used by the helper scripts plymouth\-generate\-initrd and plymouth\-update\-initrd to set the proper theme in the initial ramdisk\&.
+.SH "OPTIONS"
+.PP
+The following options are understood:
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Show summary of options\&.
+.RE
+.PP
+\fB\-l\fR, \fB\-\-list\fR
+.RS 4
+List available themes\&.
+.RE
+.PP
+\fB\-r\fR, \fB\-\-reset\fR
+.RS 4
+Reset to default theme\&.
+.RE
+.PP
+\fB\-R\fR, \fB\-\-rebuild\-initrd\fR
+.RS 4
+Rebuild initrd (necessary after changing theme)\&.
+.RE
+.SH "SEE ALSO"
+.PP
+\fBgrub\fR(8),
+\fBplymouth\fR(8),
+\fBplymouthd\fR(8),
+\fBplymouth\fR(1),
+\m[blue]\fBhttp://www\&.freedesktop\&.org/wiki/Software/Plymouth\fR\m[]
