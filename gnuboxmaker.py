@@ -44,28 +44,41 @@ def raw_save_project(path, proj):
 
 currentProject = None
 path_temp = None
-path_output = None
+path_temp_syslbuild = None
 
 def buildProject():
-    pass
+    updateProgress(10, "Generating the syslbuild project...")
+
+    updateProgress(50, "Launching syslbuild...")
+    
+
+    updateProgress()
 
 # ---------------------------------------- editor frame
 
 bottom_frame = tk.Frame(frame_editor)
 bottom_frame.pack(side="bottom", fill="x", padx=10, pady=10)
 
+progress_label = tk.Label(bottom_frame, text="Nothing")
+progress_label.grid(row=0, column=0, columnspan=2, sticky="w", pady=(0,5))
+
 progress = ttk.Progressbar(bottom_frame, orient="horizontal", mode="determinate")
-progress.grid(row=0, column=0, sticky="ew")
+progress.grid(row=1, column=0, sticky="ew")
 progress["maximum"] = 100
 
 build_btn = tk.Button(bottom_frame, text="Build", command=buildProject)
-build_btn.grid(row=0, column=1, padx=10)
+build_btn.grid(row=1, column=1, padx=10)
 
 bottom_frame.grid_columnconfigure(0, weight=1)
 
-def updateProgressbar(value):
+def updateProgress(value=0, text=None):
+    if text is None:
+        text = "Nothing"
+    
     progress["value"] = value
     window.update_idletasks()
+
+    progress_label["text"] = text
 
 def run_editor(path):
     global currentProject
@@ -77,10 +90,8 @@ def run_editor(path):
         raw_save_project(path, currentProject)
 
     path_temp = os.path.join(os.path.dirname(path), ".temp")
-    path_output = os.path.join(os.path.dirname(path), "output")
-
+    path_temp_syslbuild = os.path.join(path_temp, "syslbuild")
     os.makedirs(path_temp, exist_ok=True)
-    os.makedirs(path_output, exist_ok=True)
 
     show_frame(frame_editor)
 
