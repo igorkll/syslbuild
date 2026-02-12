@@ -29,9 +29,20 @@ def show_frame(frame):
 @dataclass
 class Project:
     distro: str = "debian"
+    
     debian_variant: str = "minbase"
     debian_suite: str = "bookworm"
     debian_snapshot: str = "http://snapshot.debian.org/archive/debian/20250809T133719Z"
+
+    export_x86_64: bool = True
+    export_x86_64_img_bios_mbr: bool = True
+    export_x86_64_img_bios_gpt: bool = False
+    export_x86_64_img_uefi_gpt: bool = True
+    export_x86_64_img_bios_and_uefi_gpt: bool = False
+
+    export_x86: bool = False
+    export_x86_img_bios_mbr: bool = True
+    export_x86_img_bios_gpt: bool = False
 
 def raw_load_project(path):
     with open(path, "r", encoding="utf-8") as f:
@@ -100,6 +111,9 @@ def updateProgress(value=0, text=None):
 
 def run_editor(path):
     global currentProject
+    global path_temp
+    global path_temp_syslbuild
+    global path_temp_syslbuild_file
 
     if os.path.isfile(path):
         currentProject = raw_load_project(path)
@@ -111,6 +125,7 @@ def run_editor(path):
     path_temp_syslbuild = os.path.join(path_temp, "syslbuild")
     path_temp_syslbuild_file = os.path.join(path_temp_syslbuild, "project.json")
     os.makedirs(path_temp, exist_ok=True)
+    os.makedirs(path_temp_syslbuild, exist_ok=True)
 
     show_frame(frame_editor)
 
