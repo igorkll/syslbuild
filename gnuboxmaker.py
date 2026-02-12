@@ -6,6 +6,7 @@ from PIL import Image, ImageTk
 from dataclasses import dataclass, asdict
 from tkinter import ttk
 from pathlib import Path
+import shutil
 import json
 import subprocess
 import sys
@@ -69,6 +70,7 @@ currentProjectName = None
 currentProjectDirectory = None
 
 path_temp = None
+path_resources = None
 path_temp_syslbuild = None
 path_temp_syslbuild_file = None
 
@@ -80,7 +82,7 @@ def setup_build_architectures(architectures):
         architectures.append("i386")
 
 def setup_chroot_script():
-    chroot_project_directory = os.join.path(currentProjectDirectory, "chroot")
+    chroot_project_directory = os.join.path(path_resources, "chroot")
     chroot_scripts_directory = os.join.path(path_temp_syslbuild, "chroot")
     scripts = []
 
@@ -88,7 +90,14 @@ def setup_chroot_script():
 
     for f in Path(chroot_project_directory).iterdir():
         if f.is_file():
-            scripts.append(f"chroot/{name}")
+            scripts.append(f"chroot/{f.name}")
+            shutil.copy(
+                os.path.join(chroot_project_directory, f.name),
+                os.path.join(chroot_scripts_directory, f.name)
+            )
+
+    with open(os.path.join(chroot_scripts_directory, "aaa_setup.sh"), "w") as f:
+        f.write()
 
     return scripts
 
@@ -355,6 +364,7 @@ def run_editor(path):
     global currentProjectName
     global currentProjectDirectory
     global path_temp
+    global path_resources
     global path_temp_syslbuild
     global path_temp_syslbuild_file
 
@@ -367,6 +377,7 @@ def run_editor(path):
     currentProjectDirectory = os.path.dirname(path)
     currentProjectName = os.path.basename(currentProjectDirectory)
     path_temp = os.path.join(currentProjectDirectory, ".temp")
+    path_resources = os.path.join(currentProjectDirectory, "resources")
     path_temp_syslbuild = os.path.join(path_temp, "syslbuild")
     path_temp_syslbuild_file = os.path.join(path_temp_syslbuild, "project.json")
     os.makedirs(path_temp, exist_ok=True)
