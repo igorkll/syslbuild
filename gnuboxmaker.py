@@ -17,6 +17,7 @@ import time
 HandlyeKeyVarians = ["ignore", "poweroff", "reboot", "suspend", "hibernate", "lock"]
 session_user_variants = ["user", "root"]
 session_mode_variants = ["wayland", "x11", "tty"]
+weston_shell_variants = ["kiosk", "desktop"]
 
 @dataclass
 class Project:
@@ -38,6 +39,8 @@ class Project:
 
     root_expand: bool = True
     allow_updatescript: bool = True
+
+    weston_shell: str = "kiosk"
 
     session_user: str = "user"
     session_mode: str = "tty"
@@ -318,6 +321,25 @@ User={currentProject.session_user}
 Session={session}
 Relogin=true""")
 
+def setup_graphic():
+    etc_config = os.path.join(path_temp_syslbuild, "files", "etc_config")
+
+    if currentProject.session_mode == "wayland":
+        writeText(os.path.join(etc_config, "xdg", "weston", "weston.ini"), f"""[core]
+shell={currentProject.weston_shell}-shell.so
+idle-time={currentProject.screen_idle_time}
+
+[shell]
+background-color=0xff000000
+allow-zap=false
+panel-position=none
+
+[keyboard]
+vt-switching=false
+
+[autolaunch]
+path=/runshell.sh""")
+
 def setup_write_files():
     etc_config = os.path.join(path_temp_syslbuild, "files", "etc_config")
     systemd_config = os.path.join(path_temp_syslbuild, "files", "systemd_config")
@@ -357,6 +379,7 @@ LidSwitchIgnoreInhibited=no""")
     writeText(os.path.join(etc_config, "locale.conf"), f"""LANG=en_US.UTF-8""")
 
     setup_autologin()
+    setup_graphic()
 
     buildExecute(["cp", "-a", os.path.join(path_resources, "files") + "/.", user_files])
     shutil.copy(os.path.join(path_resources, "runshell.sh"), os.path.join(path_temp_syslbuild, "files", "runshell.sh"))
