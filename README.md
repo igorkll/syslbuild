@@ -520,7 +520,7 @@ these changes to the kernel config are applied automatically when building the k
 
             // i am adding one megabyte (with a margin) for the partition table
             // since auto only takes into account the files size in bytes
-            "size": "auto + (1 * 1024 * 1024)",
+            "size": "auto + (10 * 1024 * 1024)",
 
             // there are dos and gpt partition tables
             // sections have different types, and syslbuild has simpler aliases for names
@@ -563,7 +563,7 @@ these changes to the kernel config are applied automatically when building the k
             "name": "example-distro GPT (BIOS).img",
             "export": true,
 
-            "size": "auto + (1 * 1024 * 1024)",
+            "size": "auto + (10 * 1024 * 1024)",
 
             "partitionTable": "gpt",
             "partitions": [
@@ -601,7 +601,7 @@ these changes to the kernel config are applied automatically when building the k
             "name": "example-distro GPT (EFI).img",
             "export": true,
 
-            "size": "auto + (1 * 1024 * 1024)",
+            "size": "auto + (10 * 1024 * 1024)",
 
             "partitionTable": "gpt",
             "partitions": [
@@ -630,7 +630,7 @@ these changes to the kernel config are applied automatically when building the k
             "name": "example-distro GPT (EFI+BIOS).img",
             "export": true,
 
-            "size": "auto + (1 * 1024 * 1024)",
+            "size": "auto + (10 * 1024 * 1024)",
 
             "partitionTable": "gpt",
             "partitions": [
