@@ -68,8 +68,14 @@ def raw_save_project(path, proj):
 
 # ---------------------------------------- functions
 
-def buildLog(log):
-    print(log)
+def buildLog(logstr, quiet=False):
+    if not quiet:
+        logstr = f"-------- GNUBOX MAKER: {logstr}"
+    
+    print(logstr)
+
+    # log_file.write(logstr + "\n")
+    # log_file.flush()
 
 def stop_error(err):
     err = "ERROR: " + err
