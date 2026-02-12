@@ -8,6 +8,7 @@ from tkinter import ttk
 import json
 import subprocess
 import sys
+import time
 
 window = tk.Tk()
 window.title("Gnubox maker")
@@ -95,6 +96,8 @@ def build_project():
     updateProgress(50, "Launching syslbuild...")
     run_syslbuild()
 
+    updateProgress(100, "Completed")
+    time.sleep(2)
     updateProgress()
 
 # ---------------------------------------- editor frame
@@ -119,9 +122,8 @@ def updateProgress(value=0, text=None):
         text = "Nothing"
     
     progress["value"] = value
-    window.update_idletasks()
-
     progress_label["text"] = text
+    window.update_idletasks()
 
 def run_editor(path):
     global currentProject
