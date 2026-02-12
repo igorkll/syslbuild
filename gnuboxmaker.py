@@ -306,7 +306,7 @@ def setup_autologin():
     if currentProject.session_mode == "tty":
         writeText(os.path.join(systemd_config, "system", "getty@tty1.service.d", "autologin.conf"), f"""[Service]
 ExecStart=
-ExecStart=-/sbin/agetty -o '-p -f -- \\u' --noclear --skip-login --noissue --nohostname --autologin {currentProject.session_user} - $TERM""")
+ExecStart=-/usr/bin/agetty --skip-login --nonewline --noissue --autologin {currentProject.session_user} --noclear %I $TERM""")
 
 def setup_write_files():
     etc_config = os.path.join(path_temp_syslbuild, "files", "etc_config")
