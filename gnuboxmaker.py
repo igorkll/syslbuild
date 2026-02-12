@@ -4,6 +4,7 @@ import os
 from tkinter import filedialog, messagebox
 from PIL import Image, ImageTk
 from dataclasses import dataclass, asdict
+from tkinter import ttk
 import json
 
 window = tk.Tk()
@@ -39,14 +40,32 @@ def raw_save_project(path, proj):
     with open(path, "w", encoding="utf-8") as f:
         json.dump(asdict(proj), f, indent=2, ensure_ascii=False)
 
-currentProject = None
-
 # ---------------------------------------- builder
+
+currentProject = None
+path_temp = None
+path_output = None
 
 def buildProject():
     pass
 
 # ---------------------------------------- editor frame
+
+bottom_frame = tk.Frame(frame_editor)
+bottom_frame.pack(side="bottom", fill="x", padx=10, pady=10)
+
+progress = ttk.Progressbar(bottom_frame, orient="horizontal", mode="determinate")
+progress.grid(row=0, column=0, sticky="ew")
+progress["maximum"] = 100
+
+build_btn = tk.Button(bottom_frame, text="Build", command=buildProject)
+build_btn.grid(row=0, column=1, padx=10)
+
+bottom_frame.grid_columnconfigure(0, weight=1)
+
+def updateProgressbar(value):
+    progress["value"] = value
+    window.update_idletasks()
 
 def run_editor(path):
     global currentProject
@@ -56,6 +75,12 @@ def run_editor(path):
     else:
         currentProject = Project()
         raw_save_project(path, currentProject)
+
+    path_temp = os.path.join(os.path.dirname(path), ".temp")
+    path_output = os.path.join(os.path.dirname(path), "output")
+
+    os.makedirs(path_temp, exist_ok=True)
+    os.makedirs(path_output, exist_ok=True)
 
     show_frame(frame_editor)
 
