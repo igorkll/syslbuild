@@ -15,6 +15,8 @@ import time
 # ---------------------------------------- data
 
 HandlyeKeyVarians = ["ignore", "poweroff", "reboot", "suspend", "hibernate", "lock"]
+session_user_variants = ["user", "root"]
+session_mode_variants = ["wayland", "x11", "tty"]
 
 @dataclass
 class Project:
@@ -37,8 +39,8 @@ class Project:
     root_expand: bool = True
     allow_updatescript: bool = True
 
-    session_user: str = "user",
-    session_mode: str = "tty",
+    session_user: str = "user"
+    session_mode: str = "tty"
 
     export_x86_64: bool = True
     export_x86: bool = False
