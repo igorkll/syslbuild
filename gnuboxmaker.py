@@ -82,8 +82,8 @@ def setup_build_architectures(architectures):
         architectures.append("i386")
 
 def setup_chroot_script():
-    chroot_project_directory = os.join.path(path_resources, "chroot")
-    chroot_scripts_directory = os.join.path(path_temp_syslbuild, "chroot")
+    chroot_project_directory = os.path.join(path_resources, "chroot")
+    chroot_scripts_directory = os.path.join(path_temp_syslbuild, "chroot")
     scripts = []
 
     os.makedirs(chroot_scripts_directory, exist_ok=True)
@@ -97,7 +97,7 @@ def setup_chroot_script():
             )
 
     with open(os.path.join(chroot_scripts_directory, "aaa_setup.sh"), "w") as f:
-        f.write()
+        f.write("#!/bin/bash\n")
 
     return scripts
 
@@ -134,8 +134,8 @@ def setup_build_base(builditems):
         "name": "rootfs directory x2",
         "export": False,
 
-        "manual_validation": true,
-        "use_systemd_container": true,
+        "manual_validation": True,
+        "use_systemd_container": True,
         "source": "rootfs directory x1",
         "scripts": setup_chroot_script()
     },)
@@ -380,8 +380,12 @@ def run_editor(path):
     path_resources = os.path.join(currentProjectDirectory, "resources")
     path_temp_syslbuild = os.path.join(path_temp, "syslbuild")
     path_temp_syslbuild_file = os.path.join(path_temp_syslbuild, "project.json")
+
+    os.makedirs(path_resources, exist_ok=True)
     os.makedirs(path_temp, exist_ok=True)
     os.makedirs(path_temp_syslbuild, exist_ok=True)
+
+    os.makedirs(os.path.join(path_resources, "chroot"))
 
     gitignore_path = os.path.join(currentProjectDirectory, ".gitignore")
     if not os.path.isfile(gitignore_path):
