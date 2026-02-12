@@ -1679,7 +1679,10 @@ def getDependenciesFilesystem(item):
     return rawGetDependencies(item, ["source"], [])
 
 def getDependenciesFullDiskImage(item):
-    return rawGetDependencies(item, ["partitions"], [])
+    dependencies = rawGetDependencies(item, ["partitions"], [])
+    if item.get("bootloader", {}).get("config", None):
+        dependencies.append(getDependenciesFieldChecksum(item["bootloader"]["config"], False))
+    return dependencies
 
 def getDependenciesFromDirectory(item):
     return rawGetDependencies(item, ["source"], [])
