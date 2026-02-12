@@ -158,9 +158,13 @@ def setup_download(builditems):
     addExtract("custom-debian-initramfs-init", "custom_init.sh")
     addExtract("custom-debian-initramfs-init", "custom_init_hook.sh")
 
+def setup_write_configs():
+    etc_config = os.path.join(currentProjectDirectory, "files", "etc_config")
+    systemd_config = os.path.join(currentProjectDirectory, "files", "systemd_config")
 
 def setup_build_base(builditems):
     setup_build_distro(builditems)
+    setup_write_configs()
 
     builditems.append({
         "type": "directory",
