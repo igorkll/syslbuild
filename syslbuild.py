@@ -880,7 +880,7 @@ def installBootloader(item, path, partitionsOffsets, sectorsize):
 
             # in EFI mode, grub-install writes grub files to the /efi/boot directory, while grub itself searches for them simply by following the /boot path
             # Thanks to the grub developers
-            buildExecute("cp", "-a", os.path.join(path_mount2, "efi") + "/.", path_mount2)
+            buildExecute(["cp", "-a", os.path.join(path_mount2, "efi") + "/.", path_mount2])
 
             if readBool(bootloaderInfo, "efiAndBios"):
                 buildExecute(["grub-install", f"--modules={modulesString}", f"--target={getGrubTarget(item, False)}", path])
