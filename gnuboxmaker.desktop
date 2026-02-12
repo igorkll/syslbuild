@@ -1,0 +1,10 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Gnubox maker
+Comment=the easiest way is to create an embedded/kiosk linux distribution with a single application that cannot be exited
+Exec=/usr/bin/python3 /opt/syslbuild/gnuboxmaker.py
+Icon=/opt/syslbuild/gnuboxmaker.png
+Terminal=true
+Categories=Development;Utility;
