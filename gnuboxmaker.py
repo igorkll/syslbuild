@@ -70,7 +70,7 @@ def raw_save_project(path, proj):
 
 def buildLog(logstr, quiet=False):
     if not quiet:
-        logstr = f"-------- GNUBOX MAKER: {logstr}"
+        logstr = f"---------------- GNUBOX MAKER: {logstr}"
     
     print(logstr)
 
