@@ -193,6 +193,19 @@ HandleLidSwitchExternalPower={currentProject.HandleLidSwitch}
 HandleLidSwitchDocked={currentProject.HandleLidSwitch}
 LidSwitchIgnoreInhibited=no""")
 
+def setup_write_bins(builditems):
+    builditems.append({
+        "type": "directory",
+        "name": "rootfs directory x3",
+        "export": False,
+
+        "items": [
+            ["kernel_modules", "/usr"],
+            ["kernel.img", "/kernel.img", [0, 0, "0755"]],
+            ["initramfs.img", "/initramfs.img", [0, 0, "0755"]]
+        ]
+    })
+
 def setup_build_base(builditems):
     setup_build_distro(builditems)
     setup_write_configs()
@@ -217,26 +230,24 @@ def setup_build_base(builditems):
         "items": [
             ["rootfs directory x1", "."],
 
-            ["kernel_modules", "/usr"],
-            ["kernel.img", "/kernel.img", [0, 0, "0755"]],
-            ["initramfs.img", "/initramfs.img", [0, 0, "0755"]],
-
             ["files/etc_config", "/etc", [0, 0, "0644"]],
             ["files/systemd_config", "/etc/systemd", [0, 0, "0644"]],
 
             ["custom_init.sh", "/usr/share/initramfs-tools/init", [0, 0, "0755"]],
             ["custom_init_hook.sh", "/etc/initramfs-tools/hooks/custom_init_hook.sh", [0, 0, "0755"]]
         ]
-    },)
+    })
+
+    setup_write_bins(builditems)
 
     builditems.append({
         "type": "smart-chroot",
-        "name": "rootfs directory x3",
+        "name": "rootfs directory x4",
         "export": False,
 
         "manual_validation": True,
         "use_systemd_container": True,
-        "source": "rootfs directory x2",
+        "source": "rootfs directory x3",
         "scripts": setup_chroot_script()
     })
 
