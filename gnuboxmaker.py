@@ -257,7 +257,7 @@ def setup_build_distro(builditems):
             "dbus-user-session"
         ]
 
-        if currentProject.session_mode == "wayland" and currentProject.session_mode == "x11":
+        if currentProject.session_mode != "tty":
             include.append("sddm")
 
         if currentProject.session_mode == "weston":
@@ -301,12 +301,22 @@ def setup_download(builditems):
     addExtract("custom-debian-initramfs-init", "custom_init_hook.sh")
 
 def setup_autologin():
+    etc_config = os.path.join(path_temp_syslbuild, "files", "etc_config")
     systemd_config = os.path.join(path_temp_syslbuild, "files", "systemd_config")
 
     if currentProject.session_mode == "tty":
         writeText(os.path.join(systemd_config, "system", "getty@tty1.service.d", "autologin.conf"), f"""[Service]
 ExecStart=
-ExecStart=-/usr/bin/agetty --skip-login --nonewline --noissue --autologin {currentProject.session_user} --noclear %I $TERM""")
+ExecStart=-/sbin/agetty --skip-login --nonewline --noissue --autologin {currentProject.session_user} --noclear %I $TERM > /dev/null 2>&1""")
+    else:
+        session = "weston.desktop"
+        if currentProject.session_mode == "x11":
+            session = ""
+
+        writeText(os.path.join(etc_config, "sddm.conf"), f"""[Autologin]
+User={currentProject.session_user}
+Session={session}
+Relogin=true""")
 
 def setup_write_files():
     etc_config = os.path.join(path_temp_syslbuild, "files", "etc_config")
@@ -343,6 +353,8 @@ HandleLidSwitch={currentProject.HandleLidSwitch}
 HandleLidSwitchExternalPower={currentProject.HandleLidSwitch}
 HandleLidSwitchDocked={currentProject.HandleLidSwitch}
 LidSwitchIgnoreInhibited=no""")
+
+    writeText(os.path.join(etc_config, "locale.conf"), f"""LANG=en_US.UTF-8""")
 
     setup_autologin()
 
