@@ -132,6 +132,11 @@ def buildExecute(cmd, checkValid=True, input_data=None, cwd=None):
 
     return "\n".join(output_lines)
 
+def writeText(path, text):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w") as f:
+        f.write(text)
+
 # ---------------------------------------- builder
 
 currentProject = None
@@ -289,6 +294,14 @@ def setup_download(builditems):
     addExtract("custom-debian-initramfs-init", "custom_init.sh")
     addExtract("custom-debian-initramfs-init", "custom_init_hook.sh")
 
+def setup_autologin():
+    systemd_config = os.path.join(path_temp_syslbuild, "files", "systemd_config")
+
+    if currentProject.session_mode == "tty":
+        writeText(os.path.join(systemd_config, "system", "getty@tty1.service.d", "autologin.conf"), f"""[Service]
+ExecStart=
+ExecStart=-/sbin/agetty -o '-p -f -- \\u' --noclear --autologin {currentProject.session_user} - $TERM""")
+
 def setup_write_files():
     etc_config = os.path.join(path_temp_syslbuild, "files", "etc_config")
     systemd_config = os.path.join(path_temp_syslbuild, "files", "systemd_config")
@@ -298,8 +311,7 @@ def setup_write_files():
     os.makedirs(systemd_config, exist_ok=True)
     os.makedirs(user_files, exist_ok=True)
 
-    with open(os.path.join(systemd_config, "logind.conf"), "w") as f:
-        f.write(f"""[Login]
+    writeText(os.path.join(systemd_config, "logind.conf"), f"""[Login]
 NAutoVTs=0
 ReserveVT=0
 
@@ -325,6 +337,8 @@ HandleLidSwitch={currentProject.HandleLidSwitch}
 HandleLidSwitchExternalPower={currentProject.HandleLidSwitch}
 HandleLidSwitchDocked={currentProject.HandleLidSwitch}
 LidSwitchIgnoreInhibited=no""")
+
+    setup_autologin()
 
     buildExecute(["cp", "-a", os.path.join(path_resources, "files") + "/.", user_files])
     shutil.copy(os.path.join(path_resources, "runshell.sh"), os.path.join(path_temp_syslbuild, "files", "runshell.sh"))
@@ -652,6 +666,7 @@ initrd /initramfs.img
 boot""")
 
 def run_syslbuild():
+    # надо сделать чтобы если прога уже запущена от рута не использовался pkexec, чтобы сборка могла быть автоматизирована через аргументы запуска и не было GUI
     cmd = [
         "pkexec", "bash", "-c",
         f"cd {path_temp_syslbuild!r} && {sys.executable!r} {os.path.abspath('syslbuild.py')!r} "
