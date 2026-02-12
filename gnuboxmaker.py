@@ -162,6 +162,9 @@ def setup_write_configs():
     etc_config = os.path.join(currentProjectDirectory, "files", "etc_config")
     systemd_config = os.path.join(currentProjectDirectory, "files", "systemd_config")
 
+    os.makedirs(etc_config, exist_ok=True)
+    os.makedirs(systemd_config, exist_ok=True)
+
     with open(os.path.join(systemd_config, "logind.conf"), "w") as f:
         f.write(f"""[Login]
 NAutoVTs=0
