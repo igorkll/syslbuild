@@ -1934,6 +1934,8 @@ def requireRoot():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="an assembly system for creating Linux distributions. it is focused on embedded distributions")
     parser.add_argument("--arch", choices=["ALL", "amd64", "i386", "arm64", "armhf", "armel"], type=str, required=True, help="the processor architecture for which the build will be made")
+    parser.add_argument("--output", type=str, help="path to output directory")
+    parser.add_argument("--temp", type=str, help="path to .temp directory")
     parser.add_argument("json_path", type=str, help="the path to the json file of the project")
     parser.add_argument("-n", action="store_true", help="does the build anew, does not use the cache")
     parser.add_argument("-d", action="store_true", help="do not use the download cache of the kernel sources")
@@ -1942,9 +1944,12 @@ if __name__ == "__main__":
     
     requireRoot()
 
+    path_temp = args.temp
+    path_output = args.output
+
     if args.e:
-        deleteAny(".temp")
-        deleteAny("output")
+        deleteAny(path_temp)
+        deleteAny(path_output)
     
     architecture = args.arch
     log_file = getLogFile()

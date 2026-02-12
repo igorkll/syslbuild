@@ -27,6 +27,8 @@ def show_frame(frame):
 
 # ---------------------------------------- data
 
+HandlyeKeyVarians = ["ignore", "poweroff", "reboot", "suspend", "hibernate", "lock"]
+
 @dataclass
 class Project:
     distro: str = "debian"
@@ -34,6 +36,13 @@ class Project:
     debian_variant: str = "minbase"
     debian_suite: str = "bookworm"
     debian_snapshot: str = "http://snapshot.debian.org/archive/debian/20250809T133719Z"
+
+    screen_idle_time: int = 0
+    HandlePowerKey: str = "poweroff"
+    HandleRebootKey: str = "reboot"
+    HandleSuspendKey: str = "suspend"
+    HandleHibernateKey: str = "hibernate"
+    HandleLidSwitch: str = "lock"
 
     export_x86_64: bool = True
     export_x86: bool = False
@@ -66,6 +75,33 @@ def setup_build_architectures(architectures):
 
     if currentProject.export_x86:
         architectures.append("i386")
+
+def setup_build_base(builditems):
+    builditems.append({
+        "type": "full-disk-image",
+        "name": f"{currentProjectName} BIOS MBR.img",
+        "export": True,
+
+        "size": "auto + (1 * 1024 * 1024)",
+
+        "partitionTable": "dos",
+        "partitions": [
+            ["rootfs.img", "linux"]
+        ],
+
+        "bootloader": {
+            "type": "grub",
+            "config": "grub.cfg",
+            "boot": 0,
+            "modules": [
+                "normal",
+                "part_msdos",
+                "part_gpt",
+                "ext2",
+                "configfile"
+            ]
+        }
+    })
 
 def setup_build_targets(builditems):
     if currentProject.export_img_bios_mbr:
@@ -220,6 +256,7 @@ def generate_syslbuild_project():
     builditems = []
     
     setup_build_architectures(architectures)
+    setup_build_base(builditems)
     setup_build_targets(builditems)
 
     syslbuild_project = {
@@ -241,7 +278,9 @@ boot""")
 def run_syslbuild():
     cmd = [
         "pkexec", sys.executable, os.path.abspath("syslbuild.py"),
-        "--arch", "ALL", path_temp_syslbuild_file
+        "--arch", "ALL", path_temp_syslbuild_file,
+        "--temp", "../../.temp",
+        "--output", "../../output"
     ]
 
     subprocess.run(cmd, cwd=path_temp_syslbuild)
