@@ -1,0 +1,119 @@
+kernel/fs/efivarfs/efivarfs.ko:
+kernel/lib/lz4/lz4_compress.ko:
+kernel/drivers/video/backlight/lcd.ko:
+kernel/drivers/video/backlight/platform_lcd.ko: kernel/drivers/video/backlight/lcd.ko
+kernel/drivers/video/backlight/adp8860_bl.ko:
+kernel/drivers/video/backlight/adp8870_bl.ko:
+kernel/drivers/video/backlight/apple_bl.ko:
+kernel/drivers/video/backlight/bd6107.ko:
+kernel/drivers/video/backlight/ktz8866.ko: kernel/drivers/base/regmap/regmap-i2c.ko
+kernel/drivers/video/backlight/lm3639_bl.ko: kernel/drivers/base/regmap/regmap-i2c.ko
+kernel/drivers/video/backlight/lv5207lp.ko:
+kernel/drivers/video/backlight/qcom-wled.ko:
+kernel/drivers/video/backlight/kb3886_bl.ko:
+kernel/drivers/video/backlight/arcxcnn_bl.ko:
+kernel/drivers/video/fbdev/core/svgalib.ko:
+kernel/drivers/video/fbdev/core/fb_ddc.ko:
+kernel/drivers/video/fbdev/arcfb.ko:
+kernel/drivers/video/fbdev/cyber2000fb.ko: kernel/drivers/i2c/algos/i2c-algo-bit.ko
+kernel/drivers/video/fbdev/pm2fb.ko:
+kernel/drivers/video/fbdev/pm3fb.ko:
+kernel/drivers/video/fbdev/i740fb.ko: kernel/drivers/video/fbdev/core/fb_ddc.ko kernel/drivers/i2c/algos/i2c-algo-bit.ko
+kernel/drivers/video/fbdev/matrox/matroxfb_base.ko: kernel/drivers/video/fbdev/matrox/matroxfb_g450.ko kernel/drivers/video/fbdev/matrox/matroxfb_Ti3026.ko kernel/drivers/video/fbdev/matrox/matroxfb_accel.ko kernel/drivers/video/fbdev/matrox/matroxfb_DAC1064.ko kernel/drivers/video/fbdev/matrox/g450_pll.ko kernel/drivers/video/fbdev/matrox/matroxfb_misc.ko
+kernel/drivers/video/fbdev/matrox/matroxfb_accel.ko:
+kernel/drivers/video/fbdev/matrox/matroxfb_DAC1064.ko: kernel/drivers/video/fbdev/matrox/g450_pll.ko kernel/drivers/video/fbdev/matrox/matroxfb_misc.ko
+kernel/drivers/video/fbdev/matrox/matroxfb_Ti3026.ko: kernel/drivers/video/fbdev/matrox/matroxfb_misc.ko
+kernel/drivers/video/fbdev/matrox/matroxfb_misc.ko:
+kernel/drivers/video/fbdev/matrox/g450_pll.ko: kernel/drivers/video/fbdev/matrox/matroxfb_misc.ko
+kernel/drivers/video/fbdev/matrox/matroxfb_g450.ko: kernel/drivers/video/fbdev/matrox/g450_pll.ko kernel/drivers/video/fbdev/matrox/matroxfb_misc.ko
+kernel/drivers/video/fbdev/matrox/matroxfb_crtc2.ko: kernel/drivers/video/fbdev/matrox/matroxfb_base.ko kernel/drivers/video/fbdev/matrox/matroxfb_g450.ko kernel/drivers/video/fbdev/matrox/matroxfb_Ti3026.ko kernel/drivers/video/fbdev/matrox/matroxfb_accel.ko kernel/drivers/video/fbdev/matrox/matroxfb_DAC1064.ko kernel/drivers/video/fbdev/matrox/g450_pll.ko kernel/drivers/video/fbdev/matrox/matroxfb_misc.ko
+kernel/drivers/video/fbdev/matrox/i2c-matroxfb.ko: kernel/drivers/video/fbdev/matrox/matroxfb_base.ko kernel/drivers/video/fbdev/matrox/matroxfb_g450.ko kernel/drivers/video/fbdev/matrox/matroxfb_Ti3026.ko kernel/drivers/video/fbdev/matrox/matroxfb_accel.ko kernel/drivers/video/fbdev/matrox/matroxfb_DAC1064.ko kernel/drivers/video/fbdev/matrox/g450_pll.ko kernel/drivers/video/fbdev/matrox/matroxfb_misc.ko kernel/drivers/i2c/algos/i2c-algo-bit.ko
+kernel/drivers/video/fbdev/matrox/matroxfb_maven.ko: kernel/drivers/video/fbdev/matrox/matroxfb_misc.ko
+kernel/drivers/video/fbdev/riva/rivafb.ko: kernel/drivers/video/vgastate.ko kernel/drivers/video/fbdev/core/fb_ddc.ko kernel/drivers/i2c/algos/i2c-algo-bit.ko
+kernel/drivers/video/fbdev/nvidia/nvidiafb.ko: kernel/drivers/video/vgastate.ko kernel/drivers/video/fbdev/core/fb_ddc.ko kernel/drivers/i2c/algos/i2c-algo-bit.ko
+kernel/drivers/video/fbdev/aty/atyfb.ko:
+kernel/drivers/video/fbdev/aty/aty128fb.ko:
+kernel/drivers/video/fbdev/aty/radeonfb.ko: kernel/drivers/video/fbdev/core/fb_ddc.ko kernel/drivers/i2c/algos/i2c-algo-bit.ko
+kernel/drivers/video/fbdev/macmodes.ko:
+kernel/drivers/video/fbdev/sis/sisfb.ko:
+kernel/drivers/video/fbdev/kyro/kyrofb.ko:
+kernel/drivers/video/fbdev/savage/savagefb.ko: kernel/drivers/video/vgastate.ko kernel/drivers/video/fbdev/core/fb_ddc.ko kernel/drivers/i2c/algos/i2c-algo-bit.ko
+kernel/drivers/video/fbdev/neofb.ko: kernel/drivers/video/vgastate.ko
+kernel/drivers/video/fbdev/tdfxfb.ko: kernel/drivers/video/fbdev/core/fb_ddc.ko kernel/drivers/i2c/algos/i2c-algo-bit.ko
+kernel/drivers/video/fbdev/vt8623fb.ko: kernel/drivers/video/fbdev/core/svgalib.ko kernel/drivers/video/vgastate.ko
+kernel/drivers/video/fbdev/tridentfb.ko: kernel/drivers/video/fbdev/core/fb_ddc.ko kernel/drivers/i2c/algos/i2c-algo-bit.ko
+kernel/drivers/video/fbdev/s3fb.ko: kernel/drivers/video/fbdev/core/svgalib.ko kernel/drivers/video/vgastate.ko kernel/drivers/video/fbdev/core/fb_ddc.ko kernel/drivers/i2c/algos/i2c-algo-bit.ko
+kernel/drivers/video/fbdev/arkfb.ko: kernel/drivers/video/fbdev/core/svgalib.ko kernel/drivers/video/vgastate.ko
+kernel/drivers/video/fbdev/hecubafb.ko:
+kernel/drivers/video/fbdev/n411.ko:
+kernel/drivers/video/fbdev/hgafb.ko:
+kernel/drivers/video/fbdev/sstfb.ko:
+kernel/drivers/video/fbdev/cirrusfb.ko:
+kernel/drivers/video/fbdev/metronomefb.ko:
+kernel/drivers/video/fbdev/s1d13xxxfb.ko:
+kernel/drivers/video/fbdev/udlfb.ko:
+kernel/drivers/video/fbdev/smscufx.ko:
+kernel/drivers/video/fbdev/carminefb.ko:
+kernel/drivers/video/fbdev/mb862xx/mb862xxfb.ko:
+kernel/drivers/video/fbdev/ocfb.ko:
+kernel/drivers/video/fbdev/sm712fb.ko:
+kernel/drivers/video/fbdev/uvesafb.ko:
+kernel/drivers/video/fbdev/vga16fb.ko: kernel/drivers/video/vgastate.ko
+kernel/drivers/video/vgastate.ko:
+kernel/drivers/virtio/virtio_dma_buf.ko:
+kernel/drivers/char/agp/sis-agp.ko:
+kernel/drivers/gpu/drm/display/drm_display_helper.ko: kernel/drivers/media/cec/core/cec.ko
+kernel/drivers/gpu/drm/i2c/ch7006.ko:
+kernel/drivers/gpu/drm/i2c/sil164.ko:
+kernel/drivers/gpu/drm/i2c/tda998x.ko: kernel/drivers/media/cec/core/cec.ko
+kernel/drivers/gpu/drm/i2c/tda9950.ko: kernel/drivers/media/cec/core/cec.ko
+kernel/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.ko:
+kernel/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.ko:
+kernel/drivers/gpu/drm/bridge/analogix/analogix_dp.ko: kernel/drivers/gpu/drm/display/drm_display_helper.ko kernel/drivers/media/cec/core/cec.ko
+kernel/drivers/gpu/drm/tiny/bochs.ko: kernel/drivers/gpu/drm/drm_vram_helper.ko kernel/drivers/gpu/drm/drm_ttm_helper.ko kernel/drivers/gpu/drm/ttm/ttm.ko
+kernel/drivers/gpu/drm/tiny/cirrus.ko:
+kernel/drivers/gpu/drm/tiny/gm12u320.ko:
+kernel/drivers/gpu/drm/gud/gud.ko: kernel/lib/lz4/lz4_compress.ko
+kernel/drivers/gpu/drm/solomon/ssd130x.ko:
+kernel/drivers/gpu/drm/solomon/ssd130x-i2c.ko: kernel/drivers/gpu/drm/solomon/ssd130x.ko kernel/drivers/base/regmap/regmap-i2c.ko
+kernel/drivers/gpu/drm/drm_exec.ko:
+kernel/drivers/gpu/drm/drm_buddy.ko:
+kernel/drivers/gpu/drm/drm_suballoc_helper.ko:
+kernel/drivers/gpu/drm/drm_vram_helper.ko: kernel/drivers/gpu/drm/drm_ttm_helper.ko kernel/drivers/gpu/drm/ttm/ttm.ko
+kernel/drivers/gpu/drm/drm_ttm_helper.ko: kernel/drivers/gpu/drm/ttm/ttm.ko
+kernel/drivers/gpu/drm/ttm/ttm.ko:
+kernel/drivers/gpu/drm/scheduler/gpu-sched.ko:
+kernel/drivers/gpu/drm/radeon/radeon.ko: kernel/drivers/gpu/drm/drm_suballoc_helper.ko kernel/drivers/gpu/drm/drm_ttm_helper.ko kernel/drivers/gpu/drm/ttm/ttm.ko kernel/drivers/gpu/drm/display/drm_display_helper.ko kernel/drivers/media/cec/core/cec.ko kernel/drivers/i2c/algos/i2c-algo-bit.ko
+kernel/drivers/gpu/drm/amd/amdgpu/amdgpu.ko: kernel/drivers/gpu/drm/amd/amdxcp/amdxcp.ko kernel/drivers/gpu/drm/drm_exec.ko kernel/drivers/mfd/mfd-core.ko kernel/drivers/gpu/drm/scheduler/gpu-sched.ko kernel/drivers/gpu/drm/drm_buddy.ko kernel/drivers/gpu/drm/drm_suballoc_helper.ko kernel/drivers/gpu/drm/drm_ttm_helper.ko kernel/drivers/gpu/drm/ttm/ttm.ko kernel/drivers/gpu/drm/display/drm_display_helper.ko kernel/drivers/media/cec/core/cec.ko kernel/drivers/i2c/algos/i2c-algo-bit.ko
+kernel/drivers/gpu/drm/amd/amdxcp/amdxcp.ko:
+kernel/drivers/gpu/drm/i915/i915.ko: kernel/drivers/gpu/drm/drm_buddy.ko kernel/drivers/gpu/drm/ttm/ttm.ko kernel/drivers/gpu/drm/display/drm_display_helper.ko kernel/drivers/media/cec/core/cec.ko kernel/drivers/i2c/algos/i2c-algo-bit.ko
+kernel/drivers/gpu/drm/mgag200/mgag200.ko: kernel/drivers/i2c/algos/i2c-algo-bit.ko
+kernel/drivers/gpu/drm/vmwgfx/vmwgfx.ko: kernel/drivers/gpu/drm/drm_ttm_helper.ko kernel/drivers/gpu/drm/ttm/ttm.ko
+kernel/drivers/gpu/drm/vgem/vgem.ko:
+kernel/drivers/gpu/drm/vkms/vkms.ko:
+kernel/drivers/gpu/drm/nouveau/nouveau.ko: kernel/drivers/platform/x86/mxm-wmi.ko kernel/drivers/gpu/drm/drm_exec.ko kernel/drivers/gpu/drm/scheduler/gpu-sched.ko kernel/drivers/gpu/drm/drm_ttm_helper.ko kernel/drivers/gpu/drm/ttm/ttm.ko kernel/drivers/gpu/drm/display/drm_display_helper.ko kernel/drivers/media/cec/core/cec.ko kernel/drivers/i2c/algos/i2c-algo-bit.ko
+kernel/drivers/gpu/drm/gma500/gma500_gfx.ko: kernel/drivers/i2c/algos/i2c-algo-bit.ko
+kernel/drivers/gpu/drm/udl/udl.ko:
+kernel/drivers/gpu/drm/ast/ast.ko: kernel/drivers/i2c/algos/i2c-algo-bit.ko
+kernel/drivers/gpu/drm/qxl/qxl.ko: kernel/drivers/gpu/drm/drm_ttm_helper.ko kernel/drivers/gpu/drm/ttm/ttm.ko
+kernel/drivers/gpu/drm/virtio/virtio-gpu.ko: kernel/drivers/virtio/virtio_dma_buf.ko
+kernel/drivers/gpu/drm/vboxvideo/vboxvideo.ko: kernel/drivers/gpu/drm/drm_vram_helper.ko kernel/drivers/gpu/drm/drm_ttm_helper.ko kernel/drivers/gpu/drm/ttm/ttm.ko
+kernel/drivers/base/regmap/regmap-i2c.ko:
+kernel/drivers/mfd/mfd-core.ko:
+kernel/drivers/auxdisplay/charlcd.ko:
+kernel/drivers/auxdisplay/img-ascii-lcd.ko: kernel/drivers/auxdisplay/line-display.ko
+kernel/drivers/auxdisplay/ht16k33.ko: kernel/drivers/input/matrix-keymap.ko kernel/drivers/auxdisplay/line-display.ko
+kernel/drivers/auxdisplay/lcd2s.ko: kernel/drivers/auxdisplay/charlcd.ko
+kernel/drivers/auxdisplay/line-display.ko:
+kernel/drivers/input/matrix-keymap.ko:
+kernel/drivers/i2c/algos/i2c-algo-bit.ko:
+kernel/drivers/media/cec/core/cec.ko:
+kernel/drivers/thermal/intel/x86_pkg_temp_thermal.ko:
+kernel/drivers/platform/x86/mxm-wmi.ko:
+kernel/net/netfilter/nf_log_syslog.ko:
+kernel/net/netfilter/xt_mark.ko:
+kernel/net/netfilter/xt_nat.ko:
+kernel/net/netfilter/xt_LOG.ko:
+kernel/net/netfilter/xt_MASQUERADE.ko:
+kernel/net/netfilter/xt_addrtype.ko:
+kernel/net/ipv4/netfilter/iptable_nat.ko:

@@ -195,32 +195,64 @@ LidSwitchIgnoreInhibited=no""")
 
 def setup_write_bins(builditems):
     builditems.append({
+        "architectures": ["amd64"],
+
         "type": "directory",
         "name": "rootfs directory x3",
         "export": False,
 
         "items": [
-            ["kernel_modules", "/usr"],
-            ["kernel.img", "/kernel.img", [0, 0, "0755"]],
-            ["initramfs.img", "/initramfs.img", [0, 0, "0755"]]
+            ["rootfs directory x2", "."],
+
+            ["kernel_image/amd64/kernel_modules", "/usr"],
+            ["kernel_image/amd64/kernel.img", "/kernel.img", [0, 0, "0755"]]
         ]
     })
 
-def setup_build_base(builditems):
-    setup_build_distro(builditems)
-    setup_write_configs()
+    builditems.append({
+        "architectures": ["i386"],
 
+        "type": "directory",
+        "name": "rootfs directory x3",
+        "export": False,
+
+        "items": [
+            ["rootfs directory x2", "."],
+
+            ["kernel_image/i386/kernel_modules", "/usr"],
+            ["kernel_image/i386/kernel.img", "/kernel.img", [0, 0, "0755"]]
+        ]
+    })
+
+def setup_export_initramfs(builditems):
     if currentProject.distro == "debian":
         builditems.append({
+            "architectures": ["amd64"],
+            
             "type": "debian-export-initramfs",
             "name": "initramfs.img",
             "export": False,
 
-            "kernel_config": "kernel_config",
-            "source": "rootfs directory x1"
+            "kernel_config": "kernel_image/amd64/kernel_config",
+            "source": "rootfs directory x3"
+        })
+
+        builditems.append({
+            "architectures": ["i386"],
+
+            "type": "debian-export-initramfs",
+            "name": "initramfs.img",
+            "export": False,
+
+            "kernel_config": "kernel_image/i386/kernel_config",
+            "source": "rootfs directory x3"
         })
     else:
         stop_error(f"unknown distro \"{currentProject.distro}\"")
+
+def setup_build_base(builditems):
+    setup_build_distro(builditems)
+    setup_write_configs()
 
     builditems.append({
         "type": "directory",
@@ -239,15 +271,27 @@ def setup_build_base(builditems):
     })
 
     setup_write_bins(builditems)
+    setup_export_initramfs(builditems)
+
+    builditems.append({
+        "type": "directory",
+        "name": "rootfs directory x4",
+        "export": False,
+
+        "items": [
+            ["rootfs directory x3", "."],
+            ["initramfs.img", "/initramfs.img", [0, 0, "0755"]]
+        ]
+    })
 
     builditems.append({
         "type": "smart-chroot",
-        "name": "rootfs directory x4",
+        "name": "rootfs directory x5",
         "export": False,
 
         "manual_validation": True,
         "use_systemd_container": True,
-        "source": "rootfs directory x3",
+        "source": "rootfs directory x4",
         "scripts": setup_chroot_script()
     })
 
