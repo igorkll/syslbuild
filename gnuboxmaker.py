@@ -36,14 +36,12 @@ class Project:
     debian_snapshot: str = "http://snapshot.debian.org/archive/debian/20250809T133719Z"
 
     export_x86_64: bool = True
-    export_x86_64_img_bios_mbr: bool = True
-    export_x86_64_img_bios_gpt: bool = False
-    export_x86_64_img_uefi_gpt: bool = True
-    export_x86_64_img_bios_and_uefi_gpt: bool = False
-
     export_x86: bool = False
-    export_x86_img_bios_mbr: bool = True
-    export_x86_img_bios_gpt: bool = False
+
+    export_img_bios_mbr: bool = True
+    export_img_bios_gpt: bool = False
+    export_img_uefi_gpt: bool = True
+    export_img_bios_and_uefi_gpt: bool = False
 
 def raw_load_project(path):
     with open(path, "r", encoding="utf-8") as f:
@@ -57,29 +55,107 @@ def raw_save_project(path, proj):
 # ---------------------------------------- builder
 
 currentProject = None
+currentProjectName = None
 path_temp = None
 path_temp_syslbuild = None
 path_temp_syslbuild_file = None
 
-def setup_architecture_build():
-    pass
-
-def generate_syslbuild_project():
-    builditems = []
-    architectures = []
-    
+def setup_build_architectures(architectures):
     if currentProject.export_x86_64:
         architectures.append("amd64")
 
     if currentProject.export_x86:
         architectures.append("i386")
 
+def setup_build_targets(builditems):
+    if currentProject.export_img_bios_mbr:
+        builditems.append({
+            "architectures": ["amd64", "i386"],
+
+            "type": "full-disk-image",
+            "name": f"{currentProjectName} BIOS MBR.img",
+            "export": True,
+
+            "size": "auto + (1 * 1024 * 1024)",
+
+            "partitionTable": "dos",
+            "partitions": [
+                ["rootfs.img", "linux"]
+            ],
+
+            "bootloader": {
+                "type": "grub",
+                "config": "grub.cfg",
+                "boot": 0,
+                "modules": [
+                    "normal",
+                    "part_msdos",
+                    "part_gpt",
+                    "ext2",
+                    "configfile"
+                ]
+            }
+        })
+
+    if currentProject.export_img_bios_gpt:
+        builditems.append({
+            "architectures": ["amd64", "i386"],
+
+            
+        })
+
+        builditems.append({
+            "architectures": ["amd64", "i386"],
+
+            "type": "full-disk-image",
+            "name": f"{currentProjectName} BIOS MBR.img",
+            "export": True,
+
+            "size": "auto + (1 * 1024 * 1024)",
+
+            "partitionTable": "dos",
+            "partitions": [
+                ["rootfs.img", "linux"]
+            ],
+
+            "bootloader": {
+                "type": "grub",
+                "config": "grub.cfg",
+                "boot": 0,
+                "modules": [
+                    "normal",
+                    "part_msdos",
+                    "part_gpt",
+                    "ext2",
+                    "configfile"
+                ]
+            }
+        })
+
+def generate_syslbuild_project():
+    cmdline = "rw rootwait=60 systemd.show_status=false rd.udev.log_level=0 minlogotime=5 clear noCursorBlink vt.global_cursor_default=0 root_processing root_expand allow_updatescript quiet splash earlysplash"
+
+    architectures = []
+    builditems = []
+    
+    setup_build_architectures(architectures)
+    setup_build_targets(builditems)
+
     syslbuild_project = {
         "architectures": architectures,
         "builditems": builditems
     }
+
     with open(path_temp_syslbuild_file, "w") as f:
         json.dump(syslbuild_project, f, indent=2, ensure_ascii=False)
+
+    with open(os.path.join(path_temp_syslbuild, "grub.cfg"), "w") as f:
+        f.write(f"""set cmdline="{cmdline}"
+
+probe --set root_fs_uuid --fs-uuid $root
+linux /kernel.img root=UUID=$root_fs_uuid ${{cmdline}}
+initrd /initramfs.img
+boot""")
 
 def run_syslbuild():
     cmd = [
@@ -127,6 +203,7 @@ def updateProgress(value=0, text=None):
 
 def run_editor(path):
     global currentProject
+    global currentProjectName
     global path_temp
     global path_temp_syslbuild
     global path_temp_syslbuild_file
@@ -138,6 +215,7 @@ def run_editor(path):
         raw_save_project(path, currentProject)
 
     basedir = os.path.dirname(path)
+    currentProjectName = "TEST"
     path_temp = os.path.join(basedir, ".temp")
     path_temp_syslbuild = os.path.join(path_temp, "syslbuild")
     path_temp_syslbuild_file = os.path.join(path_temp_syslbuild, "project.json")
