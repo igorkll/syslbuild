@@ -60,10 +60,18 @@ path_temp = None
 path_temp_syslbuild = None
 path_temp_syslbuild_file = None
 
+def setup_architecture_build():
+    pass
+
 def generate_syslbuild_project():
     builditems = []
     architectures = []
     
+    if currentProject.export_x86_64:
+        architectures.append("amd64")
+
+    if currentProject.export_x86:
+        architectures.append("i386")
 
     syslbuild_project = {
         "architectures": architectures,
@@ -73,10 +81,16 @@ def generate_syslbuild_project():
         json.dump(syslbuild_project, f, indent=2, ensure_ascii=False)
 
 def run_syslbuild():
-    subprocess.run([sys.executable, os.path.abspath("syslbuild.py"), "--arch", "ALL", path_temp_syslbuild_file], cwd=path_temp_syslbuild)
+    cmd = [
+        "pkexec", sys.executable, os.path.abspath("syslbuild.py"),
+        "--arch", "ALL", path_temp_syslbuild_file
+    ]
+
+    subprocess.run(cmd, cwd=path_temp_syslbuild)
 
 def build_project():
     updateProgress(10, "Generating the syslbuild project...")
+    generate_syslbuild_project()
 
     updateProgress(50, "Launching syslbuild...")
     run_syslbuild()
