@@ -288,15 +288,16 @@ def setup_build_distro(builditems):
     if currentProject.distro == "debian":
         include = [
             "initramfs-tools",
-            "plymouth", # install basic plymouth files. The part will later be replaced by embedded plymouth.
-            "plymouth-themes",
-
             "systemd",
             "systemd-sysv",
             "systemd-resolved",
             "dbus",
             "dbus-user-session"
         ]
+
+        if currentProject.boot_splash:
+            include.append("plymouth") # install basic plymouth files. The part will later be replaced by embedded plymouth.
+            include.append("plymouth-themes")
 
         if currentProject.session_mode != "tty":
             include.append("sddm")
@@ -397,7 +398,8 @@ def setup_bootlogo():
     bootlogo_files = os.path.join(path_temp_syslbuild, "files", "bootlogo")
     project_logo_path = os.path.join(path_resources, "logo.png")
 
-    copyFile(os.path.join(bootlogo_files, "bootlogo.plymouth"), "gnuboxmaker/bootlogo.plymouth")
+    if currentProject.boot_splash:
+        copyFile(os.path.join(bootlogo_files, "bootlogo.plymouth"), "gnuboxmaker/bootlogo.plymouth")
     copyFile(os.path.join(bootlogo_files, "logo.png"), project_logo_path)
 
     if currentProject.splash_mode == "fill":
@@ -494,12 +496,9 @@ def copy_bins(name):
     buildExecute(["cp", "-a", os.path.join("gnuboxmaker", name) + "/.", output_path])
 
 def setup_write_bins(builditems):
-    # ---------------------- kernel
     copy_bins("kernel_image")
 
-    # ---------------------- plymouth
-
-    # ----------- x86_64
+    # ---------------------- x86_64
     items = [
         ["rootfs directory x2", "."],
         ["kernel_image/amd64/kernel_modules", "/usr"],
@@ -520,7 +519,7 @@ def setup_write_bins(builditems):
         "items": items
     })
 
-    # ----------- x86
+    # ---------------------- x86
     items = [
         ["rootfs directory x2", "."],
         ["kernel_image/i386/kernel_modules", "/usr"],
@@ -570,14 +569,12 @@ def setup_build_base(builditems):
     setup_build_distro(builditems)
     setup_write_files()
 
-    builditems.append({
+    builditem = {
         "type": "directory",
         "name": "rootfs directory x2",
         "export": False,
 
-        "directories": [
-            ["/usr/share/plymouth/themes/bootlogo", [0, 0, "0755"]]
-        ],
+        "directories": [],
 
         "items": [
             ["rootfs directory x1", "."],
@@ -585,7 +582,6 @@ def setup_build_base(builditems):
             ["files/etc_config", "/etc", [0, 0, "0644"]],
             ["files/systemd_config", "/etc/systemd", [0, 0, "0644"]],
             ["files/runshell.sh", "/runshell.sh", [0, 0, "0755"]],
-            ["files/bootlogo", "/usr/share/plymouth/themes/bootlogo", [0, 0, "0644"]],
 
             ["custom_init.sh", "/usr/share/initramfs-tools/init", [0, 0, "0755"]],
             ["custom_init_hook.sh", "/etc/initramfs-tools/hooks/custom_init_hook.sh", [0, 0, "0755"]],
@@ -593,11 +589,16 @@ def setup_build_base(builditems):
             ["files/user_files", "/", [0, 0, "0755"]],
         ],
 
-        "delete": [
-            # initialization of plymouth to an earlier stage in custom_init.sh
-            "/usr/share/initramfs-tools/scripts/init-premount/plymouth"
-        ]
-    })
+        "delete": []
+    }
+
+    if currentProject.boot_splash:
+        builditem["directories"].append(["/usr/share/plymouth/themes/bootlogo", [0, 0, "0755"]])
+        builditem["items"].append(["files/bootlogo", "/usr/share/plymouth/themes/bootlogo", [0, 0, "0644"]])
+        # initialization of plymouth to an earlier stage in custom_init.sh
+        builditem["delete"].append("/usr/share/initramfs-tools/scripts/init-premount/plymouth")
+
+    builditems.append(builditem)
 
     setup_write_bins(builditems)
 
