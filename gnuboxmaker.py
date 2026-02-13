@@ -40,7 +40,7 @@ class Project:
     boot_splash: bool = True
 
     splash_bg: str = "0, 0, 0"
-    splash_mode: str = "fill"
+    splash_mode: str = "contains"
     splash_scale: float = 0.7
 
     root_expand: bool = True
@@ -400,6 +400,21 @@ def setup_bootlogo():
     copyFile(os.path.join(bootlogo_files, "bootlogo.plymouth"), "gnuboxmaker/bootlogo.plymouth")
     copyFile(os.path.join(bootlogo_files, "logo.png"), project_logo_path)
 
+    if currentProject.splash_mode == "fill":
+        scale_code = f"""scaled_width = window_width;
+scaled_height = window_height;"""
+    elif currentProject.splash_mode == "center":
+        scale_code = f"""scaled_width = img_width;
+scaled_height = img_height;"""
+    elif currentProject.splash_mode == "cover":
+        scale_code = f"""img_scale = Math.Max(window_width / img_width, window_height / img_height);
+scaled_width = Math.Int(img_width * img_scale);
+scaled_height = Math.Int(img_height * img_scale);"""
+    else:
+        scale_code = f"""img_scale = Math.Min(window_width / img_width, window_height / img_height);
+scaled_width = Math.Int(img_width * img_scale);
+scaled_height = Math.Int(img_height * img_scale);"""
+
     writeText(os.path.join(bootlogo_files, "bootlogo.script"), f"""Window.SetBackgroundTopColor({currentProject.splash_bg});
 Window.SetBackgroundBottomColor({currentProject.splash_bg});
 
@@ -407,15 +422,15 @@ image = Image("logo.png");
 
 window_width = Window.GetWidth();
 window_height = Window.GetHeight();
-
 img_width = image.GetWidth();
 img_height = image.GetHeight();
-img_scale = Math.Min(window_width / img_width, window_height / img_height) * {currentProject.splash_scale};
 
-scaled_width = Math.Int(img_width * img_scale);
-scaled_height = Math.Int(img_height * img_scale);
+{scale_code}
+
+scaled_width = scaled_width * {currentProject.splash_scale};
+scaled_height = scaled_height * {currentProject.splash_scale};
+
 scaled_image = image.Scale(scaled_width, scaled_height);
-
 x = (window_width - scaled_width) / 2;
 y = (window_height - scaled_height) / 2;
 
