@@ -21,6 +21,11 @@ a similar program for creating Windows images for embedded devices: https://gith
 * launch install.sh from root
 * the unpacked files can now be deleted
 
+## supported host systems
+* debian
+* ubuntu
+* linux mint
+
 ## projects used
 * syslbuild: https://github.com/igorkll/syslbuild
 * linux-embedded-patchs: https://github.com/igorkll/linux-embedded-patchs
@@ -60,3 +65,11 @@ a similar program for creating Windows images for embedded devices: https://gith
 * It is always necessary to reboot and turn off the device from the you shell via "shutdown --no-wall now" and "reboot --no-wall", the --no-wall argument is REQUIRED so that the shutdown process is not visible when turned off.
 * the /var directory is mounted as tmpfs
 * The .img images for x86 / x86_64 that Gnubox maker generates are universal. they can be written to a USB drive or to a hard disk/SSD. also, when the device is turned on for the first time, the partition size will increase to the maximum possible (up to the entire available disk space) so that the OS can use all available space.
+
+## what should I do if the project build fails?
+* make sure that EACH of your chroot scripts creates a /.chrootend file at the end
+* check the last.log in the root of the project and make sure everything is correct
+* try to build it a few more times
+* restart your computer and try again
+* delete the directories .temp and output (clear the temporary project files) and try again
+* try to build a project from the examples of gnubox maker, and if it is going to, then the problem is in your project. If not, it's possible that there are some dependencies missing or your host system is not supported

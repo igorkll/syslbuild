@@ -1347,6 +1347,7 @@ def rawCrossChroot(chrootDirectory, chrootCommand, useSystemd=False, manualValid
         else:
             buildLog(f"qemu-static should have been copied, but the file with that name is already in the chroot directory. i'm skipping it ({qemuStaticName})")
 
+    checkValid = not manualValidation
     if useSystemd:
         machineName = "smartchroot"
         buildRawExecute(f"""systemd-nspawn --boot --machine={machineName} --directory="{chrootDirectory}" &
@@ -1356,9 +1357,9 @@ machinectl shell root@{machineName} {chrootCommand[0]}
 sleep 2
 machinectl terminate {machineName}
 sleep 2
-wait $CONTAINER_PID""")
+wait $CONTAINER_PID""", checkValid)
     else:
-        buildExecute(["chroot", chrootDirectory] + chrootCommand)
+        buildExecute(["chroot", chrootDirectory] + chrootCommand, checkValid)
 
     if boolCopyQemuStatic:
         deleteAny(qemuStaticPath)
