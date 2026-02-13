@@ -40,8 +40,8 @@ class Project:
     boot_splash: bool = True
 
     splash_bg: str = "0, 0, 0"
-    splash_mode: str = ""
-    splash_scale: float = 1
+    splash_mode: str = "fill"
+    splash_scale: float = 0.7
 
     root_expand: bool = True
     allow_updatescript: bool = True
@@ -203,6 +203,7 @@ usermod -aG video,input,audio,render user"""
 
 # set boot splash
 plymouth-set-default-theme bootlogo
+cp -f /usr/share/plymouth/themes/bootlogo/bootlogo.plymouth /usr/share/plymouth/themes/default.plymouth
 
 # disable default splash control        
 systemctl mask plymouth-start.service
@@ -273,6 +274,7 @@ def setup_chroot_script():
 
     os.makedirs(chroot_scripts_directory, exist_ok=True)
 
+    # нужно сделать детерминированый алфовитный порядок
     for f in Path(chroot_project_directory).iterdir():
         if f.is_file():
             scripts.append(f"chroot/{f.name}")
@@ -529,7 +531,7 @@ def setup_export_initramfs(builditems):
             "export": False,
 
             "kernel_config": "kernel_image/amd64/kernel_config",
-            "source": "rootfs directory x3"
+            "source": "rootfs directory x4"
         })
 
         builditems.append({
@@ -540,7 +542,7 @@ def setup_export_initramfs(builditems):
             "export": False,
 
             "kernel_config": "kernel_image/i386/kernel_config",
-            "source": "rootfs directory x3"
+            "source": "rootfs directory x4"
         })
     else:
         stop_error(f"unknown distro \"{currentProject.distro}\"")
@@ -899,7 +901,7 @@ stty susp undef   # Ctrl+Z
 # disable echo mode
 stty -echo
 
-# set cursor to first line
+# clear screen and set cursor to first line
 clear
 
 while true; do
