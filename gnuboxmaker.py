@@ -202,9 +202,7 @@ systemctl disable getty@tty5.service
 systemctl mask getty@tty5.service
 
 systemctl disable getty@tty6.service
-systemctl mask getty@tty6.service
-
-chmod -x /sbin/agetty"""
+systemctl mask getty@tty6.service"""
     else:
         aaa_setup += f"""systemctl disable getty.target
 systemctl mask getty.target
@@ -327,7 +325,9 @@ def setup_autologin():
     if currentProject.session_mode == "tty":
         writeText(os.path.join(systemd_config, "system", "getty@tty1.service.d", "autologin.conf"), f"""[Service]
 ExecStart=
-ExecStart=-/sbin/mingetty --nonewline --noissue --nonewline --autologin {currentProject.session_user} --noclear %I $TERM""")
+ExecStart=-/sbin/agetty --skip-login --noissue --nonewline --autologin {currentProject.session_user} --noclear %I $TERM
+StandardOutput=null
+StandardError=null""")
     else:
         session = "weston.desktop"
         if currentProject.session_mode == "x11":
