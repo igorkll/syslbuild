@@ -269,8 +269,7 @@ def setup_chroot_script():
 
     os.makedirs(chroot_scripts_directory, exist_ok=True)
 
-    # нужно сделать детерминированый алфовитный порядок
-    for f in Path(chroot_project_directory).iterdir():
+    for f in sorted(Path(chroot_project_directory).iterdir(), key=lambda p: p.name):
         if f.is_file():
             scripts.append(f"chroot/{f.name}")
             shutil.copy(
