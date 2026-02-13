@@ -13,9 +13,10 @@ Gnubox Maker creates a special Linux system for a single application. After laun
 * custom-debian-initramfs-init: https://github.com/igorkll/custom-debian-initramfs-init
 
 ## what was disabled
-* ESC button in plymouth (source code patch)
-* ctrl+alt+del in the linux kernel (source code patch)
-* switching VT (source code patch + configs)
+* ESC button in plymouth (plymouth source code patch)
+* ctrl+alt+del in the linux kernel (kernel source patch)
+* switching VT (kernel source patch + configs)
+* sysrq (kernel source patch)
 
 ## project structure
 * gnubox.gnb - the main file
@@ -38,3 +39,4 @@ Gnubox Maker creates a special Linux system for a single application. After laun
 ## notes
 * please note that by default, the first time you turn on the created root image, the partition will be enlarged to the maximum possible size for the current media. this is done because I cannot know what size of drive the *.img image will be written to
 * by default, the allow updatescript feature from custom-debian-init-script is enabled. to understand how it works, read this: https://github.com/igorkll/custom-debian-initramfs-init
+* in the "tty" mode if your script is runshell.sh when is completed, it will automatically restart. However, this does not happen in graphical mode.
