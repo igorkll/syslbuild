@@ -254,6 +254,7 @@ systemctl disable getty@tty6.service
 systemctl mask getty@tty6.service
 
 chmod -x /sbin/agetty
+chmod -x /sbin/getty
 
 systemctl enable sddm
 echo "sddm shared/default-display-manager select sddm" | debconf-set-selections
