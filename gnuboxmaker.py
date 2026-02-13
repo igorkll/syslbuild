@@ -330,7 +330,10 @@ def setup_autologin():
     if currentProject.session_mode == "tty":
         writeText(os.path.join(systemd_config, "system", "getty@tty1.service.d", "autologin.conf"), f"""[Service]
 ExecStart=
-ExecStart=-/sbin/getty --skip-login --noissue --nonewline --autologin {currentProject.session_user} --noclear %I $TERM""")
+ExecStart=-/sbin/getty --skip-login --noissue --nonewline --autologin {currentProject.session_user} --noclear %I $TERM -l /runshell.sh
+
+[Unit]
+StartLimitIntervalSec=0""")
     else:
         session = "weston.desktop"
         if currentProject.session_mode == "x11":
@@ -404,8 +407,7 @@ LidSwitchIgnoreInhibited=no""")
 
     writeText(os.path.join(etc_config, "pam.d", "login"), f"""@include common-auth
 @include common-account
-@include common-session
-@include common-password""")
+@include common-session""")
 
     writeText(os.path.join(etc_config, "locale.conf"), f"""LANG=en_US.UTF-8""")
 
@@ -812,6 +814,9 @@ def load_project(path):
     if not os.path.isfile(runshell_path):
         with open(runshell_path, "w") as f:
             f.write(f"""#!/bin/bash
+
+# disable tty hotkeys
+stty -ixon -ixoff
 
 while true; do
     echo test
