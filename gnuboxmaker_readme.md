@@ -9,6 +9,8 @@ By default, Gnubox maker provides a completely clean loading screen (with your l
 Gnubox maker is ideally suited for: household appliances, ATM, car radios, smart home control panels  
 wherever you need a closed linux for one application, Gnubox maker will be an ideal option for generating an image for a ready-made device  
 A minimum of 60 GB of free space on a PC is recommended for using Gnubox maker  
+Gnubox maker secures the build from the project, which allows you to save the configuration and repeat the build of the system  
+as well as Gnubox maker projects can be controlled via git  
 
 ## installing
 * download the syslbuild release (NOT THE REPOSITORY BRANCH): https://github.com/igorkll/syslbuild/releases
