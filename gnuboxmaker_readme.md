@@ -2,6 +2,7 @@
 ![preview](https://raw.githubusercontent.com/igorkll/syslbuild/refs/heads/main/gnuboxmaker_preview.png)  
 the easiest way is to create an embedded/kiosk linux distribution with a single application that cannot be exited  
 it uses a patched linux kernel, which prevents switching VT and using ctrl+alt+del  
+Gnubox maker works on the image generation principle. that is, first you create a Gnubox maker project on your computer, set all the necessary settings, add files and packages, and then assemble the project for the platforms you need and write the resulting firmware to the target devices  
 the source code of gnubox maker is located in the syslbuild repository as it is part of a single project: https://github.com/igorkll/syslbuild  
 Attention! since the gnubox maker projects are building from root in the host system, be careful what you build  
 Gnubox Maker creates a special Linux system for a single application. After launching, you cannot exit it or switch to other programs. Everything you need to work is assembled automatically from files and scripts, and the system is immediately ready for use  
@@ -11,6 +12,8 @@ wherever you need a closed linux for one application, Gnubox maker will be an id
 A minimum of 60 GB of free space on a PC is recommended for using Gnubox maker  
 Gnubox maker secures the build from the project, which allows you to save the configuration and repeat the build of the system  
 as well as Gnubox maker projects can be controlled via git  
+The .img images for x86 / x86_64 that Gnubox maker generates are universal. they can be written to a USB drive or to a hard disk/SSD. also, when the device is turned on for the first time, the partition size will increase to the maximum possible (up to the entire available disk space) so that the OS can use all available space  
+a similar program for creating Windows images for embedded devices: https://github.com/igorkll/WinBox-Maker  
 
 ## installing
 * download the syslbuild release (NOT THE REPOSITORY BRANCH): https://github.com/igorkll/syslbuild/releases
@@ -52,7 +55,8 @@ as well as Gnubox maker projects can be controlled via git
 
 ## notes
 * please note that by default, the first time you turn on the created root image, the partition will be enlarged to the maximum possible size for the current media. this is done because I cannot know what size of drive the *.img image will be written to
-* by default, the allow updatescript feature from custom-debian-init-script is enabled. to understand how it works, read this: https://github.com/igorkll/custom-debian-initramfs-init
+* by default, the allow_updatescript feature from custom-debian-init-script is enabled. to understand how it works, read this: https://github.com/igorkll/custom-debian-initramfs-init
 * in the "tty" mode if your script is runshell.sh when is completed, it will automatically restart. However, this does not happen in graphical mode.
 * It is always necessary to reboot and turn off the device from the you shell via "shutdown --no-wall now" and "reboot --no-wall", the --no-wall argument is REQUIRED so that the shutdown process is not visible when turned off.
 * the /var directory is mounted as tmpfs
+* The .img images for x86 / x86_64 that Gnubox maker generates are universal. they can be written to a USB drive or to a hard disk/SSD. also, when the device is turned on for the first time, the partition size will increase to the maximum possible (up to the entire available disk space) so that the OS can use all available space.
