@@ -179,6 +179,11 @@ EOF
 
 # ------------
 
+truncate -s 0 /etc/issue
+truncate -s 0 /etc/motd
+
+# ------------
+
 usermod -s /runshell.sh root
 useradd -m -u 10000 -s /runshell.sh user
 usermod -aG video,input,audio,render user"""
@@ -325,9 +330,7 @@ def setup_autologin():
     if currentProject.session_mode == "tty":
         writeText(os.path.join(systemd_config, "system", "getty@tty1.service.d", "autologin.conf"), f"""[Service]
 ExecStart=
-ExecStart=-/sbin/agetty --skip-login --noissue --nonewline --autologin {currentProject.session_user} --noclear %I $TERM
-StandardOutput=null
-StandardError=null""")
+ExecStart=-/sbin/getty --skip-login --noissue --nonewline --autologin {currentProject.session_user} --noclear %I $TERM""")
     else:
         session = "weston.desktop"
         if currentProject.session_mode == "x11":
@@ -350,6 +353,12 @@ idle-time={currentProject.screen_idle_time}
 background-color=0xff000000
 allow-zap=false
 panel-position=none
+locking=false
+binding-modifier=none
+animation=none
+close-animation=none
+startup-animation=none
+focus-animation=none
 
 [keyboard]
 vt-switching=false
@@ -392,6 +401,11 @@ HandleLidSwitch={currentProject.HandleLidSwitch}
 HandleLidSwitchExternalPower={currentProject.HandleLidSwitch}
 HandleLidSwitchDocked={currentProject.HandleLidSwitch}
 LidSwitchIgnoreInhibited=no""")
+
+    writeText(os.path.join(etc_config, "pam.d", "login"), f"""@include common-auth
+@include common-account
+@include common-session
+@include common-password""")
 
     writeText(os.path.join(etc_config, "locale.conf"), f"""LANG=en_US.UTF-8""")
 
