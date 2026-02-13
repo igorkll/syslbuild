@@ -14,7 +14,7 @@ import time
 
 # ---------------------------------------- data
 
-HandlyeKeyVarians = ["ignore", "poweroff", "reboot", "suspend", "hibernate", "lock"]
+HandleKey_varians = ["ignore", "poweroff", "reboot", "suspend", "hibernate", "lock"]
 session_user_variants = ["user", "root"]
 session_mode_variants = ["wayland", "x11", "tty"]
 weston_shell_variants = ["kiosk", "desktop"]

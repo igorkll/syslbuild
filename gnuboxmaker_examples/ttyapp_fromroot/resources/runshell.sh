@@ -44,7 +44,11 @@ while true; do
         case $selected in
             0) reboot --no-wall ;;
             1) shutdown --no-wall now ;;
-            2) exec bash ;;
+            2)
+                stty echo
+                exec bash
+                stty -echo
+                ;;
         esac
         exit
     fi
