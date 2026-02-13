@@ -816,7 +816,11 @@ def load_project(path):
             f.write(f"""#!/bin/bash
 
 # disable tty hotkeys
-stty -ixon -ixoff
+stty intr undef   # Ctrl+C
+stty quit undef   # Ctrl+\\
+stty stop undef   # Ctrl+S
+stty start undef  # Ctrl+Q
+stty susp undef   # Ctrl+Z
 
 while true; do
     echo test
