@@ -1004,8 +1004,8 @@ def new_project():
             run_editor(os.path.join(folder_path, "gnubox.gnb"))
     
 
-img_openproject = ImageTk.PhotoImage(Image.open("images/openproject.png").resize((400, 400)))
-img_newproject = ImageTk.PhotoImage(Image.open("images/newproject.png").resize((400, 400)))
+img_openproject = ImageTk.PhotoImage(Image.open("gnuboxmaker/images/openproject.png").resize((400, 400)))
+img_newproject = ImageTk.PhotoImage(Image.open("gnuboxmaker/images/newproject.png").resize((400, 400)))
 
 frame_openproject.grid_rowconfigure(0, weight=1)
 frame_openproject.grid_rowconfigure(1, weight=0)
