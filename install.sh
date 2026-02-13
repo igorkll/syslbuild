@@ -1,4 +1,8 @@
-#!/bin/sh
+#!/bin/bash
+
+if [ "$EUID" -ne 0 ]; then
+  exec sudo "$0" "$@"
+fi
 
 sudo apt install -y \
   python3 wget sudo git make tar gzip \
