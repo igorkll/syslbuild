@@ -5,6 +5,9 @@ it uses a patched linux kernel, which prevents switching VT and using ctrl+alt+d
 the source code of gnubox maker is located in the syslbuild repository as it is part of a single project: https://github.com/igorkll/syslbuild  
 Attention! since the gnubox maker projects are building from root in the host system, be careful what you build  
 Gnubox Maker creates a special Linux system for a single application. After launching, you cannot exit it or switch to other programs. Everything you need to work is assembled automatically from files and scripts, and the system is immediately ready for use  
+By default, Gnubox maker provides a completely clean loading screen (with your logo optional) and the complete inability to exit the application embedded in the image  
+Gnubox maker is ideally suited for: household appliances, ATM, car radios, smart home control panels  
+wherever you need a closed linux for one application, Gnubox maker will be an ideal option for generating an image for a ready-made device  
 
 ## projects used
 * syslbuild: https://github.com/igorkll/syslbuild
