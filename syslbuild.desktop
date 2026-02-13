@@ -1,0 +1,10 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=syslbuild
+Comment=an assembly system that builds custom linux systems from a description from a json config
+Exec=/usr/bin/python3 /usr/bin/syslbuild.py
+Icon=/opt/syslbuild/syslbuild.png
+Terminal=true
+Categories=Development;Utility;

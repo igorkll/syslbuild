@@ -9,6 +9,12 @@ By default, Gnubox maker provides a completely clean loading screen (with your l
 Gnubox maker is ideally suited for: household appliances, ATM, car radios, smart home control panels  
 wherever you need a closed linux for one application, Gnubox maker will be an ideal option for generating an image for a ready-made device  
 
+## installing
+* download the syslbuild release (NOT THE REPOSITORY BRANCH): https://github.com/igorkll/syslbuild/releases
+* unpack it in a convenient place
+* launch install.sh from root
+* the unpacked files can now be deleted
+
 ## projects used
 * syslbuild: https://github.com/igorkll/syslbuild
 * linux-embedded-patchs: https://github.com/igorkll/linux-embedded-patchs

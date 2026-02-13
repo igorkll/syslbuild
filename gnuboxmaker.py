@@ -18,7 +18,7 @@ HandlyeKeyVarians = ["ignore", "poweroff", "reboot", "suspend", "hibernate", "lo
 session_user_variants = ["user", "root"]
 session_mode_variants = ["wayland", "x11", "tty"]
 weston_shell_variants = ["kiosk", "desktop"]
-splash_mode_variants = ["center", "fill", "contains", "cover"]
+splash_mode_variants = ["center", "fill", "contain", "cover"]
 
 @dataclass
 class Project:
@@ -40,7 +40,7 @@ class Project:
     boot_splash: bool = True
 
     splash_bg: str = "0, 0, 0"
-    splash_mode: str = "contains"
+    splash_mode: str = "contain"
     splash_scale: float = 0.7
 
     root_expand: bool = True

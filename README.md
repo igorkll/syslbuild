@@ -13,6 +13,12 @@ WARNING!!! if you read this text from GITHUB page please, download a release and
 * syslbuild is able to create a boot image with a partition table itself, which can be convenient for creating a complete firmware.
 * please note that in syslbuild, the runtime environment may affect the build result. a better solution would be to create one VM for the entire project and build the project on that VM. it is better that the architecture matches the target architecture of the assembly, although this is not necessary due to qemu-static
 
+## installing
+* download the syslbuild release (NOT THE REPOSITORY BRANCH): https://github.com/igorkll/syslbuild/releases
+* unpack it in a convenient place
+* launch install.sh from root
+* the unpacked files can now be deleted
+
 ## you may also be interested in
 * https://github.com/igorkll/linux-embedded-patchs - a set of patches for using the linux kernel on embedded locked-down devices
 * https://github.com/igorkll/custom-debian-initramfs-init - custom /init script for debian initramfs

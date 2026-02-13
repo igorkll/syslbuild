@@ -28,6 +28,9 @@ sudo mkdir -p "$DEST"
 sudo cp -r ./* "$DEST"
 sudo chmod -R 755 "$DEST"
 
+sudo cp -f "syslbuild.py" "/usr/bin/syslbuild.py"
+
+sudo cp -f "syslbuild.desktop" "/usr/share/applications/syslbuild.desktop"
 sudo cp -f "gnuboxmaker.desktop" "/usr/share/applications/gnuboxmaker.desktop"
 
 sudo update-desktop-database
