@@ -1353,7 +1353,9 @@ def rawCrossChroot(chrootDirectory, chrootCommand, useSystemd=False, manualValid
 CONTAINER_PID=$!
 sleep 10
 machinectl shell root@{machineName} {chrootCommand[0]}
+sleep 2
 machinectl terminate {machineName}
+sleep 2
 wait $CONTAINER_PID""")
     else:
         buildExecute(["chroot", chrootDirectory] + chrootCommand)

@@ -1,5 +1,5 @@
 #!/bin/bash
 
+sleep 3
 weston-terminal
-
-electron /ElectronApplication --ozone-platform=wayland --enable-features=UseOzonePlatform --no-sandbox
+sleep 3

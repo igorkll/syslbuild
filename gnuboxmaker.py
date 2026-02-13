@@ -494,8 +494,21 @@ def copy_bins(name):
     buildExecute(["cp", "-a", os.path.join("gnuboxmaker", name) + "/.", output_path])
 
 def setup_write_bins(builditems):
+    # ---------------------- kernel
     copy_bins("kernel_image")
-    copy_bins("embedded-plymouth")
+
+    # ---------------------- plymouth
+
+    # ----------- x86_64
+    items = [
+        ["rootfs directory x2", "."],
+        ["kernel_image/amd64/kernel_modules", "/usr"],
+        ["kernel_image/amd64/kernel.img", "/kernel.img", [0, 0, "0755"]]
+    ]
+
+    if currentProject.boot_splash:
+        copy_bins("embedded-plymouth")
+        items.append(["embedded-plymouth/x86_64", "/", [0, 0, "0755"]])
 
     builditems.append({
         "architectures": ["amd64"],
@@ -504,15 +517,18 @@ def setup_write_bins(builditems):
         "name": "rootfs directory x3",
         "export": False,
 
-        "items": [
-            ["rootfs directory x2", "."],
-
-            ["kernel_image/amd64/kernel_modules", "/usr"],
-            ["kernel_image/amd64/kernel.img", "/kernel.img", [0, 0, "0755"]],
-
-            ["embedded-plymouth/x86_64", "/", [0, 0, "0755"]]
-        ]
+        "items": items
     })
+
+    # ----------- x86
+    items = [
+        ["rootfs directory x2", "."],
+        ["kernel_image/i386/kernel_modules", "/usr"],
+        ["kernel_image/i386/kernel.img", "/kernel.img", [0, 0, "0755"]]
+    ]
+
+    if currentProject.boot_splash:
+        items.append(["embedded-plymouth/x86", "/", [0, 0, "0755"]])
 
     builditems.append({
         "architectures": ["i386"],
@@ -521,14 +537,7 @@ def setup_write_bins(builditems):
         "name": "rootfs directory x3",
         "export": False,
 
-        "items": [
-            ["rootfs directory x2", "."],
-
-            ["kernel_image/i386/kernel_modules", "/usr"],
-            ["kernel_image/i386/kernel.img", "/kernel.img", [0, 0, "0755"]],
-
-            ["embedded-plymouth/x86", "/", [0, 0, "0755"]]
-        ]
+        "items": items
     })
 
 def setup_export_initramfs(builditems):
