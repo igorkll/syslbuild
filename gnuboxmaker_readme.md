@@ -43,3 +43,4 @@ Gnubox Maker creates a special Linux system for a single application. After laun
 * by default, the allow updatescript feature from custom-debian-init-script is enabled. to understand how it works, read this: https://github.com/igorkll/custom-debian-initramfs-init
 * in the "tty" mode if your script is runshell.sh when is completed, it will automatically restart. However, this does not happen in graphical mode.
 * It is always necessary to reboot and turn off the device from the you shell via "shutdown --no-wall now" and "reboot --no-wall", the --no-wall argument is REQUIRED so that the shutdown process is not visible when turned off.
+* the /var directory is mounted as tmpfs

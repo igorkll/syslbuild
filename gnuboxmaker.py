@@ -199,25 +199,20 @@ usermod -aG video,input,audio,render user"""
     aaa_setup += "\n\n"
 
     if currentProject.boot_splash:
-        aaa_setup += f"""
-
-# set boot splash
-plymouth-set-default-theme bootlogo
+        aaa_setup += f"""plymouth-set-default-theme bootlogo
 cp -f /usr/share/plymouth/themes/bootlogo/bootlogo.plymouth /usr/share/plymouth/themes/default.plymouth
-
-# disable default splash control        
+     
 systemctl mask plymouth-start.service
 systemctl mask plymouth-read-write.service
 systemctl mask plymouth-switch-root-initramfs.service
 systemctl mask plymouth-reboot.service
 systemctl mask plymouth-poweroff.service
-systemctl mask plymouth-quit-wait.service
-systemctl mask plymouth-quit.service
+# systemctl mask plymouth-quit-wait.service
+# systemctl mask plymouth-quit.service
 systemctl mask plymouth-kexec.service
 systemctl mask plymouth-switch-root.service
 systemctl mask plymouth-halt.service
-systemctl mask plymouth-log.service
-systemctl mask plymouth.service"""
+systemctl mask plymouth-log.service"""
 
     aaa_setup += "\n\n"
 
@@ -575,8 +570,6 @@ def setup_build_base(builditems):
         ],
 
         "delete": [
-            # disable auto hide boot logo
-            "/usr/share/initramfs-tools/scripts/init-bottom/plymouth",
             # initialization of plymouth to an earlier stage in custom_init.sh
             "/usr/share/initramfs-tools/scripts/init-premount/plymouth"
         ]
@@ -771,7 +764,7 @@ def setup_build_targets(builditems):
         })
 
 def generate_syslbuild_project():
-    cmdline = "rw rootwait=60"
+    cmdline = "rw rootwait=60 makevartmp"
 
     if currentProject.root_expand:
         cmdline += " root_processing root_expand"
