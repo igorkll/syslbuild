@@ -301,7 +301,7 @@ def setup_build_distro(builditems):
         if currentProject.session_mode != "tty":
             include.append("sddm")
 
-        if currentProject.session_mode == "weston":
+        if currentProject.session_mode == "wayland":
             include.append("weston")
         elif currentProject.session_mode == "x11":
             include.append("xserver-xorg")
