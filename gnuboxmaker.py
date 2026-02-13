@@ -330,7 +330,7 @@ def setup_autologin():
     if currentProject.session_mode == "tty":
         writeText(os.path.join(systemd_config, "system", "getty@tty1.service.d", "autologin.conf"), f"""[Service]
 ExecStart=
-ExecStart=-/sbin/getty --skip-login --noissue --nonewline --autologin {currentProject.session_user} --noclear %I $TERM -l /runshell.sh
+ExecStart=-/sbin/getty --skip-login --noissue --nohints --nonewline --login-program /runshell.sh --autologin {currentProject.session_user} --noclear %I $TERM
 
 [Unit]
 StartLimitIntervalSec=0""")
