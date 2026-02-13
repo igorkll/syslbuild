@@ -24,6 +24,7 @@ Gnubox Maker creates a special Linux system for a single application. After laun
 * resources/files - files that will be copied to rootfs before executing chroot scripts. please note that all your files and directories from this directory will have rights 755 and belong to root, regardless of what rights they have during the build. this is necessary for repeatable assembly on different machines. if you need to change the permissions on the target system, use the "chroot" scripts.
 * resources/chroot - scripts executed inside a chroot in the system during the build process (not just a chroot, but a systemd-nspawn container) please note that at the end of each file you need to create an empty file or directory with the path "/.chrootend" otherwise the build will fail
 * resources/runshell.sh - the shell startup file. you can write a script directly in it if you use tty mode and you will just get console output, or you can run your application from it if you use wayland/x11
+* resources/logo.png - the logo that will be used when uploading with splash enabled
 * output - the finished result of the build
 * .temp - temporary files used during the build process
 
@@ -35,8 +36,10 @@ Gnubox Maker creates a special Linux system for a single application. After laun
 * "files" that will be copied to rootfs before executing chroot scripts. please note that all your files and directories from this directory will have rights 755 and belong to root, regardless of what rights they have during the build. this is necessary for repeatable assembly on different machines. if you need to change the permissions on the target system, use the "chroot" scripts.
 * "chroot" is executed in systemd-nspawn
 * Attention! since the gnubox maker projects are building from root in the host system, be careful what you build
+* despite the presence of command-line arguments for building via tty, gnubox maker must BE run from its working directory (otherwise it will not work)
 
 ## notes
 * please note that by default, the first time you turn on the created root image, the partition will be enlarged to the maximum possible size for the current media. this is done because I cannot know what size of drive the *.img image will be written to
 * by default, the allow updatescript feature from custom-debian-init-script is enabled. to understand how it works, read this: https://github.com/igorkll/custom-debian-initramfs-init
 * in the "tty" mode if your script is runshell.sh when is completed, it will automatically restart. However, this does not happen in graphical mode.
+* It is always necessary to reboot and turn off the device from the you shell via "shutdown --no-wall now" and "reboot --no-wall", the --no-wall argument is REQUIRED so that the shutdown process is not visible when turned off.

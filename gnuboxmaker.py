@@ -41,6 +41,7 @@ class Project:
 
     splash_bg: str = "0, 0, 0"
     splash_mode: str = ""
+    splash_scale: float = 1
 
     root_expand: bool = True
     allow_updatescript: bool = True
@@ -145,6 +146,10 @@ def writeText(path, text):
     with open(path, "w") as f:
         f.write(text)
 
+def copyFile(path, fromPath):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    shutil.copy(fromPath, path)
+
 # ---------------------------------------- builder
 
 currentProject = None
@@ -190,6 +195,28 @@ usermod -aG video,input,audio,render user"""
 
     if True: # template for future setting
         aaa_setup += "\nusermod -aG sudo user"
+
+    aaa_setup += "\n\n"
+
+    if currentProject.boot_splash:
+        aaa_setup += f"""
+
+# set boot splash
+plymouth-set-default-theme bootlogo
+
+# disable default splash control        
+systemctl mask plymouth-start.service
+systemctl mask plymouth-read-write.service
+systemctl mask plymouth-switch-root-initramfs.service
+systemctl mask plymouth-reboot.service
+systemctl mask plymouth-poweroff.service
+systemctl mask plymouth-quit-wait.service
+systemctl mask plymouth-quit.service
+systemctl mask plymouth-kexec.service
+systemctl mask plymouth-switch-root.service
+systemctl mask plymouth-halt.service
+systemctl mask plymouth-log.service
+systemctl mask plymouth.service"""
 
     aaa_setup += "\n\n"
 
@@ -369,6 +396,37 @@ vt-switching=false
 [autolaunch]
 path=/runshell.sh""")
 
+def setup_bootlogo():
+    bootlogo_files = os.path.join(path_temp_syslbuild, "files", "bootlogo")
+    project_logo_path = os.path.join(path_resources, "logo.png")
+
+    copyFile(os.path.join(bootlogo_files, "bootlogo.plymouth"), "gnuboxmaker/bootlogo.plymouth")
+    copyFile(os.path.join(bootlogo_files, "logo.png"), project_logo_path)
+
+    writeText(os.path.join(bootlogo_files, "bootlogo.script"), f"""Window.SetBackgroundTopColor({currentProject.splash_bg});
+Window.SetBackgroundBottomColor({currentProject.splash_bg});
+
+image = Image("logo.png");
+
+window_width = Window.GetWidth();
+window_height = Window.GetHeight();
+
+img_width = image.GetWidth();
+img_height = image.GetHeight();
+img_scale = Math.Min(window_width / img_width, window_height / img_height) * {currentProject.splash_scale};
+
+scaled_width = Math.Int(img_width * img_scale);
+scaled_height = Math.Int(img_height * img_scale);
+scaled_image = image.Scale(scaled_width, scaled_height);
+
+x = (window_width - scaled_width) / 2;
+y = (window_height - scaled_height) / 2;
+
+image_sprite = Sprite(scaled_image);
+image_sprite.SetX(x);
+image_sprite.SetY(y);
+image_sprite.SetZ(-1);""")
+
 def setup_write_files():
     etc_config = os.path.join(path_temp_syslbuild, "files", "etc_config")
     systemd_config = os.path.join(path_temp_syslbuild, "files", "systemd_config")
@@ -412,6 +470,7 @@ LidSwitchIgnoreInhibited=no""")
     writeText(os.path.join(etc_config, "locale.conf"), f"""LANG=en_US.UTF-8""")
 
     setup_autologin()
+    setup_bootlogo()
     setup_graphic()
 
     buildExecute(["cp", "-a", os.path.join(path_resources, "files") + "/.", user_files])
@@ -495,17 +554,29 @@ def setup_build_base(builditems):
         "name": "rootfs directory x2",
         "export": False,
 
+        "directories": [
+            ["/usr/share/plymouth/themes/bootlogo", [0, 0, "0755"]]
+        ],
+
         "items": [
             ["rootfs directory x1", "."],
 
             ["files/etc_config", "/etc", [0, 0, "0644"]],
             ["files/systemd_config", "/etc/systemd", [0, 0, "0644"]],
             ["files/runshell.sh", "/runshell.sh", [0, 0, "0755"]],
+            ["files/bootlogo", "/usr/share/plymouth/themes/bootlogo", [0, 0, "0644"]],
 
             ["custom_init.sh", "/usr/share/initramfs-tools/init", [0, 0, "0755"]],
             ["custom_init_hook.sh", "/etc/initramfs-tools/hooks/custom_init_hook.sh", [0, 0, "0755"]],
 
             ["files/user_files", "/", [0, 0, "0755"]],
+        ],
+
+        "delete": [
+            # disable auto hide boot logo
+            "/usr/share/initramfs-tools/scripts/init-bottom/plymouth",
+            # initialization of plymouth to an earlier stage in custom_init.sh
+            "/usr/share/initramfs-tools/scripts/init-premount/plymouth"
         ]
     })
 
@@ -743,6 +814,8 @@ initrd /initramfs.img
 boot""")
 
 def run_syslbuild():
+    # надо при сборке из tty вместо pkexec заюзать sudo
+
     cmd_base = [
         "bash", "-c",
         f"cd {path_temp_syslbuild!r} && {sys.executable!r} {os.path.abspath('syslbuild.py')!r} "
@@ -812,8 +885,7 @@ def load_project(path):
 
     runshell_path = os.path.join(path_resources, "runshell.sh")
     if not os.path.isfile(runshell_path):
-        with open(runshell_path, "w") as f:
-            f.write(f"""#!/bin/bash
+        writeText(runshell_path, f"""#!/bin/bash
 
 # gnubox maker tty app example
 
@@ -834,6 +906,10 @@ while true; do
     echo test
     sleep 1
 done""")
+
+    logo_path = os.path.join(path_resources, "logo.png")
+    if not os.path.isfile(logo_path):
+        copyFile(logo_path, "gnuboxmaker.png")
 
     gitignore_path = os.path.join(currentProjectDirectory, ".gitignore")
     if not os.path.isfile(gitignore_path):

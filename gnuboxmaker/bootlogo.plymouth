@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=bootlogo
+Description=bootlogo
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/bootlogo
+ScriptFile=/usr/share/plymouth/themes/bootlogo/bootlogo.script
