@@ -39,10 +39,11 @@ a similar program for creating Windows images for embedded devices: https://gith
 * sysrq (kernel source patch)
 
 ## used kernel patches (from https://github.com/igorkll/linux-embedded-patchs)
-* disable_vt_swithing_from_keyboard.patch
-* disable_vt_swithing_from_wayland.patch
-* disable_sysrq.patch
-* disable_cad.patch
+* disable_vt_swithing_from_keyboard.patch - prevents the possibility of switching VT from the keyboard
+* disable_vt_swithing_from_wayland.patch - prevents the possibility of VT switching in wayland composers that do not have a setting that allows you to disable this (weston have setting to disable VT switching)
+* disable_sysrq.patch - removes the sysrq mechanism from the kernel
+* disable_cad.patch - eliminates the possibility of using ctrl+alt+del to reboot the device from the keyboard
+* disable_keyboard_echo_by_default.patch - prevents typing characters on the screen from the keyboard before launching plymouth
 
 ## project structure
 * gnubox.gnb - the main file
