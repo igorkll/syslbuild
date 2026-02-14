@@ -223,41 +223,25 @@ systemctl mask plymouth-log.service"""
     aaa_setup += "\n\n"
 
     if currentProject.session_mode == "tty":
-        aaa_setup += f"""systemctl disable getty@tty2.service
-systemctl mask getty@tty2.service
-
-systemctl disable getty@tty3.service
+        aaa_setup += f"""systemctl mask getty@tty2.service
 systemctl mask getty@tty3.service
-
-systemctl disable getty@tty4.service
 systemctl mask getty@tty4.service
-
-systemctl disable getty@tty5.service
 systemctl mask getty@tty5.service
-
-systemctl disable getty@tty6.service
-systemctl mask getty@tty6.service"""
-    elif currentProject.session_mode != "init":
-        aaa_setup += f"""systemctl disable getty.target
-systemctl mask getty.target
-
-systemctl disable getty@tty1.service
-systemctl mask getty@tty1.service
-
-systemctl disable getty@tty2.service
-systemctl mask getty@tty2.service
-
-systemctl disable getty@tty3.service
-systemctl mask getty@tty3.service
-
-systemctl disable getty@tty4.service
-systemctl mask getty@tty4.service
-
-systemctl disable getty@tty5.service
-systemctl mask getty@tty5.service
-
-systemctl disable getty@tty6.service
 systemctl mask getty@tty6.service
+systemctl mask serial-getty@.service
+systemctl mask container-getty@.service
+systemctl mask console-getty.service"""
+    elif currentProject.session_mode != "init":
+        aaa_setup += f"""systemctl mask getty.target
+systemctl mask getty@tty1.service
+systemctl mask getty@tty2.service
+systemctl mask getty@tty3.service
+systemctl mask getty@tty4.service
+systemctl mask getty@tty5.service
+systemctl mask getty@tty6.service
+systemctl mask serial-getty@.service
+systemctl mask container-getty@.service
+systemctl mask console-getty.service
 
 chmod -x /sbin/agetty
 chmod -x /sbin/getty
