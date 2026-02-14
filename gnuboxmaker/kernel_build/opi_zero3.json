@@ -1,0 +1,53 @@
+[
+    {
+        "type": "kernel",
+        "name": "kernel_opi_zero3.img",
+        "export": false,
+
+        "headers_name": "kernel_headers_opi_zero3",
+        "headers_export": false,
+
+        "modules_name": "kernel_modules_opi_zero3",
+        "modules_export": false,
+
+        "result_config_name": "kernel_config_opi_zero3",
+        "result_config_export": false,
+
+        "kernel_source_git": "https://github.com/igorkll/linux-1",
+        "kernel_source_git_branch": "h616-var",
+        "kernel_source_git_checkout": "dab97acb882cae70993a825156452a8fc850fbf3",
+        "kernel_output_file": "Image",
+
+        "patches": [
+            "disable_vt_swithing_from_keyboard.patch",
+            "disable_vt_swithing_from_wayland.patch",
+            "disable_sysrq.patch",
+            "disable_cad.patch",
+            "disable_keyboard_echo_by_default.patch"
+        ],
+
+        "kernel_config_changes_files": [
+            "kernel_config_changes.txt",
+            "kernel_config_changes_opi_zero3.txt"
+        ],
+
+        "defconfig": "defconfig",
+
+        "additional_export": [
+            ["arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero3.dtb", "sun50i-h618-orangepi-zero3.dtb", false]
+        ]
+    },
+    {
+        "type": "directory",
+        "name": "opi_zero3",
+        "export": false,
+
+        "items": [
+            ["sun50i-h618-orangepi-zero3.dtb", "/sun50i-h618-orangepi-zero3.dtb"],
+            ["kernel_headers_opi_zero3", "/kernel_headers"],
+            ["kernel_modules_opi_zero3", "/kernel_modules"],
+            ["kernel_opi_zero3.img", "/kernel.img"],
+            ["kernel_config_opi_zero3", "/kernel_config"]
+        ]
+    }
+]

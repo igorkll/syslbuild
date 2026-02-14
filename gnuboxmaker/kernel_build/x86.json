@@ -4,6 +4,9 @@
         "name": "kernel.img",
         "export": true,
 
+        "headers_name": "kernel_headers",
+        "headers_export": true,
+
         "modules_name": "kernel_modules",
         "modules_export": true,
 

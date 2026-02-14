@@ -3,7 +3,8 @@
     
     "architectures": [
         "amd64",
-        "i386"
+        "i386",
+        "arm64"
     ],
 
     "builditems": [
@@ -19,6 +20,14 @@
 
             "type": "include",
             "file": "x86.json"
+        },
+        {
+            "architectures": [
+                "arm64"
+            ],
+
+            "type": "include",
+            "file": "opi_zero3.json"
         }
     ]
 }
