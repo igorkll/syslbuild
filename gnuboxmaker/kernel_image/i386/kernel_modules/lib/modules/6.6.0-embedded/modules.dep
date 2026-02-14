@@ -1,11 +1,14 @@
 kernel/fs/efivarfs/efivarfs.ko:
 kernel/lib/lz4/lz4_compress.ko:
+kernel/lib/crc-itu-t.ko:
 kernel/drivers/video/backlight/lcd.ko:
 kernel/drivers/video/backlight/platform_lcd.ko: kernel/drivers/video/backlight/lcd.ko
 kernel/drivers/video/backlight/adp8860_bl.ko:
 kernel/drivers/video/backlight/adp8870_bl.ko:
 kernel/drivers/video/backlight/apple_bl.ko:
 kernel/drivers/video/backlight/bd6107.ko:
+kernel/drivers/video/backlight/gpio_backlight.ko:
+kernel/drivers/video/backlight/ktd253-backlight.ko:
 kernel/drivers/video/backlight/ktz8866.ko: kernel/drivers/base/regmap/regmap-i2c.ko
 kernel/drivers/video/backlight/lm3639_bl.ko: kernel/drivers/base/regmap/regmap-i2c.ko
 kernel/drivers/video/backlight/lv5207lp.ko:
@@ -36,6 +39,7 @@ kernel/drivers/video/fbdev/aty/aty128fb.ko:
 kernel/drivers/video/fbdev/aty/radeonfb.ko: kernel/drivers/video/fbdev/core/fb_ddc.ko kernel/drivers/i2c/algos/i2c-algo-bit.ko
 kernel/drivers/video/fbdev/macmodes.ko:
 kernel/drivers/video/fbdev/sis/sisfb.ko:
+kernel/drivers/video/fbdev/via/viafb.ko: kernel/drivers/i2c/algos/i2c-algo-bit.ko
 kernel/drivers/video/fbdev/kyro/kyrofb.ko:
 kernel/drivers/video/fbdev/savage/savagefb.ko: kernel/drivers/video/vgastate.ko kernel/drivers/video/fbdev/core/fb_ddc.ko kernel/drivers/i2c/algos/i2c-algo-bit.ko
 kernel/drivers/video/fbdev/neofb.ko: kernel/drivers/video/vgastate.ko
@@ -59,6 +63,7 @@ kernel/drivers/video/fbdev/ocfb.ko:
 kernel/drivers/video/fbdev/sm712fb.ko:
 kernel/drivers/video/fbdev/uvesafb.ko:
 kernel/drivers/video/fbdev/vga16fb.ko: kernel/drivers/video/vgastate.ko
+kernel/drivers/video/fbdev/ssd1307fb.ko:
 kernel/drivers/video/vgastate.ko:
 kernel/drivers/virtio/virtio_dma_buf.ko:
 kernel/drivers/char/agp/sis-agp.ko:
@@ -68,7 +73,7 @@ kernel/drivers/gpu/drm/i2c/sil164.ko:
 kernel/drivers/gpu/drm/i2c/tda998x.ko: kernel/drivers/media/cec/core/cec.ko
 kernel/drivers/gpu/drm/i2c/tda9950.ko: kernel/drivers/media/cec/core/cec.ko
 kernel/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.ko:
-kernel/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.ko:
+kernel/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.ko: kernel/drivers/gpu/drm/bridge/analogix/analogix_dp.ko kernel/drivers/gpu/drm/display/drm_display_helper.ko kernel/drivers/media/cec/core/cec.ko kernel/drivers/base/regmap/regmap-i2c.ko
 kernel/drivers/gpu/drm/bridge/analogix/analogix_dp.ko: kernel/drivers/gpu/drm/display/drm_display_helper.ko kernel/drivers/media/cec/core/cec.ko
 kernel/drivers/gpu/drm/tiny/bochs.ko: kernel/drivers/gpu/drm/drm_vram_helper.ko kernel/drivers/gpu/drm/drm_ttm_helper.ko kernel/drivers/gpu/drm/ttm/ttm.ko
 kernel/drivers/gpu/drm/tiny/cirrus.ko:
@@ -84,7 +89,7 @@ kernel/drivers/gpu/drm/drm_ttm_helper.ko: kernel/drivers/gpu/drm/ttm/ttm.ko
 kernel/drivers/gpu/drm/ttm/ttm.ko:
 kernel/drivers/gpu/drm/scheduler/gpu-sched.ko:
 kernel/drivers/gpu/drm/radeon/radeon.ko: kernel/drivers/gpu/drm/drm_suballoc_helper.ko kernel/drivers/gpu/drm/drm_ttm_helper.ko kernel/drivers/gpu/drm/ttm/ttm.ko kernel/drivers/gpu/drm/display/drm_display_helper.ko kernel/drivers/media/cec/core/cec.ko kernel/drivers/i2c/algos/i2c-algo-bit.ko
-kernel/drivers/gpu/drm/amd/amdgpu/amdgpu.ko: kernel/drivers/gpu/drm/amd/amdxcp/amdxcp.ko kernel/drivers/gpu/drm/drm_exec.ko kernel/drivers/mfd/mfd-core.ko kernel/drivers/gpu/drm/scheduler/gpu-sched.ko kernel/drivers/gpu/drm/drm_buddy.ko kernel/drivers/gpu/drm/drm_suballoc_helper.ko kernel/drivers/gpu/drm/drm_ttm_helper.ko kernel/drivers/gpu/drm/ttm/ttm.ko kernel/drivers/gpu/drm/display/drm_display_helper.ko kernel/drivers/media/cec/core/cec.ko kernel/drivers/i2c/algos/i2c-algo-bit.ko
+kernel/drivers/gpu/drm/amd/amdgpu/amdgpu.ko: kernel/drivers/gpu/drm/amd/amdxcp/amdxcp.ko kernel/drivers/gpu/drm/drm_exec.ko kernel/drivers/gpu/drm/scheduler/gpu-sched.ko kernel/drivers/gpu/drm/drm_buddy.ko kernel/drivers/gpu/drm/drm_suballoc_helper.ko kernel/drivers/gpu/drm/drm_ttm_helper.ko kernel/drivers/gpu/drm/ttm/ttm.ko kernel/drivers/gpu/drm/display/drm_display_helper.ko kernel/drivers/media/cec/core/cec.ko kernel/drivers/i2c/algos/i2c-algo-bit.ko
 kernel/drivers/gpu/drm/amd/amdxcp/amdxcp.ko:
 kernel/drivers/gpu/drm/i915/i915.ko: kernel/drivers/gpu/drm/drm_buddy.ko kernel/drivers/gpu/drm/ttm/ttm.ko kernel/drivers/gpu/drm/display/drm_display_helper.ko kernel/drivers/media/cec/core/cec.ko kernel/drivers/i2c/algos/i2c-algo-bit.ko
 kernel/drivers/gpu/drm/mgag200/mgag200.ko: kernel/drivers/i2c/algos/i2c-algo-bit.ko
@@ -99,17 +104,178 @@ kernel/drivers/gpu/drm/qxl/qxl.ko: kernel/drivers/gpu/drm/drm_ttm_helper.ko kern
 kernel/drivers/gpu/drm/virtio/virtio-gpu.ko: kernel/drivers/virtio/virtio_dma_buf.ko
 kernel/drivers/gpu/drm/vboxvideo/vboxvideo.ko: kernel/drivers/gpu/drm/drm_vram_helper.ko kernel/drivers/gpu/drm/drm_ttm_helper.ko kernel/drivers/gpu/drm/ttm/ttm.ko
 kernel/drivers/base/regmap/regmap-i2c.ko:
-kernel/drivers/mfd/mfd-core.ko:
+kernel/drivers/mfd/simple-mfd-i2c.ko: kernel/drivers/base/regmap/regmap-i2c.ko
 kernel/drivers/auxdisplay/charlcd.ko:
+kernel/drivers/auxdisplay/hd44780_common.ko: kernel/drivers/auxdisplay/charlcd.ko
 kernel/drivers/auxdisplay/img-ascii-lcd.ko: kernel/drivers/auxdisplay/line-display.ko
+kernel/drivers/auxdisplay/hd44780.ko: kernel/drivers/auxdisplay/hd44780_common.ko kernel/drivers/auxdisplay/charlcd.ko
 kernel/drivers/auxdisplay/ht16k33.ko: kernel/drivers/input/matrix-keymap.ko kernel/drivers/auxdisplay/line-display.ko
 kernel/drivers/auxdisplay/lcd2s.ko: kernel/drivers/auxdisplay/charlcd.ko
 kernel/drivers/auxdisplay/line-display.ko:
+kernel/drivers/input/keyboard/adp5588-keys.ko: kernel/drivers/input/matrix-keymap.ko
+kernel/drivers/input/keyboard/adp5589-keys.ko:
+kernel/drivers/input/keyboard/cypress-sf.ko:
+kernel/drivers/input/keyboard/dlink-dir685-touchkeys.ko:
+kernel/drivers/input/keyboard/tca6416-keypad.ko:
+kernel/drivers/input/keyboard/tca8418_keypad.ko: kernel/drivers/input/matrix-keymap.ko
+kernel/drivers/input/keyboard/lkkbd.ko:
+kernel/drivers/input/keyboard/lm8323.ko:
+kernel/drivers/input/keyboard/lm8333.ko: kernel/drivers/input/matrix-keymap.ko
+kernel/drivers/input/keyboard/max7359_keypad.ko: kernel/drivers/input/matrix-keymap.ko
+kernel/drivers/input/keyboard/mcs_touchkey.ko:
+kernel/drivers/input/keyboard/mpr121_touchkey.ko:
+kernel/drivers/input/keyboard/newtonkbd.ko:
+kernel/drivers/input/keyboard/opencores-kbd.ko:
+kernel/drivers/input/keyboard/qt1050.ko: kernel/drivers/base/regmap/regmap-i2c.ko
+kernel/drivers/input/keyboard/qt1070.ko:
+kernel/drivers/input/keyboard/qt2160.ko:
+kernel/drivers/input/keyboard/stowaway.ko:
+kernel/drivers/input/keyboard/sunkbd.ko:
+kernel/drivers/input/keyboard/tm2-touchkey.ko:
+kernel/drivers/input/keyboard/xtkbd.ko:
+kernel/drivers/input/mouse/appletouch.ko:
+kernel/drivers/input/mouse/bcm5974.ko:
+kernel/drivers/input/mouse/cyapatp.ko: kernel/lib/crc-itu-t.ko
+kernel/drivers/input/mouse/elan_i2c.ko:
+kernel/drivers/input/mouse/sermouse.ko:
+kernel/drivers/input/mouse/synaptics_i2c.ko:
+kernel/drivers/input/mouse/synaptics_usb.ko:
+kernel/drivers/input/mouse/vsxxxaa.ko:
+kernel/drivers/input/joystick/a3d.ko: kernel/drivers/input/gameport/gameport.ko
+kernel/drivers/input/joystick/adi.ko: kernel/drivers/input/gameport/gameport.ko
+kernel/drivers/input/joystick/as5011.ko:
+kernel/drivers/input/joystick/analog.ko: kernel/drivers/input/gameport/gameport.ko
+kernel/drivers/input/joystick/cobra.ko: kernel/drivers/input/gameport/gameport.ko
+kernel/drivers/input/joystick/fsia6b.ko:
+kernel/drivers/input/joystick/gf2k.ko: kernel/drivers/input/gameport/gameport.ko
+kernel/drivers/input/joystick/grip.ko: kernel/drivers/input/gameport/gameport.ko
+kernel/drivers/input/joystick/grip_mp.ko: kernel/drivers/input/gameport/gameport.ko
+kernel/drivers/input/joystick/guillemot.ko: kernel/drivers/input/gameport/gameport.ko
+kernel/drivers/input/joystick/iforce/iforce.ko:
+kernel/drivers/input/joystick/interact.ko: kernel/drivers/input/gameport/gameport.ko
+kernel/drivers/input/joystick/joydump.ko: kernel/drivers/input/gameport/gameport.ko
+kernel/drivers/input/joystick/magellan.ko:
+kernel/drivers/input/joystick/pxrc.ko:
+kernel/drivers/input/joystick/qwiic-joystick.ko:
+kernel/drivers/input/joystick/sensehat-joystick.ko:
+kernel/drivers/input/joystick/sidewinder.ko: kernel/drivers/input/gameport/gameport.ko
+kernel/drivers/input/joystick/spaceball.ko:
+kernel/drivers/input/joystick/spaceorb.ko:
+kernel/drivers/input/joystick/stinger.ko:
+kernel/drivers/input/joystick/tmdc.ko: kernel/drivers/input/gameport/gameport.ko
+kernel/drivers/input/joystick/twidjoy.ko:
+kernel/drivers/input/joystick/warrior.ko:
+kernel/drivers/input/joystick/xpad.ko:
+kernel/drivers/input/joystick/zhenhua.ko:
+kernel/drivers/input/tablet/acecad.ko:
+kernel/drivers/input/tablet/aiptek.ko:
+kernel/drivers/input/tablet/hanwang.ko:
+kernel/drivers/input/tablet/kbtab.ko:
+kernel/drivers/input/tablet/pegasus_notetaker.ko:
+kernel/drivers/input/tablet/wacom_serial4.ko:
+kernel/drivers/input/touchscreen/ad7879.ko:
+kernel/drivers/input/touchscreen/atmel_mxt_ts.ko:
+kernel/drivers/input/touchscreen/bu21013_ts.ko:
+kernel/drivers/input/touchscreen/bu21029_ts.ko:
+kernel/drivers/input/touchscreen/chipone_icn8505.ko:
+kernel/drivers/input/touchscreen/cy8ctma140.ko:
+kernel/drivers/input/touchscreen/cyttsp_core.ko:
+kernel/drivers/input/touchscreen/cyttsp4_core.ko:
+kernel/drivers/input/touchscreen/cyttsp5.ko: kernel/lib/crc-itu-t.ko kernel/drivers/base/regmap/regmap-i2c.ko
+kernel/drivers/input/touchscreen/dynapro.ko:
+kernel/drivers/input/touchscreen/edt-ft5x06.ko: kernel/drivers/base/regmap/regmap-i2c.ko
+kernel/drivers/input/touchscreen/hampshire.ko:
+kernel/drivers/input/touchscreen/hycon-hy46xx.ko: kernel/drivers/base/regmap/regmap-i2c.ko
+kernel/drivers/input/touchscreen/gunze.ko:
+kernel/drivers/input/touchscreen/eeti_ts.ko:
+kernel/drivers/input/touchscreen/ektf2127.ko:
+kernel/drivers/input/touchscreen/elants_i2c.ko:
+kernel/drivers/input/touchscreen/elo.ko:
+kernel/drivers/input/touchscreen/egalax_ts_serial.ko:
+kernel/drivers/input/touchscreen/exc3000.ko:
+kernel/drivers/input/touchscreen/fujitsu_ts.ko:
+kernel/drivers/input/touchscreen/hideep.ko: kernel/drivers/base/regmap/regmap-i2c.ko
+kernel/drivers/input/touchscreen/hynitron_cstxxx.ko:
+kernel/drivers/input/touchscreen/ili210x.ko:
+kernel/drivers/input/touchscreen/ilitek_ts_i2c.ko:
+kernel/drivers/input/touchscreen/imagis.ko:
+kernel/drivers/input/touchscreen/inexio.ko:
+kernel/drivers/input/touchscreen/max11801_ts.ko:
+kernel/drivers/input/touchscreen/mcs5000_ts.ko:
+kernel/drivers/input/touchscreen/melfas_mip4.ko:
+kernel/drivers/input/touchscreen/mms114.ko:
+kernel/drivers/input/touchscreen/mtouch.ko:
+kernel/drivers/input/touchscreen/novatek-nvt-ts.ko:
+kernel/drivers/input/touchscreen/usbtouchscreen.ko:
+kernel/drivers/input/touchscreen/penmount.ko:
+kernel/drivers/input/touchscreen/pixcir_i2c_ts.ko:
+kernel/drivers/input/touchscreen/s6sy761.ko:
+kernel/drivers/input/touchscreen/silead.ko:
+kernel/drivers/input/touchscreen/st1232.ko:
+kernel/drivers/input/touchscreen/stmfts.ko:
+kernel/drivers/input/touchscreen/touchit213.ko:
+kernel/drivers/input/touchscreen/touchright.ko:
+kernel/drivers/input/touchscreen/touchwin.ko:
+kernel/drivers/input/touchscreen/tsc40.ko:
+kernel/drivers/input/touchscreen/tsc200x-core.ko:
+kernel/drivers/input/touchscreen/tsc2004.ko: kernel/drivers/input/touchscreen/tsc200x-core.ko kernel/drivers/base/regmap/regmap-i2c.ko
+kernel/drivers/input/touchscreen/tsc2007.ko:
+kernel/drivers/input/touchscreen/wacom_w8001.ko:
+kernel/drivers/input/touchscreen/wacom_i2c.ko:
+kernel/drivers/input/touchscreen/wdt87xx_i2c.ko:
+kernel/drivers/input/touchscreen/sx8654.ko:
+kernel/drivers/input/touchscreen/tps6507x-ts.ko:
+kernel/drivers/input/touchscreen/zet6223.ko:
+kernel/drivers/input/touchscreen/rohm_bu21023.ko:
+kernel/drivers/input/touchscreen/iqs5xx.ko:
+kernel/drivers/input/touchscreen/iqs7211.ko:
+kernel/drivers/input/touchscreen/zinitix.ko:
+kernel/drivers/input/touchscreen/himax_hx83112b.ko: kernel/drivers/base/regmap/regmap-i2c.ko
+kernel/drivers/input/misc/ad714x.ko:
+kernel/drivers/input/misc/ad714x-i2c.ko: kernel/drivers/input/misc/ad714x.ko
+kernel/drivers/input/misc/adxl34x.ko:
+kernel/drivers/input/misc/adxl34x-i2c.ko: kernel/drivers/input/misc/adxl34x.ko
+kernel/drivers/input/misc/apanel.ko:
+kernel/drivers/input/misc/ati_remote2.ko:
+kernel/drivers/input/misc/atlas_btns.ko:
+kernel/drivers/input/misc/bma150.ko:
+kernel/drivers/input/misc/cm109.ko:
+kernel/drivers/input/misc/cma3000_d0x.ko:
+kernel/drivers/input/misc/da7280.ko: kernel/drivers/base/regmap/regmap-i2c.ko
+kernel/drivers/input/misc/e3x0-button.ko:
+kernel/drivers/input/misc/drv2665.ko: kernel/drivers/base/regmap/regmap-i2c.ko
+kernel/drivers/input/misc/drv2667.ko: kernel/drivers/base/regmap/regmap-i2c.ko
+kernel/drivers/input/misc/ims-pcu.ko:
+kernel/drivers/input/misc/iqs269a.ko: kernel/drivers/base/regmap/regmap-i2c.ko
+kernel/drivers/input/misc/iqs626a.ko: kernel/drivers/base/regmap/regmap-i2c.ko
+kernel/drivers/input/misc/iqs7222.ko:
+kernel/drivers/input/misc/keyspan_remote.ko:
+kernel/drivers/input/misc/kxtj9.ko:
+kernel/drivers/input/misc/mma8450.ko:
+kernel/drivers/input/misc/pcf8574_keypad.ko:
+kernel/drivers/input/misc/pcspkr.ko:
+kernel/drivers/input/misc/powermate.ko:
+kernel/drivers/input/misc/uinput.ko:
+kernel/drivers/input/misc/yealink.ko:
+kernel/drivers/input/misc/ideapad_slidebar.ko:
 kernel/drivers/input/matrix-keymap.ko:
 kernel/drivers/i2c/algos/i2c-algo-bit.ko:
 kernel/drivers/media/cec/core/cec.ko:
 kernel/drivers/thermal/intel/x86_pkg_temp_thermal.ko:
 kernel/drivers/platform/x86/mxm-wmi.ko:
+kernel/drivers/input/gameport/gameport.ko:
+kernel/sound/usb/misc/snd-ua101.ko:
+kernel/sound/usb/usx2y/snd-usb-usx2y.ko:
+kernel/sound/usb/usx2y/snd-usb-us122l.ko:
+kernel/sound/usb/caiaq/snd-usb-caiaq.ko:
+kernel/sound/usb/6fire/snd-usb-6fire.ko:
+kernel/sound/usb/hiface/snd-usb-hiface.ko:
+kernel/sound/usb/bcd2000/snd-bcd2000.ko:
+kernel/sound/usb/line6/snd-usb-line6.ko:
+kernel/sound/usb/line6/snd-usb-pod.ko: kernel/sound/usb/line6/snd-usb-line6.ko
+kernel/sound/usb/line6/snd-usb-podhd.ko: kernel/sound/usb/line6/snd-usb-line6.ko
+kernel/sound/usb/line6/snd-usb-toneport.ko: kernel/sound/usb/line6/snd-usb-line6.ko
+kernel/sound/usb/line6/snd-usb-variax.ko: kernel/sound/usb/line6/snd-usb-line6.ko
 kernel/net/netfilter/nf_log_syslog.ko:
 kernel/net/netfilter/xt_mark.ko:
 kernel/net/netfilter/xt_nat.ko:
