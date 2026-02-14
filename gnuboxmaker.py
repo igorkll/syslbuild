@@ -603,6 +603,18 @@ def setup_export_initramfs(builditems):
             "kernel_config": "kernel_image/i386/kernel_config",
             "source": "rootfs directory x4"
         })
+
+        if currentProject.export_img_opi_zero3:
+            builditems.append({
+                "architectures": ["arm64"],
+
+                "type": "debian-export-initramfs",
+                "name": "initramfs_opi_zero3.img",
+                "export": False,
+
+                "kernel_config": "kernel_image/arm64/opi_zero3/kernel_config",
+                "source": "rootfs directory x4"
+            })
     else:
         stop_error(f"unknown distro \"{currentProject.distro}\"")
 
@@ -658,6 +670,8 @@ def setup_build_base(builditems):
     setup_export_initramfs(builditems)
 
     builditems.append({
+        "architectures": ["amd64", "i386"],
+
         "type": "directory",
         "name": "rootfs directory x5",
         "export": False,
@@ -665,6 +679,18 @@ def setup_build_base(builditems):
         "items": [
             ["rootfs directory x4", "."],
             ["initramfs.img", "/initramfs.img", [0, 0, "0755"]]
+        ]
+    })
+
+    builditems.append({
+        "architectures": ["arm64"],
+
+        "type": "directory",
+        "name": "rootfs directory x5",
+        "export": False,
+
+        "items": [
+            ["rootfs directory x4", "."]
         ]
     })
 
@@ -847,7 +873,7 @@ def setup_build_targets(builditems, cmdline):
             ],
 
             "kernel": "kernel_image/arm64/opi_zero3/kernel.img",
-            "initramfs": "initramfs.img",
+            "initramfs": "initramfs_opi_zero3.img",
             "rootfs": "rootfs.img",
 
             "kernel_args_auto": True,
@@ -881,6 +907,9 @@ def generate_syslbuild_project():
 
     deleteAny(os.path.join(path_temp_syslbuild, "files"))
     deleteAny(os.path.join(path_temp_syslbuild, "chroot"))
+    deleteAny(os.path.join(path_temp_syslbuild, "kernel_image"))
+    deleteAny(os.path.join(path_temp_syslbuild, "blobs"))
+    deleteAny(os.path.join(path_temp_syslbuild, "embedded-plymouth"))
     
     setup_build_architectures(architectures)
     setup_download(builditems)
