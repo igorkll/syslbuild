@@ -16,7 +16,7 @@ import time
 
 HandleKey_varians = ["ignore", "poweroff", "reboot", "suspend", "hibernate", "lock"]
 session_user_variants = ["user", "root"]
-session_mode_variants = ["wayland", "x11", "tty"]
+session_mode_variants = ["wayland", "x11", "tty", "init"]
 weston_shell_variants = ["kiosk", "desktop"]
 splash_mode_variants = ["center", "fill", "contain", "cover"]
 
@@ -234,7 +234,7 @@ systemctl mask getty@tty5.service
 
 systemctl disable getty@tty6.service
 systemctl mask getty@tty6.service"""
-    else:
+    elif currentProject.session_mode != "init":
         aaa_setup += f"""systemctl disable getty.target
 systemctl mask getty.target
 
@@ -308,12 +308,11 @@ def setup_build_distro(builditems):
             include.append("plymouth") # install basic plymouth files. The part will later be replaced by embedded plymouth.
             include.append("plymouth-themes")
 
-        if currentProject.session_mode != "tty":
-            include.append("sddm")
-
         if currentProject.session_mode == "wayland":
+            include.append("sddm")
             include.append("weston")
         elif currentProject.session_mode == "x11":
+            include.append("sddm")
             include.append("xserver-xorg")
             include.append("xinit")
             include.append("x11-xserver-utils")
@@ -374,7 +373,7 @@ ExecStart=-/sbin/getty --skip-login --noissue --nohints --nonewline --autologin 
 
 [Unit]
 StartLimitIntervalSec=0""")
-    else:
+    elif currentProject.session_mode != "init":
         session = "weston.desktop"
         if currentProject.session_mode == "x11":
             session = ""
@@ -870,6 +869,9 @@ def generate_syslbuild_project():
 
     if currentProject.boot_splash:
         cmdline += " splash earlysplash"
+
+    if currentProject.session_mode == "init":
+        cmdline += " init=/runshell.sh"
 
     architectures = []
     builditems = []
