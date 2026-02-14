@@ -321,9 +321,6 @@ def setup_build_distro(builditems):
         include += currentProject.user_packages
 
         builditems.append({
-            "template": True,
-            "forkbase": True,
-            
             "type": "debian",
             "name": "rootfs directory x1",
             "export": False,
@@ -331,28 +328,14 @@ def setup_build_distro(builditems):
             "components": [
                 "main",
                 "contrib",
-                "non-free"
+                "non-free",
+                "non-free-firmware"
             ],
             "include": include,
 
             "variant": currentProject.debian_variant,
             "suite": currentProject.debian_suite,
             "url": currentProject.debian_snapshot
-        })
-
-        builditems.append({
-            "fork": True,
-            "architectures": ["amd64", "i386"]
-        })
-
-        builditems.append({
-            "fork": True,
-            "forkArraysCombine": True,
-            "architectures": ["arm64"],
-
-            "components": [
-                "non-free-firmware"
-            ]
         })
     else:
         stop_error(f"unknown distro \"{currentProject.distro}\"")

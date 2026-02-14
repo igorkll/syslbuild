@@ -434,7 +434,7 @@ def buildDebian(item):
     cmd = ["mmdebstrap", "--arch", architecture, "--variant", variant]
     if "components" in item:
         components_line = " ".join(item["components"])
-        cmd.append(f"--components=\"{components_line}\"")
+        cmd.append(f"--components={components_line}")
     if include_arg: cmd.append(include_arg)
     # if exclude_arg: cmd.append(exclude_arg)
     itemFolder = getItemFolder(item)
