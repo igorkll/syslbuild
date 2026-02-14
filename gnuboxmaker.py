@@ -298,7 +298,15 @@ def setup_build_distro(builditems):
             "systemd-sysv",
             "systemd-resolved",
             "dbus",
-            "dbus-user-session"
+            "dbus-user-session",
+
+            "cloud-guest-utils",
+            "e2fsprogs",
+            "gdisk",
+            "uuid-runtime",
+            "sed",
+            "mawk",
+            "kexec-tools"
         ]
 
         if currentProject.export_arm64 and currentProject.export_img_opi_zero3:
