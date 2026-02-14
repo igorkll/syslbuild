@@ -36,7 +36,7 @@
   "splash_scale": 0.7,
   "root_expand": true,
   "allow_updatescript": true,
-  "weston_shell": "desktop",
+  "weston_shell": "kiosk",
   "session_user": "root",
   "session_mode": "wayland",
   "export_x86_64": true,
