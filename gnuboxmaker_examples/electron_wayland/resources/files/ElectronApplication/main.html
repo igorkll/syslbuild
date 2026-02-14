@@ -16,9 +16,13 @@
     </br>
     </br>
     <button onclick="execSync('shutdown --no-wall now')">shutdown device</button>
+    </br>
+    </br>
+    <button onclick="ipcRenderer.send('quit-app');">close application</button>
 
     <script>
         const { execSync } = require('child_process');
+        const { ipcRenderer } = require('electron');
 
         function updateTime() {
             const now = new Date();

@@ -1,4 +1,4 @@
-const { app, BrowserWindow, globalShortcut } = require('electron');
+const { app, BrowserWindow, globalShortcut, ipcMain } = require('electron');
 const path = require('path');
 
 function createWindow () {
@@ -16,5 +16,9 @@ function createWindow () {
 
   win.loadFile(path.join(__dirname, 'main.html'));
 }
+
+ipcMain.on('quit-app', () => {
+  app.quit();
+});
 
 app.whenReady().then(createWindow);
