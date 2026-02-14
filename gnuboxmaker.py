@@ -869,7 +869,7 @@ def setup_build_targets(builditems, cmdline):
             "bootloader": "blobs/u-boot-sunxi-with-spl.bin",
             "bootloaderDtb": "sun50i-h618-orangepi-zero3.dtb",
             "dtbList": [
-                "sun50i-h618-orangepi-zero3.dtb"
+                "kernel_image/arm64/opi_zero3/sun50i-h618-orangepi-zero3.dtb"
             ],
 
             "kernel": "kernel_image/arm64/opi_zero3/kernel.img",
