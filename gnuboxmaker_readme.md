@@ -75,7 +75,7 @@ a similar program for creating Windows images for embedded devices: https://gith
 ## notes
 * please note that by default, the first time you turn on the created root image, the partition will be enlarged to the maximum possible size for the current media. this is done because I cannot know what size of drive the *.img image will be written to
 * by default, the allow_updatescript feature from custom-debian-init-script is enabled. to understand how it works, read this: https://github.com/igorkll/custom-debian-initramfs-init
-* in the "tty" mode if your script is runshell.sh when is completed, it will automatically restart. However, this does not happen in graphical mode.
+* if your script is runshell.sh when is completed, it will automatically restart
 * It is always necessary to reboot and turn off the device from the you shell via "shutdown --no-wall now" and "shutdown --no-wall -r now", the --no-wall argument is REQUIRED so that the shutdown process is not visible when turned off.
 * the /var directory is mounted as tmpfs
 * The .img images for x86 / x86_64 that Gnubox maker generates are universal. they can be written to a USB drive or to a hard disk/SSD.
