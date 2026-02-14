@@ -40,7 +40,7 @@
     {
         "type": "directory",
         "name": "opi_zero3",
-        "export": false,
+        "export": true,
 
         "items": [
             ["sun50i-h618-orangepi-zero3.dtb", "/sun50i-h618-orangepi-zero3.dtb"],

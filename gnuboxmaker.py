@@ -53,11 +53,14 @@ class Project:
 
     export_x86_64: bool = True
     export_x86: bool = False
+    export_arm64: bool = False
 
     export_img_bios_mbr: bool = True
     export_img_bios_gpt: bool = False
     export_img_uefi_gpt: bool = True
     export_img_bios_and_uefi_gpt: bool = False
+
+    export_img_opi_zero3: bool = False
 
 def raw_load_project(path):
     with open(path, "r", encoding="utf-8") as f:
@@ -295,6 +298,12 @@ def setup_build_distro(builditems):
             "dbus-user-session"
         ]
 
+        if currentProject.export_arm64 and currentProject.export_img_opi_zero3:
+            include.append("firmware-linux")
+            include.append("firmware-brcm80211")
+            include.append("firmware-realtek")
+            include.append("wireless-regdb")
+
         if currentProject.boot_splash:
             include.append("plymouth") # install basic plymouth files. The part will later be replaced by embedded plymouth.
             include.append("plymouth-themes")
@@ -316,6 +325,12 @@ def setup_build_distro(builditems):
             "name": "rootfs directory x1",
             "export": False,
 
+            "components": [
+                "main",
+                "contrib",
+                "non-free",
+                "non-free-firmware"
+            ],
             "include": include,
 
             "variant": currentProject.debian_variant,
@@ -499,6 +514,7 @@ def copy_bins(name):
 
 def setup_write_bins(builditems):
     copy_bins("kernel_image")
+    copy_bins("blobs")
 
     # ---------------------- x86_64
     items = [
@@ -533,6 +549,25 @@ def setup_write_bins(builditems):
 
     builditems.append({
         "architectures": ["i386"],
+
+        "type": "directory",
+        "name": "rootfs directory x3",
+        "export": False,
+
+        "items": items
+    })
+
+    # ---------------------- arm64
+    items = [
+        ["rootfs directory x2", "."],
+        ["kernel_image/arm64/opi_zero3/kernel_modules", "/usr"]
+    ]
+
+    if currentProject.boot_splash:
+        items.append(["embedded-plymouth/arm64", "/", [0, 0, "0755"]])
+
+    builditems.append({
+        "architectures": ["arm64"],
 
         "type": "directory",
         "name": "rootfs directory x3",
@@ -642,7 +677,7 @@ def setup_build_base(builditems):
         "label": "rootfs"
     })
 
-def setup_build_targets(builditems):
+def setup_build_targets(builditems, cmdline):
     if currentProject.export_img_bios_mbr:
         builditems.append({
             "architectures": ["amd64", "i386"],
@@ -791,6 +826,31 @@ def setup_build_targets(builditems):
             }
         })
 
+    if currentProject.export_img_opi_zero3:
+        builditems.append({
+            "architectures": ["arm64"],
+
+            "type": "singleboard",
+            "name": f"{currentProjectName} OPI ZERO 3.img",
+            "export": True,
+
+            "singleboardType": "uboot-16",
+
+            "bootloader": "blobs/u-boot-sunxi-with-spl.bin",
+            "bootloaderDtb": "sun50i-h618-orangepi-zero3.dtb",
+            "dtbList": [
+                "sun50i-h618-orangepi-zero3.dtb"
+            ],
+
+            "kernel": "kernel_image/arm64/opi_zero3/kernel.img",
+            "initramfs": "initramfs.img",
+            "rootfs": "rootfs.img",
+
+            "kernel_args_auto": True,
+            "kernel_rootfs_auto": "manual",
+            "kernel_args": cmdline + " cma=128M plymouth.ignore-serial-consoles console=tty1"
+        })
+
 def generate_syslbuild_project():
     cmdline = "rw rootwait=60 makevartmp preinit=/root/preinit.sh"
 
@@ -818,7 +878,7 @@ def generate_syslbuild_project():
     setup_build_architectures(architectures)
     setup_download(builditems)
     setup_build_base(builditems)
-    setup_build_targets(builditems)
+    setup_build_targets(builditems, cmdline)
 
     syslbuild_project = {
         "architectures": architectures,

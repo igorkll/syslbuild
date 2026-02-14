@@ -432,6 +432,9 @@ def buildDebian(item):
     # exclude_arg = "--exclude=" + ",".join(item["exclude"]) if item.get("exclude") else None
 
     cmd = ["mmdebstrap", "--arch", architecture, "--variant", variant]
+    if "components" in item:
+        components_line = " ".join(item["components"])
+        cmd.append(f"--components=\"{components_line}\"")
     if include_arg: cmd.append(include_arg)
     # if exclude_arg: cmd.append(exclude_arg)
     itemFolder = getItemFolder(item)
@@ -1503,7 +1506,11 @@ def singleboardBuild(item):
             
             if item.get("kernel_rootfs_auto", False):
                 if "rootfs" in item:
-                    kernel_args = f"root=/dev/mmcblk0p2 {item.get("kernel_rootfs_auto")} " + kernel_args
+                    kernel_rootfs_auto = item["kernel_rootfs_auto"]
+                    if kernel_rootfs_auto == "manual":
+                        kernel_args = f"root=/dev/mmcblk0p2 " + kernel_args
+                    else:
+                        kernel_args = f"root=/dev/mmcblk0p2 {kernel_rootfs_auto} " + kernel_args
             
             if item.get("kernel_args_auto", False):
                 if "initramfs" in item:
