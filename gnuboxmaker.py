@@ -392,7 +392,8 @@ focus-animation=none
 vt-switching=false
 
 [autolaunch]
-path=/runshell.sh""")
+path=/runshell.sh
+watch=true""")
 
 def setup_bootlogo():
     bootlogo_files = os.path.join(path_temp_syslbuild, "files", "bootlogo")
