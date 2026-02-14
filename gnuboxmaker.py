@@ -171,6 +171,9 @@ def setup_build_architectures(architectures):
     if currentProject.export_x86:
         architectures.append("i386")
 
+    if currentProject.export_arm64:
+        architectures.append("arm64")
+
 def gen_default_chroot_script():
     aaa_setup = f"""#!/bin/bash
 set -e

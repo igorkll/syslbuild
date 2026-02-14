@@ -44,7 +44,7 @@
   "weston_shell": "kiosk",
   "session_user": "root",
   "session_mode": "wayland",
-  "export_x86_64": true,
+  "export_x86_64": false,
   "export_x86": false,
   "export_arm64": true,
   "export_img_bios_mbr": false,
