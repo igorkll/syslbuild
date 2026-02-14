@@ -417,7 +417,7 @@ focus-animation=none
 vt-switching=false
 
 [autolaunch]
-path=/runshell.sh
+path=/runshell_launcher.sh
 watch=true""")
 
 def setup_bootlogo():
@@ -516,6 +516,7 @@ LidSwitchIgnoreInhibited=no""")
     buildExecute(["cp", "-a", os.path.join(path_resources, "files") + "/.", user_files])
     shutil.copy(os.path.join(path_resources, "runshell.sh"), os.path.join(path_temp_syslbuild, "files", "runshell.sh"))
     shutil.copy(os.path.join(path_resources, "preinit.sh"), os.path.join(path_temp_syslbuild, "files", "preinit.sh"))
+    shutil.copy("gnuboxmaker/runshell_launcher.sh", os.path.join(path_temp_syslbuild, "files", "runshell_launcher.sh"))
 
 def copy_bins(name):
     output_path = os.path.join(path_temp_syslbuild, name)
@@ -643,6 +644,7 @@ def setup_build_base(builditems):
             ["files/etc_config", "/etc", [0, 0, "0644"]],
             ["files/systemd_config", "/etc/systemd", [0, 0, "0644"]],
             ["files/runshell.sh", "/runshell.sh", [0, 0, "0755"]],
+            ["files/runshell_launcher.sh", "/runshell_launcher.sh", [0, 0, "0755"]],
             ["files/preinit.sh", "/preinit.sh", [0, 0, "0755"]],
 
             ["custom_init.sh", "/usr/share/initramfs-tools/init", [0, 0, "0755"]],

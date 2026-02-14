@@ -79,7 +79,6 @@ a similar program for creating Windows images for embedded devices: https://gith
 * It is always necessary to reboot and turn off the device from the you shell via "shutdown --no-wall now" and "shutdown --no-wall -r now", the --no-wall argument is REQUIRED so that the shutdown process is not visible when turned off.
 * the /var directory is mounted as tmpfs
 * The .img images for x86 / x86_64 that Gnubox maker generates are universal. they can be written to a USB drive or to a hard disk/SSD.
-* when the device is turned on for the first time, the partition size will increase to the maximum possible (up to the entire available disk space) so that the OS can use all available space.
 * if session_mode init is set then runshell.sh in fact, it will be an init system, you do everything yourself. and it will always be run from root
 
 ## what should I do if the project build fails?
