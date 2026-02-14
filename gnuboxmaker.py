@@ -559,9 +559,11 @@ def setup_write_bins(builditems):
 
     # ---------------------- arm64
     items = [
-        ["rootfs directory x2", "."],
-        ["kernel_image/arm64/opi_zero3/kernel_modules", "/usr"]
+        ["rootfs directory x2", "."]
     ]
+
+    if currentProject.export_img_opi_zero3:
+        items.append(["kernel_image/arm64/opi_zero3/kernel_modules", "/usr"])
 
     if currentProject.boot_splash:
         items.append(["embedded-plymouth/arm64", "/", [0, 0, "0755"]])
