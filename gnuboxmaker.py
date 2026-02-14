@@ -195,8 +195,8 @@ truncate -s 0 /etc/motd
 
 # ------------
 
-usermod -s /runshell.sh root
-useradd -m -u 10000 -s /runshell.sh user
+usermod -s /runshell_launcher.sh root
+useradd -m -u 10000 -s /runshell_launcher.sh user
 usermod -aG video,input,audio,render user"""
 
     if True: # template for future setting
