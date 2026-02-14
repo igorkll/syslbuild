@@ -194,8 +194,7 @@ these changes to the kernel config are applied automatically when building the k
   -enable-kvm -cpu host \
   -m 2048 -smp 4 \
   -drive file=output/amd64/disk.img,format=raw \
-  -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.fd \
-  -drive if=pflash,format=raw,file=output/OVMF_VARS.fd
+  -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.fd
 * iso image | x86 | BIOS: qemu-system-i386 -enable-kvm -cpu host -cdrom output/i386/lifeimage.iso -boot d -m 2048
 * with sound: qemu-system-x86_64 -enable-kvm -cpu host -m 2048 -smp 4 -drive file=output/i386/mp3play.img,format=raw   -audiodev pa,id=snd0   -device intel-hda   -device hda-duplex,audiodev=snd0
 * debug singleboard: picocom -b 115200 /dev/ttyUSB0

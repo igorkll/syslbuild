@@ -3,7 +3,14 @@
   "user_packages": [
     "nodejs",
     "npm",
-    
+
+    "pipewire",
+    "pipewire-pulse",
+    "wireplumber",
+    "pipewire-pulse",
+    "alsa-utils",
+    "libpulse0",
+
     "libnspr4",
     "libnss3",
     "libxss1",
@@ -41,7 +48,7 @@
   "session_mode": "wayland",
   "export_x86_64": true,
   "export_x86": false,
-  "export_img_bios_mbr": true,
+  "export_img_bios_mbr": false,
   "export_img_bios_gpt": false,
   "export_img_uefi_gpt": true,
   "export_img_bios_and_uefi_gpt": false
