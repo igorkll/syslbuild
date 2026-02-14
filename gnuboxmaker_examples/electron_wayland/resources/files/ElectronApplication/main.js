@@ -6,6 +6,7 @@ function createWindow () {
     frame: false,
     fullscreen: true,
     webPreferences: {
+      devTools: false, // DON'T FORGET TO TURN OFF THE DAMN DEVTOOLS!
       nodeIntegration: true,
       contextIsolation: false
     }
