@@ -716,7 +716,9 @@ these changes to the kernel config are applied automatically when building the k
             "rootfs": "rootfs.img", //optional
 
             "kernel_args_auto": true, //tells syslbuild to specify some kernel arguments itself, such as initrd=XXX
-            "kernel_rootfs_auto": "rw", //tells syslbuild to set root=XXX itself
+            //tells syslbuild to set root=XXX itself. rw/ro/manual
+            //in manual mode, your kernel cmdline should already have rw/ro by default
+            "kernel_rootfs_auto": "rw",
             "kernel_args": "rootwait console=ttyS0,115200 splash plymouth.ignore-serial-consoles",
 
             // you can redefine the name under which the kernel and initramfs will be located in the boot partition. by default, they have the same name as the original files.
