@@ -490,6 +490,7 @@ LidSwitchIgnoreInhibited=no""")
 
     buildExecute(["cp", "-a", os.path.join(path_resources, "files") + "/.", user_files])
     shutil.copy(os.path.join(path_resources, "runshell.sh"), os.path.join(path_temp_syslbuild, "files", "runshell.sh"))
+    shutil.copy(os.path.join(path_resources, "preinit.sh"), os.path.join(path_temp_syslbuild, "files", "preinit.sh"))
 
 def copy_bins(name):
     output_path = os.path.join(path_temp_syslbuild, name)
@@ -583,6 +584,7 @@ def setup_build_base(builditems):
             ["files/etc_config", "/etc", [0, 0, "0644"]],
             ["files/systemd_config", "/etc/systemd", [0, 0, "0644"]],
             ["files/runshell.sh", "/runshell.sh", [0, 0, "0755"]],
+            ["files/preinit.sh", "/preinit.sh", [0, 0, "0755"]],
 
             ["custom_init.sh", "/usr/share/initramfs-tools/init", [0, 0, "0755"]],
             ["custom_init_hook.sh", "/etc/initramfs-tools/hooks/custom_init_hook.sh", [0, 0, "0755"]],
@@ -790,7 +792,7 @@ def setup_build_targets(builditems):
         })
 
 def generate_syslbuild_project():
-    cmdline = "rw rootwait=60 makevartmp"
+    cmdline = "rw rootwait=60 makevartmp preinit=/root/preinit.sh"
 
     if currentProject.root_expand:
         cmdline += " root_processing root_expand"
@@ -906,27 +908,11 @@ def load_project(path):
 
     runshell_path = os.path.join(path_resources, "runshell.sh")
     if not os.path.isfile(runshell_path):
-        writeText(runshell_path, f"""#!/bin/bash
+        copyFile(runshell_path, "gnuboxmaker/runshell.sh")
 
-# gnubox maker tty app example
-
-# disable tty hotkeys
-stty intr undef   # Ctrl+C
-stty quit undef   # Ctrl+\\
-stty stop undef   # Ctrl+S
-stty start undef  # Ctrl+Q
-stty susp undef   # Ctrl+Z
-
-# disable echo mode
-stty -echo
-
-# clear screen and set cursor to first line
-clear
-
-while true; do
-    echo test
-    sleep 1
-done""")
+    preinit_path = os.path.join(path_resources, "preinit.sh")
+    if not os.path.isfile(preinit_path):
+        copyFile(preinit_path, "gnuboxmaker/preinit.sh")
 
     logo_path = os.path.join(path_resources, "logo.png")
     if not os.path.isfile(logo_path):
