@@ -1,4 +1,4 @@
-# Gnubox maker
+# Gnubox maker (BETA)
 ![preview](https://raw.githubusercontent.com/igorkll/syslbuild/refs/heads/main/gnuboxmaker_preview.png)  
 the easiest way is to create an embedded/kiosk linux distribution with a single application that cannot be exited  
 it uses a patched linux kernel, which prevents switching VT and using ctrl+alt+del  
@@ -20,6 +20,10 @@ a similar program for creating Windows images for embedded devices: https://gith
 * unpack it in a convenient place
 * launch install.sh from root
 * the unpacked files can now be deleted
+
+## roadmap
+* gui with system settings and choice of platforms for export
+* export for single-board orange pi and raspberry pi computers
 
 ## supported host systems
 * debian
