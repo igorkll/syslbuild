@@ -43,6 +43,6 @@
   "export_x86": false,
   "export_img_bios_mbr": true,
   "export_img_bios_gpt": false,
-  "export_img_uefi_gpt": false,
+  "export_img_uefi_gpt": true,
   "export_img_bios_and_uefi_gpt": false
 }

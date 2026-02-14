@@ -1,5 +1,5 @@
 # Gnubox maker (BETA)
-![preview](https://raw.githubusercontent.com/igorkll/syslbuild/refs/heads/main/gnuboxmaker_preview.png)  
+![preview](https://raw.githubusercontent.com/igorkll/Gnubox-Maker/refs/heads/main/preview.png)  
 the easiest way is to create an embedded/kiosk linux distribution with a single application that cannot be exited  
 it uses a patched linux kernel, which prevents switching VT and using ctrl+alt+del  
 Gnubox maker works on the image generation principle. that is, first you create a Gnubox maker project on your computer, set all the necessary settings, add files and packages, and then assemble the project for the platforms you need and write the resulting firmware to the target devices  
@@ -24,6 +24,7 @@ a similar program for creating Windows images for embedded devices: https://gith
 ## roadmap
 * gui with system settings and choice of platforms for export
 * export for single-board orange pi and raspberry pi computers
+* x11 support (currently only wayland is supported)
 
 ## supported host systems
 * debian
