@@ -303,11 +303,17 @@ def setup_build_distro(builditems):
             include.append("plymouth") # install basic plymouth files. The part will later be replaced by embedded plymouth.
             include.append("plymouth-themes")
 
-        if currentProject.session_mode == "wayland":
+        if currentProject.session_mode == "wayland" or currentProject.session_mode == "x11":
             include.append("sddm")
+            include.append("mesa-utils")
+            include.append("libgl1-mesa-dri")
+            include.append("libegl1-mesa")
+            include.append("libgbm1")
+            include.append("libdrm2")
+
+        if currentProject.session_mode == "wayland":
             include.append("weston")
         elif currentProject.session_mode == "x11":
-            include.append("sddm")
             include.append("xserver-xorg")
             include.append("xinit")
             include.append("x11-xserver-utils")
@@ -625,8 +631,8 @@ def setup_build_base(builditems):
         "items": [
             ["rootfs directory x1", "."],
 
-            ["files/etc_config", "/etc", [0, 0, "0644"]],
-            ["files/systemd_config", "/etc/systemd", [0, 0, "0644"]],
+            ["files/etc_config", "/etc", [0, 0, "0755"]],
+            ["files/systemd_config", "/etc/systemd", [0, 0, "0755"]],
             ["files/runshell.sh", "/runshell.sh", [0, 0, "0755"]],
             ["files/runshell_launcher.sh", "/runshell_launcher.sh", [0, 0, "0755"]],
             ["files/preinit.sh", "/preinit.sh", [0, 0, "0755"]],
