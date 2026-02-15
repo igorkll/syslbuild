@@ -872,7 +872,7 @@ def setup_build_targets(builditems, cmdline):
 
             "kernel_args_auto": True,
             "kernel_rootfs_auto": "manual",
-            "kernel_args": cmdline + " cma=128M plymouth.ignore-serial-consoles console=tty1"
+            "kernel_args": cmdline + " rootdelay=30 cma=128M plymouth.ignore-serial-consoles console=tty1" # why is rootdelay here? because in this FUCKING Chinese board, half of the peripherals start with a fucking delay, and it should be initialized by the time plymouth is launched
         })
 
 def generate_syslbuild_project():
