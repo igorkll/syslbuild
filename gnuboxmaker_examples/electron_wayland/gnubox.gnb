@@ -44,12 +44,12 @@
   "weston_shell": "kiosk",
   "session_user": "root",
   "session_mode": "wayland",
-  "export_x86_64": true,
+  "export_x86_64": false,
   "export_x86": false,
-  "export_arm64": false,
-  "export_img_bios_mbr": true,
+  "export_arm64": true,
+  "export_img_bios_mbr": false,
   "export_img_bios_gpt": false,
-  "export_img_uefi_gpt": true,
+  "export_img_uefi_gpt": false,
   "export_img_bios_and_uefi_gpt": false,
-  "export_img_opi_zero3": false
+  "export_img_opi_zero3": true
 }
