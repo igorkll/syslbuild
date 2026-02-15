@@ -643,8 +643,6 @@ def setup_build_base(builditems):
     if currentProject.boot_splash:
         builditem["directories"].append(["/usr/share/plymouth/themes/bootlogo", [0, 0, "0755"]])
         builditem["items"].append(["files/bootlogo", "/usr/share/plymouth/themes/bootlogo", [0, 0, "0644"]])
-        # initialization of plymouth to an earlier stage in custom_init.sh
-        builditem["delete"].append("/usr/share/initramfs-tools/scripts/init-premount/plymouth")
 
     builditems.append(builditem)
 
@@ -877,6 +875,7 @@ def setup_build_targets(builditems, cmdline):
 
 def generate_syslbuild_project():
     cmdline = "rw rootwait=60 makevartmp preinit=/root/preinit.sh"
+    cmdline_grub = ""
 
     if currentProject.root_expand:
         cmdline += " root_processing root_expand"
@@ -891,7 +890,8 @@ def generate_syslbuild_project():
         cmdline += " systemd.show_status=false rd.udev.log_level=0 clear noCursorBlink vt.global_cursor_default=0 quiet"
 
     if currentProject.boot_splash:
-        cmdline += " splash earlysplash"
+        cmdline += " splash"
+        cmdline_grub += " earlysplash"
 
     if currentProject.session_mode == "init":
         cmdline += " init=/runshell.sh"
@@ -919,7 +919,7 @@ def generate_syslbuild_project():
         json.dump(syslbuild_project, f, indent=2, ensure_ascii=False)
 
     with open(os.path.join(path_temp_syslbuild, "grub.cfg"), "w") as f:
-        f.write(f"""set cmdline="{cmdline}"
+        f.write(f"""set cmdline="{cmdline}{cmdline_grub}"
 
 probe --set root_fs_uuid --fs-uuid $root
 linux /kernel.img root=UUID=$root_fs_uuid ${{cmdline}}
