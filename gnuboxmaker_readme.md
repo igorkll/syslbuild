@@ -42,6 +42,7 @@ a similar program for creating Windows images for embedded devices: https://gith
 * ctrl+alt+del in the linux kernel (kernel source patch)
 * switching VT (kernel source patch + configs)
 * sysrq (kernel source patch)
+* control flow & kerboard echo (it's just turned off by default in tty mode. you can enable)
 
 ## used kernel patches (from https://github.com/igorkll/linux-embedded-patchs)
 * disable_vt_swithing_from_keyboard.patch - prevents the possibility of switching VT from the keyboard
