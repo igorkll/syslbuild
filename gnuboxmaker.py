@@ -912,6 +912,18 @@ def setup_build_targets(builditems, cmdline):
             builditems.append({
                 "architectures": ["arm64"],
 
+                "type": "directory",
+                "name": "boot_rpi_64",
+                "export": False,
+
+                "items": [
+                    ["custom-executable", "/init"]
+                ]
+            })
+
+            builditems.append({
+                "architectures": ["arm64"],
+
                 "type": "filesystem",
                 "name": "boot_rpi_64.img",
                 "export": False,
