@@ -499,6 +499,13 @@ HandleLidSwitchExternalPower={currentProject.HandleLidSwitch}
 HandleLidSwitchDocked={currentProject.HandleLidSwitch}
 LidSwitchIgnoreInhibited=no""")
 
+    writeText(os.path.join(systemd_config, "journald.conf"), f"""[Journal]
+ForwardToSyslog=no
+ForwardToKMsg=no
+ForwardToConsole=no
+ForwardToWall=no
+MaxLevelWall=emerg""")
+
     writeText(os.path.join(etc_config, "pam.d", "login"), f"""@include common-auth
 @include common-account
 @include common-session""")
@@ -898,7 +905,7 @@ def generate_syslbuild_project():
         cmdline += f" minlogotime={currentProject.minlogotime}"
 
     if currentProject.boot_quiet:
-        cmdline += " systemd.show_status=false rd.udev.log_level=0 clear noCursorBlink vt.global_cursor_default=0 quiet"
+        cmdline += " systemd.show_status=false rd.systemd.show_status=false udev.log_level=0 rd.udev.log_level=0 systemd.log_level=emerg systemd.log_target=null clear noCursorBlink vt.global_cursor_default=0 quiet"
 
     if currentProject.boot_splash:
         cmdline += " splash earlysplash"
