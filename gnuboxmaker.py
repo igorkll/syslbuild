@@ -917,7 +917,7 @@ def setup_build_targets(builditems, cmdline):
                 "export": False,
 
                 "items": [
-                    ["custom-executable", "/init"]
+                    ["gnuboxmaker/kernel_image/arm64/rpi_64/boot", "/"]
                 ]
             })
 
