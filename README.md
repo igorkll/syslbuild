@@ -26,7 +26,7 @@ WARNING!!! if you read this text from GITHUB page please, download a release and
 * https://github.com/igorkll/embedded-plymouth - plymouth with a patch to disable ESC key processing (so that the console cannot be displayed during boot)
 
 ## subprojects
-* Gnubox maker - the simplest way to create kiosk/appliance builds of gnu/linux (NOT FINISHED AT THE MOMENT)
+* Gnubox maker - the simplest way to create kiosk/appliance builds of gnu/linux: https://github.com/igorkll/Gnubox-Maker
 
 ## build process
 you create a folder and in it a json file with a description of the project  
