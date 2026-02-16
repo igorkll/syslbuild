@@ -88,3 +88,9 @@ a similar program for creating Windows images for embedded devices: https://gith
 * restart your computer and try again
 * delete the directories .temp and output (clear the temporary project files) and try again
 * try to build a project from the examples of gnubox maker, and if it is going to, then the problem is in your project. If not, it's possible that there are some dependencies missing or your host system is not supported
+
+## how do I rebuild kernels in the gnubox maker program?
+* local kernel rebuild for the project is not supported yet.
+* you need to change the source code of the program
+* open the gnuboxmaker/kernel_build directory and build kernel_build.json via syslbuild
+* delete all contents of gnuboxmaker/kernel_image and replace with gnuboxmaker/kernel_build/output
