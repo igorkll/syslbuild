@@ -910,7 +910,57 @@ def setup_build_targets(builditems, cmdline):
 
     if currentProject.export_img_rpi_64:
         writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_64.txt"), "root=/dev/mmcblk0p2 " + cmdline + " console=tty1\n")
-        writeText(os.path.join(path_temp_syslbuild, "files", "config_rpi_64.txt"), f"""
+        writeText(os.path.join(path_temp_syslbuild, "files", "config_rpi_64.txt"), f"""# For more options and information see
+# http://rptl.io/configtxt
+# Some settings may impact device functionality. See link above for details
+
+# Uncomment some or all of these to enable the optional hardware interfaces
+#dtparam=i2c_arm=on
+#dtparam=i2s=on
+#dtparam=spi=on
+
+# Enable audio (loads snd_bcm2835)
+dtparam=audio=on
+
+# Additional overlays and parameters are documented
+# /boot/firmware/overlays/README
+
+# Automatically load overlays for detected cameras
+camera_auto_detect=1
+
+# Automatically load overlays for detected DSI displays
+display_auto_detect=1
+
+# Automatically load initramfs files, if found
+auto_initramfs=1
+
+# Enable DRM VC4 V3D driver
+dtoverlay=vc4-kms-v3d
+max_framebuffers=2
+
+# Don't have the firmware create an initial video= setting in cmdline.txt.
+# Use the kernel's default instead.
+disable_fw_kms_setup=1
+
+# Run in 64-bit mode
+arm_64bit=1
+
+# Disable compensation for displays with overscan
+disable_overscan=1
+
+# Run as fast as firmware / board allows
+arm_boost=1
+
+[cm4]
+# Enable host mode on the 2711 built-in XHCI USB controller.
+# This line should be removed if the legacy DWC2 controller is required
+# (e.g. for USB device mode) or if USB support is not required.
+otg_mode=1
+
+[cm5]
+dtoverlay=dwc2,dr_mode=host
+
+[all]
 """)
 
         builditems.append({
@@ -933,25 +983,25 @@ def setup_build_targets(builditems, cmdline):
             "export": False,
 
             "items": [
-                ["rpi_64_firmware/COPYING.linux", "/COPYING.linux"],
-                ["rpi_64_firmware/LICENCE.broadcom", "/LICENCE.broadcom"],
-                ["rpi_64_firmware/overlays", "/overlays"],
-                ["rpi_64_firmware/fixup.dat", "/fixup.dat"],
-                ["rpi_64_firmware/fixup4.dat", "/fixup4.dat"],
-                ["rpi_64_firmware/fixup4cd.dat", "/fixup4cd.dat"],
-                ["rpi_64_firmware/fixup4db.dat", "/fixup4db.dat"],
-                ["rpi_64_firmware/fixup4x.dat", "/fixup4x.dat"],
-                ["rpi_64_firmware/fixup_cd.dat", "/fixup_cd.dat"],
-                ["rpi_64_firmware/fixup_db.dat", "/fixup_db.dat"],
-                ["rpi_64_firmware/fixup_x.dat", "/fixup_x.dat"],
-                ["rpi_64_firmware/start.elf", "/start.elf"],
-                ["rpi_64_firmware/start4.elf", "/start4.elf"],
-                ["rpi_64_firmware/start4cd.elf", "/start4cd.elf"],
-                ["rpi_64_firmware/start4db.elf", "/start4db.elf"],
-                ["rpi_64_firmware/start4x.elf", "/start4x.elf"],
-                ["rpi_64_firmware/start_cd.elf", "/start_cd.elf"],
-                ["rpi_64_firmware/start_db.elf", "/start_db.elf"],
-                ["rpi_64_firmware/start_x.elf", "/start_x.elf"],
+                ["rpi_64_firmware/boot/COPYING.linux", "/COPYING.linux"],
+                ["rpi_64_firmware/boot/LICENCE.broadcom", "/LICENCE.broadcom"],
+                ["rpi_64_firmware/boot/overlays", "/overlays"],
+                ["rpi_64_firmware/boot/fixup.dat", "/fixup.dat"],
+                ["rpi_64_firmware/boot/fixup4.dat", "/fixup4.dat"],
+                ["rpi_64_firmware/boot/fixup4cd.dat", "/fixup4cd.dat"],
+                ["rpi_64_firmware/boot/fixup4db.dat", "/fixup4db.dat"],
+                ["rpi_64_firmware/boot/fixup4x.dat", "/fixup4x.dat"],
+                ["rpi_64_firmware/boot/fixup_cd.dat", "/fixup_cd.dat"],
+                ["rpi_64_firmware/boot/fixup_db.dat", "/fixup_db.dat"],
+                ["rpi_64_firmware/boot/fixup_x.dat", "/fixup_x.dat"],
+                ["rpi_64_firmware/boot/start.elf", "/start.elf"],
+                ["rpi_64_firmware/boot/start4.elf", "/start4.elf"],
+                ["rpi_64_firmware/boot/start4cd.elf", "/start4cd.elf"],
+                ["rpi_64_firmware/boot/start4db.elf", "/start4db.elf"],
+                ["rpi_64_firmware/boot/start4x.elf", "/start4x.elf"],
+                ["rpi_64_firmware/boot/start_cd.elf", "/start_cd.elf"],
+                ["rpi_64_firmware/boot/start_db.elf", "/start_db.elf"],
+                ["rpi_64_firmware/boot/start_x.elf", "/start_x.elf"],
 
                 ["kernel_image/arm64/rpi_64/boot", "/"],
                 ["kernel_image/arm64/rpi_64/kernel.img", "/kernel8.img"],
