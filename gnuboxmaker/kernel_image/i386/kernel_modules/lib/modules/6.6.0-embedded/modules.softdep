@@ -1,2 +1,3 @@
 # Soft dependencies extracted from modules themselves.
+softdep pcengines_apuv2 pre: platform:gpio_amd_fch platform:leds-gpio platform:gpio_keys_polled
 softdep xt_LOG pre: nf_log_syslog

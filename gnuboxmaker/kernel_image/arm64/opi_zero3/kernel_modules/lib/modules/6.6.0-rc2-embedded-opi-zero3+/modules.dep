@@ -861,6 +861,7 @@ kernel/drivers/interconnect/qcom/qnoc-sm8250.ko:
 kernel/drivers/interconnect/qcom/qnoc-sm8350.ko:
 kernel/drivers/interconnect/qcom/icc-smd-rpm.ko:
 kernel/drivers/hte/hte-tegra194-test.ko:
+kernel/drivers/accel/qaic/qaic.ko: kernel/drivers/bus/mhi/host/mhi.ko
 kernel/drivers/slimbus/slimbus.ko:
 kernel/drivers/slimbus/slim-qcom-ctrl.ko: kernel/drivers/slimbus/slimbus.ko
 kernel/drivers/slimbus/slim-qcom-ngd-ctrl.ko: kernel/drivers/remoteproc/qcom_common.ko kernel/drivers/rpmsg/qcom_glink_smem.ko kernel/drivers/slimbus/slimbus.ko kernel/drivers/soc/qcom/pdr_interface.ko kernel/drivers/soc/qcom/qmi_helpers.ko
@@ -894,10 +895,14 @@ kernel/drivers/gnss/gnss-serial.ko: kernel/drivers/gnss/gnss.ko
 kernel/drivers/gnss/gnss-mtk.ko: kernel/drivers/gnss/gnss-serial.ko kernel/drivers/gnss/gnss.ko
 kernel/drivers/counter/counter.ko:
 kernel/drivers/counter/rz-mtu3-cnt.ko: kernel/drivers/counter/counter.ko
+kernel/sound/core/snd-hwdep.ko:
+kernel/sound/core/snd-rawmidi.ko:
 kernel/sound/drivers/snd-aloop.ko:
 kernel/sound/pci/hda/snd-hda-codec.ko: kernel/sound/hda/snd-hda-core.ko
 kernel/sound/pci/hda/snd-hda-codec-hdmi.ko: kernel/sound/pci/hda/snd-hda-codec.ko kernel/sound/hda/snd-hda-core.ko
 kernel/sound/pci/hda/snd-hda-tegra.ko: kernel/sound/pci/hda/snd-hda-codec.ko kernel/sound/hda/snd-hda-core.ko
+kernel/sound/usb/snd-usb-audio.ko: kernel/sound/core/snd-hwdep.ko kernel/sound/usb/snd-usbmidi-lib.ko kernel/sound/core/snd-rawmidi.ko kernel/drivers/media/mc/mc.ko
+kernel/sound/usb/snd-usbmidi-lib.ko: kernel/sound/core/snd-rawmidi.ko
 kernel/sound/soc/codecs/snd-soc-adau7002.ko:
 kernel/sound/soc/codecs/snd-soc-ak4613.ko:
 kernel/sound/soc/codecs/snd-soc-bt-sco.ko:
