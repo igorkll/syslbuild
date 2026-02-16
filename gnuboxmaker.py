@@ -929,7 +929,30 @@ def setup_build_targets(builditems, cmdline):
                 "export": False,
 
                 "items": [
-                    ["kernel_image/arm64/rpi_64/boot", "/"]
+                    ["rpi_64_firmware/COPYING.linux", "/COPYING.linux"],
+                    ["rpi_64_firmware/LICENCE.broadcom", "/LICENCE.broadcom"],
+                    ["rpi_64_firmware/overlays", "/overlays"],
+                    ["rpi_64_firmware/fixup.dat", "/fixup.dat"],
+                    ["rpi_64_firmware/fixup4.dat", "/fixup4.dat"],
+                    ["rpi_64_firmware/fixup4cd.dat", "/fixup4cd.dat"],
+                    ["rpi_64_firmware/fixup4db.dat", "/fixup4db.dat"],
+                    ["rpi_64_firmware/fixup4x.dat", "/fixup4x.dat"],
+                    ["rpi_64_firmware/fixup_cd.dat", "/fixup_cd.dat"],
+                    ["rpi_64_firmware/fixup_db.dat", "/fixup_db.dat"],
+                    ["rpi_64_firmware/fixup_x.dat", "/fixup_x.dat"],
+                    ["rpi_64_firmware/start.elf", "/start.elf"],
+                    ["rpi_64_firmware/start4.elf", "/start4.elf"],
+                    ["rpi_64_firmware/start4cd.elf", "/start4cd.elf"],
+                    ["rpi_64_firmware/start4db.elf", "/start4db.elf"],
+                    ["rpi_64_firmware/start4x.elf", "/start4x.elf"],
+                    ["rpi_64_firmware/start_cd.elf", "/start_cd.elf"],
+                    ["rpi_64_firmware/start_db.elf", "/start_db.elf"],
+                    ["rpi_64_firmware/start_x.elf", "/start_x.elf"],
+
+                    ["kernel_image/arm64/rpi_64/boot", "/"],
+                    ["kernel_image/arm64/rpi_64/kernel.img", "/kernel8.img"],
+                    ["kernel_image/arm64/rpi_64/kernel_config", "/kernel8_config"],
+                    ["initramfs_rpi_64.img", "/initramfs8"]
                 ]
             })
 
