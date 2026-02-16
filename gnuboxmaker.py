@@ -912,6 +912,18 @@ def setup_build_targets(builditems, cmdline):
             builditems.append({
                 "architectures": ["arm64"],
 
+                "type": "gitclone",
+                "name": "rpi_64_firmware",
+                "export": False,
+
+                "git_url": "https://github.com/raspberrypi/firmware",
+                "git_branch": "master",
+                "git_checkout": "1.20250915"
+            })
+
+            builditems.append({
+                "architectures": ["arm64"],
+
                 "type": "directory",
                 "name": "boot_rpi_64",
                 "export": False,
