@@ -53,6 +53,7 @@ class Project:
 
     cma_m: int = 512
     minlogotime: int = 5
+    cmdline: str = ""
 
     export_x86_64: bool = True
     export_x86: bool = False
@@ -885,7 +886,7 @@ def setup_build_targets(builditems, cmdline):
         })
 
 def generate_syslbuild_project():
-    cmdline = f"rw rootwait=60 makevartmp cma={currentProject.cma_m}M plymouth.ignore-serial-consoles preinit=/root/preinit.sh"
+    cmdline = f"rw rootwait=60 makevartmp cma={currentProject.cma_m}M plymouth.ignore-serial-consoles preinit=/root/preinit.sh {currentProject.cmdline}"
 
     if currentProject.root_expand:
         cmdline += " root_processing root_expand"
