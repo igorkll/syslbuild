@@ -23,8 +23,12 @@ a similar program for creating Windows images for embedded devices: https://gith
 
 ## roadmap
 * gui with system settings and choice of platforms for export
-* export for single-board orange pi and raspberry pi computers
 * x11 support (currently only wayland is supported)
+
+## supported platforms
+* x86_64 (BIOS, UEFI)
+* x86 (BIOS, UEFI)
+* orange pi zero 3
 
 ## supported host systems
 * debian
