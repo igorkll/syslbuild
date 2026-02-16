@@ -1,4 +1,4 @@
-# syslbuild 1.2.0
+# syslbuild 1.2.1
 an build system for creating Linux distributions. it is focused on embedded distributions  
 DOWNLOAD THE RELEASE, NOT THE REPOSITORY!  
 WARNING!!! if you read this text from GITHUB page please, download a release and read description there. on github this text is DEV syslbuild version (not released yet)  
