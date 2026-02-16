@@ -19,9 +19,12 @@
     </br>
     </br>
     <button onclick="ipcRenderer.send('quit-app');">close application</button>
+    </br>
+    </br>
+    <button onclick="exec('weston-terminal')">open terminal</button>
 
     <script>
-        const { execSync } = require('child_process');
+        const { execSync, exec } = require('child_process');
         const { ipcRenderer } = require('electron');
 
         function updateTime() {
