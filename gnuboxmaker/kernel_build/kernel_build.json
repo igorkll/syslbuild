@@ -21,6 +21,7 @@
             "type": "include",
             "file": "x86.json"
         },
+        /*
         {
             "architectures": [
                 "arm64"
@@ -28,14 +29,14 @@
 
             "type": "include",
             "file": "opi_zero3.json"
-        }/*,
+        },*/
         {
             "architectures": [
                 "arm64"
             ],
 
             "type": "include",
-            "file": "rpi_5.json"
-        }*/
+            "file": "rpi_64.json"
+        }
     ]
 }
