@@ -349,7 +349,7 @@ def setup_download(builditems):
         "export": False,
 
         "git_url": "https://github.com/igorkll/custom-debian-initramfs-init",
-        "git_checkout": "1.5.3"
+        "git_checkout": "1.5.4"
     })
 
     def addExtract(fromdir, name):
@@ -878,12 +878,11 @@ def setup_build_targets(builditems, cmdline):
 
             "kernel_args_auto": True,
             "kernel_rootfs_auto": "manual",
-            "kernel_args": cmdline + " rootdelay=25 cma=512M plymouth.ignore-serial-consoles console=tty1" # why is rootdelay here? because in this FUCKING Chinese board, half of the peripherals start with a fucking delay, and it should be initialized by the time plymouth is launched
+            "kernel_args": cmdline + " waitFbBeforeModules cma=512M plymouth.ignore-serial-consoles console=tty1" # why is "waitFbBeforeModules" here? because in this FUCKING Chinese board, half of the peripherals start with a fucking delay, and it should be initialized by the time plymouth is launched
         })
 
 def generate_syslbuild_project():
     cmdline = "rw rootwait=60 makevartmp preinit=/root/preinit.sh"
-    cmdline_grub = ""
 
     if currentProject.root_expand:
         cmdline += " root_processing root_expand"
@@ -898,8 +897,7 @@ def generate_syslbuild_project():
         cmdline += " systemd.show_status=false rd.udev.log_level=0 clear noCursorBlink vt.global_cursor_default=0 quiet"
 
     if currentProject.boot_splash:
-        cmdline += " splash"
-        cmdline_grub += " earlysplash"
+        cmdline += " splash earlysplash"
 
     if currentProject.session_mode == "init":
         cmdline += " init=/runshell.sh"
@@ -927,7 +925,7 @@ def generate_syslbuild_project():
         json.dump(syslbuild_project, f, indent=2, ensure_ascii=False)
 
     with open(os.path.join(path_temp_syslbuild, "grub.cfg"), "w") as f:
-        f.write(f"""set cmdline="{cmdline}{cmdline_grub}"
+        f.write(f"""set cmdline="{cmdline}"
 
 probe --set root_fs_uuid --fs-uuid $root
 linux /kernel.img root=UUID=$root_fs_uuid ${{cmdline}}
