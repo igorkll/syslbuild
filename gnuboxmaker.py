@@ -51,6 +51,9 @@ class Project:
     session_user: str = "user"
     session_mode: str = "tty"
 
+    cma_m: int = 512
+    minlogotime: int = 5
+
     export_x86_64: bool = True
     export_x86: bool = False
     export_arm64: bool = False
@@ -878,11 +881,11 @@ def setup_build_targets(builditems, cmdline):
 
             "kernel_args_auto": True,
             "kernel_rootfs_auto": "manual",
-            "kernel_args": cmdline + " waitFbBeforeModules cma=512M plymouth.ignore-serial-consoles console=tty1" # why is "waitFbBeforeModules" here? because in this FUCKING Chinese board, half of the peripherals start with a fucking delay, and it should be initialized by the time plymouth is launched
+            "kernel_args": cmdline + " waitFbBeforeModules console=tty1" # why is "waitFbBeforeModules" here? because in this FUCKING Chinese board, half of the peripherals start with a fucking delay, and it should be initialized by the time plymouth is launched
         })
 
 def generate_syslbuild_project():
-    cmdline = "rw rootwait=60 makevartmp preinit=/root/preinit.sh"
+    cmdline = f"rw rootwait=60 makevartmp cma={currentProject.cma_m}M plymouth.ignore-serial-consoles preinit=/root/preinit.sh"
 
     if currentProject.root_expand:
         cmdline += " root_processing root_expand"
@@ -891,7 +894,7 @@ def generate_syslbuild_project():
         cmdline += " allow_updatescript"
 
     if currentProject.boot_splash:
-        cmdline += " minlogotime=5"
+        cmdline += f" minlogotime={currentProject.minlogotime}"
 
     if currentProject.boot_quiet:
         cmdline += " systemd.show_status=false rd.udev.log_level=0 clear noCursorBlink vt.global_cursor_default=0 quiet"
