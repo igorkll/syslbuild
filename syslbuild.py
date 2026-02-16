@@ -1558,6 +1558,7 @@ def singleboardBuild(item):
             buildFullDiskImageBuilditem["partitions"].append([item["rootfs"], "linux"])
         buildFullDiskImage(buildFullDiskImageBuilditem)
 
+"""
 def gitcloneBuild(item):
     url = item["git_url"]
     output_folder = getItemFolder(item)
@@ -1573,6 +1574,31 @@ def gitcloneBuild(item):
 
     if "git_checkout" in item:
         buildExecute(["git", "checkout", item["git_checkout"]], True, None, output_folder)
+"""
+
+def gitcloneBuild(item):
+    url = item["git_url"]
+    output_folder = getItemFolder(item)
+    
+    # Инициализируем пустой репозиторий
+    buildExecute(["git", "init"], True, None, output_folder)
+    buildExecute(["git", "remote", "add", "origin", url], True, None, output_folder)
+    
+    # Определяем что фетчить
+    if "git_checkout" in item:
+        commit_or_branch = item["git_checkout"]
+        # Получаем только один коммит с родителем
+        buildExecute(["git", "fetch", "--depth=1", "origin", commit_or_branch], True, None, output_folder)
+        buildExecute(["git", "checkout", "FETCH_HEAD"], True, None, output_folder)
+    elif "git_branch" in item:
+        branch = item["git_branch"]
+        # shallow fetch ветки
+        buildExecute(["git", "fetch", "--depth=1", "origin", branch], True, None, output_folder)
+        buildExecute(["git", "checkout", branch], True, None, output_folder)
+    else:
+        # Если не указано ни commit, ни branch, просто fetch master/main
+        buildExecute(["git", "fetch", "--depth=1", "origin", "HEAD"], True, None, output_folder)
+        buildExecute(["git", "checkout", "FETCH_HEAD"], True, None, output_folder)
 
 buildActions = {
     "debian": buildDebian,
