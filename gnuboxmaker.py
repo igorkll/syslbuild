@@ -1002,6 +1002,7 @@ dtoverlay=dwc2,dr_mode=host
                 ["rpi_64_firmware/boot/start_cd.elf", "/start_cd.elf"],
                 ["rpi_64_firmware/boot/start_db.elf", "/start_db.elf"],
                 ["rpi_64_firmware/boot/start_x.elf", "/start_x.elf"],
+                ["rpi_64_firmware/boot/bootcode.bin", "/bootcode.bin"],
 
                 ["kernel_image/arm64/rpi_64/boot", "/"],
                 ["kernel_image/arm64/rpi_64/kernel.img", "/kernel8.img"],
