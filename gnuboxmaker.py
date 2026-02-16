@@ -65,6 +65,7 @@ class Project:
     export_img_bios_and_uefi_gpt: bool = False
 
     export_img_opi_zero3: bool = False
+    export_img_rpi_64: bool = False
 
 def raw_load_project(path):
     with open(path, "r", encoding="utf-8") as f:
@@ -299,7 +300,7 @@ def setup_build_distro(builditems):
             "kexec-tools"
         ]
 
-        if currentProject.export_arm64 and currentProject.export_img_opi_zero3:
+        if currentProject.export_arm64:
             include.append("firmware-linux")
             include.append("firmware-brcm80211")
             include.append("firmware-realtek")
@@ -579,6 +580,9 @@ def setup_write_bins(builditems):
     if currentProject.export_img_opi_zero3:
         items.append(["kernel_image/arm64/opi_zero3/kernel_modules", "/usr"])
 
+    if currentProject.export_img_rpi_64:
+        items.append(["kernel_image/arm64/rpi_64/kernel_modules", "/usr"])
+
     if currentProject.boot_splash:
         items.append(["embedded-plymouth/arm64", "/", [0, 0, "0755"]])
 
@@ -625,6 +629,18 @@ def setup_export_initramfs(builditems):
                 "export": False,
 
                 "kernel_config": "kernel_image/arm64/opi_zero3/kernel_config",
+                "source": "rootfs directory x4"
+            })
+
+        if currentProject.export_img_rpi_64:
+            builditems.append({
+                "architectures": ["arm64"],
+
+                "type": "debian-export-initramfs",
+                "name": "initramfs_rpi_64.img",
+                "export": False,
+
+                "kernel_config": "kernel_image/arm64/rpi_64/kernel_config",
                 "source": "rootfs directory x4"
             })
     else:
@@ -891,6 +907,24 @@ def setup_build_targets(builditems, cmdline):
             "kernel_rootfs_auto": "manual",
             "kernel_args": cmdline + " waitFbBeforeModules console=tty1" # why is "waitFbBeforeModules" here? because in this FUCKING Chinese board, half of the peripherals start with a fucking delay, and it should be initialized by the time plymouth is launched
         })
+
+    if currentProject.export_img_rpi_64:
+            builditems.append({
+                "architectures": ["arm64"],
+
+                "type": "full-disk-image",
+                "name": f"{currentProjectName} RPI 64.img",
+                "export": True,
+
+                "size": "auto + (10 * 1024 * 1024)",
+
+                "partitionTable": "gpt",
+                "partitions": [
+                    ["bios boot.img", "bios"],
+                    ["uefi boot.img", "efi"],
+                    ["rootfs.img", "linux"]
+                ]
+            })
 
 def generate_syslbuild_project():
     cmdline = f"rw rootwait=60 makevartmp cma={currentProject.cma_m}M plymouth.ignore-serial-consoles preinit=/root/preinit.sh {currentProject.cmdline}"

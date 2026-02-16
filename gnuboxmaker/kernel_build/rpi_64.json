@@ -67,7 +67,7 @@
         "export": true,
 
         "directories": [
-            "/boot"
+            ["/boot", [0, 0, "0755"]]
         ],
 
         "items": [
