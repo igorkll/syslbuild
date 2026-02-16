@@ -912,16 +912,30 @@ def setup_build_targets(builditems, cmdline):
             builditems.append({
                 "architectures": ["arm64"],
 
+                "type": "filesystem",
+                "name": "boot_rpi_64.img",
+                "export": False,
+
+                "source": "boot_rpi_64",
+
+                "fs_type": "fat32",
+                "size": "(auto * 1.2) + (100 * 1024 * 1024)",
+                "minsize": "64MB",
+                "label": "BOOT"
+            })
+
+            builditems.append({
+                "architectures": ["arm64"],
+
                 "type": "full-disk-image",
                 "name": f"{currentProjectName} RPI 64.img",
                 "export": True,
 
                 "size": "auto + (10 * 1024 * 1024)",
 
-                "partitionTable": "gpt",
+                "partitionTable": "dos",
                 "partitions": [
-                    ["bios boot.img", "bios"],
-                    ["uefi boot.img", "efi"],
+                    ["boot_rpi_64.img", "linux"],
                     ["rootfs.img", "linux"]
                 ]
             })
