@@ -929,7 +929,7 @@ def setup_build_targets(builditems, cmdline):
                 "export": False,
 
                 "items": [
-                    ["gnuboxmaker/kernel_image/arm64/rpi_64/boot", "/"]
+                    ["kernel_image/arm64/rpi_64/boot", "/"]
                 ]
             })
 
