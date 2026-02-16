@@ -175,6 +175,11 @@ def setup_build_architectures(architectures):
         architectures.append("arm64")
 
 def gen_default_chroot_script():
+    if currentProject.session_mode == "wayland" or currentProject.session_mode == "x11":
+        user_shell = "/usr/bin/bash"
+    else:
+        user_shell = "/runshell_launcher.sh"
+
     aaa_setup = f"""#!/bin/bash
 set -e
 
@@ -195,12 +200,9 @@ truncate -s 0 /etc/motd
 
 # ------------
 
-usermod -s /runshell_launcher.sh root
-useradd -m -u 10000 -s /runshell_launcher.sh user
+usermod -s {user_shell} root
+useradd -m -u 10000 -s {user_shell} user
 usermod -aG video,input,audio,render user"""
-
-    if True: # template for future setting
-        aaa_setup += "\nusermod -aG sudo user"
 
     aaa_setup += "\n\n"
 
@@ -876,7 +878,7 @@ def setup_build_targets(builditems, cmdline):
 
             "kernel_args_auto": True,
             "kernel_rootfs_auto": "manual",
-            "kernel_args": cmdline + " rootdelay=25 cma=256M plymouth.ignore-serial-consoles console=tty1" # why is rootdelay here? because in this FUCKING Chinese board, half of the peripherals start with a fucking delay, and it should be initialized by the time plymouth is launched
+            "kernel_args": cmdline + " rootdelay=25 cma=512M plymouth.ignore-serial-consoles console=tty1" # why is rootdelay here? because in this FUCKING Chinese board, half of the peripherals start with a fucking delay, and it should be initialized by the time plymouth is launched
         })
 
 def generate_syslbuild_project():
