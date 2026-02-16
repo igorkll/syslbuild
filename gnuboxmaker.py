@@ -909,83 +909,90 @@ def setup_build_targets(builditems, cmdline):
         })
 
     if currentProject.export_img_rpi_64:
-            builditems.append({
-                "architectures": ["arm64"],
+        writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_64.txt"), "root=/dev/mmcblk0p2 " + cmdline + " console=tty1\n")
+        writeText(os.path.join(path_temp_syslbuild, "files", "config_rpi_64.txt"), f"""
+""")
 
-                "type": "gitclone",
-                "name": "rpi_64_firmware",
-                "export": False,
+        builditems.append({
+            "architectures": ["arm64"],
 
-                "git_url": "https://github.com/raspberrypi/firmware",
-                "git_branch": "master",
-                "git_checkout": "1.20250915"
-            })
+            "type": "gitclone",
+            "name": "rpi_64_firmware",
+            "export": False,
 
-            builditems.append({
-                "architectures": ["arm64"],
+            "git_url": "https://github.com/raspberrypi/firmware",
+            "git_branch": "master",
+            "git_checkout": "1.20250915"
+        })
 
-                "type": "directory",
-                "name": "boot_rpi_64",
-                "export": False,
+        builditems.append({
+            "architectures": ["arm64"],
 
-                "items": [
-                    ["rpi_64_firmware/COPYING.linux", "/COPYING.linux"],
-                    ["rpi_64_firmware/LICENCE.broadcom", "/LICENCE.broadcom"],
-                    ["rpi_64_firmware/overlays", "/overlays"],
-                    ["rpi_64_firmware/fixup.dat", "/fixup.dat"],
-                    ["rpi_64_firmware/fixup4.dat", "/fixup4.dat"],
-                    ["rpi_64_firmware/fixup4cd.dat", "/fixup4cd.dat"],
-                    ["rpi_64_firmware/fixup4db.dat", "/fixup4db.dat"],
-                    ["rpi_64_firmware/fixup4x.dat", "/fixup4x.dat"],
-                    ["rpi_64_firmware/fixup_cd.dat", "/fixup_cd.dat"],
-                    ["rpi_64_firmware/fixup_db.dat", "/fixup_db.dat"],
-                    ["rpi_64_firmware/fixup_x.dat", "/fixup_x.dat"],
-                    ["rpi_64_firmware/start.elf", "/start.elf"],
-                    ["rpi_64_firmware/start4.elf", "/start4.elf"],
-                    ["rpi_64_firmware/start4cd.elf", "/start4cd.elf"],
-                    ["rpi_64_firmware/start4db.elf", "/start4db.elf"],
-                    ["rpi_64_firmware/start4x.elf", "/start4x.elf"],
-                    ["rpi_64_firmware/start_cd.elf", "/start_cd.elf"],
-                    ["rpi_64_firmware/start_db.elf", "/start_db.elf"],
-                    ["rpi_64_firmware/start_x.elf", "/start_x.elf"],
+            "type": "directory",
+            "name": "boot_rpi_64",
+            "export": False,
 
-                    ["kernel_image/arm64/rpi_64/boot", "/"],
-                    ["kernel_image/arm64/rpi_64/kernel.img", "/kernel8.img"],
-                    ["kernel_image/arm64/rpi_64/kernel_config", "/kernel8_config"],
-                    ["initramfs_rpi_64.img", "/initramfs8"]
-                ]
-            })
+            "items": [
+                ["rpi_64_firmware/COPYING.linux", "/COPYING.linux"],
+                ["rpi_64_firmware/LICENCE.broadcom", "/LICENCE.broadcom"],
+                ["rpi_64_firmware/overlays", "/overlays"],
+                ["rpi_64_firmware/fixup.dat", "/fixup.dat"],
+                ["rpi_64_firmware/fixup4.dat", "/fixup4.dat"],
+                ["rpi_64_firmware/fixup4cd.dat", "/fixup4cd.dat"],
+                ["rpi_64_firmware/fixup4db.dat", "/fixup4db.dat"],
+                ["rpi_64_firmware/fixup4x.dat", "/fixup4x.dat"],
+                ["rpi_64_firmware/fixup_cd.dat", "/fixup_cd.dat"],
+                ["rpi_64_firmware/fixup_db.dat", "/fixup_db.dat"],
+                ["rpi_64_firmware/fixup_x.dat", "/fixup_x.dat"],
+                ["rpi_64_firmware/start.elf", "/start.elf"],
+                ["rpi_64_firmware/start4.elf", "/start4.elf"],
+                ["rpi_64_firmware/start4cd.elf", "/start4cd.elf"],
+                ["rpi_64_firmware/start4db.elf", "/start4db.elf"],
+                ["rpi_64_firmware/start4x.elf", "/start4x.elf"],
+                ["rpi_64_firmware/start_cd.elf", "/start_cd.elf"],
+                ["rpi_64_firmware/start_db.elf", "/start_db.elf"],
+                ["rpi_64_firmware/start_x.elf", "/start_x.elf"],
 
-            builditems.append({
-                "architectures": ["arm64"],
+                ["kernel_image/arm64/rpi_64/boot", "/"],
+                ["kernel_image/arm64/rpi_64/kernel.img", "/kernel8.img"],
+                ["kernel_image/arm64/rpi_64/kernel_config", "/kernel8_config"],
+                ["initramfs_rpi_64.img", "/initramfs8"],
 
-                "type": "filesystem",
-                "name": "boot_rpi_64.img",
-                "export": False,
+                ["files/cmdline_rpi_64.txt", "/cmdline.txt"],
+                ["files/config_rpi_64.txt", "/config.txt"]
+            ]
+        })
 
-                "source": "boot_rpi_64",
+        builditems.append({
+            "architectures": ["arm64"],
 
-                "fs_type": "fat32",
-                "size": "(auto * 1.2) + (100 * 1024 * 1024)",
-                "minsize": "64MB",
-                "label": "BOOT"
-            })
+            "type": "filesystem",
+            "name": "boot_rpi_64.img",
+            "export": False,
 
-            builditems.append({
-                "architectures": ["arm64"],
+            "source": "boot_rpi_64",
 
-                "type": "full-disk-image",
-                "name": f"{currentProjectName} RPI 64.img",
-                "export": True,
+            "fs_type": "fat32",
+            "size": "(auto * 1.2) + (100 * 1024 * 1024)",
+            "minsize": "64MB",
+            "label": "BOOT"
+        })
 
-                "size": "auto + (10 * 1024 * 1024)",
+        builditems.append({
+            "architectures": ["arm64"],
 
-                "partitionTable": "dos",
-                "partitions": [
-                    ["boot_rpi_64.img", "linux"],
-                    ["rootfs.img", "linux"]
-                ]
-            })
+            "type": "full-disk-image",
+            "name": f"{currentProjectName} RPI 64.img",
+            "export": True,
+
+            "size": "auto + (10 * 1024 * 1024)",
+
+            "partitionTable": "dos",
+            "partitions": [
+                ["boot_rpi_64.img", "linux"],
+                ["rootfs.img", "linux"]
+            ]
+        })
 
 def generate_syslbuild_project():
     cmdline = f"rw rootwait=60 makevartmp cma={currentProject.cma_m}M plymouth.ignore-serial-consoles preinit=/root/preinit.sh {currentProject.cmdline}"
