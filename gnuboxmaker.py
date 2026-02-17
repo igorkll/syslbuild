@@ -642,6 +642,17 @@ def setup_export_initramfs(builditems):
                 "kernel_config": "kernel_image/arm64/rpi_64/kernel_config",
                 "source": "rootfs directory x4"
             })
+
+            builditems.append({
+                "architectures": ["arm64"],
+
+                "type": "debian-export-initramfs",
+                "name": "initramfs_rpi_5.img",
+                "export": False,
+
+                "kernel_config": "kernel_image/arm64/rpi_5/kernel_config",
+                "source": "rootfs directory x4"
+            })
     else:
         stop_error(f"unknown distro \"{currentProject.distro}\"")
 
@@ -1010,6 +1021,11 @@ avoid_warnings=1
                 ["kernel_image/arm64/rpi_64/kernel.img", "/kernel8.img"],
                 ["kernel_image/arm64/rpi_64/kernel_config", "/kernel8_config"],
                 ["initramfs_rpi_64.img", "/initramfs8"],
+
+                ["kernel_image/arm64/rpi_5/boot", "/"],
+                ["kernel_image/arm64/rpi_5/kernel.img", "/kernel_2712.img"],
+                ["kernel_image/arm64/rpi_5/kernel_config", "/kernel2712_config"],
+                ["initramfs_rpi_5.img", "/initramfs_2712"],
 
                 ["files/cmdline_rpi_64.txt", "/cmdline.txt"],
                 ["files/config_rpi_64.txt", "/config.txt"]

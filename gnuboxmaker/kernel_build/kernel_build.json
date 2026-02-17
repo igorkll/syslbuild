@@ -37,6 +37,14 @@
 
             "type": "include",
             "file": "rpi_64.json"
+        },
+        {
+            "architectures": [
+                "arm64"
+            ],
+
+            "type": "include",
+            "file": "rpi_5.json"
         }
     ]
 }

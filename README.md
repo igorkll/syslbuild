@@ -217,6 +217,7 @@ these changes to the kernel config are applied automatically when building the k
 
 ## singleboards whose assembly is guaranteed to work
 * orange pi zero 3
+* raspberry pi 64 bit - through the "full-disk-image" manually. export via "singleboard" to this platform is not supported
 
 ## project example
 ```json
