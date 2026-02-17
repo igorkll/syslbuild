@@ -180,7 +180,7 @@ def setup_build_architectures(architectures):
 
 def gen_default_chroot_script():
     if currentProject.session_mode == "wayland" or currentProject.session_mode == "x11":
-        user_shell = "/usr/bin/bash"
+        user_shell = "/run_session.sh"
     else:
         user_shell = "/runshell_launcher.sh"
 
@@ -228,7 +228,7 @@ systemctl mask plymouth-log.service"""
 
     aaa_setup += "\n\n"
 
-    if currentProject.session_mode == "tty":
+    if currentProject.session_mode != "init":
         aaa_setup += f"""systemctl mask getty@tty2.service
 systemctl mask getty@tty3.service
 systemctl mask getty@tty4.service
@@ -237,24 +237,6 @@ systemctl mask getty@tty6.service
 systemctl mask serial-getty@.service
 systemctl mask container-getty@.service
 systemctl mask console-getty.service"""
-    elif currentProject.session_mode != "init":
-        aaa_setup += f"""systemctl mask getty.target
-systemctl mask getty@tty1.service
-systemctl mask getty@tty2.service
-systemctl mask getty@tty3.service
-systemctl mask getty@tty4.service
-systemctl mask getty@tty5.service
-systemctl mask getty@tty6.service
-systemctl mask serial-getty@.service
-systemctl mask container-getty@.service
-systemctl mask console-getty.service
-
-chmod -x /sbin/agetty
-chmod -x /sbin/getty
-
-systemctl enable sddm
-echo "sddm shared/default-display-manager select sddm" | debconf-set-selections
-systemctl set-default graphical.target"""
 
     aaa_setup += "\n\ntouch /.chrootend"
     return aaa_setup
@@ -310,7 +292,6 @@ def setup_build_distro(builditems):
             include.append("plymouth-themes")
 
         if currentProject.session_mode == "wayland" or currentProject.session_mode == "x11":
-            include.append("sddm")
             include.append("mesa-utils")
             include.append("libgl1-mesa-dri")
             include.append("libegl1-mesa")
@@ -373,22 +354,13 @@ def setup_autologin():
     etc_config = os.path.join(path_temp_syslbuild, "files", "etc_config")
     systemd_config = os.path.join(path_temp_syslbuild, "files", "systemd_config")
 
-    if currentProject.session_mode == "tty":
+    if currentProject.session_mode != "init":
         writeText(os.path.join(systemd_config, "system", "getty@tty1.service.d", "autologin.conf"), f"""[Service]
 ExecStart=
 ExecStart=-/sbin/getty --skip-login --noissue --nohints --nonewline --autologin {currentProject.session_user} --noclear %I $TERM
 
 [Unit]
 StartLimitIntervalSec=0""")
-    elif currentProject.session_mode != "init":
-        session = "weston.desktop"
-        if currentProject.session_mode == "x11":
-            session = ""
-
-        writeText(os.path.join(etc_config, "sddm.conf"), f"""[Autologin]
-User={currentProject.session_user}
-Session={session}
-Relogin=true""")
 
 def setup_graphic():
     etc_config = os.path.join(path_temp_syslbuild, "files", "etc_config")
@@ -520,6 +492,7 @@ MaxLevelWall=emerg""")
     shutil.copy(os.path.join(path_resources, "runshell.sh"), os.path.join(path_temp_syslbuild, "files", "runshell.sh"))
     shutil.copy(os.path.join(path_resources, "preinit.sh"), os.path.join(path_temp_syslbuild, "files", "preinit.sh"))
     shutil.copy("gnuboxmaker/runshell_launcher.sh", os.path.join(path_temp_syslbuild, "files", "runshell_launcher.sh"))
+    shutil.copy("gnuboxmaker/run_session_wayland.sh", os.path.join(path_temp_syslbuild, "files", "run_session_wayland.sh"))
 
 def copy_bins(name):
     output_path = os.path.join(path_temp_syslbuild, name)
@@ -663,6 +636,26 @@ def setup_build_base(builditems):
     setup_build_distro(builditems)
     setup_write_files()
 
+    items = [
+        ["rootfs directory x1", "."],
+
+        ["files/etc_config", "/etc", [0, 0, "0755"]],
+        ["files/systemd_config", "/etc/systemd", [0, 0, "0755"]],
+        ["files/runshell.sh", "/runshell.sh", [0, 0, "0755"]],
+        ["files/runshell_launcher.sh", "/runshell_launcher.sh", [0, 0, "0755"]],
+        ["files/preinit.sh", "/preinit.sh", [0, 0, "0755"]],
+
+        ["custom_init.sh", "/usr/share/initramfs-tools/init", [0, 0, "0755"]],
+        ["custom_init_hook.sh", "/etc/initramfs-tools/hooks/custom_init_hook.sh", [0, 0, "0755"]],
+
+        ["files/user_files", "/", [0, 0, "0755"]],
+    ]
+
+    if currentProject.session_mode == "wayland":
+        items.append(["files/run_session_wayland.sh", "/run_session.sh", [0, 0, "0755"]])
+    elif currentProject.session_mode == "x11":
+        items.append(["files/run_session_x11.sh", "/run_session.sh", [0, 0, "0755"]]):
+
     builditem = {
         "type": "directory",
         "name": "rootfs directory x2",
@@ -670,20 +663,7 @@ def setup_build_base(builditems):
 
         "directories": [],
 
-        "items": [
-            ["rootfs directory x1", "."],
-
-            ["files/etc_config", "/etc", [0, 0, "0755"]],
-            ["files/systemd_config", "/etc/systemd", [0, 0, "0755"]],
-            ["files/runshell.sh", "/runshell.sh", [0, 0, "0755"]],
-            ["files/runshell_launcher.sh", "/runshell_launcher.sh", [0, 0, "0755"]],
-            ["files/preinit.sh", "/preinit.sh", [0, 0, "0755"]],
-
-            ["custom_init.sh", "/usr/share/initramfs-tools/init", [0, 0, "0755"]],
-            ["custom_init_hook.sh", "/etc/initramfs-tools/hooks/custom_init_hook.sh", [0, 0, "0755"]],
-
-            ["files/user_files", "/", [0, 0, "0755"]],
-        ],
+        "items": items,
 
         "delete": []
     }
