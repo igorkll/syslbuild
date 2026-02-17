@@ -294,9 +294,13 @@ def setup_build_distro(builditems):
         if currentProject.session_mode == "wayland" or currentProject.session_mode == "x11":
             include.append("mesa-utils")
             include.append("libgl1-mesa-dri")
-            include.append("libegl1-mesa")
             include.append("libgbm1")
             include.append("libdrm2")
+
+            if currentProject.debian_suite == "trixie":
+                include.append("libegl1")
+            else:
+                include.append("libegl1-mesa")
 
         if currentProject.session_mode == "wayland":
             include.append("weston")
