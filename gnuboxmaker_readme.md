@@ -24,6 +24,8 @@ a similar program for creating Windows images for embedded devices: https://gith
 ## roadmap
 * gui with system settings and choice of platforms for export
 * x11 support (currently only wayland is supported)
+* support for comments in the json file of the project
+* support for specifying the minimum version of gnubox maker in the json file of the project, which will be automatically set to the current one when opening the project
 
 ## supported platforms
 * x86_64 (BIOS, UEFI)
