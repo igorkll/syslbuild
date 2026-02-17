@@ -51,7 +51,6 @@ class Project:
     session_user: str = "user"
     session_mode: str = "tty"
 
-    cma_m: int = 512
     minlogotime: int = 5
     cmdline: str = ""
 
@@ -905,7 +904,7 @@ def setup_build_targets(builditems, cmdline):
 
             "kernel_args_auto": True,
             "kernel_rootfs_auto": "manual",
-            "kernel_args": cmdline + " waitFbBeforeModules console=tty1" # why is "waitFbBeforeModules" here? because in this FUCKING Chinese board, half of the peripherals start with a fucking delay, and it should be initialized by the time plymouth is launched
+            "kernel_args": cmdline + " cma=512M waitFbBeforeModules console=tty1" # why is "waitFbBeforeModules" here? because in this FUCKING Chinese board, half of the peripherals start with a fucking delay, and it should be initialized by the time plymouth is launched
         })
 
     if currentProject.export_img_rpi_64:
@@ -1049,7 +1048,7 @@ avoid_warnings=1
         })
 
 def generate_syslbuild_project():
-    cmdline = f"rw rootwait=60 makevartmp cma={currentProject.cma_m}M plymouth.ignore-serial-consoles preinit=/root/preinit.sh {currentProject.cmdline}"
+    cmdline = f"rw rootwait=60 makevartmp plymouth.ignore-serial-consoles preinit=/root/preinit.sh {currentProject.cmdline}"
 
     if currentProject.root_expand:
         cmdline += " root_processing root_expand"
