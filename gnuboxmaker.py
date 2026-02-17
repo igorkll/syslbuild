@@ -961,6 +961,10 @@ otg_mode=1
 dtoverlay=dwc2,dr_mode=host
 
 [all]
+disable_splash=1
+boot_delay=0
+avoid_warnings=1
+disable_fw_kms_setup=1
 """)
 
         builditems.append({
