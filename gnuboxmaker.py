@@ -581,6 +581,7 @@ def setup_write_bins(builditems):
 
     if currentProject.export_img_rpi_64:
         items.append(["kernel_image/arm64/rpi_64/kernel_modules", "/usr"])
+        items.append(["kernel_image/arm64/rpi_5/kernel_modules", "/usr"])
 
     if currentProject.boot_splash:
         items.append(["embedded-plymouth/arm64", "/", [0, 0, "0755"]])
