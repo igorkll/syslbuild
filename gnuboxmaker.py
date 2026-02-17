@@ -640,6 +640,7 @@ def setup_export_initramfs(builditems):
                 "name": "initramfs_rpi_64.img",
                 "export": False,
 
+                "kernel_version": "6.12.47-embedded-rpi-64+",
                 "kernel_config": "kernel_image/arm64/rpi_64/kernel_config",
                 "source": "rootfs directory x4"
             })
@@ -651,6 +652,7 @@ def setup_export_initramfs(builditems):
                 "name": "initramfs_rpi_5.img",
                 "export": False,
 
+                "kernel_version": "6.12.47-embedded-rpi-5+",
                 "kernel_config": "kernel_image/arm64/rpi_5/kernel_config",
                 "source": "rootfs directory x4"
             })
@@ -920,7 +922,7 @@ def setup_build_targets(builditems, cmdline):
         })
 
     if currentProject.export_img_rpi_64:
-        writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_64.txt"), "root=/dev/mmcblk0p2 " + cmdline + " console=tty1\n")
+        writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_64.txt"), "root=/dev/mmcblk0p2 " + cmdline + " waitFbAfterModules console=tty1\n")
         writeText(os.path.join(path_temp_syslbuild, "files", "config_rpi_64.txt"), f"""# For more options and information see
 # http://rptl.io/configtxt
 # Some settings may impact device functionality. See link above for details
