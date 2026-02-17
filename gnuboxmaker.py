@@ -1044,7 +1044,7 @@ disable_fw_kms_setup=1
 
             "partitionTable": "dos",
             "partitions": [
-                ["boot_rpi_64.img", "linux"],
+                ["boot_rpi_64.img", "c"],
                 ["rootfs.img", "linux"]
             ]
         })

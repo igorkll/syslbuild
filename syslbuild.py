@@ -825,9 +825,9 @@ parititionTypesList_dos = {
 
 def getParititionType(item, partitionType):
     if item["partitionTable"] == "gpt":
-        return parititionTypesList_gpt[partitionType]
+        return parititionTypesList_gpt.get(partitionType, partitionType)
     else:
-        return parititionTypesList_dos[partitionType]
+        return parititionTypesList_dos.get(partitionType, partitionType)
 
 defaultGrubTargets_efi = {
     "amd64": "x86_64-efi",
