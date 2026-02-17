@@ -29,6 +29,7 @@ a similar program for creating Windows images for embedded devices: https://gith
 * x86_64 (BIOS, UEFI)
 * x86 (BIOS, UEFI)
 * orange pi zero 3
+* raspberry pi 5/4/3 (i tested this on raspberry pi 5, but in theory the image created via raspberry pi 64 should work on 5/4/3)
 
 ## supported host systems
 * debian
