@@ -654,7 +654,7 @@ def setup_build_base(builditems):
     if currentProject.session_mode == "wayland":
         items.append(["files/run_session_wayland.sh", "/run_session.sh", [0, 0, "0755"]])
     elif currentProject.session_mode == "x11":
-        items.append(["files/run_session_x11.sh", "/run_session.sh", [0, 0, "0755"]]):
+        items.append(["files/run_session_x11.sh", "/run_session.sh", [0, 0, "0755"]])
 
     builditem = {
         "type": "directory",
