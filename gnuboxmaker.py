@@ -220,7 +220,7 @@ systemctl mask plymouth-switch-root-initramfs.service
 systemctl mask plymouth-reboot.service
 systemctl mask plymouth-poweroff.service
 systemctl mask plymouth-quit-wait.service
-# systemctl mask plymouth-quit.service
+systemctl mask plymouth-quit.service
 systemctl mask plymouth-kexec.service
 systemctl mask plymouth-switch-root.service
 systemctl mask plymouth-halt.service
@@ -398,7 +398,6 @@ def setup_bootlogo():
     if currentProject.boot_splash:
         copyFile(os.path.join(bootlogo_files, "bootlogo.plymouth"), "gnuboxmaker/bootlogo.plymouth")
         copyFile(os.path.join(bootlogo_files, "logo.png"), project_logo_path)
-        copyFile(os.path.join(path_temp_syslbuild, "files", "plymouth-quit.service"), "gnuboxmaker/plymouth-quit.service")
 
     if currentProject.splash_mode == "fill":
         scale_code = f"""scaled_width = window_width;
@@ -503,12 +502,11 @@ def copy_bins(name):
     deleteAny(output_path)
     buildExecute(["cp", "-a", os.path.join("gnuboxmaker", name) + "/.", output_path])
 
-def setup_def_plymouth_files(items):
-    items.append(["files/plymouth-quit.service", "/usr/lib/systemd/system/plymouth-quit.service", [0, 0, "0644"]])
-
 def setup_write_bins(builditems):
     copy_bins("kernel_image")
     copy_bins("blobs")
+
+    chmod = []
 
     # ---------------------- x86_64
     items = [
@@ -520,7 +518,7 @@ def setup_write_bins(builditems):
     if currentProject.boot_splash:
         copy_bins("embedded-plymouth")
         items.append(["embedded-plymouth/x86_64", "/", [0, 0, "0755"]])
-        setup_def_plymouth_files(items)
+        chmod.append(["/usr/bin/plymouth", "4755", false])
 
     builditems.append({
         "architectures": ["amd64"],
@@ -529,7 +527,8 @@ def setup_write_bins(builditems):
         "name": "rootfs directory x3",
         "export": False,
 
-        "items": items
+        "items": items,
+        "chmod": chmod
     })
 
     # ---------------------- x86
@@ -541,7 +540,6 @@ def setup_write_bins(builditems):
 
     if currentProject.boot_splash:
         items.append(["embedded-plymouth/x86", "/", [0, 0, "0755"]])
-        setup_def_plymouth_files(items)
 
     builditems.append({
         "architectures": ["i386"],
@@ -550,7 +548,8 @@ def setup_write_bins(builditems):
         "name": "rootfs directory x3",
         "export": False,
 
-        "items": items
+        "items": items,
+        "chmod": chmod
     })
 
     # ---------------------- arm64
@@ -567,7 +566,6 @@ def setup_write_bins(builditems):
 
     if currentProject.boot_splash:
         items.append(["embedded-plymouth/arm64", "/", [0, 0, "0755"]])
-        setup_def_plymouth_files(items)
 
     builditems.append({
         "architectures": ["arm64"],
@@ -576,7 +574,8 @@ def setup_write_bins(builditems):
         "name": "rootfs directory x3",
         "export": False,
 
-        "items": items
+        "items": items,
+        "chmod": chmod
     })
 
 def setup_export_initramfs(builditems):

@@ -1,9 +1,0 @@
-[Unit]
-Description=Terminate Plymouth Boot Screen
-Before=getty@tty1.service
-
-[Service]
-Type=oneshot
-ExecStartPre=/bin/bash -c 'while [ ! -e /tmp/plymouth_quit ]; do sleep 0.1; done'
-ExecStart=/usr/bin/plymouth quit
-TimeoutSec=infinity

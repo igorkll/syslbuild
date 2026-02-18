@@ -1,8 +1,18 @@
 #!/bin/bash
 
 if [ -e "/.session_mode_tty" ]; then
-    touch /tmp/plymouth_quit
-    sleep 1
+    # disable tty hotkeys
+    stty intr undef >/dev/null 2>&1  # Ctrl+C
+    stty quit undef >/dev/null 2>&1  # Ctrl+\\
+    stty stop undef >/dev/null 2>&1  # Ctrl+S
+    stty start undef >/dev/null 2>&1 # Ctrl+Q
+    stty susp undef >/dev/null 2>&1  # Ctrl+Z
+
+    # disable echo mode
+    stty -echo >/dev/null 2>&1
+
+    # plymouth quit
+    plymouth quit --wait # suid binary in gnubox maker
 fi
 
 while true; do

@@ -12,8 +12,7 @@ if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
     stty -echo >/dev/null 2>&1
 
     # plymouth quit
-    touch /tmp/plymouth_quit
-    sleep 1
+    plymouth quit --wait # suid binary in gnubox maker
 
     exec weston --continue-without-input --renderer=pixman >/dev/null 2>&1
 else
