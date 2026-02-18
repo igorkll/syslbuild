@@ -14,7 +14,7 @@ if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
     # clear screen and set cursor to first line
     clear
 
-    exec weston --renderer=pixman >/dev/null 2>&1
+    exec weston --continue-without-input --renderer=pixman >/dev/null 2>&1
 else
     exec bash
 fi
