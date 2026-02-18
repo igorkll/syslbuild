@@ -219,7 +219,7 @@ systemctl mask plymouth-read-write.service
 systemctl mask plymouth-switch-root-initramfs.service
 systemctl mask plymouth-reboot.service
 systemctl mask plymouth-poweroff.service
-# systemctl mask plymouth-quit-wait.service
+systemctl mask plymouth-quit-wait.service
 # systemctl mask plymouth-quit.service
 systemctl mask plymouth-kexec.service
 systemctl mask plymouth-switch-root.service
@@ -398,7 +398,8 @@ def setup_bootlogo():
 
     if currentProject.boot_splash:
         copyFile(os.path.join(bootlogo_files, "bootlogo.plymouth"), "gnuboxmaker/bootlogo.plymouth")
-    copyFile(os.path.join(bootlogo_files, "logo.png"), project_logo_path)
+        copyFile(os.path.join(bootlogo_files, "logo.png"), project_logo_path)
+        copyFile(os.path.join(path_temp_syslbuild, "files", "plymouth-quit.service"), "gnuboxmaker/plymouth-quit.service")
 
     if currentProject.splash_mode == "fill":
         scale_code = f"""scaled_width = window_width;
@@ -675,6 +676,7 @@ def setup_build_base(builditems):
     if currentProject.boot_splash:
         builditem["directories"].append(["/usr/share/plymouth/themes/bootlogo", [0, 0, "0755"]])
         builditem["items"].append(["files/bootlogo", "/usr/share/plymouth/themes/bootlogo", [0, 0, "0644"]])
+        builditem["items"].append(["files/plymouth-quit.service", "/lib/systemd/system/plymouth-quit.service", [0, 0, "0644"]])
 
     builditems.append(builditem)
 

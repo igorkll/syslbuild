@@ -12,6 +12,7 @@ if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
     stty -echo
 
     # clear screen and set cursor to first line
+    touch /tmp/plymouth_quit
     clear
 
     exec weston --continue-without-input --renderer=pixman >/dev/null 2>&1
