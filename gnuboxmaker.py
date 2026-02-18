@@ -227,9 +227,8 @@ systemctl mask plymouth-halt.service
 systemctl mask plymouth-log.service"""
 
     aaa_setup += "\n\n"
-
-    if currentProject.session_mode != "init":
-        aaa_setup += f"""systemctl mask getty@tty2.service
+    
+    aaa_setup += f"""systemctl mask getty@tty2.service
 systemctl mask getty@tty3.service
 systemctl mask getty@tty4.service
 systemctl mask getty@tty5.service
