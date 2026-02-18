@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ -e "/.session_mode_tty" ]; then
+    touch /tmp/plymouth_quit
+    sleep 1
+fi
+
 while true; do
     # disable tty hotkeys
     stty intr undef >/dev/null 2>&1  # Ctrl+C
