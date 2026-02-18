@@ -37,7 +37,7 @@ def loadTempPaths():
     path_build_checksums = os.path.join(path_temp_architecture, "build_checksums")
     path_temp_cache_pacman = os.path.join(path_temp_architecture, "pacman")
     path_temp_pacman_conf = os.path.join(path_temp_architecture, "pacman.conf")
-    path_temp_kernel_build = os.path.join(path_temp_architecture, "last_kernel_build")
+    path_temp_kernel_build = os.path.join(path_temp_architecture, "kernel_build")
 
     path_temp_temp = os.path.join(path_temp, "temp")
     path_logs = os.path.join(path_temp, "logs")
@@ -1087,31 +1087,24 @@ def downloadKernelFromGit(item):
     return kernel_sources
 
 def copyKernel(item, kernel_sources):
-    current_kernel_sources_file = pathConcat(path_temp_kernel_build, ".current_kernel_sources")
-    patches_checksum_file = pathConcat(path_temp_kernel_build, ".patches_checksum")
     patches_checksum = {"array": []}
     if "patches" in item:
         for file in item["patches"]:
             patches_checksum["array"].append(get_file_checksum(findItem(file)))
     patches_checksum = dictChecksum(patches_checksum)
 
-    if os.path.isdir(path_temp_kernel_build) and os.path.isfile(current_kernel_sources_file) and os.path.isfile(patches_checksum_file):
-        with open(current_kernel_sources_file, "r") as f:
-            with open(patches_checksum_file, "r") as f2:
-                if f.read().strip() == kernel_sources.strip() and f2.read().strip() == patches_checksum.strip():
-                    return path_temp_kernel_build, False
+    copied_kernel_files = pathConcat(path_temp_kernel_build, hashlib.md5((kernel_sources + ":" + patches_checksum).encode("utf-8")).hexdigest())
+    copied_kernel_files_flag = pathConcat(copied_kernel_files, ".copied")
 
-    deleteDirectory(path_temp_kernel_build)
-    os.makedirs(path_temp_kernel_build, exist_ok=True)
-    copyItemFiles(kernel_sources, path_temp_kernel_build)
+    if not os.path.isdir(copied_kernel_files) or not os.path.isfile(copied_kernel_files_flag):
+        deleteDirectory(copied_kernel_files)
+        os.makedirs(copied_kernel_files, exist_ok=True)
+        copyItemFiles(kernel_sources, copied_kernel_files)
+        with open(copied_kernel_files_flag, "w") as f:
+            pass
+        return copied_kernel_files, True
 
-    with open(current_kernel_sources_file, "w") as f:
-        f.write(kernel_sources.strip())
-
-    with open(patches_checksum_file, "w") as f:
-        f.write(patches_checksum.strip())
-
-    return path_temp_kernel_build, True
+    return copied_kernel_files, False
 
 def patchKernel(kernel_sources, patches, patches_ignore_errors=False):
     for patchPath in patches:

@@ -203,7 +203,6 @@ these changes to the kernel config are applied automatically when building the k
 * add the ability to add additional files to the iso images
 * support for the operation (packing and unpacking) of initramfs with a multiblock structure
 * the ability to specify a filesystem revision
-* to save the source code of more than one core for one architecture (so that the cache works normally when building multiple cores for one architecture)
 
 ## roadmap completed
 * execution of arbitrary scripts in the system's chroot, with qemu-static support for execution during assembly for a different architecture
@@ -215,6 +214,7 @@ these changes to the kernel config are applied automatically when building the k
 * account for "binaries" files in caching in the "full-disk-image" builditem
 * the ability to include additional files with builditems
 * built-in export support for popular single-boarders and pine phone and librem 5. I want to make a builditem that downloads the bootloader for the specified single-board itself and builds the image using the transferred kernel, rootfs, initramfs and settings
+* to save the source code of more than one kernel for one architecture (so that the cache works normally when building multiple cores for one architecture)
 
 ## singleboards whose assembly is guaranteed to work
 * orange pi zero 3
