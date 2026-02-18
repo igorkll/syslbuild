@@ -4,6 +4,6 @@ After=plymouth-start.service systemd-user-sessions.service
 
 [Service]
 Type=oneshot
-ExecStartPre=/bin/bash -c 'while [ ! -e /tmp/plymouth_quit ]; do sleep 1; done'
+ExecStartPre=/bin/bash -c 'while [ ! -e /tmp/plymouth_quit ]; do sleep 0.1; done'
 ExecStart=/usr/bin/plymouth quit --retain-splash
 TimeoutSec=infinity

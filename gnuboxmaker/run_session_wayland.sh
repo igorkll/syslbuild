@@ -11,9 +11,9 @@ if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
     # disable echo mode
     stty -echo
 
-    # clear screen and set cursor to first line
+    # plymouth quit
     touch /tmp/plymouth_quit
-    clear
+    sleep 1
 
     exec weston --continue-without-input --renderer=pixman >/dev/null 2>&1
 else
