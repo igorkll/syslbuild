@@ -368,6 +368,9 @@ After=systemd-user-sessions.service
 [Service]
 Type=simple
 TTYPath=/dev/tty1
+TTYReset=yes
+TTYVHangup=yes
+TTYVTDisallocate=no
 StandardInput=tty
 StandardOutput=inherit
 ExecStart=/usr/bin/login -f {currentProject.session_user}
