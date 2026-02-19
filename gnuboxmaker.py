@@ -239,7 +239,8 @@ systemctl mask console-getty.service
 chmod -x /usr/lib/systemd/system-generators/systemd-getty-generator"""
 
     if currentProject.session_mode != "init":
-        aaa_setup += "\n\nsystemctl enable run_shell.service"
+        aaa_setup += "\n\nsystemctl enable shell_chvt.service"
+        aaa_setup += "\nsystemctl enable run_shell.service"
 
     aaa_setup += "\n\ntouch /.chrootend"
     return aaa_setup
@@ -281,7 +282,8 @@ def setup_build_distro(builditems):
             "uuid-runtime",
             "sed",
             "mawk",
-            "kexec-tools"
+            "kexec-tools",
+            "kbd"
         ]
 
         if currentProject.export_arm64:
@@ -362,8 +364,22 @@ def setup_autologin():
 
     if currentProject.session_mode != "init":
         content = f"""[Unit]
-Description=shell
+Description=chvt
 After=systemd-user-sessions.service
+
+[Service]
+Type=simple
+ExecStart=-/bin/chvt 1
+Restart=no
+
+[Install]
+WantedBy=multi-user.target"""
+        writeText(os.path.join(systemd_config, "system", "shell_chvt.service"), content)
+
+        content = f"""[Unit]
+Description=shell
+Requires=shell_chvt.service
+After=systemd-user-sessions.service shell_chvt.service
 StartLimitIntervalSec=0
 
 [Service]
@@ -374,12 +390,11 @@ TTYVHangup=yes
 TTYVTDisallocate=yes
 StandardInput=tty
 StandardOutput=tty
-ExecStart=-/sbin/agetty --autologin {currentProject.session_user} --noclear tty1 linux
+ExecStart=-/sbin/agetty --skip-login --nohostname --noissue --nohints --nonewline --autologin {currentProject.session_user} --noclear tty1 linux
 Restart=always
 
 [Install]
 WantedBy=multi-user.target"""
-
         writeText(os.path.join(systemd_config, "system", "run_shell.service"), content)
 
 def setup_graphic():
