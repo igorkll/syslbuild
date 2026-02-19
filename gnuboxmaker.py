@@ -199,13 +199,8 @@ EOF
 
 # ------------
 
-truncate -s 0 /etc/issue
-truncate -s 0 /etc/motd
-
-# ------------
-
-usermod -s {user_shell} root
-useradd -m -u 10000 -s {user_shell} user
+usermod -s /bin/bash root
+useradd -m -u 10000 -s /bin/bash user
 usermod -aG video,input,audio,render user"""
 
     aaa_setup += "\n\n"
@@ -228,14 +223,23 @@ systemctl mask plymouth-log.service"""
 
     aaa_setup += "\n\n"
     
-    aaa_setup += f"""systemctl mask getty@tty2.service
+    aaa_setup += f"""
+systemctl mask getty@.service
+systemctl mask getty@tty1.service
+systemctl mask getty@tty2.service
 systemctl mask getty@tty3.service
 systemctl mask getty@tty4.service
 systemctl mask getty@tty5.service
 systemctl mask getty@tty6.service
 systemctl mask serial-getty@.service
 systemctl mask container-getty@.service
-systemctl mask console-getty.service"""
+systemctl mask console-getty.service
+
+chmod -x /sbin/getty
+chmod -x /sbin/agetty"""
+
+    if currentProject.session_mode != "init":
+        aaa_setup += "\n\nsystemctl enable run_shell.service"
 
     aaa_setup += "\n\ntouch /.chrootend"
     return aaa_setup
@@ -354,74 +358,25 @@ def setup_download(builditems):
     addExtract("custom-debian-initramfs-init", "custom_init_hook.sh")
 
 def setup_autologin():
-    user_files = os.path.join(path_temp_syslbuild, "files", "user_files")
+    systemd_config = os.path.join(path_temp_syslbuild, "files", "systemd_config")
 
     if currentProject.session_mode != "init":
-        content = f"""#  SPDX-License-Identifier: LGPL-2.1-or-later
-#
-#  This file is part of systemd.
-#
-#  systemd is free software; you can redistribute it and/or modify it
-#  under the terms of the GNU Lesser General Public License as published by
-#  the Free Software Foundation; either version 2.1 of the License, or
-#  (at your option) any later version.
-
-[Unit]
-Description=Getty on %I
-Documentation=man:agetty(8) man:systemd-getty-generator(8)
-Documentation=https://0pointer.de/blog/projects/serial-console.html
-After=systemd-user-sessions.service plymouth-quit-wait.service getty-pre.target
-After=rc-local.service
-StartLimitIntervalSec=0
-
-# If additional gettys are spawned during boot then we should make
-# sure that this is synchronized before getty.target, even though
-# getty.target didn't actually pull it in.
-Before=getty.target
-IgnoreOnIsolate=yes
-
-# IgnoreOnIsolate causes issues with sulogin, if someone isolates
-# rescue.target or starts rescue.service from multi-user.target or
-# graphical.target.
-Conflicts=rescue.service
-Before=rescue.service
-
-# On systems without virtual consoles, don't start any getty. Note
-# that serial gettys are covered by serial-getty@.service, not this
-# unit.
-ConditionPathExists=/dev/tty0
+        content = f"""[Unit]
+Description=shell
+After=systemd-user-sessions.service
 
 [Service]
-# the VT is cleared by TTYVTDisallocate
-# The '-o' option value tells agetty to replace 'login' arguments with an
-# option to preserve environment (-p), followed by '--' for safety, and then
-# the entered username.
-ExecStart=-/sbin/agetty --skip-login --noissue --nohints --nonewline --autologin {currentProject.session_user} --noclear %I $TERM
 Type=simple
+TTYPath=/dev/tty1
+StandardInput=tty
+StandardOutput=inherit
+ExecStart=/usr/bin/login -f {currentProject.session_user}
 Restart=always
-RestartSec=0
-UtmpIdentifier=%I
-StandardInput=tty-force
-StandardOutput=tty
-TTYPath=/dev/%I
-TTYReset=yes
-TTYVHangup=yes
-TTYVTDisallocate=no
-IgnoreSIGPIPE=no
-SendSIGHUP=yes
-ImportCredential=agetty.*
-ImportCredential=login.*
-
-# Unset locale for the console getty since the console has problems
-# displaying some internationalized messages.
-UnsetEnvironment=LANG LANGUAGE LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT LC_IDENTIFICATION
 
 [Install]
-WantedBy=getty.target
-DefaultInstance=tty1
-"""
+WantedBy=multi-user.target"""
 
-        writeText(os.path.join(user_files, "usr/lib/systemd/system", "getty@.service"), content)
+        writeText(os.path.join(systemd_config, "system", "run_shell.service"), content)
 
 def setup_graphic():
     etc_config = os.path.join(path_temp_syslbuild, "files", "etc_config")
@@ -506,8 +461,8 @@ def setup_write_files():
     os.makedirs(user_files, exist_ok=True)
 
     writeText(os.path.join(systemd_config, "logind.conf"), f"""[Login]
-NAutoVTs=1
-ReserveVT=1
+NAutoVTs=0
+ReserveVT=0
 
 IdleAction=ignore
 
@@ -1124,13 +1079,13 @@ def generate_syslbuild_project():
     if currentProject.allow_updatescript:
         cmdline += " allow_updatescript"
 
-    if currentProject.boot_splash:
+    if currentProject.boot_splash and False:
         cmdline += f" minlogotime={currentProject.minlogotime}"
 
-    if currentProject.boot_quiet:
+    if currentProject.boot_quiet and False:
         cmdline += " systemd.show_status=false rd.systemd.show_status=false udev.log_level=0 rd.udev.log_level=0 systemd.log_level=emerg systemd.log_target=null clear noCursorBlink vt.global_cursor_default=0 quiet"
 
-    if currentProject.boot_splash:
+    if currentProject.boot_splash and False:
         cmdline += " splash earlysplash"
 
     if currentProject.session_mode == "init":
