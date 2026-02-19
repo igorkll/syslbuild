@@ -224,6 +224,7 @@ systemctl mask plymouth-log.service"""
     aaa_setup += "\n\n"
     
     aaa_setup += f"""
+systemctl mask getty.target
 systemctl mask getty@.service
 systemctl mask getty@tty1.service
 systemctl mask getty@tty2.service
@@ -235,8 +236,7 @@ systemctl mask serial-getty@.service
 systemctl mask container-getty@.service
 systemctl mask console-getty.service
 
-chmod -x /sbin/getty
-chmod -x /sbin/agetty"""
+chmod -x /usr/lib/systemd/system-generators/systemd-getty-generator"""
 
     if currentProject.session_mode != "init":
         aaa_setup += "\n\nsystemctl enable run_shell.service"
@@ -364,6 +364,7 @@ def setup_autologin():
         content = f"""[Unit]
 Description=shell
 After=systemd-user-sessions.service
+StartLimitIntervalSec=0
 
 [Service]
 Type=simple
@@ -373,7 +374,7 @@ TTYVHangup=yes
 TTYVTDisallocate=yes
 StandardInput=tty
 StandardOutput=tty
-ExecStart=/usr/bin/login -f {currentProject.session_user}
+ExecStart=-/sbin/agetty --autologin {currentProject.session_user} --noclear tty1 linux
 Restart=always
 
 [Install]
