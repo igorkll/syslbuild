@@ -199,8 +199,13 @@ EOF
 
 # ------------
 
-usermod -s /bin/bash root
-useradd -m -u 10000 -s /bin/bash user
+truncate -s 0 /etc/issue
+truncate -s 0 /etc/motd
+
+# ------------
+
+usermod -s {user_shell} root
+useradd -m -u 10000 -s {user_shell} user
 usermod -aG video,input,audio,render user"""
 
     aaa_setup += "\n\n"
@@ -239,8 +244,7 @@ systemctl mask console-getty.service
 chmod -x /usr/lib/systemd/system-generators/systemd-getty-generator"""
 
     if currentProject.session_mode != "init":
-        aaa_setup += "\n\nsystemctl enable shell_chvt.service"
-        aaa_setup += "\nsystemctl enable run_shell.service"
+        aaa_setup += "\n\nsystemctl enable run_shell.service"
 
     aaa_setup += "\n\ntouch /.chrootend"
     return aaa_setup
@@ -282,8 +286,7 @@ def setup_build_distro(builditems):
             "uuid-runtime",
             "sed",
             "mawk",
-            "kexec-tools",
-            "kbd"
+            "kexec-tools"
         ]
 
         if currentProject.export_arm64:
@@ -364,22 +367,8 @@ def setup_autologin():
 
     if currentProject.session_mode != "init":
         content = f"""[Unit]
-Description=chvt
-After=systemd-user-sessions.service
-
-[Service]
-Type=simple
-ExecStart=-/bin/chvt 1
-Restart=no
-
-[Install]
-WantedBy=multi-user.target"""
-        writeText(os.path.join(systemd_config, "system", "shell_chvt.service"), content)
-
-        content = f"""[Unit]
 Description=shell
-Requires=shell_chvt.service
-After=systemd-user-sessions.service shell_chvt.service
+After=systemd-user-sessions.service
 StartLimitIntervalSec=0
 
 [Service]

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+bash
+
 if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
     # disable tty hotkeys
     stty intr undef >/dev/null 2>&1  # Ctrl+C
@@ -12,10 +14,14 @@ if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
     stty -echo >/dev/null 2>&1
 
     # plymouth quit
-    plymouth quit --wait # suid binary in gnubox maker
-    sleep 1
+    if command -v plymouth >/dev/null 2>&1; then
+        plymouth quit --wait # suid binary in gnubox maker
+        sleep 1
+    fi
 
-    exec weston --continue-without-input --renderer=pixman >/dev/null 2>&1
+    exec weston --continue-without-input --renderer=pixman
 else
     exec bash
 fi
+
+sleep 10

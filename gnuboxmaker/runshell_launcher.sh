@@ -1,36 +1,42 @@
 #!/bin/bash
 
-if [ -e "/.session_mode_tty" ]; then
-    # disable tty hotkeys
-    stty intr undef >/dev/null 2>&1  # Ctrl+C
-    stty quit undef >/dev/null 2>&1  # Ctrl+\\
-    stty stop undef >/dev/null 2>&1  # Ctrl+S
-    stty start undef >/dev/null 2>&1 # Ctrl+Q
-    stty susp undef >/dev/null 2>&1  # Ctrl+Z
+if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
+    if [ -e "/.session_mode_tty" ]; then
+        # disable tty hotkeys
+        stty intr undef >/dev/null 2>&1  # Ctrl+C
+        stty quit undef >/dev/null 2>&1  # Ctrl+\\
+        stty stop undef >/dev/null 2>&1  # Ctrl+S
+        stty start undef >/dev/null 2>&1 # Ctrl+Q
+        stty susp undef >/dev/null 2>&1  # Ctrl+Z
 
-    # disable echo mode
-    stty -echo >/dev/null 2>&1
+        # disable echo mode
+        stty -echo >/dev/null 2>&1
 
-    # plymouth quit
-    plymouth quit --wait # suid binary in gnubox maker
-    sleep 1
+        # plymouth quit
+        if command -v plymouth >/dev/null 2>&1; then
+            plymouth quit --wait # suid binary in gnubox maker
+            sleep 1
+        fi
+    fi
+
+    while true; do
+        # disable tty hotkeys
+        stty intr undef >/dev/null 2>&1  # Ctrl+C
+        stty quit undef >/dev/null 2>&1  # Ctrl+\\
+        stty stop undef >/dev/null 2>&1  # Ctrl+S
+        stty start undef >/dev/null 2>&1 # Ctrl+Q
+        stty susp undef >/dev/null 2>&1  # Ctrl+Z
+
+        # disable echo mode
+        stty -echo >/dev/null 2>&1
+
+        # clear screen and set cursor to first line
+        clear
+
+        # run user application
+        /runshell.sh
+        sleep 1
+    done
+else
+    exec bash
 fi
-
-while true; do
-    # disable tty hotkeys
-    stty intr undef >/dev/null 2>&1  # Ctrl+C
-    stty quit undef >/dev/null 2>&1  # Ctrl+\\
-    stty stop undef >/dev/null 2>&1  # Ctrl+S
-    stty start undef >/dev/null 2>&1 # Ctrl+Q
-    stty susp undef >/dev/null 2>&1  # Ctrl+Z
-
-    # disable echo mode
-    stty -echo >/dev/null 2>&1
-
-    # clear screen and set cursor to first line
-    clear
-
-    # run user application
-    /runshell.sh
-    sleep 1
-done
