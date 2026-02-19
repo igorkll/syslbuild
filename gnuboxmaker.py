@@ -370,9 +370,9 @@ Type=simple
 TTYPath=/dev/tty1
 TTYReset=yes
 TTYVHangup=yes
-TTYVTDisallocate=no
+TTYVTDisallocate=yes
 StandardInput=tty
-StandardOutput=inherit
+StandardOutput=tty
 ExecStart=/usr/bin/login -f {currentProject.session_user}
 Restart=always
 
