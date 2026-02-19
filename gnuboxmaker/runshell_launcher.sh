@@ -13,6 +13,7 @@ if [ -e "/.session_mode_tty" ]; then
 
     # plymouth quit
     plymouth quit --wait # suid binary in gnubox maker
+    sleep 1
 fi
 
 while true; do
