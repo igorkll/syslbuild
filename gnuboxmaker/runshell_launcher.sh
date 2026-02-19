@@ -13,7 +13,7 @@ if [ -e "/.session_mode_tty" ]; then
 
     # plymouth quit
     plymouth quit --wait # suid binary in gnubox maker
-    sleep 1
+    sleep 2
 fi
 
 while true; do
@@ -32,4 +32,5 @@ while true; do
 
     # run user application
     /runshell.sh
+    sleep 1
 done
