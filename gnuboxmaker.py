@@ -228,23 +228,14 @@ systemctl mask plymouth-log.service"""
 
     aaa_setup += "\n\n"
     
-    aaa_setup += f"""
-systemctl mask getty.target
-systemctl mask getty@.service
-systemctl mask getty@tty1.service
-systemctl mask getty@tty2.service
+    aaa_setup += f"""systemctl mask getty@tty2.service
 systemctl mask getty@tty3.service
 systemctl mask getty@tty4.service
 systemctl mask getty@tty5.service
 systemctl mask getty@tty6.service
 systemctl mask serial-getty@.service
 systemctl mask container-getty@.service
-systemctl mask console-getty.service
-
-chmod -x /usr/lib/systemd/system-generators/systemd-getty-generator"""
-
-    if currentProject.session_mode != "init":
-        aaa_setup += "\n\nsystemctl enable run_shell.service"
+systemctl mask console-getty.service"""
 
     aaa_setup += "\n\ntouch /.chrootend"
     return aaa_setup
@@ -366,25 +357,12 @@ def setup_autologin():
     systemd_config = os.path.join(path_temp_syslbuild, "files", "systemd_config")
 
     if currentProject.session_mode != "init":
-        content = f"""[Unit]
-Description=shell
-After=systemd-user-sessions.service
-StartLimitIntervalSec=0
+        writeText(os.path.join(systemd_config, "system", "getty@tty1.service.d", "autologin.conf"), f"""[Service]
+ExecStart=
+ExecStart=-/sbin/agetty --skip-login --nohostname --noissue --nohints --nonewline --autologin {currentProject.session_user} --noclear %I $TERM
 
-[Service]
-Type=simple
-TTYPath=/dev/tty1
-TTYReset=yes
-TTYVHangup=yes
-TTYVTDisallocate=yes
-StandardInput=tty
-StandardOutput=tty
-ExecStart=-/sbin/agetty --skip-login --nohostname --noissue --nohints --nonewline --autologin {currentProject.session_user} --noclear tty1 linux
-Restart=always
-
-[Install]
-WantedBy=multi-user.target"""
-        writeText(os.path.join(systemd_config, "system", "run_shell.service"), content)
+[Unit]
+StartLimitIntervalSec=0""")
 
 def setup_graphic():
     etc_config = os.path.join(path_temp_syslbuild, "files", "etc_config")
