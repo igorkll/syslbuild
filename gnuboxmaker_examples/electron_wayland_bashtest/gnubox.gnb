@@ -31,7 +31,9 @@
     "libgl1-mesa-dri",
     "libegl1",
     "libgbm1",
-    "libdrm2"
+    "libdrm2",
+    
+    "nano"
   ],
   "debian_variant": "minbase",
   "debian_suite": "trixie",
