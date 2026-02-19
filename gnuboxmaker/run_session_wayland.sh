@@ -1,7 +1,5 @@
 #!/bin/bash
 
-bash
-
 if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
     # disable tty hotkeys
     stty intr undef >/dev/null 2>&1  # Ctrl+C
@@ -23,5 +21,3 @@ if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
 else
     exec bash
 fi
-
-sleep 10
