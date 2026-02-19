@@ -518,7 +518,7 @@ def setup_write_bins(builditems):
     if currentProject.boot_splash:
         copy_bins("embedded-plymouth")
         items.append(["embedded-plymouth/x86_64", "/", [0, 0, "0755"]])
-        chmod.append(["/usr/bin/plymouth", "4755", false])
+        chmod.append(["/usr/bin/plymouth", "4755", False])
 
     builditems.append({
         "architectures": ["amd64"],
