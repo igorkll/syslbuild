@@ -16,7 +16,7 @@ import time
 
 HandleKey_varians = ["ignore", "poweroff", "reboot", "suspend", "hibernate", "lock"] # halt, kexec
 session_user_variants = ["user", "root"]
-session_mode_variants = ["wayland", "x11", "tty", "init"]
+session_mode_variants = ["wayland", "x11", "tty", "background", "init"]
 weston_shell_variants = ["kiosk", "desktop"]
 splash_mode_variants = ["center", "fill", "contain", "cover"]
 
@@ -364,6 +364,9 @@ def setup_autologin():
     if currentProject.session_mode != "init":
         if currentProject.session_mode == "wayland" or currentProject.session_mode == "x11":
             user_shell = "/run_session.sh"
+            tty_bind = ""
+        elif currentProject.session_mode == "background": # в режиме background запускает runshell_launcher без привязки к vt. в этом режиме экран plymouth так и не будет завершен (логотип будет светится всегда)
+            user_shell = "/runshell_launcher.sh"
             tty_bind = ""
         else:
             user_shell = "/runshell_launcher.sh"
