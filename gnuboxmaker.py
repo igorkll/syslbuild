@@ -204,6 +204,9 @@ truncate -s 0 /etc/motd
 
 # ------------
 
+systemctl mask getty.target
+systemctl mask getty@.service
+systemctl mask getty@tty1.service
 systemctl mask getty@tty2.service
 systemctl mask getty@tty3.service
 systemctl mask getty@tty4.service
@@ -236,6 +239,9 @@ systemctl mask plymouth-kexec.service
 systemctl mask plymouth-switch-root.service
 systemctl mask plymouth-halt.service
 systemctl mask plymouth-log.service"""
+
+    if currentProject.session_mode != "init":
+        aaa_setup += "\n\nsystemctl enable run_shell.service"
 
     aaa_setup += "\n\ntouch /.chrootend"
     return aaa_setup
@@ -357,12 +363,26 @@ def setup_autologin():
     systemd_config = os.path.join(path_temp_syslbuild, "files", "systemd_config")
 
     if currentProject.session_mode != "init":
-        writeText(os.path.join(systemd_config, "system", "getty@tty1.service.d", "autologin.conf"), f"""[Service]
-ExecStart=
-ExecStart=-/sbin/agetty --skip-login --nohostname --noissue --nohints --nonewline --autologin {currentProject.session_user} --noclear %I $TERM
+        content = f"""[Unit]
+Description=shell
+After=systemd-user-sessions.service
+StartLimitIntervalSec=0
 
-[Unit]
-StartLimitIntervalSec=0""")
+[Service]
+Type=simple
+TTYPath=/dev/tty1
+TTYReset=yes
+TTYVHangup=no
+TTYVTDisallocate=no
+StandardInput=tty
+StandardOutput=tty
+ExecStart=-/sbin/agetty --skip-login --nohostname --noissue --nohints --nonewline --autologin {currentProject.session_user} --noclear tty1 linux
+Restart=always
+RestartSec=0
+
+[Install]
+WantedBy=multi-user.target"""
+        writeText(os.path.join(systemd_config, "system", "run_shell.service"), content)
 
 def setup_graphic():
     etc_config = os.path.join(path_temp_syslbuild, "files", "etc_config")
@@ -908,11 +928,11 @@ def setup_build_targets(builditems, cmdline):
 
             "kernel_args_auto": True,
             "kernel_rootfs_auto": "manual",
-            "kernel_args": cmdline + " cma=512M waitFbBeforeModules console=tty1" # why is "waitFbBeforeModules" here? because in this FUCKING Chinese board, half of the peripherals start with a fucking delay, and it should be initialized by the time plymouth is launched
+            "kernel_args": cmdline + " cma=512M waitFbBeforeModules" # why is "waitFbBeforeModules" here? because in this FUCKING Chinese board, half of the peripherals start with a fucking delay, and it should be initialized by the time plymouth is launched
         })
 
     if currentProject.export_img_rpi_64:
-        writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_64.txt"), "root=/dev/mmcblk0p2 " + cmdline + " waitFbAfterModules console=tty1\n")
+        writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_64.txt"), "root=/dev/mmcblk0p2 " + cmdline + " waitFbAfterModules\n")
         writeText(os.path.join(path_temp_syslbuild, "files", "config_rpi_64.txt"), f"""# For more options and information see
 # http://rptl.io/configtxt
 # Some settings may impact device functionality. See link above for details
@@ -1057,7 +1077,7 @@ avoid_warnings=1
         })
 
 def generate_syslbuild_project():
-    cmdline = f"rw rootwait=60 makevartmp plymouth.ignore-serial-consoles preinit=/root/preinit.sh {currentProject.cmdline}"
+    cmdline = f"rw rootwait=60 makevartmp plymouth.ignore-serial-consoles preinit=/root/preinit.sh console=tty1 {currentProject.cmdline}"
 
     if currentProject.root_expand:
         cmdline += " root_processing root_expand"
