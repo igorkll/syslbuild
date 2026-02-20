@@ -196,14 +196,9 @@ EOF
 
 # ------------
 
-truncate -s 0 /etc/issue
-truncate -s 0 /etc/motd
-
-# ------------
-
-systemctl mask getty.target
-systemctl mask getty@.service
-systemctl mask getty@tty1.service
+# systemctl mask getty.target
+# systemctl mask getty@.service
+# systemctl mask getty@tty1.service
 systemctl mask getty@tty2.service
 systemctl mask getty@tty3.service
 systemctl mask getty@tty4.service
@@ -217,7 +212,9 @@ systemctl mask console-getty.service
 
 usermod -s {user_shell} root
 useradd -m -u 10000 -s {user_shell} user
-usermod -aG video,input,audio,render user"""
+usermod -aG video,input,audio,render user
+
+echo "root:root" | chpasswd"""
 
     aaa_setup += "\n\n"
 
@@ -370,7 +367,7 @@ def setup_autologin():
             tty_bind = ""
         else:
             user_shell = "/runshell_launcher.sh"
-            tty_bind """TTYPath=/dev/tty1
+            tty_bind = """TTYPath=/dev/tty1
 TTYReset=yes
 TTYVHangup=yes
 TTYVTDisallocate=no
