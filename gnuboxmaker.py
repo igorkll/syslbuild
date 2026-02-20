@@ -241,7 +241,8 @@ systemctl mask plymouth-halt.service
 systemctl mask plymouth-log.service"""
 
     if currentProject.session_mode != "init":
-        aaa_setup += "\n\nsystemctl enable run_shell.service"
+        aaa_setup += "\n\nsystemctl enable chvt_shell.service"
+        aaa_setup += "\nsystemctl enable run_shell.service"
 
     aaa_setup += "\n\ntouch /.chrootend"
     return aaa_setup
@@ -283,7 +284,9 @@ def setup_build_distro(builditems):
             "uuid-runtime",
             "sed",
             "mawk",
-            "kexec-tools"
+            "kexec-tools",
+
+            "kbd"
         ]
 
         if currentProject.export_arm64:
@@ -364,8 +367,25 @@ def setup_autologin():
 
     if currentProject.session_mode != "init":
         content = f"""[Unit]
+Description=shell chvt
+Before=run_shell.service
+DefaultDependencies=no
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/chvt 2
+ExecStart=/usr/bin/chvt 1
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target"""
+        writeText(os.path.join(systemd_config, "system", "chvt_shell.service"), content)
+
+        content = f"""[Unit]
 Description=shell
-After=systemd-user-sessions.service
+Requires=chvt_shell.service
+After=systemd-user-sessions.service chvt_shell.service
 StartLimitIntervalSec=0
 
 [Service]
@@ -1085,13 +1105,13 @@ def generate_syslbuild_project():
     if currentProject.allow_updatescript:
         cmdline += " allow_updatescript"
 
-    if currentProject.boot_splash and False:
+    if currentProject.boot_splash:
         cmdline += f" minlogotime={currentProject.minlogotime}"
 
-    if currentProject.boot_quiet and False:
+    if currentProject.boot_quiet:
         cmdline += " systemd.show_status=false rd.systemd.show_status=false udev.log_level=0 rd.udev.log_level=0 systemd.log_level=emerg systemd.log_target=null clear noCursorBlink vt.global_cursor_default=0 quiet"
 
-    if currentProject.boot_splash and False:
+    if currentProject.boot_splash:
         cmdline += " splash earlysplash"
 
     if currentProject.session_mode == "init":
