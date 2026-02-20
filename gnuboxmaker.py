@@ -179,10 +179,7 @@ def setup_build_architectures(architectures):
         architectures.append("arm64")
 
 def gen_default_chroot_script():
-    if currentProject.session_mode == "wayland" or currentProject.session_mode == "x11":
-        user_shell = "/run_session.sh"
-    else:
-        user_shell = "/runshell_launcher.sh"
+    user_shell = "/bin/bash"
 
     aaa_setup = f"""#!/bin/bash
 set -e
@@ -241,8 +238,7 @@ systemctl mask plymouth-halt.service
 systemctl mask plymouth-log.service"""
 
     if currentProject.session_mode != "init":
-        aaa_setup += "\n\nsystemctl enable chvt_shell.service"
-        aaa_setup += "\nsystemctl enable run_shell.service"
+        aaa_setup += "\n\nsystemctl enable run_shell.service"
 
     aaa_setup += "\n\ntouch /.chrootend"
     return aaa_setup
@@ -366,37 +362,27 @@ def setup_autologin():
     systemd_config = os.path.join(path_temp_syslbuild, "files", "systemd_config")
 
     if currentProject.session_mode != "init":
-        content = f"""[Unit]
-Description=shell chvt
-Before=run_shell.service
-DefaultDependencies=no
-After=local-fs.target
-
-[Service]
-Type=oneshot
-ExecStart=/usr/bin/chvt 2
-ExecStart=/usr/bin/chvt 1
-RemainAfterExit=yes
-
-[Install]
-WantedBy=multi-user.target"""
-        writeText(os.path.join(systemd_config, "system", "chvt_shell.service"), content)
-
-        content = f"""[Unit]
-Description=shell
-Requires=chvt_shell.service
-After=systemd-user-sessions.service chvt_shell.service
-StartLimitIntervalSec=0
-
-[Service]
-Type=simple
-TTYPath=/dev/tty1
+        if currentProject.session_mode == "wayland" or currentProject.session_mode == "x11":
+            user_shell = "/run_session.sh"
+            tty_bind = ""
+        else:
+            user_shell = "/runshell_launcher.sh"
+            tty_bind """TTYPath=/dev/tty1
 TTYReset=yes
 TTYVHangup=yes
 TTYVTDisallocate=no
 StandardInput=tty
-StandardOutput=tty
-ExecStart=-/sbin/agetty --skip-login --nohostname --noissue --nohints --nonewline --autologin {currentProject.session_user} --noclear tty1 linux
+StandardOutput=tty"""
+            
+        content = f"""[Unit]
+Description=shell
+After=systemd-user-sessions.service
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+{tty_bind}
+ExecStart=-/bin/login -f {currentProject.session_user} -s {user_shell}
 Restart=always
 RestartSec=0
 
@@ -1105,13 +1091,13 @@ def generate_syslbuild_project():
     if currentProject.allow_updatescript:
         cmdline += " allow_updatescript"
 
-    if currentProject.boot_splash:
+    if currentProject.boot_splash and False:
         cmdline += f" minlogotime={currentProject.minlogotime}"
 
-    if currentProject.boot_quiet:
+    if currentProject.boot_quiet and False:
         cmdline += " systemd.show_status=false rd.systemd.show_status=false udev.log_level=0 rd.udev.log_level=0 systemd.log_level=emerg systemd.log_target=null clear noCursorBlink vt.global_cursor_default=0 quiet"
 
-    if currentProject.boot_splash:
+    if currentProject.boot_splash and False:
         cmdline += " splash earlysplash"
 
     if currentProject.session_mode == "init":
