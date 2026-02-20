@@ -204,6 +204,17 @@ truncate -s 0 /etc/motd
 
 # ------------
 
+systemctl mask getty@tty2.service
+systemctl mask getty@tty3.service
+systemctl mask getty@tty4.service
+systemctl mask getty@tty5.service
+systemctl mask getty@tty6.service
+systemctl mask serial-getty@.service
+systemctl mask container-getty@.service
+systemctl mask console-getty.service
+
+# ------------
+
 usermod -s {user_shell} root
 useradd -m -u 10000 -s {user_shell} user
 usermod -aG video,input,audio,render user"""
@@ -225,17 +236,6 @@ systemctl mask plymouth-kexec.service
 systemctl mask plymouth-switch-root.service
 systemctl mask plymouth-halt.service
 systemctl mask plymouth-log.service"""
-
-    aaa_setup += "\n\n"
-    
-    aaa_setup += f"""systemctl mask getty@tty2.service
-systemctl mask getty@tty3.service
-systemctl mask getty@tty4.service
-systemctl mask getty@tty5.service
-systemctl mask getty@tty6.service
-systemctl mask serial-getty@.service
-systemctl mask container-getty@.service
-systemctl mask console-getty.service"""
 
     aaa_setup += "\n\ntouch /.chrootend"
     return aaa_setup
