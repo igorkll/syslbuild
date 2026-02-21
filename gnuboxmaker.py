@@ -179,8 +179,11 @@ def setup_build_architectures(architectures):
         architectures.append("arm64")
 
 def gen_default_chroot_script():
-    user_shell = "/bin/bash"
-
+    if currentProject.session_mode == "wayland" or currentProject.session_mode == "x11":
+        user_shell = "/run_session.sh"
+    else:
+        user_shell = "/runshell_launcher.sh"
+        
     aaa_setup = f"""#!/bin/bash
 set -e
 
@@ -196,9 +199,9 @@ EOF
 
 # ------------
 
-# systemctl mask getty.target
-# systemctl mask getty@.service
-# systemctl mask getty@tty1.service
+systemctl mask getty.target
+systemctl mask getty@.service
+systemctl mask getty@tty1.service
 systemctl mask getty@tty2.service
 systemctl mask getty@tty3.service
 systemctl mask getty@tty4.service
@@ -212,9 +215,7 @@ systemctl mask console-getty.service
 
 usermod -s {user_shell} root
 useradd -m -u 10000 -s {user_shell} user
-usermod -aG video,input,audio,render user
-
-echo "root:root" | chpasswd"""
+usermod -aG video,input,audio,render user"""
 
     aaa_setup += "\n\n"
 
@@ -381,8 +382,10 @@ StartLimitIntervalSec=0
 
 [Service]
 Type=simple
+StandardOutput=/dev/tty1
+StandardError=/dev/tty1
 {tty_bind}
-ExecStart=-/bin/login -f {currentProject.session_user} -s {user_shell}
+ExecStart=-/bin/login -f {currentProject.session_user}
 Restart=always
 RestartSec=0
 
