@@ -213,6 +213,10 @@ systemctl mask console-getty.service
 
 # ------------
 
+systemctl set-default graphical.target
+
+# ------------
+
 usermod -s {user_shell} root
 useradd -m -u 10000 -s {user_shell} user
 usermod -aG video,input,audio,render user"""
@@ -362,7 +366,7 @@ def setup_autologin():
     if currentProject.session_mode != "init":
         content = f"""[Unit]
 Description=shell
-After=graphical-session.target
+After=graphical.target
 StartLimitIntervalSec=0
 
 [Service]
