@@ -1087,13 +1087,13 @@ def generate_syslbuild_project():
     if currentProject.allow_updatescript:
         cmdline += " allow_updatescript"
 
-    if currentProject.boot_splash and False:
+    if currentProject.boot_splash:
         cmdline += f" minlogotime={currentProject.minlogotime}"
 
-    if currentProject.boot_quiet and False:
+    if currentProject.boot_quiet:
         cmdline += " systemd.show_status=false rd.systemd.show_status=false udev.log_level=0 rd.udev.log_level=0 systemd.log_level=emerg systemd.log_target=null clear noCursorBlink vt.global_cursor_default=0 quiet"
 
-    if currentProject.boot_splash and False:
+    if currentProject.boot_splash:
         cmdline += " splash earlysplash"
 
     if currentProject.session_mode == "init":
