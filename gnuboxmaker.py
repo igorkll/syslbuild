@@ -382,8 +382,6 @@ StartLimitIntervalSec=0
 
 [Service]
 Type=simple
-StandardOutput=/dev/tty1
-StandardError=/dev/tty1
 {tty_bind}
 ExecStart=-/bin/login -f {currentProject.session_user}
 Restart=always
