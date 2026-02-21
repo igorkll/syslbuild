@@ -240,7 +240,8 @@ systemctl mask plymouth-halt.service
 systemctl mask plymouth-log.service"""
 
     if currentProject.session_mode != "init":
-        aaa_setup += "\n\nsystemctl enable run_shell.service"
+        aaa_setup += "\n\nsystemctl enable ydotoold.service"
+        aaa_setup += "\nsystemctl enable run_shell.service"
 
     aaa_setup += "\n\ntouch /.chrootend"
     return aaa_setup
@@ -284,7 +285,8 @@ def setup_build_distro(builditems):
             "mawk",
             "kexec-tools",
 
-            "kbd"
+            "ydotool",
+            "ydotoold"
         ]
 
         if currentProject.export_arm64:
@@ -365,8 +367,25 @@ def setup_autologin():
 
     if currentProject.session_mode != "init":
         content = f"""[Unit]
+Description=ydotool daemon
+After=systemd-udev-settle.service
+
+[Service]
+Type=simple
+ExecStartPre=/sbin/modprobe uinput
+ExecStart=/usr/bin/ydotoold
+Restart=always
+RestartSec=1
+User=root
+
+[Install]
+WantedBy=multi-user.target"""
+        writeText(os.path.join(systemd_config, "system", "ydotoold.service"), content)
+
+        content = f"""[Unit]
 Description=shell
-After=graphical.target
+After=graphical.target ydotoold.service
+Requires=ydotoold.service
 StartLimitIntervalSec=0
 
 [Service]
@@ -377,6 +396,7 @@ TTYVHangup=yes
 TTYVTDisallocate=no
 StandardInput=tty
 StandardOutput=tty
+ExecStartPre=/usr/bin/ydotool key 57:1 57:0
 ExecStart=-/bin/login -f {currentProject.session_user}
 Restart=always
 RestartSec=0
@@ -1086,13 +1106,13 @@ def generate_syslbuild_project():
     if currentProject.allow_updatescript:
         cmdline += " allow_updatescript"
 
-    if currentProject.boot_splash:
+    if currentProject.boot_splash and False:
         cmdline += f" minlogotime={currentProject.minlogotime}"
 
-    if currentProject.boot_quiet:
+    if currentProject.boot_quiet and False:
         cmdline += " systemd.show_status=false rd.systemd.show_status=false udev.log_level=0 rd.udev.log_level=0 systemd.log_level=emerg systemd.log_target=null clear noCursorBlink vt.global_cursor_default=0 quiet"
 
-    if currentProject.boot_splash:
+    if currentProject.boot_splash and False:
         cmdline += " splash earlysplash"
 
     if currentProject.session_mode == "init":
