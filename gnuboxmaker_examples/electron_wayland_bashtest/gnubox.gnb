@@ -6,7 +6,6 @@
     "pipewire",
     "pipewire-pulse",
     "wireplumber",
-    "pipewire-pulse",
     "libspa-0.2-modules",
     "alsa-utils",
     "libpulse0",

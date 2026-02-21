@@ -377,7 +377,6 @@ TTYVHangup=yes
 TTYVTDisallocate=no
 StandardInput=tty
 StandardOutput=tty
-ExecStartPre=/bin/sleep 2
 ExecStart=-/bin/login -f {currentProject.session_user}
 Restart=always
 RestartSec=0
