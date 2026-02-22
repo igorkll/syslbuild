@@ -82,6 +82,7 @@ a similar program for creating Windows images for embedded devices: https://gith
 * "chroot" is executed in systemd-nspawn
 * Attention! since the gnubox maker projects are building from root in the host system, be careful what you build
 * despite the presence of command-line arguments for building via tty, gnubox maker must BE run from its working directory (otherwise it will not work)
+* there is a rather long loading time on the orange pi zero 3. This is due to the platform features. It may take ~20 seconds from the power supply to the appearance of your logo.
 
 ## notes
 * please note that by default, the first time you turn on the created root image, the partition will be enlarged to the maximum possible size for the current media. this is done because I cannot know what size of drive the *.img image will be written to
