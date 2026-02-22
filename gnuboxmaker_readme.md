@@ -51,6 +51,7 @@ a similar program for creating Windows images for embedded devices: https://gith
 * sysrq (kernel source patch)
 * tty signals & control flow (kernel source patch)
 * keyboard echo at the very beginning of the boot (kernel source patch)
+* keyboard echo in tty shell mode (just disabled by default)
 
 ## used kernel patches (from https://github.com/igorkll/linux-embedded-patchs)
 * disable_vt_swithing_from_keyboard.patch - prevents the possibility of switching VT from the keyboard
