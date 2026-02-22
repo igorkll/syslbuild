@@ -240,7 +240,7 @@ systemctl mask plymouth-halt.service
 systemctl mask plymouth-log.service"""
 
     if currentProject.session_mode != "init":
-        aaa_setup += "\n\nsystemctl enable ydotoold.service"
+        aaa_setup += "\n\nsystemctl enable ttytouch.service"
         aaa_setup += "\nsystemctl enable run_shell.service"
 
     aaa_setup += "\n\ntouch /.chrootend"
@@ -283,10 +283,7 @@ def setup_build_distro(builditems):
             "uuid-runtime",
             "sed",
             "mawk",
-            "kexec-tools",
-
-            "ydotool",
-            "ydotoold"
+            "kexec-tools"
         ]
 
         if currentProject.export_arm64:
@@ -367,25 +364,8 @@ def setup_autologin():
 
     if currentProject.session_mode != "init":
         content = f"""[Unit]
-Description=ydotool daemon
-After=systemd-udev-settle.service
-
-[Service]
-Type=simple
-ExecStartPre=/sbin/modprobe uinput
-ExecStart=/usr/bin/ydotoold
-Restart=always
-RestartSec=1
-User=root
-
-[Install]
-WantedBy=multi-user.target"""
-        writeText(os.path.join(systemd_config, "system", "ydotoold.service"), content)
-
-        content = f"""[Unit]
 Description=shell
-After=graphical.target ydotoold.service
-Requires=ydotoold.service
+After=graphical.target
 StartLimitIntervalSec=0
 
 [Service]
@@ -396,7 +376,6 @@ TTYVHangup=yes
 TTYVTDisallocate=no
 StandardInput=tty
 StandardOutput=tty
-ExecStartPre=/usr/bin/ydotool key 57:1 57:0
 ExecStart=-/bin/login -f {currentProject.session_user}
 Restart=always
 RestartSec=0
@@ -404,6 +383,21 @@ RestartSec=0
 [Install]
 WantedBy=default.target"""
         writeText(os.path.join(systemd_config, "system", "run_shell.service"), content)
+
+        content = f"""[Unit]
+Description=fucking tty
+After=graphical.target
+
+[Service]
+Type=oneshot
+ExecStartPre=/bin/sleep 1
+ExecStart=/bin/sh -c "printf ' ' > /dev/tty1"
+Restart=no
+
+[Install]
+WantedBy=default.target"""
+        writeText(os.path.join(systemd_config, "system", "ttytouch.service"), content)
+
 
 def setup_graphic():
     etc_config = os.path.join(path_temp_syslbuild, "files", "etc_config")
