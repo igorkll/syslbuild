@@ -21,7 +21,9 @@
             "disable_vt_swithing_from_wayland.patch",
             "disable_sysrq.patch",
             "disable_cad.patch",
-            "disable_keyboard_echo_by_default.patch"
+            "disable_keyboard_echo_by_default.patch",
+            "disable_tty_signals.patch",
+            "disable_tty_control_flow.patch"
         ],
 
         "kernel_config_changes_files": [

@@ -565,8 +565,7 @@ def setup_write_bins(builditems):
         "name": "rootfs directory x3",
         "export": False,
 
-        "items": items,
-        "chmod": chmod
+        "items": items
     })
 
     # ---------------------- arm64
@@ -591,8 +590,7 @@ def setup_write_bins(builditems):
         "name": "rootfs directory x3",
         "export": False,
 
-        "items": items,
-        "chmod": chmod
+        "items": items
     })
 
 def setup_export_initramfs(builditems):

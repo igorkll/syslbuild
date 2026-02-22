@@ -49,7 +49,8 @@ a similar program for creating Windows images for embedded devices: https://gith
 * ctrl+alt+del in the linux kernel (kernel source patch)
 * switching VT (kernel source patch + configs)
 * sysrq (kernel source patch)
-* control flow & kerboard echo (it's just turned off by default in tty mode. you can enable)
+* tty signals & control flow (kernel source patch)
+* keyboard echo at the very beginning of the boot (kernel source patch)
 
 ## used kernel patches (from https://github.com/igorkll/linux-embedded-patchs)
 * disable_vt_swithing_from_keyboard.patch - prevents the possibility of switching VT from the keyboard
@@ -57,6 +58,8 @@ a similar program for creating Windows images for embedded devices: https://gith
 * disable_sysrq.patch - removes the sysrq mechanism from the kernel
 * disable_cad.patch - eliminates the possibility of using ctrl+alt+del to reboot the device from the keyboard
 * disable_keyboard_echo_by_default.patch - prevents typing characters on the screen from the keyboard before launching plymouth
+* disable_tty_control_flow.patch - disables control flow in the kernel
+* disable_tty_signals.patch - disables tty signals in the kernel
 
 ## project structure
 * gnubox.gnb - the main file
