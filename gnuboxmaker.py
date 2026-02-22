@@ -283,7 +283,9 @@ def setup_build_distro(builditems):
             "uuid-runtime",
             "sed",
             "mawk",
-            "kexec-tools"
+            "kexec-tools",
+
+            "kbd"
         ]
 
         if currentProject.export_arm64:
@@ -390,8 +392,10 @@ After=graphical.target
 
 [Service]
 Type=oneshot
-ExecStartPre=/bin/sleep 1
-ExecStart=/bin/sh -c "printf ' ' > /dev/tty1"
+ExecStart=/bin/sleep 1
+ExecStart=/bin/sh -c "printf '%b' '\033c' > /dev/tty1"
+ExecStart=/bin/chvt 2
+ExecStart=/bin/chvt 1
 Restart=no
 
 [Install]
