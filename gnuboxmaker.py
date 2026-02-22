@@ -226,22 +226,21 @@ usermod -aG video,input,audio,render user"""
     if currentProject.boot_splash:
         aaa_setup += f"""plymouth-set-default-theme bootlogo
 cp -f /usr/share/plymouth/themes/bootlogo/bootlogo.plymouth /usr/share/plymouth/themes/default.plymouth
-     
-systemctl mask plymouth-start.service
-systemctl mask plymouth-read-write.service
-systemctl mask plymouth-switch-root-initramfs.service
-systemctl mask plymouth-reboot.service
-systemctl mask plymouth-poweroff.service
-systemctl mask plymouth-quit-wait.service
-systemctl mask plymouth-quit.service
-systemctl mask plymouth-kexec.service
-systemctl mask plymouth-switch-root.service
-systemctl mask plymouth-halt.service
-systemctl mask plymouth-log.service"""
+
+# systemctl mask plymouth-start.service
+# systemctl mask plymouth-read-write.service
+# systemctl mask plymouth-switch-root-initramfs.service
+# systemctl mask plymouth-reboot.service
+# systemctl mask plymouth-poweroff.service
+# systemctl mask plymouth-quit-wait.service
+# systemctl mask plymouth-quit.service
+# systemctl mask plymouth-kexec.service
+# systemctl mask plymouth-switch-root.service
+# systemctl mask plymouth-halt.service
+# systemctl mask plymouth-log.service"""
 
     if currentProject.session_mode != "init":
-        aaa_setup += "\n\nsystemctl enable ttytouch.service"
-        aaa_setup += "\nsystemctl enable run_shell.service"
+        aaa_setup += "\n\nsystemctl enable run_shell.service"
 
     aaa_setup += "\n\ntouch /.chrootend"
     return aaa_setup
@@ -386,22 +385,6 @@ RestartSec=0
 WantedBy=default.target"""
         writeText(os.path.join(systemd_config, "system", "run_shell.service"), content)
 
-        content = f"""[Unit]
-Description=fucking tty
-After=graphical.target
-
-[Service]
-Type=oneshot
-ExecStart=/bin/sleep 1
-ExecStart=/bin/sh -c "printf '%b' '\033c' > /dev/tty1"
-ExecStart=/bin/chvt 2
-ExecStart=/bin/chvt 1
-Restart=no
-
-[Install]
-WantedBy=default.target"""
-        writeText(os.path.join(systemd_config, "system", "ttytouch.service"), content)
-
 
 def setup_graphic():
     etc_config = os.path.join(path_temp_syslbuild, "files", "etc_config")
@@ -544,8 +527,6 @@ def setup_write_bins(builditems):
     copy_bins("kernel_image")
     copy_bins("blobs")
 
-    chmod = []
-
     # ---------------------- x86_64
     items = [
         ["rootfs directory x2", "."],
@@ -556,7 +537,6 @@ def setup_write_bins(builditems):
     if currentProject.boot_splash:
         copy_bins("embedded-plymouth")
         items.append(["embedded-plymouth/x86_64", "/", [0, 0, "0755"]])
-        chmod.append(["/usr/bin/plymouth", "4755", False])
 
     builditems.append({
         "architectures": ["amd64"],
@@ -565,8 +545,7 @@ def setup_write_bins(builditems):
         "name": "rootfs directory x3",
         "export": False,
 
-        "items": items,
-        "chmod": chmod
+        "items": items
     })
 
     # ---------------------- x86
@@ -1104,13 +1083,13 @@ def generate_syslbuild_project():
     if currentProject.allow_updatescript:
         cmdline += " allow_updatescript"
 
-    if currentProject.boot_splash and False:
+    if currentProject.boot_splash:
         cmdline += f" minlogotime={currentProject.minlogotime}"
 
-    if currentProject.boot_quiet and False:
+    if currentProject.boot_quiet:
         cmdline += " systemd.show_status=false rd.systemd.show_status=false udev.log_level=0 rd.udev.log_level=0 systemd.log_level=emerg systemd.log_target=null clear noCursorBlink vt.global_cursor_default=0 quiet"
 
-    if currentProject.boot_splash and False:
+    if currentProject.boot_splash:
         cmdline += " splash earlysplash"
 
     if currentProject.session_mode == "init":

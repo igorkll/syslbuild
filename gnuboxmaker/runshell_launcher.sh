@@ -10,11 +10,6 @@ if [ -e "/.session_mode_tty" ]; then
 
     # disable echo mode
     stty -echo >/dev/null 2>&1
-
-    # plymouth quit
-    if command -v plymouth >/dev/null 2>&1; then
-        plymouth quit --wait # suid binary in gnubox maker
-    fi
 fi
 
 while true; do
