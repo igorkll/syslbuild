@@ -29,6 +29,7 @@ a similar program for creating Windows images for embedded devices: https://gith
 * to make the "screen_idle_time" parameter work
 * add support for creating 64-bit images for 32-bit UEFI (yes, for those very old intel atom tablets)
 * add support for custom kernels and device tree overlays to the program
+* increase the display time of the logo so that the user does not have to look at a black screen
 
 ## bugs
 * HDMI audio does not work on orange pi zero 3 (it works on raspberry pi 64)
