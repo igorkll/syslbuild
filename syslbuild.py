@@ -1346,9 +1346,18 @@ def rawCrossChroot(chrootDirectory, chrootCommand, useSystemd=False, manualValid
     checkValid = not manualValidation
     if useSystemd:
         machineName = "smartchroot"
-        buildRawExecute(f"""systemd-nspawn --boot --machine={machineName} --directory="{chrootDirectory}" &
+        buildRawExecute(f"""machinectl terminate {machineName}
+systemd-machine-id-setup --root="{chrootDirectory}"
+
+systemd-nspawn --boot --capability=all --machine={machineName} --directory="{chrootDirectory}" &
 CONTAINER_PID=$!
+
 sleep 20
+
+until machinectl list | grep -q {machineName}; do
+    sleep 1
+done
+
 machinectl shell root@{machineName} {chrootCommand[0]}
 sleep 2
 machinectl terminate {machineName}
