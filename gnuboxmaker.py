@@ -379,7 +379,7 @@ StartLimitIntervalSec=0
 
 [Service]
 Type=simple
-TTYPath={"/dev/tty2" if currentProject.boot_quiet else "/dev/tty1"}
+TTYPath=/dev/tty1
 TTYReset=yes
 TTYVHangup=yes
 TTYVTDisallocate=no
@@ -1118,7 +1118,7 @@ def generate_syslbuild_project():
         cmdline += f" minlogotime={currentProject.minlogotime}"
 
     if currentProject.boot_quiet:
-        cmdline += f" fbcon=map:2 systemd.show_status=0 rd.systemd.show_status=0 systemd.log_target=journal rd.systemd.log_target=journal udev.log_level=1 rd.udev.log_level=01 systemd.log_level=emerg rd.systemd.log_level=emerg rd.udev.log-priority=1 udev.log-priority=1 systemd.log_target=null clear noCursorBlink vt.global_cursor_default=0 quiet"
+        cmdline += f" {"" if currentProject.session_mode == "tty" else "fbcon=map:2"} systemd.show_status=0 rd.systemd.show_status=0 systemd.log_target=journal rd.systemd.log_target=journal udev.log_level=1 rd.udev.log_level=01 systemd.log_level=emerg rd.systemd.log_level=emerg rd.udev.log-priority=1 udev.log-priority=1 systemd.log_target=null clear noCursorBlink vt.global_cursor_default=0 quiet"
 
     if currentProject.boot_splash:
         cmdline += " splash earlysplash"
