@@ -503,6 +503,18 @@ ForwardToConsole=no
 ForwardToWall=no
 MaxLevelWall=emerg""")
 
+    user_system_config_append = ""
+    if currentProject.boot_quiet:
+        user_system_config_append = """LogTarget=journal
+LogLevel=emerg"""
+
+    writeText(os.path.join(systemd_config, "system.conf"), f"""[Manager]
+ShowStatus={"no" if currentProject.boot_quiet else "yes"}
+{user_system_config_append}""")
+
+    writeText(os.path.join(systemd_config, "user.conf"), f"""[Manager]
+{user_system_config_append}""")
+
     writeText(os.path.join(etc_config, "pam.d", "login"), f"""@include common-auth
 @include common-account
 @include common-session""")
