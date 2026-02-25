@@ -293,7 +293,8 @@ def setup_build_distro(builditems):
             include.append("firmware-realtek")
             include.append("wireless-regdb")
 
-        if currentProject.boot_splash:
+        # without this, no dependencies are set and nothing works. А МОЖЕТ БЛЯТЬ И НЕТ, я разберусь...
+        if currentProject.boot_splash or True:
             include.append("plymouth") # install basic plymouth files. The part will later be replaced by embedded plymouth.
             include.append("plymouth-themes")
 
@@ -534,7 +535,9 @@ def setup_write_bins(builditems):
         ["kernel_image/amd64/kernel.img", "/kernel.img", [0, 0, "0755"]]
     ]
 
-    if currentProject.boot_splash:
+    # ЧТО ТУТ БЛЯТЬ С ПРАВАМИ ДОСТУПА. БЕЗ ЭТОЙ ХУЙНЮ НИХУЯ НЕ ПАШЕТ
+    # походу при копировании plymouth проставляет права доступа другим директориям а без этого мы получаем жопу и не поднимающийся dbus
+    if currentProject.boot_splash or True:
         copy_bins("embedded-plymouth")
         items.append(["embedded-plymouth/x86_64", "/", [0, 0, "0755"]])
 
@@ -555,7 +558,7 @@ def setup_write_bins(builditems):
         ["kernel_image/i386/kernel.img", "/kernel.img", [0, 0, "0755"]]
     ]
 
-    if currentProject.boot_splash:
+    if currentProject.boot_splash or True:
         items.append(["embedded-plymouth/x86", "/", [0, 0, "0755"]])
 
     builditems.append({
@@ -580,7 +583,7 @@ def setup_write_bins(builditems):
         items.append(["kernel_image/arm64/rpi_64/kernel_modules", "/usr"])
         items.append(["kernel_image/arm64/rpi_5/kernel_modules", "/usr"])
 
-    if currentProject.boot_splash:
+    if currentProject.boot_splash or True:
         items.append(["embedded-plymouth/arm64", "/", [0, 0, "0755"]])
 
     builditems.append({
