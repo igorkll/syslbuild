@@ -33,7 +33,6 @@ a similar program for creating Windows images for embedded devices: https://gith
 
 ## bugs
 * HDMI audio does not work on orange pi zero 3 (it works on raspberry pi 64)
-* some messages from systemd are still sometimes visible even with quiet splash. also, if you put only quiet (without splash), you can see some tty messages (I consider this a CRITICAL problem since the essence of gnubox maker is to completely hide the OS from the user and leave only one application)
 
 ## supported platforms
 * x86_64 (BIOS, UEFI)

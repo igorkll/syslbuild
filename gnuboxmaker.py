@@ -38,6 +38,7 @@ class Project:
 
     boot_quiet: bool = True
     boot_splash: bool = True
+    dont_show_splash_on_poweroff: bool = True
 
     splash_bg: str = "0, 0, 0"
     splash_mode: str = "contain"
@@ -51,7 +52,7 @@ class Project:
     session_user: str = "user"
     session_mode: str = "tty"
 
-    minlogotime: int = 5
+    minlogotime: int = 10
     cmdline: str = ""
 
     export_x86_64: bool = True
@@ -238,6 +239,12 @@ cp -f /usr/share/plymouth/themes/bootlogo/bootlogo.plymouth /usr/share/plymouth/
 # systemctl mask plymouth-switch-root.service
 # systemctl mask plymouth-halt.service
 # systemctl mask plymouth-log.service"""
+
+    if currentProject.dont_show_splash_on_poweroff:
+        aaa_setup += "\n" + f"""systemctl mask plymouth-poweroff.service
+systemctl mask plymouth-reboot.service
+systemctl mask plymouth-halt.service
+systemctl mask plymouth-kexec.service"""
 
     if currentProject.session_mode != "init":
         aaa_setup += "\n\nsystemctl enable run_shell.service"
@@ -1200,7 +1207,7 @@ def load_project(path):
 
     if os.path.isfile(path):
         currentProject = raw_load_project(path)
-        # raw_save_project(path, currentProject)
+        raw_save_project(path, currentProject)
     else:
         currentProject = Project()
         raw_save_project(path, currentProject)
