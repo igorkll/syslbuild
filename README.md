@@ -41,6 +41,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * remember that if the result of building your OS is .img with an already installed system (via "full-disk-image" for PCs or "singleboard" for boards like orangepi), then your initramfs should expand the data partition or rootfs to the maximum when the device is turned on for the first time. this is necessary because otherwise the user will not be able to use all the available media space
 * I would also recommend that you change the UUID and PART-UUID of the rootfs partition when you turn on the device for the first time in order to avoid root substitution in the future if you use UUID/PART-UUID to mount rootfs.
 * and you must change the UUID from PART-UUID and partition expansion in a script executed from initramfs while rootfs is not yet mounted.
+* DO NOT DELETE ".temp" VIA rm -rf .temp! if there are symlinks, it may damage the host system.
 
 ## arguments
 * -h - show help info
