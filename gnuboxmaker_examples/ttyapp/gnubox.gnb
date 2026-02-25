@@ -25,7 +25,7 @@
   "cmdline": "",
   "export_x86_64": true,
   "export_x86": false,
-  "export_arm64": true,
+  "export_arm64": false,
   "export_img_bios_mbr": false,
   "export_img_bios_gpt": false,
   "export_img_uefi_gpt": false,
