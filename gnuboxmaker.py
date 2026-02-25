@@ -443,7 +443,7 @@ scaled_height = Math.Int(img_height * img_scale);"""
 scaled_width = Math.Int(img_width * img_scale);
 scaled_height = Math.Int(img_height * img_scale);"""
 
-    writeText(os.path.join(bootlogo_files, "bootlogo.script"), f"""Window.SetBackgroundTopColor({currentProject.splash_bg});
+    bootlogo_script = f"""Window.SetBackgroundTopColor({currentProject.splash_bg});
 Window.SetBackgroundBottomColor({currentProject.splash_bg});
 
 image = Image("logo.png");
@@ -465,7 +465,9 @@ y = (window_height - scaled_height) / 2;
 image_sprite = Sprite(scaled_image);
 image_sprite.SetX(x);
 image_sprite.SetY(y);
-image_sprite.SetZ(-1);""")
+image_sprite.SetZ(-1);"""
+
+    writeText(os.path.join(bootlogo_files, "bootlogo.script"), bootlogo_script)
 
 def setup_write_files():
     etc_config = os.path.join(path_temp_syslbuild, "files", "etc_config")
