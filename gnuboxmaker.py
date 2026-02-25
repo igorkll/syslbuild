@@ -528,6 +528,12 @@ def setup_write_bins(builditems):
     copy_bins("kernel_image")
     copy_bins("blobs")
 
+    directories = [
+        ["/var/lib/plymouth", [0, 0, "0755"]],
+        ["/var/spool/plymouth", [0, 0, "0755"]],
+        ["/run/plymouth", [0, 0, "0755"]]
+    ]
+
     # ---------------------- x86_64
     items = [
         ["rootfs directory x2", "."],
@@ -548,7 +554,8 @@ def setup_write_bins(builditems):
         "name": "rootfs directory x3",
         "export": False,
 
-        "items": items
+        "items": items,
+        "directories": directories
     })
 
     # ---------------------- x86
@@ -568,7 +575,8 @@ def setup_write_bins(builditems):
         "name": "rootfs directory x3",
         "export": False,
 
-        "items": items
+        "items": items,
+        "directories": directories
     })
 
     # ---------------------- arm64
@@ -593,7 +601,8 @@ def setup_write_bins(builditems):
         "name": "rootfs directory x3",
         "export": False,
 
-        "items": items
+        "items": items,
+        "directories": directories
     })
 
 def setup_export_initramfs(builditems):
