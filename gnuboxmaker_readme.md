@@ -74,7 +74,7 @@ a similar program for creating Windows images for embedded devices: https://gith
 * gnubox.gnb - the main file
 * resources - all project resources used during the build process
 * resources/files - files that will be copied to rootfs before executing chroot scripts. please note that all your files and directories from this directory will have rights 755 and belong to root, regardless of what rights they have during the build. this is necessary for repeatable assembly on different machines. if you need to change the permissions on the target system, use the "chroot" scripts.
-* resources/chroot - scripts executed inside a chroot in the system during the build process. please note that at the end of each file you need to create an empty file or directory with the path "/.chrootend" otherwise the build will fail
+* resources/chroot - scripts executed inside a chroot in the system during the build process (not just a chroot, but a systemd-nspawn container) please note that at the end of each file you need to create an empty file or directory with the path "/.chrootend" otherwise the build will fail
 * resources/runshell.sh - the shell startup file. you can write a script directly in it if you use tty mode and you will just get console output, or you can run your application from it if you use wayland/x11
 * resources/preinit.sh - this script runs before the initialization system in the initramfs environment. at this point, the switch_root has not yet occurred and the real root is mounted in "/root"
 * resources/logo.png - the logo that will be used when uploading with splash enabled
@@ -87,11 +87,11 @@ a similar program for creating Windows images for embedded devices: https://gith
 ## WARNINGS
 * at the end of each script, you must create an empty file or directory from the chroot folder at the end using the path "/.chrootend" to make sure that the script is executed correctly. if you don't do this, the build will fail
 * "files" that will be copied to rootfs before executing chroot scripts. please note that all your files and directories from this directory will have rights 755 and belong to root, regardless of what rights they have during the build. this is necessary for repeatable assembly on different machines. if you need to change the permissions on the target system, use the "chroot" scripts.
+* "chroot" is executed in systemd-nspawn
 * Attention! since the gnubox maker projects are building from root in the host system, be careful what you build
 * despite the presence of command-line arguments for building via tty, gnubox maker must BE run from its working directory (otherwise it will not work)
 * there is a rather long loading time on the orange pi zero 3. This is due to the platform features. It may take ~20 seconds from the power supply to the appearance of your logo.
 * in order for GPU acceleration to work on raspberry pi 64, you need to select at least this debian version: trixie 20260217T143331Z. older versions have a Mesa version that is incompatible with the raspberry pi board
-* DO NOT USE systemctl inside your chroot scripts. IT WON'T WORK. instead, create the necessary symlinks manually (via "ln -sf" in chroot scripts)
 
 ## notes
 * please note that by default, the first time you turn on the created root image, the partition will be enlarged to the maximum possible size for the current media. this is done because I cannot know what size of drive the *.img image will be written to

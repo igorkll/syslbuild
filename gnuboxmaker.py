@@ -199,24 +199,21 @@ EOF
 
 # ------------
 
-ln -sf /dev/null /etc/systemd/system/getty.target
-ln -sf /dev/null /etc/systemd/system/getty@.service
-ln -sf /dev/null /etc/systemd/system/getty@tty1.service
-ln -sf /dev/null /etc/systemd/system/getty@tty2.service
-ln -sf /dev/null /etc/systemd/system/getty@tty3.service
-ln -sf /dev/null /etc/systemd/system/getty@tty4.service
-ln -sf /dev/null /etc/systemd/system/getty@tty5.service
-ln -sf /dev/null /etc/systemd/system/getty@tty6.service
-ln -sf /dev/null /etc/systemd/system/serial-getty@.service
-ln -sf /dev/null /etc/systemd/system/container-getty@.service
-ln -sf /dev/null /etc/systemd/system/console-getty.service
-
-chmod -x /sbin/getty
-chmod -x /sbin/agetty
+systemctl mask getty.target
+systemctl mask getty@.service
+systemctl mask getty@tty1.service
+systemctl mask getty@tty2.service
+systemctl mask getty@tty3.service
+systemctl mask getty@tty4.service
+systemctl mask getty@tty5.service
+systemctl mask getty@tty6.service
+systemctl mask serial-getty@.service
+systemctl mask container-getty@.service
+systemctl mask console-getty.service
 
 # ------------
 
-ln -sf /usr/lib/systemd/system/graphical.target /etc/systemd/system/default.target
+systemctl set-default graphical.target
 
 # ------------
 
@@ -230,21 +227,20 @@ usermod -aG video,input,audio,render user"""
         aaa_setup += f"""plymouth-set-default-theme bootlogo
 cp -f /usr/share/plymouth/themes/bootlogo/bootlogo.plymouth /usr/share/plymouth/themes/default.plymouth
 
-# ln -sf /dev/null /etc/systemd/system/plymouth-start.service
-# ln -sf /dev/null /etc/systemd/system/plymouth-read-write.service
-# ln -sf /dev/null /etc/systemd/system/plymouth-switch-root-initramfs.service
-# ln -sf /dev/null /etc/systemd/system/plymouth-reboot.service
-# ln -sf /dev/null /etc/systemd/system/plymouth-poweroff.service
-# ln -sf /dev/null /etc/systemd/system/plymouth-quit-wait.service
-# ln -sf /dev/null /etc/systemd/system/plymouth-quit.service
-# ln -sf /dev/null /etc/systemd/system/plymouth-kexec.service
-# ln -sf /dev/null /etc/systemd/system/plymouth-switch-root.service
-# ln -sf /dev/null /etc/systemd/system/plymouth-halt.service
-# ln -sf /dev/null /etc/systemd/system/plymouth-log.service"""
+# systemctl mask plymouth-start.service
+# systemctl mask plymouth-read-write.service
+# systemctl mask plymouth-switch-root-initramfs.service
+# systemctl mask plymouth-reboot.service
+# systemctl mask plymouth-poweroff.service
+# systemctl mask plymouth-quit-wait.service
+# systemctl mask plymouth-quit.service
+# systemctl mask plymouth-kexec.service
+# systemctl mask plymouth-switch-root.service
+# systemctl mask plymouth-halt.service
+# systemctl mask plymouth-log.service"""
 
     if currentProject.session_mode != "init":
-        aaa_setup += "\nmkdir -p /etc/systemd/system/graphical.target.wants"
-        aaa_setup += "\n\nln -s /etc/systemd/system/run_shell.service /etc/systemd/system/graphical.target.wants/run_shell.service"
+        aaa_setup += "\n\nsystemctl enable run_shell.service"
 
     aaa_setup += "\n\ntouch /.chrootend"
     return aaa_setup
@@ -712,6 +708,7 @@ def setup_build_base(builditems):
         "export": False,
 
         "manual_validation": True,
+        "use_systemd_container": True,
         "source": "rootfs directory x3",
         "scripts": setup_chroot_script()
     })
