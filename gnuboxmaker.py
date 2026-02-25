@@ -1109,7 +1109,7 @@ def generate_syslbuild_project():
         cmdline += f" minlogotime={currentProject.minlogotime}"
 
     if currentProject.boot_quiet:
-        cmdline += " systemd.show_status=false rd.systemd.show_status=false udev.log_level=0 rd.udev.log_level=0 systemd.log_level=emerg systemd.log_target=null clear noCursorBlink vt.global_cursor_default=0 quiet"
+        cmdline += " systemd.show_status=0 rd.systemd.show_status=0 systemd.log_target=journal rd.systemd.log_target=journal udev.log_level=0 rd.udev.log_level=0 systemd.log_level=emerg rd.systemd.log_level=emerg rd.udev.log-priority=1 udev.log-priority=1 systemd.log_target=null clear noCursorBlink vt.global_cursor_default=0 quiet"
 
     if currentProject.boot_splash:
         cmdline += " splash earlysplash"
