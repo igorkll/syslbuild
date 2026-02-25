@@ -36,7 +36,7 @@
   "HandleHibernateKey": "ignore",
   "HandleLidSwitch": "ignore",
   "boot_quiet": true,
-  "boot_splash": false,
+  "boot_splash": true,
   "splash_bg": "0, 0, 0",
   "splash_mode": "contain",
   "splash_scale": 0.7,
