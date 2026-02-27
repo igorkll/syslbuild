@@ -351,8 +351,8 @@ def setup_download(builditems):
         "name": "custom-debian-initramfs-init",
         "export": False,
 
-        "git_url": "https://github.com/igorkll/custom-debian-initramfs-init",
-        "git_checkout": "1.5.4"
+        "git_url": "https://github.com/igorkll/custom-debian-initramfs-init" #,
+        # "git_checkout": "1.5.4"
     })
 
     def addExtract(fromdir, name):
@@ -748,6 +748,10 @@ def setup_build_base(builditems):
 
     setup_export_initramfs(builditems)
 
+    directories = [
+        ["/bootmnt", [0, 0, "0755"]]
+    ]
+
     builditems.append({
         "architectures": ["amd64", "i386"],
 
@@ -758,7 +762,9 @@ def setup_build_base(builditems):
         "items": [
             ["rootfs directory x4", "."],
             ["initramfs.img", "/initramfs.img", [0, 0, "0755"]]
-        ]
+        ],
+
+        "directories": directories
     })
 
     builditems.append({
@@ -770,7 +776,9 @@ def setup_build_base(builditems):
 
         "items": [
             ["rootfs directory x4", "."]
-        ]
+        ],
+
+        "directories": directories
     })
 
     builditems.append({
@@ -1106,7 +1114,7 @@ avoid_warnings=1
         })
 
 def generate_syslbuild_project():
-    cmdline = f"rw rootwait=60 makevartmp plymouth.ignore-serial-consoles console=tty1 preinit=/root/preinit.sh {currentProject.cmdline}"
+    cmdline = f"rw rootwait=60 makevartmp plymouth.ignore-serial-consoles mount_bootmnt console=tty1 preinit=/root/preinit.sh {currentProject.cmdline}"
 
     if currentProject.root_expand:
         cmdline += " root_processing root_expand"
