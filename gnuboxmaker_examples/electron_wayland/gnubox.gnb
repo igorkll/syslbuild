@@ -1,4 +1,9 @@
 {
+  "gnubox_version": [
+    1,
+    3,
+    4
+  ],
   "distro": "debian",
   "user_packages": [
     "nodejs",

@@ -11,6 +11,7 @@ import json
 import subprocess
 import sys
 import time
+import syslbuild
 
 # ---------------------------------------- data
 
@@ -22,6 +23,8 @@ splash_mode_variants = ["center", "fill", "contain", "cover"]
 
 @dataclass
 class Project:
+    gnubox_version: list[int] = field(default_factory=lambda: [0, 0, 0])
+
     distro: str = "debian"
     user_packages: list[str] = field(default_factory=list)
     
@@ -78,6 +81,20 @@ def raw_save_project(path, proj):
     with open(path, "w", encoding="utf-8") as f:
         json.dump(asdict(proj), f, indent=2, ensure_ascii=False)
 
+# -1 - версия проекта ниже версии тула
+# 0 - версии совпадают
+# 1 - версия проекта выше чем версия тула (не катит)
+def checkVersion(project):
+    minVersion = syslbuild.VERSION
+
+    for index, vernum in enumerate(project.gnubox_version):
+        if vernum > minVersion[index]:
+            return 1
+        elif vernum < minVersion[index]:
+            return -1
+    
+    return 0
+
 # ---------------------------------------- functions
 
 class CancelGUI(Exception):
@@ -92,21 +109,27 @@ def buildLog(logstr, quiet=False):
     # log_file.write(logstr + "\n")
     # log_file.flush()
 
-def failed_to_build():
+def failed_to_build(err="Failed to build"):
     updateProgress(100, "Failed")
     time.sleep(2)
     updateProgress()
 
-    messagebox.showwarning("Error", "Failed to build")
+    messagebox.showwarning("Error", err)
 
 def stop_error(err):
     err = "ERROR: " + err
     buildLog(err)
     if guiLoaded:
-        failed_to_build()
+        failed_to_build(err)
         raise CancelGUI()
     else:
         sys.exit(1)
+
+def show_error(err):
+    err = "ERROR: " + err
+    buildLog(err)
+    if guiLoaded:
+        messagebox.showwarning("Error", err)
 
 def deleteAny(path):
     if os.path.isdir(path):
@@ -147,7 +170,7 @@ def buildExecute(cmd, checkValid=True, input_data=None, cwd=None):
     returncode = process.wait()
 
     if returncode != 0 and checkValid:
-        stop_error("failed to build")
+        stop_error("Failed to build")
 
     return "\n".join(output_lines)
 
@@ -1244,9 +1267,18 @@ def load_project(path):
 
     if os.path.isfile(path):
         currentProject = raw_load_project(path)
-        raw_save_project(path, currentProject)
+        version_diff = checkVersion(currentProject)
+        if version_diff > 0:
+            show_error(f"you have the syslbuild {syslbuild.formatVersion(syslbuild.VERSION)} version, while the project was saved in a newer version of {syslbuild.formatVersion(currentProject.gnubox_version)}")
+            return False
+        elif version_diff < 0:
+            currentProject.gnubox_version = syslbuild.VERSION.copy()
+            raw_save_project(path, currentProject)
+        else:
+            currentProject.gnubox_version = syslbuild.VERSION.copy()
     else:
         currentProject = Project()
+        currentProject.gnubox_version = syslbuild.VERSION.copy()
         raw_save_project(path, currentProject)
 
     currentProjectDirectory = os.path.dirname(path)
@@ -1282,12 +1314,14 @@ def load_project(path):
             f.write(".temp\n")
             f.write("last.log\n")
 
+    return True
+
 # ---------------------------------------- console build
 
 guiLoaded = False
 if len(sys.argv) > 1:
-    load_project(sys.argv[1])
-    build_project()
+    if load_project(sys.argv[1]):
+        build_project()
     sys.exit(0)
 
 # ---------------------------------------- gui base
@@ -1336,8 +1370,8 @@ def updateProgress(value=0, text=None):
     window.update_idletasks()
 
 def run_editor(path):
-    load_project(path)
-    show_frame(frame_editor)
+    if load_project(path):
+        show_frame(frame_editor)
 
 # ---------------------------------------- open project frame
 
