@@ -230,6 +230,7 @@ usermod -aG video,input,audio,render user"""
         aaa_setup += f"""plymouth-set-default-theme bootlogo
 cp -f /usr/share/plymouth/themes/bootlogo/bootlogo.plymouth /usr/share/plymouth/themes/default.plymouth
 
+# this trash break systemd quiet
 systemctl mask plymouth-read-write.service
 
 # systemctl mask plymouth-start.service
