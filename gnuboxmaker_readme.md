@@ -100,6 +100,7 @@ a similar program for creating Windows images for embedded devices: https://gith
 * the /var directory is mounted as tmpfs
 * The .img images for x86 / x86_64 that Gnubox maker generates are universal. they can be written to a USB drive or to a hard disk/SSD.
 * if session_mode init is set then runshell.sh in fact, it will be an init system, you do everything yourself. and it will always be run from root
+* the real boot partition is mounted in the "/bootmnt" directory and is accessible from updatescript via the path "/updateroot/bootmnt"
 
 ## what should I do if the project build fails?
 * make sure that EACH of your chroot scripts creates a /.chrootend file at the end
