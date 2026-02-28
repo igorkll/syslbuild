@@ -378,7 +378,7 @@ def setup_download(builditems):
         "export": False,
 
         "git_url": "https://github.com/igorkll/custom-debian-initramfs-init",
-        "git_checkout": "1.5.5"
+        "git_checkout": "1.5.6"
     })
 
     def addExtract(fromdir, name):
@@ -968,8 +968,8 @@ def setup_build_targets(builditems, cmdline):
 
             "partitionTable": "gpt",
             "partitions": [
-                ["bios boot.img", "bios"],
                 ["uefi boot.img", "efi"],
+                ["bios boot.img", "bios"],
                 ["rootfs.img", "linux"]
             ] + appendPartitions,
 
