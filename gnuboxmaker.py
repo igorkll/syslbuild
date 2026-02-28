@@ -797,7 +797,17 @@ def setup_build_base(builditems):
 def setup_build_targets(builditems, cmdline):
     appendPartitions = []
     if currentProject.separate_data_partition:
-        pass
+        builditems.append({
+            "type": "filesystem",
+            "name": "data.img",
+            "export": False,
+
+            "fs_arg": "-F32",
+            "fs_type": "fat",
+            "size": "64M",
+            "label": "DATA"
+        })
+        appendPartitions.append(["data.img", "linux"])
 
     if currentProject.export_img_bios_mbr:
         builditems.append({
