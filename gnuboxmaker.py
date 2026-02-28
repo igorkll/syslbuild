@@ -752,6 +752,9 @@ def setup_build_base(builditems):
         ["/bootmnt", [0, 0, "0755"]]
     ]
 
+    if currentProject.separate_data_partition:
+        directories.append(["/data", [0, 0, "0755"]])
+
     builditems.append({
         "architectures": ["amd64", "i386"],
 
