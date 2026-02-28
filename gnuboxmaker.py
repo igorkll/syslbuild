@@ -976,7 +976,7 @@ def setup_build_targets(builditems, cmdline):
             "bootloader": {
                 "type": "grub",
                 "config": "grub.cfg",
-                "esp": 1,
+                "esp": 0,
                 "boot": 2,
                 "efiAndBios": True,
                 "modules": [
