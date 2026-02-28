@@ -802,8 +802,7 @@ def setup_build_targets(builditems, cmdline):
             "name": "data.img",
             "export": False,
 
-            "fs_arg": "-F32",
-            "fs_type": "fat",
+            "fs_type": "exfat",
             "size": "64M",
             "label": "DATA"
         })
