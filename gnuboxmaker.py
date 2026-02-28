@@ -230,6 +230,8 @@ usermod -aG video,input,audio,render user"""
         aaa_setup += f"""plymouth-set-default-theme bootlogo
 cp -f /usr/share/plymouth/themes/bootlogo/bootlogo.plymouth /usr/share/plymouth/themes/default.plymouth
 
+systemctl mask plymouth-read-write.service
+
 # systemctl mask plymouth-start.service
 # systemctl mask plymouth-read-write.service
 # systemctl mask plymouth-switch-root-initramfs.service
@@ -510,6 +512,10 @@ ForwardToSyslog=no
 ForwardToKMsg=no
 ForwardToConsole=no
 ForwardToWall=no
+MaxLevelStore=emerg
+MaxLevelSyslog=emerg
+MaxLevelKMsg=emerg
+MaxLevelConsole=emerg
 MaxLevelWall=emerg""")
 
     user_system_config_append = ""
@@ -1146,9 +1152,7 @@ def generate_syslbuild_project():
         cmdline += f" minlogotime={currentProject.minlogotime}"
 
     if currentProject.boot_quiet:
-        # fbcon=map:2 ломает plymouth на BIOS системах
-        # нада от этого вообще избавится. скорее всего буду патчить systemd чтобы отключить вывод логов, нечего другого не работает
-        cmdline += f" {"" if currentProject.session_mode == "tty" else "fbcon=map:2"} systemd.show_status=false rd.systemd.show_status=false systemd.log_target=journal rd.systemd.log_target=journal udev.log_level=1 rd.udev.log_level=1 systemd.log_level=emerg rd.systemd.log_level=emerg rd.udev.log-priority=1 udev.log-priority=1 clear noCursorBlink vt.global_cursor_default=0 quiet"
+        cmdline += f" systemd.show_status=false rd.systemd.show_status=false systemd.log_target=journal rd.systemd.log_target=journal udev.log_level=1 rd.udev.log_level=1 systemd.log_level=emerg rd.systemd.log_level=emerg clear noCursorBlink vt.global_cursor_default=0 quiet"
 
     if currentProject.boot_splash:
         cmdline += " splash earlysplash"
