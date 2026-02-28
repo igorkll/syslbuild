@@ -1138,7 +1138,7 @@ avoid_warnings=1
         })
 
 def generate_syslbuild_project():
-    cmdline = f"{"ro" if currentProject.root_readonly else "rw"} rootwait=60 makevartmp plymouth.ignore-serial-consoles mount_bootmnt console=tty1 preinit=/root/preinit.sh {currentProject.cmdline}"
+    cmdline = f"{"ro" if currentProject.root_readonly else "rw"} rootwait=60 selinux=0 makevartmp plymouth.ignore-serial-consoles mount_bootmnt console=tty1 preinit=/root/preinit.sh {currentProject.cmdline}"
 
     if currentProject.root_expand and not currentProject.separate_data_partition:
         cmdline += " root_processing root_expand"
