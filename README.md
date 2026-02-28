@@ -718,6 +718,16 @@ these changes to the kernel config are applied automatically when building the k
             "initramfs": "initramfs.img", //optional
             "rootfs": "rootfs.img", //optional
 
+            //optional
+            "prepandPartitions": [
+                ["example.img", "c"]
+            ],
+
+            //optional
+            "appendPartitions": [
+                ["example.img", "c"]
+            ],
+
             "kernel_args_auto": true, //tells syslbuild to specify some kernel arguments itself, such as initrd=XXX
             //tells syslbuild to set root=XXX itself. rw/ro/manual
             //in manual mode, your kernel cmdline should already have rw/ro by default

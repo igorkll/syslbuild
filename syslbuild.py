@@ -1556,8 +1556,16 @@ def singleboardBuild(item):
                 ]
             }
         }
+        
+        if "prepandPartitions" in item:
+            buildFullDiskImageBuilditem["partitions"].append(item["prepandPartitions"])
+        
         if "rootfs" in item:
             buildFullDiskImageBuilditem["partitions"].append([item["rootfs"], "linux"])
+
+        if "appendPartitions" in item:
+            buildFullDiskImageBuilditem["partitions"].append(item["appendPartitions"])
+        
         buildFullDiskImage(buildFullDiskImageBuilditem)
 
 """

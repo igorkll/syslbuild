@@ -45,7 +45,9 @@ class Project:
     splash_scale: float = 0.7
 
     root_expand: bool = True
+    root_readonly: bool = False
     allow_updatescript: bool = True
+    separate_data_partition: bool = False
 
     weston_shell: str = "kiosk"
 
@@ -289,9 +291,7 @@ def setup_build_distro(builditems):
             "uuid-runtime",
             "sed",
             "mawk",
-            "kexec-tools",
-
-            "kbd"
+            "kexec-tools"
         ]
 
         if currentProject.export_arm64:
@@ -795,6 +795,10 @@ def setup_build_base(builditems):
     })
 
 def setup_build_targets(builditems, cmdline):
+    appendPartitions = []
+    if currentProject.separate_data_partition:
+        pass
+
     if currentProject.export_img_bios_mbr:
         builditems.append({
             "architectures": ["amd64", "i386"],
@@ -808,7 +812,7 @@ def setup_build_targets(builditems, cmdline):
             "partitionTable": "dos",
             "partitions": [
                 ["rootfs.img", "linux"]
-            ],
+            ] + appendPartitions,
 
             "bootloader": {
                 "type": "grub",
@@ -849,7 +853,7 @@ def setup_build_targets(builditems, cmdline):
             "partitions": [
                 ["bios boot.img", "bios"],
                 ["rootfs.img", "linux"]
-            ],
+            ] + appendPartitions,
 
             "bootloader": {
                 "type": "grub",
@@ -893,7 +897,7 @@ def setup_build_targets(builditems, cmdline):
             "partitions": [
                 ["uefi boot.img", "efi"],
                 ["rootfs.img", "linux"]
-            ],
+            ] + appendPartitions,
 
             "bootloader": {
                 "type": "grub",
@@ -925,7 +929,7 @@ def setup_build_targets(builditems, cmdline):
                 ["bios boot.img", "bios"],
                 ["uefi boot.img", "efi"],
                 ["rootfs.img", "linux"]
-            ],
+            ] + appendPartitions,
 
             "bootloader": {
                 "type": "grub",
@@ -962,6 +966,7 @@ def setup_build_targets(builditems, cmdline):
             "kernel": "kernel_image/arm64/opi_zero3/kernel.img",
             "initramfs": "initramfs_opi_zero3.img",
             "rootfs": "rootfs.img",
+            "appendPartitions": appendPartitions,
 
             "kernel_args_auto": True,
             "kernel_rootfs_auto": "manual",
@@ -1110,14 +1115,17 @@ avoid_warnings=1
             "partitions": [
                 ["boot_rpi_64.img", "c"],
                 ["rootfs.img", "linux"]
-            ]
+            ] + appendPartitions
         })
 
 def generate_syslbuild_project():
-    cmdline = f"rw rootwait=60 makevartmp plymouth.ignore-serial-consoles mount_bootmnt console=tty1 preinit=/root/preinit.sh {currentProject.cmdline}"
+    cmdline = f"{"ro" if currentProject.root_readonly else "rw"} rootwait=60 makevartmp plymouth.ignore-serial-consoles mount_bootmnt console=tty1 preinit=/root/preinit.sh {currentProject.cmdline}"
 
-    if currentProject.root_expand:
+    if currentProject.root_expand and not currentProject.separate_data_partition:
         cmdline += " root_processing root_expand"
+
+    if currentProject.separate_data_partition:
+        cmdline += " mount_data"
 
     if currentProject.allow_updatescript:
         cmdline += " allow_updatescript"
