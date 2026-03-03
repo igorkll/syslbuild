@@ -394,7 +394,6 @@ alias symbol:cs_dsp_power_up cs_dsp
 alias symbol:svga_compute_pll svgalib
 alias symbol:snd_intel_dsp_driver_probe snd_intel_dspcfg
 alias symbol:snd_soc_component_compr_set_metadata snd_soc_core
-alias symbol:crc_itu_t_table crc_itu_t
 alias symbol:snd_soc_get_enum_double snd_soc_core
 alias symbol:tasdevice_dev_bulk_write snd_soc_tas2781_comlib
 alias symbol:snd_dmaengine_pcm_close_release_chan snd_pcm_dmaengine
@@ -1288,7 +1287,6 @@ alias symbol:asoc_simple_parse_card_name snd_soc_simple_card_utils
 alias symbol:snd_pcm_lib_get_vmalloc_page snd_pcm
 alias symbol:tgl_chip_info snd_sof_intel_hda_common
 alias symbol:hd44780_common_init_display hd44780_common
-alias symbol:crc_itu_t crc_itu_t
 alias symbol:snd_hda_pick_pin_fixup snd_hda_codec
 alias symbol:snd_pcm_format_unsigned snd_pcm
 alias symbol:tasdevice_digital_getvol snd_soc_tas2781_comlib

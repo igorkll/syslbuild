@@ -1,6 +1,5 @@
 kernel/fs/efivarfs/efivarfs.ko
 kernel/lib/lz4/lz4_compress.ko
-kernel/lib/crc-itu-t.ko
 kernel/lib/crc8.ko
 kernel/drivers/gpio/gpio-amd-fch.ko
 kernel/drivers/video/backlight/lcd.ko
