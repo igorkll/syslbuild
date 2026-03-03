@@ -10,15 +10,12 @@ kernel/fs/nfs/blocklayout/blocklayoutdriver.ko:
 kernel/fs/fuse/cuse.ko:
 kernel/fs/ubifs/ubifs.ko: kernel/drivers/mtd/ubi/ubi.ko
 kernel/fs/overlayfs/overlay.ko:
-kernel/fs/btrfs/btrfs.ko: kernel/lib/libcrc32c.ko kernel/crypto/xor.ko kernel/arch/arm64/lib/xor-neon.ko kernel/lib/raid6/raid6_pq.ko kernel/lib/zstd/zstd_compress.ko
 kernel/crypto/crypto_engine.ko:
 kernel/crypto/dh_generic.ko:
 kernel/crypto/cmac.ko:
 kernel/crypto/md5.ko:
-kernel/crypto/sha256_generic.ko: kernel/lib/crypto/libsha256.ko
 kernel/crypto/sm3.ko:
 kernel/crypto/sm3_generic.ko: kernel/crypto/sm3.ko
-kernel/crypto/blake2b_generic.ko:
 kernel/crypto/ecb.ko:
 kernel/crypto/cbc.ko:
 kernel/crypto/xts.ko:
@@ -34,25 +31,18 @@ kernel/crypto/authenc.ko:
 kernel/crypto/authencesn.ko: kernel/crypto/authenc.ko
 kernel/crypto/lzo.ko:
 kernel/crypto/lzo-rle.ko:
-kernel/crypto/xxhash_generic.ko:
 kernel/crypto/tcrypt.ko:
 kernel/crypto/ghash-generic.ko:
 kernel/crypto/af_alg.ko:
 kernel/crypto/algif_rng.ko: kernel/crypto/af_alg.ko
-kernel/crypto/zstd.ko: kernel/lib/zstd/zstd_compress.ko
+kernel/crypto/zstd.ko:
 kernel/crypto/ecc.ko:
 kernel/crypto/curve25519-generic.ko: kernel/lib/crypto/libcurve25519-generic.ko
 kernel/crypto/ecdh_generic.ko: kernel/crypto/ecc.ko
-kernel/crypto/xor.ko: kernel/arch/arm64/lib/xor-neon.ko
-kernel/arch/arm64/lib/xor-neon.ko:
 kernel/lib/crypto/libchacha.ko:
 kernel/lib/crypto/libarc4.ko:
 kernel/lib/crypto/libcurve25519-generic.ko:
 kernel/lib/crypto/libdes.ko:
-kernel/lib/crypto/libsha256.ko:
-kernel/lib/zstd/zstd_compress.ko:
-kernel/lib/libcrc32c.ko:
-kernel/lib/raid6/raid6_pq.ko:
 kernel/drivers/irqchip/irq-imx-mu-msi.ko:
 kernel/drivers/irqchip/irq-pruss-intc.ko:
 kernel/drivers/bus/mhi/host/mhi.ko:
@@ -147,7 +137,7 @@ kernel/drivers/clk/qcom/gpucc-sm6115.ko:
 kernel/drivers/clk/clk-bd718x7.ko:
 kernel/drivers/dma/sh/usb-dmac.ko:
 kernel/drivers/dma/qcom/gpi.ko:
-kernel/drivers/dma/bcm-sba-raid.ko: kernel/lib/raid6/raid6_pq.ko
+kernel/drivers/dma/bcm-sba-raid.ko:
 kernel/drivers/dma/imx-sdma.ko:
 kernel/drivers/dma/tegra210-adma.ko:
 kernel/drivers/soc/mediatek/mtk-cmdq-helper.ko: kernel/drivers/mailbox/mtk-cmdq-mailbox.ko
@@ -300,7 +290,7 @@ kernel/drivers/net/mdio/mdio-mux-meson-gxl.ko:
 kernel/drivers/net/pcs/pcs_xpcs.ko:
 kernel/drivers/net/ethernet/atheros/atl1c/atl1c.ko:
 kernel/drivers/net/ethernet/broadcom/genet/genet.ko:
-kernel/drivers/net/ethernet/broadcom/bnx2x/bnx2x.ko: kernel/drivers/net/mdio.ko kernel/lib/libcrc32c.ko
+kernel/drivers/net/ethernet/broadcom/bnx2x/bnx2x.ko: kernel/drivers/net/mdio.ko
 kernel/drivers/net/ethernet/broadcom/bcmsysport.ko: kernel/net/dsa/dsa_core.ko kernel/net/bridge/bridge.ko kernel/net/802/stp.ko kernel/net/llc/llc.ko kernel/net/ipv6/ipv6.ko
 kernel/drivers/net/ethernet/mellanox/mlx4/mlx4_core.ko:
 kernel/drivers/net/ethernet/mellanox/mlx4/mlx4_en.ko: kernel/drivers/net/ethernet/mellanox/mlx4/mlx4_core.ko
@@ -758,9 +748,9 @@ kernel/drivers/crypto/caam/caam_jr.ko: kernel/drivers/crypto/caam/caamhash_desc.
 kernel/drivers/crypto/caam/caamalg_desc.ko: kernel/drivers/crypto/caam/error.ko
 kernel/drivers/crypto/caam/caamhash_desc.ko: kernel/drivers/crypto/caam/error.ko
 kernel/drivers/crypto/caam/dpaa2_caam.ko: kernel/drivers/crypto/caam/caamhash_desc.ko kernel/drivers/crypto/caam/caamalg_desc.ko kernel/drivers/crypto/caam/error.ko kernel/crypto/authenc.ko kernel/lib/crypto/libdes.ko
-kernel/drivers/crypto/qce/qcrypto.ko: kernel/crypto/sha256_generic.ko kernel/lib/crypto/libsha256.ko kernel/crypto/authenc.ko kernel/lib/crypto/libdes.ko
+kernel/drivers/crypto/qce/qcrypto.ko: kernel/crypto/authenc.ko kernel/lib/crypto/libdes.ko
 kernel/drivers/crypto/qcom-rng.ko:
-kernel/drivers/crypto/sa2ul.ko: kernel/crypto/sha256_generic.ko kernel/lib/crypto/libsha256.ko kernel/crypto/authenc.ko
+kernel/drivers/crypto/sa2ul.ko: kernel/crypto/authenc.ko
 kernel/drivers/crypto/bcm/bcm_crypto_spu.ko: kernel/crypto/authenc.ko kernel/lib/crypto/libdes.ko
 kernel/drivers/crypto/amlogic/amlogic-gxl-crypto.ko: kernel/crypto/crypto_engine.ko
 kernel/drivers/hid/hid-multitouch.ko:
@@ -906,7 +896,7 @@ kernel/sound/usb/snd-usbmidi-lib.ko: kernel/sound/core/snd-rawmidi.ko
 kernel/sound/soc/codecs/snd-soc-adau7002.ko:
 kernel/sound/soc/codecs/snd-soc-ak4613.ko:
 kernel/sound/soc/codecs/snd-soc-bt-sco.ko:
-kernel/sound/soc/codecs/snd-soc-cros-ec-codec.ko: kernel/lib/crypto/libsha256.ko
+kernel/sound/soc/codecs/snd-soc-cros-ec-codec.ko:
 kernel/sound/soc/codecs/snd-soc-da7213.ko:
 kernel/sound/soc/codecs/snd-soc-da7219.ko:
 kernel/sound/soc/codecs/snd-soc-dmic.ko:
@@ -1090,33 +1080,33 @@ kernel/net/sched/sch_etf.ko:
 kernel/net/sched/sch_taprio.ko: kernel/net/sched/sch_mqprio_lib.ko
 kernel/net/sched/cls_basic.ko:
 kernel/net/sched/cls_flower.ko:
-kernel/net/netfilter/nf_conntrack.ko: kernel/net/ipv6/netfilter/nf_defrag_ipv6.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko kernel/lib/libcrc32c.ko
+kernel/net/netfilter/nf_conntrack.ko: kernel/net/ipv6/netfilter/nf_defrag_ipv6.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko
 kernel/net/netfilter/nf_log_syslog.ko:
-kernel/net/netfilter/nf_nat.ko: kernel/net/netfilter/nf_conntrack.ko kernel/net/ipv6/netfilter/nf_defrag_ipv6.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko kernel/lib/libcrc32c.ko
+kernel/net/netfilter/nf_nat.ko: kernel/net/netfilter/nf_conntrack.ko kernel/net/ipv6/netfilter/nf_defrag_ipv6.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko
 kernel/net/netfilter/x_tables.ko:
 kernel/net/netfilter/xt_tcpudp.ko: kernel/net/netfilter/x_tables.ko
 kernel/net/netfilter/xt_mark.ko: kernel/net/netfilter/x_tables.ko
-kernel/net/netfilter/xt_nat.ko: kernel/net/netfilter/nf_nat.ko kernel/net/netfilter/nf_conntrack.ko kernel/net/ipv6/netfilter/nf_defrag_ipv6.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko kernel/net/netfilter/x_tables.ko kernel/lib/libcrc32c.ko
+kernel/net/netfilter/xt_nat.ko: kernel/net/netfilter/nf_nat.ko kernel/net/netfilter/nf_conntrack.ko kernel/net/ipv6/netfilter/nf_defrag_ipv6.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko kernel/net/netfilter/x_tables.ko
 kernel/net/netfilter/xt_CHECKSUM.ko: kernel/net/netfilter/x_tables.ko
 kernel/net/netfilter/xt_LOG.ko: kernel/net/netfilter/x_tables.ko
-kernel/net/netfilter/xt_MASQUERADE.ko: kernel/net/netfilter/nf_nat.ko kernel/net/netfilter/nf_conntrack.ko kernel/net/ipv6/netfilter/nf_defrag_ipv6.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko kernel/net/netfilter/x_tables.ko kernel/lib/libcrc32c.ko
+kernel/net/netfilter/xt_MASQUERADE.ko: kernel/net/netfilter/nf_nat.ko kernel/net/netfilter/nf_conntrack.ko kernel/net/ipv6/netfilter/nf_defrag_ipv6.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko kernel/net/netfilter/x_tables.ko
 kernel/net/netfilter/xt_addrtype.ko: kernel/net/netfilter/x_tables.ko
-kernel/net/netfilter/xt_conntrack.ko: kernel/net/netfilter/nf_conntrack.ko kernel/net/ipv6/netfilter/nf_defrag_ipv6.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko kernel/net/netfilter/x_tables.ko kernel/lib/libcrc32c.ko
-kernel/net/netfilter/xt_ipvs.ko: kernel/net/netfilter/ipvs/ip_vs.ko kernel/net/netfilter/nf_conntrack.ko kernel/net/ipv6/netfilter/nf_defrag_ipv6.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko kernel/net/netfilter/x_tables.ko kernel/lib/libcrc32c.ko
-kernel/net/netfilter/ipvs/ip_vs.ko: kernel/net/netfilter/nf_conntrack.ko kernel/net/ipv6/netfilter/nf_defrag_ipv6.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko kernel/lib/libcrc32c.ko
+kernel/net/netfilter/xt_conntrack.ko: kernel/net/netfilter/nf_conntrack.ko kernel/net/ipv6/netfilter/nf_defrag_ipv6.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko kernel/net/netfilter/x_tables.ko
+kernel/net/netfilter/xt_ipvs.ko: kernel/net/netfilter/ipvs/ip_vs.ko kernel/net/netfilter/nf_conntrack.ko kernel/net/ipv6/netfilter/nf_defrag_ipv6.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko kernel/net/netfilter/x_tables.ko
+kernel/net/netfilter/ipvs/ip_vs.ko: kernel/net/netfilter/nf_conntrack.ko kernel/net/ipv6/netfilter/nf_defrag_ipv6.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko
 kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko:
 kernel/net/ipv4/netfilter/nf_reject_ipv4.ko:
 kernel/net/ipv4/netfilter/ip_tables.ko: kernel/net/netfilter/x_tables.ko
 kernel/net/ipv4/netfilter/iptable_filter.ko: kernel/net/ipv4/netfilter/ip_tables.ko kernel/net/netfilter/x_tables.ko
 kernel/net/ipv4/netfilter/iptable_mangle.ko: kernel/net/ipv4/netfilter/ip_tables.ko kernel/net/netfilter/x_tables.ko
-kernel/net/ipv4/netfilter/iptable_nat.ko: kernel/net/ipv4/netfilter/ip_tables.ko kernel/net/netfilter/nf_nat.ko kernel/net/netfilter/nf_conntrack.ko kernel/net/ipv6/netfilter/nf_defrag_ipv6.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko kernel/net/netfilter/x_tables.ko kernel/lib/libcrc32c.ko
+kernel/net/ipv4/netfilter/iptable_nat.ko: kernel/net/ipv4/netfilter/ip_tables.ko kernel/net/netfilter/nf_nat.ko kernel/net/netfilter/nf_conntrack.ko kernel/net/ipv6/netfilter/nf_defrag_ipv6.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko kernel/net/netfilter/x_tables.ko
 kernel/net/ipv4/netfilter/ipt_REJECT.ko: kernel/net/ipv4/netfilter/nf_reject_ipv4.ko kernel/net/netfilter/x_tables.ko
 kernel/net/ipv4/ip_tunnel.ko:
 kernel/net/ipv4/tunnel4.ko:
 kernel/net/ipv6/netfilter/ip6_tables.ko: kernel/net/netfilter/x_tables.ko
 kernel/net/ipv6/netfilter/ip6table_filter.ko: kernel/net/ipv6/netfilter/ip6_tables.ko kernel/net/netfilter/x_tables.ko
 kernel/net/ipv6/netfilter/ip6table_mangle.ko: kernel/net/ipv6/netfilter/ip6_tables.ko kernel/net/netfilter/x_tables.ko kernel/net/ipv6/ipv6.ko
-kernel/net/ipv6/netfilter/ip6table_nat.ko: kernel/net/ipv6/netfilter/ip6_tables.ko kernel/net/netfilter/nf_nat.ko kernel/net/netfilter/nf_conntrack.ko kernel/net/ipv6/netfilter/nf_defrag_ipv6.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko kernel/net/netfilter/x_tables.ko kernel/lib/libcrc32c.ko
+kernel/net/ipv6/netfilter/ip6table_nat.ko: kernel/net/ipv6/netfilter/ip6_tables.ko kernel/net/netfilter/nf_nat.ko kernel/net/netfilter/nf_conntrack.ko kernel/net/ipv6/netfilter/nf_defrag_ipv6.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko kernel/net/netfilter/x_tables.ko
 kernel/net/ipv6/netfilter/nf_defrag_ipv6.ko:
 kernel/net/ipv6/netfilter/nf_reject_ipv6.ko: kernel/net/ipv6/ipv6.ko
 kernel/net/ipv6/netfilter/ip6t_REJECT.ko: kernel/net/ipv6/netfilter/nf_reject_ipv6.ko kernel/net/netfilter/x_tables.ko kernel/net/ipv6/ipv6.ko

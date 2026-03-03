@@ -58,32 +58,21 @@ kernel/fs/nls/nls_iso8859-15.ko.xz:
 kernel/fs/nls/nls_koi8-r.ko.xz:
 kernel/fs/nls/nls_koi8-u.ko.xz:
 kernel/fs/nls/nls_koi8-ru.ko.xz:
-kernel/fs/nls/nls_utf8.ko.xz:
-kernel/fs/nls/nls_ucs2_utils.ko.xz:
 kernel/fs/unicode/utf8data.ko.xz:
 kernel/fs/fuse/cuse.ko.xz:
 kernel/fs/binfmt_misc.ko.xz:
 kernel/fs/dlm/dlm.ko.xz:
 kernel/fs/netfs/netfs.ko.xz:
-kernel/fs/reiserfs/reiserfs.ko.xz:
 kernel/fs/squashfs/squashfs.ko.xz:
-kernel/fs/exfat/exfat.ko.xz:
-kernel/fs/isofs/isofs.ko.xz: kernel/drivers/cdrom/cdrom.ko.xz
-kernel/fs/hfsplus/hfsplus.ko.xz: kernel/drivers/cdrom/cdrom.ko.xz
-kernel/fs/hfs/hfs.ko.xz: kernel/drivers/cdrom/cdrom.ko.xz
 kernel/fs/ecryptfs/ecryptfs.ko.xz:
 kernel/fs/nfsd/nfsd.ko.xz:
 kernel/fs/smb/common/cifs_arc4.ko.xz:
 kernel/fs/smb/common/cifs_md4.ko.xz:
-kernel/fs/smb/client/cifs.ko.xz: kernel/fs/smb/common/cifs_arc4.ko.xz kernel/fs/nls/nls_ucs2_utils.ko.xz kernel/fs/netfs/netfs.ko.xz kernel/fs/smb/common/cifs_md4.ko.xz
-kernel/fs/smb/server/ksmbd.ko.xz: kernel/fs/smb/common/cifs_arc4.ko.xz kernel/fs/nls/nls_ucs2_utils.ko.xz
-kernel/fs/ntfs3/ntfs3.ko.xz:
+kernel/fs/smb/client/cifs.ko.xz: kernel/fs/smb/common/cifs_arc4.ko.xz kernel/fs/netfs/netfs.ko.xz kernel/fs/smb/common/cifs_md4.ko.xz
+kernel/fs/smb/server/ksmbd.ko.xz: kernel/fs/smb/common/cifs_arc4.ko.xz
 kernel/fs/jffs2/jffs2.ko.xz: kernel/drivers/mtd/mtd.ko.xz
 kernel/fs/ubifs/ubifs.ko.xz: kernel/drivers/mtd/ubi/ubi.ko.xz kernel/drivers/mtd/mtd.ko.xz
 kernel/fs/overlayfs/overlay.ko.xz:
-kernel/fs/udf/udf.ko.xz: kernel/drivers/cdrom/cdrom.ko.xz
-kernel/fs/jfs/jfs.ko.xz: kernel/fs/nls/nls_ucs2_utils.ko.xz
-kernel/fs/xfs/xfs.ko.xz:
 kernel/fs/9p/9p.ko.xz: kernel/net/9p/9pnet.ko.xz kernel/fs/netfs/netfs.ko.xz
 kernel/fs/nilfs2/nilfs2.ko.xz:
 kernel/fs/cachefiles/cachefiles.ko.xz: kernel/fs/netfs/netfs.ko.xz
@@ -94,9 +83,8 @@ kernel/fs/ocfs2/ocfs2_stack_user.ko.xz: kernel/fs/dlm/dlm.ko.xz kernel/fs/ocfs2/
 kernel/fs/ocfs2/dlmfs/ocfs2_dlmfs.ko.xz: kernel/fs/ocfs2/cluster/ocfs2_nodemanager.ko.xz kernel/fs/ocfs2/ocfs2_stackglue.ko.xz
 kernel/fs/ocfs2/cluster/ocfs2_nodemanager.ko.xz:
 kernel/fs/ocfs2/dlm/ocfs2_dlm.ko.xz: kernel/fs/ocfs2/cluster/ocfs2_nodemanager.ko.xz
-kernel/fs/btrfs/btrfs.ko.xz: kernel/crypto/xor.ko.xz kernel/arch/arm64/lib/xor-neon.ko.xz kernel/lib/raid6/raid6_pq.ko.xz
 kernel/fs/gfs2/gfs2.ko.xz:
-kernel/fs/bcachefs/bcachefs.ko.xz: kernel/lib/lz4/lz4hc_compress.ko.xz kernel/lib/lz4/lz4_compress.ko.xz kernel/crypto/xor.ko.xz kernel/arch/arm64/lib/xor-neon.ko.xz kernel/lib/raid6/raid6_pq.ko.xz
+kernel/fs/bcachefs/bcachefs.ko.xz: kernel/lib/lz4/lz4hc_compress.ko.xz kernel/lib/lz4/lz4_compress.ko.xz
 kernel/fs/ceph/ceph.ko.xz: kernel/net/ceph/libceph.ko.xz kernel/fs/netfs/netfs.ko.xz
 kernel/fs/efivarfs/efivarfs.ko.xz:
 kernel/fs/erofs/erofs.ko.xz:
@@ -115,7 +103,6 @@ kernel/crypto/sha512_generic.ko.xz:
 kernel/crypto/sha3_generic.ko.xz:
 kernel/crypto/sm3.ko.xz:
 kernel/crypto/wp512.ko.xz:
-kernel/crypto/blake2b_generic.ko.xz:
 kernel/crypto/cbc.ko.xz:
 kernel/crypto/ctr.ko.xz:
 kernel/crypto/adiantum.ko.xz: kernel/lib/crypto/libpoly1305.ko.xz
@@ -136,7 +123,6 @@ kernel/crypto/deflate.ko.xz:
 kernel/crypto/authenc.ko.xz: kernel/crypto/crypto_null.ko.xz
 kernel/crypto/authencesn.ko.xz: kernel/crypto/authenc.ko.xz kernel/crypto/crypto_null.ko.xz
 kernel/crypto/lz4.ko.xz: kernel/lib/lz4/lz4_compress.ko.xz
-kernel/crypto/xxhash_generic.ko.xz:
 kernel/crypto/drbg.ko.xz:
 kernel/crypto/jitterentropy_rng.ko.xz:
 kernel/crypto/ghash-generic.ko.xz: kernel/lib/crypto/gf128mul.ko.xz
@@ -149,13 +135,11 @@ kernel/crypto/zstd.ko.xz:
 kernel/crypto/ecc.ko.xz:
 kernel/crypto/essiv.ko.xz: kernel/crypto/authenc.ko.xz kernel/crypto/crypto_null.ko.xz
 kernel/crypto/ecdh_generic.ko.xz: kernel/crypto/ecc.ko.xz
-kernel/crypto/xor.ko.xz: kernel/arch/arm64/lib/xor-neon.ko.xz
 kernel/crypto/async_tx/async_tx.ko.xz:
 kernel/crypto/async_tx/async_memcpy.ko.xz: kernel/crypto/async_tx/async_tx.ko.xz
-kernel/crypto/async_tx/async_xor.ko.xz: kernel/crypto/async_tx/async_tx.ko.xz kernel/crypto/xor.ko.xz kernel/arch/arm64/lib/xor-neon.ko.xz
-kernel/crypto/async_tx/async_pq.ko.xz: kernel/crypto/async_tx/async_xor.ko.xz kernel/crypto/async_tx/async_tx.ko.xz kernel/crypto/xor.ko.xz kernel/arch/arm64/lib/xor-neon.ko.xz kernel/lib/raid6/raid6_pq.ko.xz
-kernel/crypto/async_tx/async_raid6_recov.ko.xz: kernel/crypto/async_tx/async_tx.ko.xz kernel/lib/raid6/raid6_pq.ko.xz
-kernel/arch/arm64/lib/xor-neon.ko.xz:
+kernel/crypto/async_tx/async_xor.ko.xz: kernel/crypto/async_tx/async_tx.ko.xz
+kernel/crypto/async_tx/async_pq.ko.xz: kernel/crypto/async_tx/async_xor.ko.xz kernel/crypto/async_tx/async_tx.ko.xz
+kernel/crypto/async_tx/async_raid6_recov.ko.xz: kernel/crypto/async_tx/async_tx.ko.xz
 kernel/lib/math/cordic.ko.xz:
 kernel/lib/crypto/libchacha.ko.xz:
 kernel/lib/crypto/libaes.ko.xz:
@@ -170,7 +154,6 @@ kernel/lib/lz4/lz4hc_compress.ko.xz:
 kernel/lib/crc-ccitt.ko.xz:
 kernel/lib/crc7.ko.xz:
 kernel/lib/crc8.ko.xz:
-kernel/lib/raid6/raid6_pq.ko.xz:
 kernel/lib/ts_kmp.ko.xz:
 kernel/lib/ts_bm.ko.xz:
 kernel/lib/ts_fsm.ko.xz:
@@ -1142,7 +1125,7 @@ kernel/drivers/watchdog/gpio_wdt.ko.xz:
 kernel/drivers/md/raid0.ko.xz: kernel/drivers/md/md-mod.ko.xz
 kernel/drivers/md/raid1.ko.xz: kernel/drivers/md/md-mod.ko.xz
 kernel/drivers/md/raid10.ko.xz: kernel/drivers/md/md-mod.ko.xz
-kernel/drivers/md/raid456.ko.xz: kernel/crypto/async_tx/async_raid6_recov.ko.xz kernel/crypto/async_tx/async_memcpy.ko.xz kernel/crypto/async_tx/async_pq.ko.xz kernel/crypto/async_tx/async_xor.ko.xz kernel/crypto/async_tx/async_tx.ko.xz kernel/drivers/md/md-mod.ko.xz kernel/crypto/xor.ko.xz kernel/arch/arm64/lib/xor-neon.ko.xz kernel/lib/raid6/raid6_pq.ko.xz
+kernel/drivers/md/raid456.ko.xz: kernel/crypto/async_tx/async_raid6_recov.ko.xz kernel/crypto/async_tx/async_memcpy.ko.xz kernel/crypto/async_tx/async_pq.ko.xz kernel/crypto/async_tx/async_xor.ko.xz kernel/crypto/async_tx/async_tx.ko.xz kernel/drivers/md/md-mod.ko.xz
 kernel/drivers/md/bcache/bcache.ko.xz:
 kernel/drivers/md/md-mod.ko.xz:
 kernel/drivers/md/dm-mod.ko.xz:
@@ -1159,12 +1142,12 @@ kernel/drivers/md/dm-log.ko.xz: kernel/drivers/md/dm-mod.ko.xz
 kernel/drivers/md/dm-region-hash.ko.xz: kernel/drivers/md/dm-log.ko.xz kernel/drivers/md/dm-mod.ko.xz
 kernel/drivers/md/dm-log-userspace.ko.xz: kernel/drivers/md/dm-log.ko.xz kernel/drivers/md/dm-mod.ko.xz kernel/drivers/connector/cn.ko.xz
 kernel/drivers/md/dm-zero.ko.xz: kernel/drivers/md/dm-mod.ko.xz
-kernel/drivers/md/dm-raid.ko.xz: kernel/drivers/md/raid456.ko.xz kernel/crypto/async_tx/async_raid6_recov.ko.xz kernel/crypto/async_tx/async_memcpy.ko.xz kernel/crypto/async_tx/async_pq.ko.xz kernel/crypto/async_tx/async_xor.ko.xz kernel/crypto/async_tx/async_tx.ko.xz kernel/drivers/md/dm-mod.ko.xz kernel/drivers/md/md-mod.ko.xz kernel/crypto/xor.ko.xz kernel/arch/arm64/lib/xor-neon.ko.xz kernel/lib/raid6/raid6_pq.ko.xz
+kernel/drivers/md/dm-raid.ko.xz: kernel/drivers/md/raid456.ko.xz kernel/crypto/async_tx/async_raid6_recov.ko.xz kernel/crypto/async_tx/async_memcpy.ko.xz kernel/crypto/async_tx/async_pq.ko.xz kernel/crypto/async_tx/async_xor.ko.xz kernel/crypto/async_tx/async_tx.ko.xz kernel/drivers/md/dm-mod.ko.xz kernel/drivers/md/md-mod.ko.xz
 kernel/drivers/md/dm-thin-pool.ko.xz: kernel/drivers/md/persistent-data/dm-persistent-data.ko.xz kernel/drivers/md/dm-bio-prison.ko.xz kernel/drivers/md/dm-bufio.ko.xz kernel/drivers/md/dm-mod.ko.xz
 kernel/drivers/md/dm-verity.ko.xz: kernel/drivers/md/dm-bufio.ko.xz kernel/drivers/md/dm-mod.ko.xz
 kernel/drivers/md/dm-cache.ko.xz: kernel/drivers/md/persistent-data/dm-persistent-data.ko.xz kernel/drivers/md/dm-bio-prison.ko.xz kernel/drivers/md/dm-bufio.ko.xz kernel/drivers/md/dm-mod.ko.xz
 kernel/drivers/md/dm-cache-smq.ko.xz: kernel/drivers/md/dm-cache.ko.xz kernel/drivers/md/persistent-data/dm-persistent-data.ko.xz kernel/drivers/md/dm-bio-prison.ko.xz kernel/drivers/md/dm-bufio.ko.xz kernel/drivers/md/dm-mod.ko.xz
-kernel/drivers/md/dm-integrity.ko.xz: kernel/crypto/async_tx/async_xor.ko.xz kernel/crypto/async_tx/async_tx.ko.xz kernel/drivers/md/dm-bufio.ko.xz kernel/drivers/md/dm-mod.ko.xz kernel/crypto/xor.ko.xz kernel/arch/arm64/lib/xor-neon.ko.xz
+kernel/drivers/md/dm-integrity.ko.xz: kernel/crypto/async_tx/async_xor.ko.xz kernel/crypto/async_tx/async_tx.ko.xz kernel/drivers/md/dm-bufio.ko.xz kernel/drivers/md/dm-mod.ko.xz
 kernel/drivers/md/dm-writecache.ko.xz: kernel/drivers/md/dm-mod.ko.xz
 kernel/drivers/accessibility/speakup/speakup_soft.ko.xz: kernel/drivers/accessibility/speakup/speakup.ko.xz
 kernel/drivers/accessibility/speakup/speakup.ko.xz:

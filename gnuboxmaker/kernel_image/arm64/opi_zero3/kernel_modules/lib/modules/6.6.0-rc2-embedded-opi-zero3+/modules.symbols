@@ -174,7 +174,6 @@ alias symbol:mwifiex_main_process mwifiex
 alias symbol:v4l2_fh_init videodev
 alias symbol:br_vlan_get_pvid_rcu bridge
 alias symbol:ip6_datagram_recv_ctl ipv6
-alias symbol:raid6_2data_recov raid6_pq
 alias symbol:tcpci_register_port tcpci
 alias symbol:devm_rc_allocate_device rc_core
 alias symbol:mt76_connac2_tx_token_put mt76_connac_lib
@@ -284,7 +283,6 @@ alias symbol:snd_hdac_acomp_register_notifier snd_hda_core
 alias symbol:drm_gem_vram_plane_helper_cleanup_fb drm_vram_helper
 alias symbol:dw_mipi_dsi_unbind dw_mipi_dsi
 alias symbol:pcm3168a_pm_ops snd_soc_pcm3168a
-alias symbol:sha224_final libsha256
 alias symbol:tda9887_attach tda9887
 alias symbol:coresight_add_out_conn coresight
 alias symbol:md_register_thread md_mod
@@ -420,7 +418,6 @@ alias symbol:ath11k_pci_enable_ce_irqs_except_wake_irq ath11k
 alias symbol:vb2_write videobuf2_common
 alias symbol:audioreach_gain_set_vol_ctrl snd_q6apm
 alias symbol:mt76_dma_rx_poll mt76
-alias symbol:zstd_get_params zstd_compress
 alias symbol:media_entity_pipeline mc
 alias symbol:mt792x_rx_get_wcid mt792x_lib
 alias symbol:usb_serial_suspend usbserial
@@ -559,7 +556,6 @@ alias symbol:snd_rawmidi_transmit_empty snd_rawmidi
 alias symbol:ieee80211_radar_detected mac80211
 alias symbol:mtk_vcodec_fw_ipi_register mtk_vcodec_common
 alias symbol:mt792x_tx mt792x_lib
-alias symbol:raid6_call raid6_pq
 alias symbol:tegra_pcm_construct snd_soc_tegra_pcm
 alias symbol:ttm_bo_pin ttm
 alias symbol:mlx5_eq_destroy_generic mlx5_core
@@ -791,7 +787,6 @@ alias symbol:rpmsg_chrdev_eptdev_destroy rpmsg_char
 alias symbol:scp_memcpy_aligned mtk_scp_ipi
 alias symbol:mt76_get_rate mt76
 alias symbol:reg_query_regdb_wmm cfg80211
-alias symbol:zstd_min_clevel zstd_compress
 alias symbol:inet6_sk_rebuild_header ipv6
 alias symbol:am335x_tsc_se_set_cache ti_am335x_tscadc
 alias symbol:audioreach_compr_set_param snd_q6apm
@@ -1096,7 +1091,6 @@ alias symbol:ieee80211_rts_get mac80211
 alias symbol:__v4l2_ctrl_s_ctrl_int64 videodev
 alias symbol:pdr_handle_alloc pdr_interface
 alias symbol:usb_function_unregister libcomposite
-alias symbol:zstd_end_stream zstd_compress
 alias symbol:wlcore_event_soft_gemini_sense wlcore
 alias symbol:gether_resume u_ether
 alias symbol:v4l2_pipeline_pm_get videodev
@@ -1313,7 +1307,6 @@ alias symbol:rc_keydown_notimeout rc_core
 alias symbol:cfg80211_assoc_comeback cfg80211
 alias symbol:mlx4_mr_alloc mlx4_core
 alias symbol:rt5659_set_jack_detect snd_soc_rt5659
-alias symbol:crc32c libcrc32c
 alias symbol:v4l2_m2m_last_buffer_done v4l2_mem2mem
 alias symbol:hci_devcd_append bluetooth
 alias symbol:ipmi_set_my_LUN ipmi_msghandler
@@ -1330,7 +1323,6 @@ alias symbol:slim_stream_free slimbus
 alias symbol:v4l2_fwnode_endpoint_free v4l2_fwnode
 alias symbol:__mt76_worker_fn mt76
 alias symbol:ieee80211_rate_control_register mac80211
-alias symbol:crypto_sha256_finup sha256_generic
 alias symbol:ip6_output ipv6
 alias symbol:usb_serial_generic_tiocmiwait usbserial
 alias symbol:br_get_ageing_time bridge
@@ -1366,7 +1358,6 @@ alias symbol:mtk_jpeg_dec_reset mtk_jpeg_dec_hw
 alias symbol:st_lsm6dsx_pm_ops st_lsm6dsx
 alias symbol:aggre2_clk icc_smd_rpm
 alias symbol:crypto_engine_exit crypto_engine
-alias symbol:sha256_update libsha256
 alias symbol:venus_helper_process_initial_cap_bufs venus_core
 alias symbol:register_ip_vs_app_inc ip_vs
 alias symbol:ieee80211_rx_irqsafe mac80211
@@ -1436,7 +1427,6 @@ alias symbol:snd_hda_jack_add_kctls snd_hda_codec
 alias symbol:typec_mux_get_drvdata typec
 alias symbol:ip_vs_conn_new ip_vs
 alias symbol:renesas_xhci_check_request_fw xhci_pci_renesas
-alias symbol:zstd_cctx_workspace_bound zstd_compress
 alias symbol:__media_remove_intf_links mc
 alias symbol:mlx4_pd_free mlx4_core
 alias symbol:__v4l2_subdev_state_alloc videodev
@@ -1694,7 +1684,6 @@ alias symbol:cros_ec_sensors_core_init cros_ec_sensors_core
 alias symbol:asoc_graph_card_probe snd_soc_simple_card_utils
 alias symbol:nci_recv_frame nci
 alias symbol:nfc_tm_data_received nfc
-alias symbol:zstd_flush_stream zstd_compress
 alias symbol:ocelot_cls_flower_destroy mscc_ocelot_switch_lib
 alias symbol:rc_keyup rc_core
 alias symbol:__v4l2_subdev_init_finalize videodev
@@ -1711,7 +1700,6 @@ alias symbol:ipmi_get_my_LUN ipmi_msghandler
 alias symbol:btrtl_shutdown_realtek btrtl
 alias symbol:mdio_set_flag mdio
 alias symbol:mlx4_SET_VPORT_QOS_set mlx4_core
-alias symbol:raid6_gfexi raid6_pq
 alias symbol:v4l2_fwnode_endpoint_parse v4l2_fwnode
 alias symbol:v4l2_query_ext_ctrl videodev
 alias symbol:xt_register_matches x_tables
@@ -1827,7 +1815,6 @@ alias symbol:gether_get_dev_addr u_ether
 alias symbol:md_update_sb md_mod
 alias symbol:mlx5_query_min_inline mlx5_core
 alias symbol:vb2_ops_wait_prepare videobuf2_v4l2
-alias symbol:xor_block_inner_neon xor_neon
 alias symbol:mlx4_mr_rereg_mem_cleanup mlx4_core
 alias symbol:mlx4_buf_alloc mlx4_core
 alias symbol:mlx5_cmd_destroy_vport_lag mlx5_core
@@ -1884,7 +1871,6 @@ alias symbol:typec_find_port_power_role typec
 alias symbol:v4l2_m2m_last_buf v4l2_mem2mem
 alias symbol:v4l2_ctrl_add_handler videodev
 alias symbol:v4l2_m2m_encoder_cmd v4l2_mem2mem
-alias symbol:zstd_init_cctx zstd_compress
 alias symbol:md_account_bio md_mod
 alias symbol:ip_tunnel_lookup ip_tunnel
 alias symbol:md_flush_request md_mod
@@ -2048,7 +2034,6 @@ alias symbol:slim_stream_allocate slimbus
 alias symbol:dvb_frontend_reinitialise dvb_core
 alias symbol:split_key_done caam_jr
 alias symbol:ieee80211_gtk_rekey_add mac80211
-alias symbol:zstd_compress_bound zstd_compress
 alias symbol:sm3_update sm3
 alias symbol:__devm_regmap_init_slimbus regmap_slimbus
 alias symbol:__mt76_connac_mcu_alloc_sta_req mt76_connac_lib
@@ -2192,7 +2177,6 @@ alias symbol:wiphy_register cfg80211
 alias symbol:ath10k_core_create ath10k_core
 alias symbol:ath_is_mybeacon ath
 alias symbol:cfg80211_merge_profile cfg80211
-alias symbol:raid6_empty_zero_page raid6_pq
 alias symbol:gether_cleanup u_ether
 alias symbol:qcom_minidump qcom_common
 alias symbol:v4l2_m2m_qbuf v4l2_mem2mem
@@ -2495,7 +2479,6 @@ alias symbol:usbnet_get_link_ksettings_mii usbnet
 alias symbol:host1x_driver_unregister host1x
 alias symbol:asoc_simple_canonicalize_cpu snd_soc_simple_card_utils
 alias symbol:dm_hold dm_mod
-alias symbol:sha224_zero_message_hash sha256_generic
 alias symbol:snd_hdac_refresh_widgets snd_hda_core
 alias symbol:ieee80211_txq_schedule_start mac80211
 alias symbol:mt76_put_rxwi mt76
@@ -2529,7 +2512,6 @@ alias symbol:bcm_phy_get_sset_count bcm_phy_lib
 alias symbol:ieee80211_sta_pspoll mac80211
 alias symbol:mlx4_SET_PORT_fcs_check mlx4_core
 alias symbol:mlx5_cmd_cleanup_async_ctx mlx5_core
-alias symbol:raid6_gfexp raid6_pq
 alias symbol:rcar_cmm_disable rcar_cmm
 alias symbol:vsp1_du_setup_lif vsp1
 alias symbol:brcmu_pkt_buf_get_skb brcmutil
@@ -2585,7 +2567,6 @@ alias symbol:mt76_connac_mcu_uni_add_bss mt76_connac_lib
 alias symbol:ath10k_ce_enable_interrupt ath10k_core
 alias symbol:cros_ec_sensors_core_read_avail cros_ec_sensors_core
 alias symbol:mtk_rpmsg_destroy_rproc_subdev mtk_rpmsg
-alias symbol:sha256 libsha256
 alias symbol:usbnet_change_mtu usbnet
 alias symbol:dm_region_hash_destroy dm_region_hash
 alias symbol:dsa_tag_8021q_standalone_vid dsa_core
@@ -2812,7 +2793,6 @@ alias symbol:mlx5_destroy_flow_group mlx5_core
 alias symbol:__cfg80211_alloc_reply_skb cfg80211
 alias symbol:ocelot_get_ts_info mscc_ocelot_switch_lib
 alias symbol:mlx5_eswitch_get_core_dev mlx5_core
-alias symbol:xor_blocks xor
 alias symbol:asoc_qcom_lpass_cpu_platform_remove snd_soc_lpass_cpu
 alias symbol:asoc_simple_set_dailink_name snd_soc_simple_card_utils
 alias symbol:usb_wwan_suspend usb_wwan
@@ -2830,7 +2810,6 @@ alias symbol:l2cap_chan_close bluetooth
 alias symbol:qmi_add_server qmi_helpers
 alias symbol:ocelot_vcap_filter_add mscc_ocelot_switch_lib
 alias symbol:usbnet_manage_power usbnet
-alias symbol:zstd_compress_stream zstd_compress
 alias symbol:counter_priv counter
 alias symbol:vb2_thread_start videobuf2_common
 alias symbol:__mt792xe_mcu_drv_pmctrl mt792x_lib
@@ -2882,7 +2861,6 @@ alias symbol:mlx5_core_alloc_pd mlx5_core
 alias symbol:mlx4_SET_PORT_general mlx4_core
 alias symbol:snd_hda_set_power_save snd_hda_codec
 alias symbol:usbnet_link_change usbnet
-alias symbol:raid6_gfinv raid6_pq
 alias symbol:usb_serial_generic_open usbserial
 alias symbol:dm_rh_stop_recovery dm_region_hash
 alias symbol:felix_port_to_netdev mscc_felix_dsa_lib
@@ -2961,7 +2939,6 @@ alias symbol:mwifiex_fw_dump_event mwifiex
 alias symbol:__bcm_phy_write_exp bcm_phy_lib
 alias symbol:mtk_afe_fe_hw_params snd_soc_mtk_common
 alias symbol:mtk_mutex_put mtk_mutex
-alias symbol:raid6_gfmul raid6_pq
 alias symbol:slim_read slimbus
 alias symbol:ttm_kmap_iter_iomap_init ttm
 alias symbol:mlx4_qp_remove mlx4_core
@@ -3051,7 +3028,6 @@ alias symbol:btmrvl_remove_card btmrvl
 alias symbol:dm_rh_recovery_start dm_region_hash
 alias symbol:ttm_bo_init_validate ttm
 alias symbol:ttm_bo_kmap ttm
-alias symbol:crypto_sha256_update sha256_generic
 alias symbol:mtk_vcodec_dbgfs_init mtk_vcodec_dbgfs
 alias symbol:ocelot_sb_tc_pool_bind_set mscc_ocelot_switch_lib
 alias symbol:ath11k_pcic_get_ce_msi_idx ath11k
@@ -3082,7 +3058,6 @@ alias symbol:br_vlan_get_info_rcu bridge
 alias symbol:bt_sock_register bluetooth
 alias symbol:ieee80211_rx_ba_timer_expired mac80211
 alias symbol:mhi_free_controller mhi
-alias symbol:zstd_cstream_workspace_bound zstd_compress
 alias symbol:drm_gem_vram_simple_display_pipe_cleanup_fb drm_vram_helper
 alias symbol:ieee80211_set_active_links mac80211
 alias symbol:md_integrity_add_rdev md_mod
@@ -3223,7 +3198,6 @@ alias symbol:ubi_flush ubi
 alias symbol:crypto_transfer_kpp_request_to_engine crypto_engine
 alias symbol:mdio45_ethtool_ksettings_get_npage mdio
 alias symbol:mlx4_put_slave_node_guid mlx4_core
-alias symbol:zstd_max_clevel zstd_compress
 alias symbol:devm_stmmac_pltfr_probe stmmac_platform
 alias symbol:mt792x_mac_init_band mt792x_lib
 alias symbol:rt5682_apply_patch_list snd_soc_rt5682
@@ -3307,7 +3281,6 @@ alias symbol:ip6t_alloc_initial_table ip6_tables
 alias symbol:mlx4_gen_port_state_change_eqe mlx4_core
 alias symbol:mt76_get_min_avg_rssi mt76
 alias symbol:mwifiex_multi_chan_resync mwifiex
-alias symbol:raid6_vgfmul raid6_pq
 alias symbol:crypto_engine_register_ahashes crypto_engine
 alias symbol:mtk_jpeg_dec_start mtk_jpeg_dec_hw
 alias symbol:__nvme_submit_sync_cmd nvme_core
@@ -3474,7 +3447,6 @@ alias symbol:ath11k_warn ath11k
 alias symbol:mlx5_query_nic_vport_node_guid mlx5_core
 alias symbol:mlx4_free_hwq_res mlx4_core
 alias symbol:nvme_init_ctrl nvme_core
-alias symbol:raid6_gflog raid6_pq
 alias symbol:sm4_crypt_block sm4
 alias symbol:garp_request_join garp
 alias symbol:hci_cmd_sync_cancel bluetooth
@@ -3671,7 +3643,6 @@ alias symbol:snd_hdac_aligned_write snd_hda_core
 alias symbol:nf_nat_helper_register nf_conntrack
 alias symbol:ocelot_port_inject_frame mscc_ocelot_switch_lib
 alias symbol:mlx5_db_free mlx5_core
-alias symbol:sha256_final libsha256
 alias symbol:dsa_devlink_params_unregister dsa_core
 alias symbol:mlx5_core_access_reg mlx5_core
 alias symbol:nf_ct_helper_log nf_conntrack
@@ -3779,7 +3750,6 @@ alias symbol:v4l2_ctrl_request_hdl_find videodev
 alias symbol:bcm_phy_get_strings bcm_phy_lib
 alias symbol:q6apm_graph_flush snd_q6apm
 alias symbol:sdw_bwrite_no_pm_unlocked soundwire_bus
-alias symbol:blake2b_compress_generic blake2b_generic
 alias symbol:host1x_channel_put host1x
 alias symbol:rndis_set_param_dev usb_f_rndis
 alias symbol:br_multicast_has_querier_adjacent bridge
@@ -3842,7 +3812,6 @@ alias symbol:vb2_fop_write videobuf2_v4l2
 alias symbol:bcm_phy_write_misc bcm_phy_lib
 alias symbol:can_eth_ioctl_hwts can_dev
 alias symbol:ocelot_port_bridge_leave mscc_ocelot_switch_lib
-alias symbol:zstd_init_cstream zstd_compress
 alias symbol:v4l2_subdev_get_fwnode_pad_1_to_1 videodev
 alias symbol:cros_ec_sensors_read_lpc cros_ec_sensors_core
 alias symbol:pruss_cfg_set_gpmux pruss
@@ -3910,7 +3879,6 @@ alias symbol:mtk_jpeg_dec_get_int_status mtk_jpeg_dec_hw
 alias symbol:nci_nfcee_mode_set nci
 alias symbol:wm8962_mic_detect snd_soc_wm8962
 alias symbol:tegra_pcm_platform_register_with_chan_names snd_soc_tegra_pcm
-alias symbol:zstd_compress_cctx zstd_compress
 alias symbol:cfg80211_any_usable_channels cfg80211
 alias symbol:cfg80211_shutdown_all_interfaces cfg80211
 alias symbol:mlx4_phys_to_slave_port mlx4_core
@@ -4141,7 +4109,6 @@ alias symbol:usb_composite_overwrite_options libcomposite
 alias symbol:bt_sock_unlink bluetooth
 alias symbol:slimbus_bus slimbus
 alias symbol:mtk_memif_set_enable snd_soc_mtk_common
-alias symbol:raid6_datap_recov raid6_pq
 alias symbol:aggre1_clk icc_smd_rpm
 alias symbol:gnss_deregister_device gnss
 alias symbol:md_bitmap_resize md_mod
@@ -4245,7 +4212,6 @@ alias symbol:v4l2_m2m_ioctl_querybuf v4l2_mem2mem
 alias symbol:brcmu_pktq_peek_tail brcmutil
 alias symbol:ieee80211_key_mic_failure mac80211
 alias symbol:mlx4_vf_set_enable_smi_admin mlx4_core
-alias symbol:sha256_zero_message_hash sha256_generic
 alias symbol:ath11k_pcic_get_msi_address ath11k
 alias symbol:ieee80211_rx_napi mac80211
 alias symbol:wlcore_event_channel_switch wlcore
@@ -4336,7 +4302,6 @@ alias symbol:cfg80211_inform_bss_frame_data cfg80211
 alias symbol:mhi_get_mhi_state mhi
 alias symbol:mt792x_get_mac80211_ops mt792x_lib
 alias symbol:typec_switch_register typec
-alias symbol:zstd_reset_cstream zstd_compress
 alias symbol:hisi_qm_suspend hisi_qm
 alias symbol:qrtr_endpoint_post qrtr
 alias symbol:analogix_dp_bind analogix_dp

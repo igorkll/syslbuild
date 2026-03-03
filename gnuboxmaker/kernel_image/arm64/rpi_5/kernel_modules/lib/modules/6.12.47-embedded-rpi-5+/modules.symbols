@@ -316,7 +316,6 @@ alias symbol:drm_atomic_helper_commit_tail drm_kms_helper
 alias symbol:graph_util_card_probe snd_soc_simple_card_utils
 alias symbol:inet_diag_unregister inet_diag
 alias symbol:ip6_datagram_recv_ctl ipv6
-alias symbol:raid6_2data_recov raid6_pq
 alias symbol:__traceiter_bcache_btree_node_free bcache
 alias symbol:drm_self_refresh_helper_init drm_kms_helper
 alias symbol:ebt_unregister_table ebtables
@@ -987,7 +986,6 @@ alias symbol:iwl_trans_write_prph iwlwifi
 alias symbol:mt792x_tx mt792x_lib
 alias symbol:nand_ecc_init_ctx nandcore
 alias symbol:or51132_attach or51132
-alias symbol:raid6_call raid6_pq
 alias symbol:ttm_bo_pin ttm
 alias symbol:w1_reset_resume_command wire
 alias symbol:mt76x02u_exit_beacon_config mt76x02_usb
@@ -2826,7 +2824,6 @@ alias symbol:__mt7921_start mt7921_common
 alias symbol:fbtft_framebuffer_alloc fbtft
 alias symbol:btrtl_shutdown_realtek btrtl
 alias symbol:mdio_set_flag mdio
-alias symbol:raid6_gfexi raid6_pq
 alias symbol:snd_card_disconnect_sync snd
 alias symbol:v4l2_fwnode_endpoint_parse v4l2_fwnode
 alias symbol:v4l2_query_ext_ctrl videodev
@@ -3033,7 +3030,6 @@ alias symbol:gether_get_dev_addr u_ether
 alias symbol:md_update_sb md_mod
 alias symbol:ms_sensors_reset ms_sensors_i2c
 alias symbol:vb2_ops_wait_prepare videobuf2_v4l2
-alias symbol:xor_block_inner_neon xor_neon
 alias symbol:crypto_nhpoly1305_setkey nhpoly1305
 alias symbol:drm_fb_memcpy drm_kms_helper
 alias symbol:drm_flip_work_init drm_kms_helper
@@ -3654,7 +3650,6 @@ alias symbol:wiphy_register cfg80211
 alias symbol:ath_is_mybeacon ath
 alias symbol:cfg80211_merge_profile cfg80211
 alias symbol:drm_gem_begin_shadow_fb_access drm_kms_helper
-alias symbol:raid6_empty_zero_page raid6_pq
 alias symbol:to_drm_sched_fence gpu_sched
 alias symbol:__tracepoint_bcache_gc_end bcache
 alias symbol:drm_get_panel_orientation_quirk drm_panel_orientation_quirks
@@ -4173,7 +4168,6 @@ alias symbol:ubi_get_device_info ubi
 alias symbol:nf_nat_amanda_hook nf_conntrack_amanda
 alias symbol:drm_object_property_set_value drm
 alias symbol:ieee80211_sta_pspoll mac80211
-alias symbol:raid6_gfexp raid6_pq
 alias symbol:__v4l2_subdev_state_get_crop videodev
 alias symbol:brcmu_pkt_buf_get_skb brcmutil
 alias symbol:cfg80211_report_wowlan_wakeup cfg80211
@@ -4612,7 +4606,6 @@ alias symbol:drm_vblank_work_schedule drm
 alias symbol:drmm_kms_helper_poll_init drm_kms_helper
 alias symbol:rtw89_fw_h2c_rf_ntfy_mcc rtw89_core
 alias symbol:ath9k_cmn_init_crypto ath9k_common
-alias symbol:xor_blocks xor
 alias symbol:__drm_atomic_helper_set_config drm
 alias symbol:ar9003_mci_setup ath9k_hw
 alias symbol:drm_gem_mmap_obj drm
@@ -4725,7 +4718,6 @@ alias symbol:drm_probe_ddc drm
 alias symbol:gre_parse_header gre
 alias symbol:lbtf_send_tx_feedback libertas_tf
 alias symbol:mt792xu_mcu_power_on mt792x_usb
-alias symbol:raid6_gfinv raid6_pq
 alias symbol:usb_serial_generic_open usbserial
 alias symbol:ad714x_probe ad714x
 alias symbol:ceph_con_close libceph
@@ -4857,7 +4849,6 @@ alias symbol:__v4l2_subdev_state_get_format videodev
 alias symbol:mt76x02_set_ethtool_fwver mt76x02_lib
 alias symbol:netfs_read_folio netfs
 alias symbol:nf_ct_port_tuple_to_nlattr nf_conntrack
-alias symbol:raid6_gfmul raid6_pq
 alias symbol:ttm_kmap_iter_iomap_init ttm
 alias symbol:mt76_free_device mt76
 alias symbol:rtw89_fw_h2c_default_cmac_tbl rtw89_core
@@ -5379,7 +5370,6 @@ alias symbol:vhost_log_write vhost
 alias symbol:ip6t_alloc_initial_table ip6_tables
 alias symbol:mt76_get_min_avg_rssi mt76
 alias symbol:mwifiex_multi_chan_resync mwifiex
-alias symbol:raid6_vgfmul raid6_pq
 alias symbol:snd_pcm_hw_rule_add snd_pcm
 alias symbol:devm_drm_of_get_bridge drm_kms_helper
 alias symbol:poly1305_core_setkey libpoly1305
@@ -5597,7 +5587,6 @@ alias symbol:drm_atomic_helper_damage_merged drm_kms_helper
 alias symbol:drm_edid_valid drm
 alias symbol:drm_gem_prime_import drm
 alias symbol:ms_sensors_read_prom_word ms_sensors_i2c
-alias symbol:NlsUniUpperRange nls_ucs2_utils
 alias symbol:ceph_osdc_notify libceph
 alias symbol:drm_atomic_get_new_crtc_for_encoder drm
 alias symbol:p9_client_walk 9pnet
@@ -5651,7 +5640,6 @@ alias symbol:rtw_parse_tbl_txpwr_lmt rtw88_core
 alias symbol:__drm_debug drm
 alias symbol:dm_cache_policy_register dm_cache
 alias symbol:mt76u_read_copy mt76_usb
-alias symbol:raid6_gflog raid6_pq
 alias symbol:sm4_crypt_block sm4
 alias symbol:vsock_remove_pending vsock
 alias symbol:ata_pci_bmdma_prepare_host libata
@@ -6170,7 +6158,6 @@ alias symbol:iio_device_claim_direct_mode industrialio
 alias symbol:mdiobb_read_c45 mdio_bitbang
 alias symbol:rp1_firmware_get rp1_fw
 alias symbol:tpm_buf_length tpm
-alias symbol:blake2b_compress_generic blake2b_generic
 alias symbol:rndis_set_param_dev usb_f_rndis
 alias symbol:smscore_registry_getmode smsmdtv
 alias symbol:br_multicast_has_querier_adjacent bridge
@@ -6514,7 +6501,6 @@ alias symbol:smscore_unregister_hotplug smsmdtv
 alias symbol:snd_pcm_stream_unlock snd_pcm
 alias symbol:ttm_tt_pages_limit ttm
 alias symbol:vb2_queue_init_name videobuf2_v4l2
-alias symbol:NlsUniUpperTable nls_ucs2_utils
 alias symbol:media_entity_setup_link mc
 alias symbol:nf_nat_alloc_null_binding nf_nat
 alias symbol:nfnetlink_has_listeners nfnetlink
@@ -6761,7 +6747,6 @@ alias symbol:crypto_ft_tab aes_generic
 alias symbol:em28xx_read_reg em28xx
 alias symbol:brcmf_fil_iovar_data_set brcmfmac
 alias symbol:fscache_n_culled netfs
-alias symbol:raid6_datap_recov raid6_pq
 alias symbol:snd_seq_set_queue_tempo snd_seq
 alias symbol:uio_unregister_device uio
 alias symbol:ip_vs_tcp_conn_listen ip_vs
