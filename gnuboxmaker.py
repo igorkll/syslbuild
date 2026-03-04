@@ -845,7 +845,7 @@ def setup_build_targets(builditems, cmdline):
 
             "chown": [
                 ["/", 0, 0, False]
-            ],
+            ]
         })
         appendPartitions.append(["data.img", "linux"])
 
