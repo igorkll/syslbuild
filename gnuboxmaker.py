@@ -837,7 +837,15 @@ def setup_build_targets(builditems, cmdline):
 
             "fs_type": "ext4",
             "size": "64M",
-            "label": "DATA"
+            "label": "DATA",
+
+            "chmod": [
+                ["/", "1777", False]
+            ],
+
+            "chown": [
+                ["/", 0, 0, False]
+            ],
         })
         appendPartitions.append(["data.img", "linux"])
 

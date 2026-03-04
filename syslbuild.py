@@ -805,10 +805,20 @@ def buildFilesystem(item):
     if "fs_type" in item:
         formatFilesystem(fs_path, item)
 
-    if fs_files:
+    if fs_files or "chmod" in item or "chown" in item:
         mountFilesystem(fs_path, path_mount)
-        copyItemFiles(fs_files, path_mount)
+
+        if fs_files:
+            copyItemFiles(fs_files, path_mount)
+
+        if "chmod" in item:
+            makeChmod(buildDirectoryPath, item["chmod"])
+
+        if "chown" in item:
+            makeChown(buildDirectoryPath, item["chown"])
+
         umountFilesystem(path_mount)
+
 
 parititionTypesList_gpt = {
     "linux": "0FC63DAF-8483-4772-8E79-3D69D8477DE4",
