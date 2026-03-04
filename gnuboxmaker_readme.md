@@ -33,7 +33,6 @@ a similar program for creating Windows images for embedded devices: https://gith
 
 ## bugs
 * HDMI audio does not work on orange pi zero 3 (it works on raspberry pi 64)
-* no exfat support
 
 ## supported platforms
 * x86_64 (BIOS, UEFI)
@@ -103,7 +102,7 @@ a similar program for creating Windows images for embedded devices: https://gith
 * if session_mode init is set then runshell.sh in fact, it will be an init system, you do everything yourself. and it will always be run from root
 * the real boot partition is mounted in the "/bootmnt" directory and is accessible from updatescript via the path "/updateroot/bootmnt"
 * if you use a separate data partition for data, it will be expanded the first time you turn it on, regardless of root_expand. the root_expand itself will be IGNORED and the root partition will NOT be expanded
-* the data partition is created with the exfat filesystem in the /data directory
+* the data partition is created with the ext4 filesystem in the /data directory
 
 ## what should I do if the project build fails?
 * make sure that EACH of your chroot scripts creates a /.chrootend file at the end
