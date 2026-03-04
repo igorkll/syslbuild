@@ -812,10 +812,10 @@ def buildFilesystem(item):
             copyItemFiles(fs_files, path_mount)
 
         if "chmod" in item:
-            makeChmod(buildDirectoryPath, item["chmod"])
+            makeChmod(path_mount, item["chmod"])
 
         if "chown" in item:
-            makeChown(buildDirectoryPath, item["chown"])
+            makeChown(path_mount, item["chown"])
 
         umountFilesystem(path_mount)
 
