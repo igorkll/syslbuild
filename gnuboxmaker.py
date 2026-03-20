@@ -1370,6 +1370,13 @@ window = tk.Tk()
 window.title("Gnubox maker")
 window.geometry("800x600")
 
+window.update_idletasks()
+width = window.winfo_width()
+height = window.winfo_height()
+x = (window.winfo_screenwidth() // 2) - (width // 2)
+y = (window.winfo_screenheight() // 2) - (height // 2)
+window.geometry(f'{width}x{height}+{x}+{y}')
+
 container = tk.Frame(window)
 container.pack(fill="both", expand=True)
 frame_openproject = tk.Frame(container)
