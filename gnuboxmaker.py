@@ -448,13 +448,16 @@ watch=true""")
     
     elif currentProject.session_mode == "x11":
         xinitrc = "#!/bin/bash"
-        xinitrc += "\n" + "xset s off"
 
         if currentProject.screen_idle_time > 0:
-            xinitrc += "\n" + f"""xset dpms {currentProject.screen_idle_time} {currentProject.screen_idle_time} {currentProject.screen_idle_time}
+            xinitrc += "\n" + f"""xset s blank
+xset s {currentProject.screen_idle_time}
+xset s on
+xset dpms {currentProject.screen_idle_time} {currentProject.screen_idle_time} {currentProject.screen_idle_time}
 xset +dpms"""
         else:
-            xinitrc += "\n" + f"""xset -dpms"""
+            xinitrc += "\n" + f"""xset s off
+xset -dpms"""
 
         xinitrc += "\n/runshell_launcher.sh"
 
@@ -463,6 +466,8 @@ xset +dpms"""
         writeText(os.path.join(etc_config, "X11", "xorg.conf.d", "10-settings.conf"), f"""Section "ServerFlags"
     Option "DontVTSwitch" "true"
     Option "DontZap" "true"
+    Option "DontZoom" "true"
+    Option "AllowmouseOpenfail" "true"
 EndSection""")
 
 def setup_bootlogo():

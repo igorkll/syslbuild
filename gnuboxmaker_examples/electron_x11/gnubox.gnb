@@ -29,7 +29,8 @@
     "libwayland-egl1",
     "libgbm1",
     "libgtk-3-0",
-    "nano"
+    "nano",
+    "stterm"
   ],
   "debian_variant": "minbase",
   "debian_suite": "trixie",
