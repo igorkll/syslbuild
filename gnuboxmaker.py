@@ -457,6 +457,14 @@ xset -dpms"""
 
         writeText(os.path.join(etc_config, "X11", "xinit", "xinitrc"), xinitrc)
 
+        writeText(os.path.join(etc_config, "X11", "xorg.conf.d", "10-novtswitch.conf"), f"""Section "ServerFlags"
+    Option "DontVTSwitch" "yes"
+EndSection""")
+
+        writeText(os.path.join(etc_config, "X11", "xorg.conf.d", "10-dontzap.conf"), f"""Section "ServerFlags"
+    Option "DontZap" "true"
+EndSection""")
+
 def setup_bootlogo():
     bootlogo_files = os.path.join(path_temp_syslbuild, "files", "bootlogo")
     project_logo_path = os.path.join(path_resources, "logo.png")
