@@ -30,7 +30,7 @@ a similar program for creating Windows images for embedded devices: https://gith
 
 ## bugs
 * HDMI audio does not work on orange pi zero 3 (it works on raspberry pi 64)
-* screen_idle_time does not work on wayland
+* "screen idle time" does not work on wayland
 
 ## supported platforms
 * x86_64 (BIOS, UEFI)

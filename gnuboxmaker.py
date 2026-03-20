@@ -1219,6 +1219,10 @@ def generate_syslbuild_project():
     if currentProject.session_mode == "init":
         cmdline += " init=/runshell.sh"
 
+    session_mode = currentProject.session_mode
+    if session_mode != "x11" and session_mode != "wayland" and currentProject.screen_idle_time > 0:
+        cmdline += f" consoleblank={currentProject.screen_idle_time}"
+
     architectures = []
     builditems = []
 
