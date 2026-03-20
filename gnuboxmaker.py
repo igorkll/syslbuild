@@ -1368,7 +1368,7 @@ if len(sys.argv) > 1:
 guiLoaded = True
 window = tk.Tk()
 window.title("Gnubox maker")
-window.geometry("800x600")
+window.geometry("1200x700")
 
 window.update_idletasks()
 width = window.winfo_width()
