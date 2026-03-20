@@ -580,6 +580,7 @@ ShowStatus={"no" if currentProject.boot_quiet else "yes"}
     shutil.copy(os.path.join(path_resources, "preinit.sh"), os.path.join(path_temp_syslbuild, "files", "preinit.sh"))
     shutil.copy("gnuboxmaker/runshell_launcher.sh", os.path.join(path_temp_syslbuild, "files", "runshell_launcher.sh"))
     shutil.copy("gnuboxmaker/run_session_wayland.sh", os.path.join(path_temp_syslbuild, "files", "run_session_wayland.sh"))
+    shutil.copy("gnuboxmaker/run_session_x11.sh", os.path.join(path_temp_syslbuild, "files", "run_session_x11.sh"))
 
 def copy_bins(name):
     output_path = os.path.join(path_temp_syslbuild, name)
