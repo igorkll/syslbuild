@@ -448,20 +448,20 @@ watch=true""")
     
     elif currentProject.session_mode == "x11":
         xinitrc = "#!/bin/bash"
+        xinitrc += "\n" + "xset s off"
 
-        xinitrc += "\n" + f"""xset s off
-xset s noblank
-xset -dpms"""
+        if currentProject.screen_idle_time > 0:
+            xinitrc += "\n" + f"""xset dpms {currentProject.screen_idle_time} {currentProject.screen_idle_time} {currentProject.screen_idle_time}
+xset +dpms"""
+        else:
+            xinitrc += "\n" + f"""xset -dpms"""
 
         xinitrc += "\n/runshell_launcher.sh"
 
         writeText(os.path.join(etc_config, "X11", "xinit", "xinitrc"), xinitrc)
 
-        writeText(os.path.join(etc_config, "X11", "xorg.conf.d", "10-novtswitch.conf"), f"""Section "ServerFlags"
-    Option "DontVTSwitch" "yes"
-EndSection""")
-
-        writeText(os.path.join(etc_config, "X11", "xorg.conf.d", "10-dontzap.conf"), f"""Section "ServerFlags"
+        writeText(os.path.join(etc_config, "X11", "xorg.conf.d", "10-settings.conf"), f"""Section "ServerFlags"
+    Option "DontVTSwitch" "true"
     Option "DontZap" "true"
 EndSection""")
 
