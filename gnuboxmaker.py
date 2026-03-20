@@ -348,6 +348,7 @@ def setup_build_distro(builditems):
             include.append("xserver-xorg")
             include.append("xinit")
             include.append("x11-xserver-utils")
+            include.append("matchbox-window-manager")
 
         include += currentProject.user_packages
 
@@ -459,6 +460,7 @@ xset +dpms"""
             xinitrc += "\n" + f"""xset s off
 xset -dpms"""
 
+        xinitrc += "\nmatchbox-window-manager -use_titlebar no &"
         xinitrc += "\n/runshell_launcher.sh"
 
         writeText(os.path.join(etc_config, "X11", "xinit", "xinitrc"), xinitrc)
