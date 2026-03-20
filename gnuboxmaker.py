@@ -445,6 +445,17 @@ vt-switching=false
 [autolaunch]
 path=/runshell_launcher.sh
 watch=true""")
+    
+    elif currentProject.session_mode == "x11":
+        xinitrc = "#!/bin/bash"
+
+        xinitrc += "\n" + f"""xset s off
+xset s noblank
+xset -dpms"""
+
+        xinitrc += "\n/runshell_launcher.sh"
+
+        writeText(os.path.join(etc_config, "X11", "xinit", "xinitrc"), xinitrc)
 
 def setup_bootlogo():
     bootlogo_files = os.path.join(path_temp_syslbuild, "files", "bootlogo")
