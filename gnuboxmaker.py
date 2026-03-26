@@ -287,6 +287,10 @@ def setup_chroot_script():
 
     os.makedirs(chroot_scripts_directory, exist_ok=True)
 
+    with open(os.path.join(chroot_scripts_directory, "aaa_setup.sh"), "w") as f:
+        scripts.append(f"chroot/aaa_setup.sh")
+        f.write(gen_default_chroot_script())
+
     for f in sorted(Path(chroot_project_directory).iterdir(), key=lambda p: p.name):
         if f.is_file():
             scripts.append(f"chroot/{f.name}")
@@ -294,10 +298,6 @@ def setup_chroot_script():
                 os.path.join(chroot_project_directory, f.name),
                 os.path.join(chroot_scripts_directory, f.name)
             )
-
-    with open(os.path.join(chroot_scripts_directory, "aaa_setup.sh"), "w") as f:
-        scripts.append(f"chroot/aaa_setup.sh")
-        f.write(gen_default_chroot_script())
 
     return scripts
 
