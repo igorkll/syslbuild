@@ -211,7 +211,6 @@ def gen_default_chroot_script():
         user_shell = "/runshell_launcher.sh"
         
     aaa_setup = f"""#!/bin/bash
-set -e
 
 # ------------
 
@@ -245,7 +244,8 @@ systemctl set-default graphical.target
 
 usermod -s {user_shell} root
 useradd -m -u 10000 -s {user_shell} user
-usermod -aG video,input,audio,render user"""
+usermod -aG video,input,audio,render user
+mkdir -p -m 700 /home/user"""
 
     aaa_setup += "\n\n"
 
