@@ -245,7 +245,8 @@ systemctl set-default graphical.target
 usermod -s {user_shell} root
 useradd -m -u 10000 -s {user_shell} user
 usermod -aG video,input,audio,render user
-mkdir -p -m 700 /home/user"""
+mkdir -p -m 700 /home/user
+chown user:user /home/user"""
 
     aaa_setup += "\n\n"
 
