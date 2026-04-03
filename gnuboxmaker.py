@@ -319,14 +319,13 @@ def setup_build_distro(builditems):
             "uuid-runtime",
             "sed",
             "mawk",
-            "kexec-tools"
-        ]
+            "kexec-tools",
 
-        if currentProject.export_arm64:
-            include.append("firmware-linux")
-            include.append("firmware-brcm80211")
-            include.append("firmware-realtek")
-            include.append("wireless-regdb")
+            "firmware-linux",
+            "firmware-brcm80211",
+            "firmware-realtek",
+            "wireless-regdb"
+        ]
 
         # without this, no dependencies are set and nothing works. А МОЖЕТ БЛЯТЬ И НЕТ, я разберусь...
         if currentProject.boot_splash or True:
