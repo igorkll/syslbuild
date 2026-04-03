@@ -42,6 +42,7 @@ class Project:
     boot_quiet: bool = True
     boot_splash: bool = True
     dont_show_splash_on_poweroff: bool = True
+    dont_use_splash_on_efi: bool = False
 
     splash_bg: str = "0, 0, 0"
     splash_mode: str = "contain"
@@ -1214,8 +1215,9 @@ def generate_syslbuild_project():
     if currentProject.boot_quiet:
         cmdline += f" systemd.show_status=false rd.systemd.show_status=false systemd.log_target=journal rd.systemd.log_target=journal udev.log_level=1 rd.udev.log_level=1 systemd.log_level=emerg rd.systemd.log_level=emerg clear noCursorBlink vt.global_cursor_default=0 quiet"
 
+    boot_splash_substring = " splash earlysplash"
     if currentProject.boot_splash:
-        cmdline += " splash earlysplash"
+        cmdline += boot_splash_substring
 
     if currentProject.session_mode == "init":
         cmdline += " init=/runshell.sh"
@@ -1247,12 +1249,22 @@ def generate_syslbuild_project():
         json.dump(syslbuild_project, f, indent=2, ensure_ascii=False)
 
     with open(os.path.join(path_temp_syslbuild, "grub.cfg"), "w") as f:
-        f.write(f"""set cmdline="{cmdline}"
+        grubcfg = f"""set cmdline="{cmdline}" """
 
-probe --set root_fs_uuid --fs-uuid $root
+        if currentProject.dont_use_splash_on_efi:
+            grubcfg += "\n"
+            grubcfg += f"""if [ "$grub_platform" = "efi" ]; then
+    set cmdline="{cmdline.replace(boot_splash_substring, "")}"
+fi"""
+
+
+        grubcfg += "\n"
+        grubcfg += f"""probe --set root_fs_uuid --fs-uuid $root
 linux /kernel.img root=UUID=$root_fs_uuid ${{cmdline}}
 initrd /initramfs.img
-boot""")
+boot"""
+
+        f.write(grubcfg)
 
 def run_syslbuild():
     # надо при сборке из tty вместо pkexec заюзать sudo
