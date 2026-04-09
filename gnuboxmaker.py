@@ -524,6 +524,9 @@ image_sprite.SetZ(-1);"""
 
     writeText(os.path.join(bootlogo_files, "bootlogo.script"), bootlogo_script)
 
+def prepair_platforms(platforms):
+    pass
+
 def setup_write_files():
     etc_config = os.path.join(path_temp_syslbuild, "files", "etc_config")
     systemd_config = os.path.join(path_temp_syslbuild, "files", "systemd_config")
@@ -602,6 +605,8 @@ ShowStatus={"no" if current_project.boot_quiet else "yes"}
     shutil.copy("gnuboxmaker/run_session_wayland.sh", os.path.join(path_temp_syslbuild, "files", "run_session_wayland.sh"))
     shutil.copy("gnuboxmaker/run_session_x11.sh", os.path.join(path_temp_syslbuild, "files", "run_session_x11.sh"))
     buildExecute(["cp", "-a", os.path.join(path_resources, "platforms") + "/.", platforms])
+
+    prepair_platforms(platforms)
 
 def copy_bins(name):
     output_path = os.path.join(path_temp_syslbuild, name)
@@ -859,6 +864,9 @@ def setup_build_base(builditems):
         "minsize": "64MB",
         "label": "rootfs"
     })
+
+def get_platform_devicetree():
+    pass
 
 def setup_build_targets(builditems, cmdline):
     appendPartitions = []
@@ -1358,8 +1366,8 @@ def update_project_structure():
             f.write("last.log\n")
 
     init_platform("arm64")
-    init_platform("x86")
-    init_platform("x86_64")
+    init_platform("opi_zero3")
+    init_platform("rpi_64")
 
 def load_project(path):
     global current_project
