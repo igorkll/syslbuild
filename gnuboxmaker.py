@@ -1045,6 +1045,50 @@ avoid_warnings=1
         "git_checkout": "1.20250915"
     })
 
+    items = [
+        ["rpi_64_firmware/boot/COPYING.linux", "/COPYING.linux"],
+        ["rpi_64_firmware/boot/LICENCE.broadcom", "/LICENCE.broadcom"],
+        ["rpi_64_firmware/boot/overlays", "/overlays"],
+        ["rpi_64_firmware/boot/fixup.dat", "/fixup.dat"],
+        ["rpi_64_firmware/boot/fixup4.dat", "/fixup4.dat"],
+        ["rpi_64_firmware/boot/fixup4cd.dat", "/fixup4cd.dat"],
+        ["rpi_64_firmware/boot/fixup4db.dat", "/fixup4db.dat"],
+        ["rpi_64_firmware/boot/fixup4x.dat", "/fixup4x.dat"],
+        ["rpi_64_firmware/boot/fixup_cd.dat", "/fixup_cd.dat"],
+        ["rpi_64_firmware/boot/fixup_db.dat", "/fixup_db.dat"],
+        ["rpi_64_firmware/boot/fixup_x.dat", "/fixup_x.dat"],
+        ["rpi_64_firmware/boot/start.elf", "/start.elf"],
+        ["rpi_64_firmware/boot/start4.elf", "/start4.elf"],
+        ["rpi_64_firmware/boot/start4cd.elf", "/start4cd.elf"],
+        ["rpi_64_firmware/boot/start4db.elf", "/start4db.elf"],
+        ["rpi_64_firmware/boot/start4x.elf", "/start4x.elf"],
+        ["rpi_64_firmware/boot/start_cd.elf", "/start_cd.elf"],
+        ["rpi_64_firmware/boot/start_db.elf", "/start_db.elf"],
+        ["rpi_64_firmware/boot/start_x.elf", "/start_x.elf"],
+        ["rpi_64_firmware/boot/bootcode.bin", "/bootcode.bin"],
+
+        ["kernel_image/arm64/rpi_64/boot", "/"],
+        ["kernel_image/arm64/rpi_64/kernel.img", "/kernel8.img"],
+        ["kernel_image/arm64/rpi_64/kernel_config", "/kernel8_config"],
+        ["initramfs_rpi_64.img", "/initramfs8"],
+
+        ["kernel_image/arm64/rpi_5/boot", "/"],
+        ["kernel_image/arm64/rpi_5/kernel.img", "/kernel_2712.img"],
+        ["kernel_image/arm64/rpi_5/kernel_config", "/kernel2712_config"],
+        ["initramfs_rpi_5.img", "/initramfs_2712"],
+
+        ["files/cmdline_rpi_64.txt", "/cmdline.txt"],
+        ["files/config_rpi_64.txt", "/config.txt"]
+    ]
+
+    dtbList = platform_get_files(rpi_64_platforms, "devicetree", "dtb")
+    for dtb in dtbList:
+        items.append([dtb, f"/{os.path.basename(dtb)}"])
+
+    dtboList = platform_get_files(rpi_64_platforms, "devicetree", "dtbo")
+    for dtbo in dtboList:
+        items.append([dtbo, f"/overlays/{os.path.basename(dtbo)}"])
+
     builditems.append({
         "architectures": ["arm64"],
 
@@ -1052,44 +1096,7 @@ avoid_warnings=1
         "name": "boot_rpi_64",
         "export": False,
 
-        "items": [
-            ["rpi_64_firmware/boot/COPYING.linux", "/COPYING.linux"],
-            ["rpi_64_firmware/boot/LICENCE.broadcom", "/LICENCE.broadcom"],
-            ["rpi_64_firmware/boot/overlays", "/overlays"],
-            ["rpi_64_firmware/boot/fixup.dat", "/fixup.dat"],
-            ["rpi_64_firmware/boot/fixup4.dat", "/fixup4.dat"],
-            ["rpi_64_firmware/boot/fixup4cd.dat", "/fixup4cd.dat"],
-            ["rpi_64_firmware/boot/fixup4db.dat", "/fixup4db.dat"],
-            ["rpi_64_firmware/boot/fixup4x.dat", "/fixup4x.dat"],
-            ["rpi_64_firmware/boot/fixup_cd.dat", "/fixup_cd.dat"],
-            ["rpi_64_firmware/boot/fixup_db.dat", "/fixup_db.dat"],
-            ["rpi_64_firmware/boot/fixup_x.dat", "/fixup_x.dat"],
-            ["rpi_64_firmware/boot/start.elf", "/start.elf"],
-            ["rpi_64_firmware/boot/start4.elf", "/start4.elf"],
-            ["rpi_64_firmware/boot/start4cd.elf", "/start4cd.elf"],
-            ["rpi_64_firmware/boot/start4db.elf", "/start4db.elf"],
-            ["rpi_64_firmware/boot/start4x.elf", "/start4x.elf"],
-            ["rpi_64_firmware/boot/start_cd.elf", "/start_cd.elf"],
-            ["rpi_64_firmware/boot/start_db.elf", "/start_db.elf"],
-            ["rpi_64_firmware/boot/start_x.elf", "/start_x.elf"],
-            ["rpi_64_firmware/boot/bootcode.bin", "/bootcode.bin"],
-
-            ["kernel_image/arm64/rpi_64/boot", "/"],
-            ["kernel_image/arm64/rpi_64/kernel.img", "/kernel8.img"],
-            ["kernel_image/arm64/rpi_64/kernel_config", "/kernel8_config"],
-            ["initramfs_rpi_64.img", "/initramfs8"],
-
-            ["kernel_image/arm64/rpi_5/boot", "/"],
-            ["kernel_image/arm64/rpi_5/kernel.img", "/kernel_2712.img"],
-            ["kernel_image/arm64/rpi_5/kernel_config", "/kernel2712_config"],
-            ["initramfs_rpi_5.img", "/initramfs_2712"],
-
-            ["files/cmdline_rpi_64.txt", "/cmdline.txt"],
-            ["files/config_rpi_64.txt", "/config.txt"] #,
-
-            # ["files/rpi_devicetree", "/"],
-            # ["files/rpi_overlays", "/overlays"]
-        ]
+        "items": items
     })
 
     builditems.append({
