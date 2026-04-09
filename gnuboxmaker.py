@@ -577,10 +577,24 @@ def platform_get_devicetree_override(platforms_names):
             with open(override_path, 'r', encoding='utf-8') as f:
                 content = f.read().strip()
                 if len(content) > 0:
-                    pass
+                    return content
     
     return None
-        
+
+def platform_get_devicetree_overlays(platforms_names):
+    for platform_name in platforms_names:
+        dt_dir = os.path.join(platform_name, 'devicetree')
+        if not os.path.isdir(dt_dir):
+            continue
+
+        overlays_path = os.path.join(dt_dir, 'overlays.txt')
+        if os.path.is_file(overlays_path):
+            with open(overlays_path, 'r', encoding='utf-8') as f:
+                content = f.read().strip()
+                if len(content) > 0:
+                    return content.splitlines()
+    
+    return []
 
 def copy_files(from_path, to_path):
     buildExecute(["cp", "-a", from_path + "/.", to_path])
