@@ -1024,7 +1024,7 @@ avoid_warnings=1
 
     override = platform_get_devicetree_override(rpi_64_platforms)
     if override:
-        config_txt += f"\ndevice_tree={override}"
+        config_txt += f"\ndevice_tree={override}.dtb"
 
     overlays = platform_get_devicetree_overlays(rpi_64_platforms)
     for overlay in overlays:
