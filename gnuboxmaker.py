@@ -606,7 +606,7 @@ def platform_get_devicetree_overlays(platforms_names):
 def platform_get_files(platforms_names, directory, extension):
     platforms_path = os.path.join(path_temp_syslbuild, "files", "platforms")
 
-    overlays_files = []
+    files = []
 
     for platform_name in platforms_names:
         dt_dir = os.path.join(platforms_path, platform_name, directory)
@@ -619,9 +619,9 @@ def platform_get_files(platforms_names, directory, extension):
                 continue
             
             if full_path.endswith('.' + extension):
-                overlays_files.append(os.path.join("files", "platforms", platform_name, directory, file))
+                files.append(os.path.join("files", "platforms", platform_name, directory, file))
     
-    return overlays_files
+    return files
 
 def copy_files(from_path, to_path):
     buildExecute(["cp", "-a", from_path + "/.", to_path])
