@@ -21,6 +21,9 @@ session_mode_variants = ["wayland", "x11", "tty", "init"]
 weston_shell_variants = ["kiosk", "desktop"]
 splash_mode_variants = ["center", "fill", "contain", "cover"]
 
+rpi_64_platforms = ["rpi_64", "arm64", "all"]
+opi_zero3_platforms = ["opi_zero3", "arm64", "all"]
+
 @dataclass
 class Project:
     gnubox_version: list[int] = field(default_factory=lambda: [0, 0, 0])
@@ -1198,7 +1201,11 @@ boot_delay=0
 avoid_warnings=1
 """
 
-        overlays = platform_get_devicetree_overlays("rpi_64", "arm64", "all")
+        override = platform_get_devicetree_override(rpi_64_platforms)
+        if override:
+            
+
+        overlays = platform_get_devicetree_overlays(rpi_64_platforms)
         for overlay in overlays:
             config_txt += f"\ndtoverlay={os.path.splitext(overlay)[0]}"
 
