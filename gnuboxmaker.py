@@ -524,8 +524,47 @@ image_sprite.SetZ(-1);"""
 
     writeText(os.path.join(bootlogo_files, "bootlogo.script"), bootlogo_script)
 
-def prepair_platforms(platforms):
-    pass
+def compile_dts(source_path, output_path):
+    """Компилирует .dts/.dtso файл в .dtb/.dtbo с символами (-@)."""
+    cmd = ['dtc', '-@', '-I', 'dts', '-O', 'dtb', '-o', output_path, source_path]
+    try:
+        subprocess.run(cmd, check=True, capture_output=True, text=True)
+        print(f"[OK] {source_path} -> {output_path}")
+    except subprocess.CalledProcessError as e:
+        print(f"[FAIL] {source_path}:\n  {e.stderr}", file=sys.stderr)
+
+def prepair_platforms(platforms_root):
+    """
+    Обходит все поддиректории в platforms_root.
+    В каждой, где есть подпапка 'devicetree', находит все .dts и .dtso файлы
+    и компилирует их в .dtb или .dtbo соответственно с отладочными символами (-@).
+    """
+
+    for plat_name in os.listdir(platforms_root):
+        plat_path = os.path.join(platforms_root, plat_name)
+        if not os.path.isdir(plat_path):
+            continue
+
+        dt_dir = os.path.join(plat_path, 'devicetree')
+        if not os.path.isdir(dt_dir):
+            continue
+
+        for root, dirs, files in os.walk(dt_dir):
+            for file in files:
+                # Определяем расширение исходного файла
+                if file.endswith('.dts'):
+                    out_ext = '.dtb'
+                elif file.endswith('.dtso'):
+                    out_ext = '.dtbo'
+                else:
+                    continue  # пропускаем другие файлы
+
+                source_full = os.path.join(root, file)
+                base_name = os.path.splitext(file)[0]  # без расширения
+                out_file = base_name + out_ext
+                out_full = os.path.join(root, out_file)
+
+                compile_dts(source_full, out_full)
 
 def setup_write_files():
     etc_config = os.path.join(path_temp_syslbuild, "files", "etc_config")

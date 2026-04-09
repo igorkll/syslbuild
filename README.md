@@ -87,6 +87,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * mkimage (u-boot-tools)
 * systemd-container
 * reset
+* device-tree-compiler
 
 ## python dependencies
 * json5

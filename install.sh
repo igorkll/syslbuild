@@ -24,6 +24,7 @@ sudo apt install -y \
 sudo apt install -y u-boot-tools
 sudo apt install -y arch-install-scripts
 sudo apt install -y grub-efi-ia32-bin grub-common
+sudo apt install -y device-tree-compiler
 sudo pip install json5 --break-system-packages
 sudo pip install asteval --break-system-packages
 
