@@ -608,12 +608,12 @@ def platform_get_files(platforms_names, directory, extension):
 
     files = []
 
-    for platform_name in platforms_names:
+    for platform_name in reversed(platforms_names):
         dt_dir = os.path.join(platforms_path, platform_name, directory)
         if not os.path.isdir(dt_dir):
             continue
 
-        for file in os.listdir(dt_dir):
+        for file in sorted(os.listdir(dt_dir)):
             full_path = os.path.join(dt_dir, file)
             if not os.path.isfile(full_path):
                 continue
