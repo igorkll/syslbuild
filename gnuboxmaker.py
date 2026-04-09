@@ -27,6 +27,7 @@ class Project:
 
     distro: str = "debian"
     user_packages: list[str] = field(default_factory=list)
+    exclude_packages: list[str] = field(default_factory=list)
     
     debian_variant: str = "minbase"
     debian_suite: str = "trixie"
@@ -352,6 +353,7 @@ def setup_build_distro(builditems):
             include.append("matchbox-window-manager")
 
         include += current_project.user_packages
+        include = [item for item in include if item not in current_project.exclude_packages]
 
         builditems.append({
             "type": "debian",
@@ -526,10 +528,12 @@ def setup_write_files():
     etc_config = os.path.join(path_temp_syslbuild, "files", "etc_config")
     systemd_config = os.path.join(path_temp_syslbuild, "files", "systemd_config")
     user_files = os.path.join(path_temp_syslbuild, "files", "user_files")
+    platforms = os.path.join(path_temp_syslbuild, "files", "platforms")
 
     os.makedirs(etc_config, exist_ok=True)
     os.makedirs(systemd_config, exist_ok=True)
     os.makedirs(user_files, exist_ok=True)
+    os.makedirs(platforms, exist_ok=True)
 
     writeText(os.path.join(systemd_config, "logind.conf"), f"""[Login]
 NAutoVTs=0
@@ -597,6 +601,7 @@ ShowStatus={"no" if current_project.boot_quiet else "yes"}
     shutil.copy("gnuboxmaker/runshell_launcher.sh", os.path.join(path_temp_syslbuild, "files", "runshell_launcher.sh"))
     shutil.copy("gnuboxmaker/run_session_wayland.sh", os.path.join(path_temp_syslbuild, "files", "run_session_wayland.sh"))
     shutil.copy("gnuboxmaker/run_session_x11.sh", os.path.join(path_temp_syslbuild, "files", "run_session_x11.sh"))
+    buildExecute(["cp", "-a", os.path.join(path_resources, "platforms") + "/.", platforms])
 
 def copy_bins(name):
     output_path = os.path.join(path_temp_syslbuild, name)
