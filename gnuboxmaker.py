@@ -619,7 +619,7 @@ def platform_get_devicetree_files(platforms_names, extension):
                 continue
             
             if full_path.endswith('.' + extension):
-                overlays_files.append(os.path.join(platforms_path, platform_name, 'devicetree'))
+                overlays_files.append(os.path.join("files", "platforms", platform_name, 'devicetree', file))
     
     return overlays_files
 
@@ -1137,8 +1137,8 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         "bootloaderDtb": platform_get_devicetree_override(opi_zero3_platforms) or "sun50i-h618-orangepi-zero3.dtb",
         "dtbList": [
             "kernel_image/arm64/opi_zero3/sun50i-h618-orangepi-zero3.dtb"
-        ] + platform_get_devicetree_override_files(opi_zero3_platforms),
-        "dtboList": platform_get_devicetree_overlays_files(opi_zero3_platforms),
+        ] + platform_get_devicetree_files(opi_zero3_platforms, ".dtb"),
+        "dtboList": platform_get_devicetree_files(opi_zero3_platforms, ".dtbo"),
         "dtboList_active": platform_get_devicetree_overlays(opi_zero3_platforms),
 
         "kernel": "kernel_image/arm64/opi_zero3/kernel.img",
