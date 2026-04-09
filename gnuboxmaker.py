@@ -186,9 +186,9 @@ def copyFile(path, fromPath):
 
 # ---------------------------------------- builder
 
-currentProject = None
-currentProjectName = None
-currentProjectDirectory = None
+current_project = None
+current_project_name = None
+current_project_directory = None
 
 path_temp = None
 path_resources = None
@@ -196,17 +196,17 @@ path_temp_syslbuild = None
 path_temp_syslbuild_file = None
 
 def setup_build_architectures(architectures):
-    if currentProject.export_x86_64:
+    if current_project.export_x86_64:
         architectures.append("amd64")
 
-    if currentProject.export_x86:
+    if current_project.export_x86:
         architectures.append("i386")
 
-    if currentProject.export_arm64:
+    if current_project.export_arm64:
         architectures.append("arm64")
 
 def gen_default_chroot_script():
-    if currentProject.session_mode == "wayland" or currentProject.session_mode == "x11":
+    if current_project.session_mode == "wayland" or current_project.session_mode == "x11":
         user_shell = "/run_session.sh"
     else:
         user_shell = "/runshell_launcher.sh"
@@ -251,7 +251,7 @@ chown user:user /home/user"""
 
     aaa_setup += "\n\n"
 
-    if currentProject.boot_splash:
+    if current_project.boot_splash:
         aaa_setup += f"""plymouth-set-default-theme bootlogo
 cp -f /usr/share/plymouth/themes/bootlogo/bootlogo.plymouth /usr/share/plymouth/themes/default.plymouth
 
@@ -270,13 +270,13 @@ systemctl mask plymouth-read-write.service
 # systemctl mask plymouth-halt.service
 # systemctl mask plymouth-log.service"""
 
-    if currentProject.dont_show_splash_on_poweroff:
+    if current_project.dont_show_splash_on_poweroff:
         aaa_setup += "\n" + f"""systemctl mask plymouth-poweroff.service
 systemctl mask plymouth-reboot.service
 systemctl mask plymouth-halt.service
 systemctl mask plymouth-kexec.service"""
 
-    if currentProject.session_mode != "init":
+    if current_project.session_mode != "init":
         aaa_setup += "\n\nsystemctl enable run_shell.service"
 
     aaa_setup += "\n\ntouch /.chrootend"
@@ -304,7 +304,7 @@ def setup_chroot_script():
     return scripts
 
 def setup_build_distro(builditems):
-    if currentProject.distro == "debian":
+    if current_project.distro == "debian":
         include = [
             "initramfs-tools",
             "systemd",
@@ -328,30 +328,30 @@ def setup_build_distro(builditems):
         ]
 
         # without this, no dependencies are set and nothing works. А МОЖЕТ БЛЯТЬ И НЕТ, я разберусь...
-        if currentProject.boot_splash or True:
+        if current_project.boot_splash or True:
             include.append("plymouth") # install basic plymouth files. The part will later be replaced by embedded plymouth.
             include.append("plymouth-themes")
 
-        if currentProject.session_mode == "wayland" or currentProject.session_mode == "x11":
+        if current_project.session_mode == "wayland" or current_project.session_mode == "x11":
             include.append("mesa-utils")
             include.append("libgl1-mesa-dri")
             include.append("libgbm1")
             include.append("libdrm2")
 
-            if currentProject.debian_suite == "trixie":
+            if current_project.debian_suite == "trixie":
                 include.append("libegl1")
             else:
                 include.append("libegl1-mesa")
 
-        if currentProject.session_mode == "wayland":
+        if current_project.session_mode == "wayland":
             include.append("weston")
-        elif currentProject.session_mode == "x11":
+        elif current_project.session_mode == "x11":
             include.append("xserver-xorg")
             include.append("xinit")
             include.append("x11-xserver-utils")
             include.append("matchbox-window-manager")
 
-        include += currentProject.user_packages
+        include += current_project.user_packages
 
         builditems.append({
             "type": "debian",
@@ -366,12 +366,12 @@ def setup_build_distro(builditems):
             ],
             "include": include,
 
-            "variant": currentProject.debian_variant,
-            "suite": currentProject.debian_suite,
-            "url": currentProject.debian_snapshot
+            "variant": current_project.debian_variant,
+            "suite": current_project.debian_suite,
+            "url": current_project.debian_snapshot
         })
     else:
-        stop_error(f"unknown distro \"{currentProject.distro}\"")
+        stop_error(f"unknown distro \"{current_project.distro}\"")
 
 def setup_download(builditems):
     builditems.append({
@@ -399,7 +399,7 @@ def setup_download(builditems):
 def setup_autologin():
     systemd_config = os.path.join(path_temp_syslbuild, "files", "systemd_config")
 
-    if currentProject.session_mode != "init":
+    if current_project.session_mode != "init":
         content = f"""[Unit]
 Description=shell
 After=graphical.target
@@ -413,7 +413,7 @@ TTYVHangup=yes
 TTYVTDisallocate=no
 StandardInput=tty
 StandardOutput=tty
-ExecStart=-/bin/login -f {currentProject.session_user}
+ExecStart=-/bin/login -f {current_project.session_user}
 Restart=always
 RestartSec=0
 
@@ -425,10 +425,10 @@ WantedBy=default.target"""
 def setup_graphic():
     etc_config = os.path.join(path_temp_syslbuild, "files", "etc_config")
 
-    if currentProject.session_mode == "wayland":
+    if current_project.session_mode == "wayland":
         writeText(os.path.join(etc_config, "xdg", "weston", "weston.ini"), f"""[core]
-shell={currentProject.weston_shell}-shell.so
-idle-time={currentProject.screen_idle_time}
+shell={current_project.weston_shell}-shell.so
+idle-time={current_project.screen_idle_time}
 
 [shell]
 background-color=0xff000000
@@ -448,14 +448,14 @@ vt-switching=false
 path=/runshell_launcher.sh
 watch=true""")
     
-    elif currentProject.session_mode == "x11":
+    elif current_project.session_mode == "x11":
         xinitrc = "#!/bin/bash"
 
-        if currentProject.screen_idle_time > 0:
+        if current_project.screen_idle_time > 0:
             xinitrc += "\n" + f"""xset s blank
-xset s {currentProject.screen_idle_time}
+xset s {current_project.screen_idle_time}
 xset s on
-xset dpms {currentProject.screen_idle_time} {currentProject.screen_idle_time} {currentProject.screen_idle_time}
+xset dpms {current_project.screen_idle_time} {current_project.screen_idle_time} {current_project.screen_idle_time}
 xset +dpms"""
         else:
             xinitrc += "\n" + f"""xset s off
@@ -477,17 +477,17 @@ def setup_bootlogo():
     bootlogo_files = os.path.join(path_temp_syslbuild, "files", "bootlogo")
     project_logo_path = os.path.join(path_resources, "logo.png")
 
-    if currentProject.boot_splash:
+    if current_project.boot_splash:
         copyFile(os.path.join(bootlogo_files, "bootlogo.plymouth"), "gnuboxmaker/bootlogo.plymouth")
         copyFile(os.path.join(bootlogo_files, "logo.png"), project_logo_path)
 
-    if currentProject.splash_mode == "fill":
+    if current_project.splash_mode == "fill":
         scale_code = f"""scaled_width = window_width;
 scaled_height = window_height;"""
-    elif currentProject.splash_mode == "center":
+    elif current_project.splash_mode == "center":
         scale_code = f"""scaled_width = img_width;
 scaled_height = img_height;"""
-    elif currentProject.splash_mode == "cover":
+    elif current_project.splash_mode == "cover":
         scale_code = f"""img_scale = Math.Max(window_width / img_width, window_height / img_height);
 scaled_width = Math.Int(img_width * img_scale);
 scaled_height = Math.Int(img_height * img_scale);"""
@@ -496,8 +496,8 @@ scaled_height = Math.Int(img_height * img_scale);"""
 scaled_width = Math.Int(img_width * img_scale);
 scaled_height = Math.Int(img_height * img_scale);"""
 
-    bootlogo_script = f"""Window.SetBackgroundTopColor({currentProject.splash_bg});
-Window.SetBackgroundBottomColor({currentProject.splash_bg});
+    bootlogo_script = f"""Window.SetBackgroundTopColor({current_project.splash_bg});
+Window.SetBackgroundBottomColor({current_project.splash_bg});
 
 image = Image("logo.png");
 
@@ -508,8 +508,8 @@ img_height = image.GetHeight();
 
 {scale_code}
 
-scaled_width = scaled_width * {currentProject.splash_scale};
-scaled_height = scaled_height * {currentProject.splash_scale};
+scaled_width = scaled_width * {current_project.splash_scale};
+scaled_height = scaled_height * {current_project.splash_scale};
 
 scaled_image = image.Scale(scaled_width, scaled_height);
 x = (window_width - scaled_width) / 2;
@@ -537,25 +537,25 @@ ReserveVT=0
 
 IdleAction=ignore
 
-HandlePowerKey={currentProject.HandlePowerKey}
-HandlePowerKeyLongPress={currentProject.HandlePowerKey}
+HandlePowerKey={current_project.HandlePowerKey}
+HandlePowerKeyLongPress={current_project.HandlePowerKey}
 PowerKeyIgnoreInhibited=no
 
-HandleRebootKey={currentProject.HandleRebootKey}
-HandleRebootKeyLongPress={currentProject.HandleRebootKey}
+HandleRebootKey={current_project.HandleRebootKey}
+HandleRebootKeyLongPress={current_project.HandleRebootKey}
 RebootKeyIgnoreInhibited=no
 
-HandleSuspendKey={currentProject.HandleSuspendKey}
-HandleSuspendKeyLongPress={currentProject.HandleSuspendKey}
+HandleSuspendKey={current_project.HandleSuspendKey}
+HandleSuspendKeyLongPress={current_project.HandleSuspendKey}
 SuspendKeyIgnoreInhibited=no
 
-HandleHibernateKey={currentProject.HandleHibernateKey}
-HandleHibernateKeyLongPress={currentProject.HandleHibernateKey}
+HandleHibernateKey={current_project.HandleHibernateKey}
+HandleHibernateKeyLongPress={current_project.HandleHibernateKey}
 HibernateKeyIgnoreInhibited=no
 
-HandleLidSwitch={currentProject.HandleLidSwitch}
-HandleLidSwitchExternalPower={currentProject.HandleLidSwitch}
-HandleLidSwitchDocked={currentProject.HandleLidSwitch}
+HandleLidSwitch={current_project.HandleLidSwitch}
+HandleLidSwitchExternalPower={current_project.HandleLidSwitch}
+HandleLidSwitchDocked={current_project.HandleLidSwitch}
 LidSwitchIgnoreInhibited=no""")
 
     writeText(os.path.join(systemd_config, "journald.conf"), f"""[Journal]
@@ -570,12 +570,12 @@ MaxLevelConsole=emerg
 MaxLevelWall=emerg""")
 
     user_system_config_append = ""
-    if currentProject.boot_quiet:
+    if current_project.boot_quiet:
         user_system_config_append = """LogTarget=journal
 LogLevel=emerg"""
 
     writeText(os.path.join(systemd_config, "system.conf"), f"""[Manager]
-ShowStatus={"no" if currentProject.boot_quiet else "yes"}
+ShowStatus={"no" if current_project.boot_quiet else "yes"}
 {user_system_config_append}""")
 
     writeText(os.path.join(systemd_config, "user.conf"), f"""[Manager]
@@ -622,7 +622,7 @@ def setup_write_bins(builditems):
 
     # ЧТО ТУТ БЛЯТЬ С ПРАВАМИ ДОСТУПА. БЕЗ ЭТОЙ ХУЙНЮ НИХУЯ НЕ ПАШЕТ
     # походу при копировании plymouth проставляет права доступа другим директориям а без этого мы получаем жопу и не поднимающийся dbus
-    if currentProject.boot_splash or True:
+    if current_project.boot_splash or True:
         copy_bins("embedded-plymouth")
         items.append(["embedded-plymouth/x86_64", "/", [0, 0, "0755"]])
 
@@ -644,7 +644,7 @@ def setup_write_bins(builditems):
         ["kernel_image/i386/kernel.img", "/kernel.img", [0, 0, "0755"]]
     ]
 
-    if currentProject.boot_splash or True:
+    if current_project.boot_splash or True:
         items.append(["embedded-plymouth/x86", "/", [0, 0, "0755"]])
 
     builditems.append({
@@ -663,14 +663,14 @@ def setup_write_bins(builditems):
         ["rootfs directory x2", "."]
     ]
 
-    if currentProject.export_img_opi_zero3:
+    if current_project.export_img_opi_zero3:
         items.append(["kernel_image/arm64/opi_zero3/kernel_modules", "/usr"])
 
-    if currentProject.export_img_rpi_64:
+    if current_project.export_img_rpi_64:
         items.append(["kernel_image/arm64/rpi_64/kernel_modules", "/usr"])
         items.append(["kernel_image/arm64/rpi_5/kernel_modules", "/usr"])
 
-    if currentProject.boot_splash or True:
+    if current_project.boot_splash or True:
         items.append(["embedded-plymouth/arm64", "/", [0, 0, "0755"]])
 
     builditems.append({
@@ -685,7 +685,7 @@ def setup_write_bins(builditems):
     })
 
 def setup_export_initramfs(builditems):
-    if currentProject.distro == "debian":
+    if current_project.distro == "debian":
         builditems.append({
             "architectures": ["amd64"],
             
@@ -708,7 +708,7 @@ def setup_export_initramfs(builditems):
             "source": "rootfs directory x4"
         })
 
-        if currentProject.export_img_opi_zero3:
+        if current_project.export_img_opi_zero3:
             builditems.append({
                 "architectures": ["arm64"],
 
@@ -720,7 +720,7 @@ def setup_export_initramfs(builditems):
                 "source": "rootfs directory x4"
             })
 
-        if currentProject.export_img_rpi_64:
+        if current_project.export_img_rpi_64:
             builditems.append({
                 "architectures": ["arm64"],
 
@@ -745,7 +745,7 @@ def setup_export_initramfs(builditems):
                 "source": "rootfs directory x4"
             })
     else:
-        stop_error(f"unknown distro \"{currentProject.distro}\"")
+        stop_error(f"unknown distro \"{current_project.distro}\"")
 
 def setup_build_base(builditems):
     setup_build_distro(builditems)
@@ -768,11 +768,11 @@ def setup_build_base(builditems):
 
     directories = []
 
-    if currentProject.session_mode == "wayland":
+    if current_project.session_mode == "wayland":
         items.append(["files/run_session_wayland.sh", "/run_session.sh", [0, 0, "0755"]])
-    elif currentProject.session_mode == "x11":
+    elif current_project.session_mode == "x11":
         items.append(["files/run_session_x11.sh", "/run_session.sh", [0, 0, "0755"]])
-    elif currentProject.session_mode == "tty":
+    elif current_project.session_mode == "tty":
         directories.append(["/.session_mode_tty", [0, 0, "0000"]])
 
     builditem = {
@@ -785,7 +785,7 @@ def setup_build_base(builditems):
         "delete": []
     }
 
-    if currentProject.boot_splash:
+    if current_project.boot_splash:
         builditem["directories"].append(["/usr/share/plymouth/themes/bootlogo", [0, 0, "0755"]])
         builditem["items"].append(["files/bootlogo", "/usr/share/plymouth/themes/bootlogo", [0, 0, "0644"]])
 
@@ -810,7 +810,7 @@ def setup_build_base(builditems):
         ["/bootmnt", [0, 0, "0755"]]
     ]
 
-    if currentProject.separate_data_partition:
+    if current_project.separate_data_partition:
         directories.append(["/data", [0, 0, "0755"]])
 
     builditems.append({
@@ -857,7 +857,7 @@ def setup_build_base(builditems):
 
 def setup_build_targets(builditems, cmdline):
     appendPartitions = []
-    if currentProject.separate_data_partition:
+    if current_project.separate_data_partition:
         builditems.append({
             "type": "filesystem",
             "name": "data.img",
@@ -877,12 +877,12 @@ def setup_build_targets(builditems, cmdline):
         })
         appendPartitions.append(["data.img", "linux"])
 
-    if currentProject.export_img_bios_mbr:
+    if current_project.export_img_bios_mbr:
         builditems.append({
             "architectures": ["amd64", "i386"],
 
             "type": "full-disk-image",
-            "name": f"{currentProjectName} BIOS MBR.img",
+            "name": f"{current_project_name} BIOS MBR.img",
             "export": True,
 
             "size": "auto + (10 * 1024 * 1024)",
@@ -906,7 +906,7 @@ def setup_build_targets(builditems, cmdline):
             }
         })
 
-    if currentProject.export_img_bios_gpt or currentProject.export_img_bios_and_uefi_gpt:
+    if current_project.export_img_bios_gpt or current_project.export_img_bios_and_uefi_gpt:
         builditems.append({
             "architectures": ["amd64", "i386"],
 
@@ -917,12 +917,12 @@ def setup_build_targets(builditems, cmdline):
             "size": "1M"
         })
 
-    if currentProject.export_img_bios_gpt:
+    if current_project.export_img_bios_gpt:
         builditems.append({
             "architectures": ["amd64", "i386"],
 
             "type": "full-disk-image",
-            "name": f"{currentProjectName} BIOS GPT.img",
+            "name": f"{current_project_name} BIOS GPT.img",
             "export": True,
 
             "size": "auto + (10 * 1024 * 1024)",
@@ -947,7 +947,7 @@ def setup_build_targets(builditems, cmdline):
             }
         })
 
-    if currentProject.export_img_uefi_gpt or currentProject.export_img_bios_and_uefi_gpt:
+    if current_project.export_img_uefi_gpt or current_project.export_img_bios_and_uefi_gpt:
         builditems.append({
             "architectures": ["amd64", "i386"],
 
@@ -961,12 +961,12 @@ def setup_build_targets(builditems, cmdline):
             "label": "EFI"
         })
 
-    if currentProject.export_img_uefi_gpt:
+    if current_project.export_img_uefi_gpt:
         builditems.append({
             "architectures": ["amd64", "i386"],
 
             "type": "full-disk-image",
-            "name": f"{currentProjectName} UEFI GPT.img",
+            "name": f"{current_project_name} UEFI GPT.img",
             "export": True,
 
             "size": "auto + (10 * 1024 * 1024)",
@@ -992,12 +992,12 @@ def setup_build_targets(builditems, cmdline):
             }
         })
 
-    if currentProject.export_img_bios_and_uefi_gpt:
+    if current_project.export_img_bios_and_uefi_gpt:
         builditems.append({
             "architectures": ["amd64", "i386"],
 
             "type": "full-disk-image",
-            "name": f"{currentProjectName} BIOS UEFI GPT.img",
+            "name": f"{current_project_name} BIOS UEFI GPT.img",
             "export": True,
 
             "size": "auto + (10 * 1024 * 1024)",
@@ -1025,12 +1025,12 @@ def setup_build_targets(builditems, cmdline):
             }
         })
 
-    if currentProject.export_img_opi_zero3:
+    if current_project.export_img_opi_zero3:
         builditems.append({
             "architectures": ["arm64"],
 
             "type": "singleboard",
-            "name": f"{currentProjectName} OPI ZERO 3.img",
+            "name": f"{current_project_name} OPI ZERO 3.img",
             "export": True,
 
             "singleboardType": "uboot-16",
@@ -1051,7 +1051,7 @@ def setup_build_targets(builditems, cmdline):
             "kernel_args": cmdline + " cma=512M waitFbBeforeModules" # why is "waitFbBeforeModules" here? because in this FUCKING Chinese board, half of the peripherals start with a fucking delay, and it should be initialized by the time plymouth is launched
         })
 
-    if currentProject.export_img_rpi_64:
+    if current_project.export_img_rpi_64:
         writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_64.txt"), "root=/dev/mmcblk0p2 " + cmdline + " waitFbAfterModules\n")
         writeText(os.path.join(path_temp_syslbuild, "files", "config_rpi_64.txt"), f"""# For more options and information see
 # http://rptl.io/configtxt
@@ -1184,7 +1184,7 @@ avoid_warnings=1
             "architectures": ["arm64"],
 
             "type": "full-disk-image",
-            "name": f"{currentProjectName} RPI 64.img",
+            "name": f"{current_project_name} RPI 64.img",
             "export": True,
 
             "size": "auto + (10 * 1024 * 1024)",
@@ -1197,33 +1197,33 @@ avoid_warnings=1
         })
 
 def generate_syslbuild_project():
-    cmdline = f"{"ro" if currentProject.root_readonly else "rw"} rootwait=60 selinux=0 makevartmp plymouth.ignore-serial-consoles mount_bootmnt console=tty1 preinit=/root/preinit.sh {currentProject.cmdline}"
+    cmdline = f"{"ro" if current_project.root_readonly else "rw"} rootwait=60 selinux=0 makevartmp plymouth.ignore-serial-consoles mount_bootmnt console=tty1 preinit=/root/preinit.sh {current_project.cmdline}"
 
-    if currentProject.root_expand and not currentProject.separate_data_partition:
+    if current_project.root_expand and not current_project.separate_data_partition:
         cmdline += " root_processing root_expand"
 
-    if currentProject.separate_data_partition:
+    if current_project.separate_data_partition:
         cmdline += " mount_data"
 
-    if currentProject.allow_updatescript:
+    if current_project.allow_updatescript:
         cmdline += " allow_updatescript"
 
-    if currentProject.boot_splash:
-        cmdline += f" minlogotime={currentProject.minlogotime}"
+    if current_project.boot_splash:
+        cmdline += f" minlogotime={current_project.minlogotime}"
 
-    if currentProject.boot_quiet:
+    if current_project.boot_quiet:
         cmdline += f" systemd.show_status=false rd.systemd.show_status=false systemd.log_target=journal rd.systemd.log_target=journal udev.log_level=1 rd.udev.log_level=1 systemd.log_level=emerg rd.systemd.log_level=emerg clear noCursorBlink vt.global_cursor_default=0 quiet"
 
     boot_splash_substring = " splash earlysplash"
-    if currentProject.boot_splash:
+    if current_project.boot_splash:
         cmdline += boot_splash_substring
 
-    if currentProject.session_mode == "init":
+    if current_project.session_mode == "init":
         cmdline += " init=/runshell.sh"
 
-    session_mode = currentProject.session_mode
-    if session_mode != "x11" and session_mode != "wayland" and currentProject.screen_idle_time > 0:
-        cmdline += f" consoleblank={currentProject.screen_idle_time}"
+    session_mode = current_project.session_mode
+    if session_mode != "x11" and session_mode != "wayland" and current_project.screen_idle_time > 0:
+        cmdline += f" consoleblank={current_project.screen_idle_time}"
 
     architectures = []
     builditems = []
@@ -1250,7 +1250,7 @@ def generate_syslbuild_project():
     with open(os.path.join(path_temp_syslbuild, "grub.cfg"), "w") as f:
         grubcfg = f"""set cmdline="{cmdline}" """
 
-        if currentProject.dont_use_splash_on_efi:
+        if current_project.dont_use_splash_on_efi:
             grubcfg += "\n"
             grubcfg += f"""if [ "$grub_platform" = "efi" ]; then
     set cmdline="{cmdline.replace(boot_splash_substring, "")}"
@@ -1273,9 +1273,9 @@ def run_syslbuild():
         "bash", "-c",
         f"cd {path_temp_syslbuild!r} && {sys.executable!r} {os.path.abspath('syslbuild.py')!r} "
         f"--arch ALL {path_temp_syslbuild_file!r} "
-        f"--temp {os.path.join(currentProjectDirectory, '.temp')!r} "
-        f"--output {os.path.join(currentProjectDirectory, 'output')!r} "
-        f"--lastlog {os.path.join(currentProjectDirectory, 'last.log')!r}"
+        f"--temp {os.path.join(current_project_directory, '.temp')!r} "
+        f"--output {os.path.join(current_project_directory, 'output')!r} "
+        f"--lastlog {os.path.join(current_project_directory, 'last.log')!r}"
     ]
 
     if os.geteuid() != 0:
@@ -1307,38 +1307,24 @@ def build_project():
         else:
             stop_error("Failed to build")
 
-def load_project(path):
-    global currentProject
-    global currentProjectName
-    global currentProjectDirectory
-    global path_temp
-    global path_resources
-    global path_temp_syslbuild
-    global path_temp_syslbuild_file
+def init_platform(name):
+    platforms = os.path.join(path_resources, "platforms")
+    platform = os.path.join(platforms, name)
+    devicetree = os.path.join(platform, "devicetree")
 
-    if os.path.isfile(path):
-        currentProject = raw_load_project(path)
-        version_diff = checkVersion(currentProject)
-        if version_diff > 0:
-            show_error(f"you have the syslbuild {syslbuild.formatVersion(syslbuild.VERSION)} version, while the project was saved in a newer version of {syslbuild.formatVersion(currentProject.gnubox_version)}")
-            return False
-        elif version_diff < 0:
-            currentProject.gnubox_version = syslbuild.VERSION.copy()
-            raw_save_project(path, currentProject)
-        else:
-            currentProject.gnubox_version = syslbuild.VERSION.copy()
-    else:
-        currentProject = Project()
-        currentProject.gnubox_version = syslbuild.VERSION.copy()
-        raw_save_project(path, currentProject)
+    os.makedirs(devicetree, exist_ok=True)
 
-    currentProjectDirectory = os.path.dirname(path)
-    currentProjectName = os.path.basename(currentProjectDirectory)
-    path_temp = os.path.join(currentProjectDirectory, ".temp")
-    path_resources = os.path.join(currentProjectDirectory, "resources")
-    path_temp_syslbuild = os.path.join(path_temp, "syslbuild")
-    path_temp_syslbuild_file = os.path.join(path_temp_syslbuild, "project.json")
+    devicetree_override = os.path.join(devicetree, "override.txt")
+    if not os.path.isfile(devicetree_override):
+        with open(devicetree_override, "w", encoding="utf-8") as f:
+            pass
 
+    devicetree_overlays = os.path.join(devicetree, "overlays.txt")
+    if not os.path.isfile(devicetree_overlays):
+        with open(devicetree_overlays, "w", encoding="utf-8") as f:
+            pass
+
+def update_project_structure():
     os.makedirs(path_resources, exist_ok=True)
     os.makedirs(path_temp, exist_ok=True)
     os.makedirs(path_temp_syslbuild, exist_ok=True)
@@ -1354,16 +1340,55 @@ def load_project(path):
     if not os.path.isfile(preinit_path):
         copyFile(preinit_path, "gnuboxmaker/preinit.sh")
 
-    logo_path = os.path.join(path_resources, "logo.png")
-    if not os.path.isfile(logo_path):
-        copyFile(logo_path, "gnuboxmaker.png")
+    logo_path_png = os.path.join(path_resources, "logo.png")
+    logo_path_gif = os.path.join(path_resources, "logo.gif")
+    if not os.path.isfile(logo_path_png) and not os.path.isfile(logo_path_gif):
+        copyFile(logo_path_png, "gnuboxmaker.png")
 
-    gitignore_path = os.path.join(currentProjectDirectory, ".gitignore")
+    gitignore_path = os.path.join(current_project_directory, ".gitignore")
     if not os.path.isfile(gitignore_path):
         with open(gitignore_path, "w", encoding="utf-8") as f:
             f.write("output\n")
             f.write(".temp\n")
             f.write("last.log\n")
+
+    init_platform("arm64")
+    init_platform("x86")
+    init_platform("x86_64")
+
+def load_project(path):
+    global current_project
+    global current_project_name
+    global current_project_directory
+    global path_temp
+    global path_resources
+    global path_temp_syslbuild
+    global path_temp_syslbuild_file
+
+    if os.path.isfile(path):
+        current_project = raw_load_project(path)
+        version_diff = checkVersion(current_project)
+        if version_diff > 0:
+            show_error(f"you have the syslbuild {syslbuild.formatVersion(syslbuild.VERSION)} version, while the project was saved in a newer version of {syslbuild.formatVersion(current_project.gnubox_version)}")
+            return False
+        elif version_diff < 0:
+            current_project.gnubox_version = syslbuild.VERSION.copy()
+            raw_save_project(path, current_project)
+        else:
+            current_project.gnubox_version = syslbuild.VERSION.copy()
+    else:
+        current_project = Project()
+        current_project.gnubox_version = syslbuild.VERSION.copy()
+        raw_save_project(path, current_project)
+
+    current_project_directory = os.path.dirname(path)
+    current_project_name = os.path.basename(current_project_directory)
+    path_temp = os.path.join(current_project_directory, ".temp")
+    path_resources = os.path.join(current_project_directory, "resources")
+    path_temp_syslbuild = os.path.join(path_temp, "syslbuild")
+    path_temp_syslbuild_file = os.path.join(path_temp_syslbuild, "project.json")
+
+    update_project_structure()
 
     return True
 

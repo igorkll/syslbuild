@@ -1,4 +1,9 @@
 {
+  "gnubox_version": [
+    1,
+    3,
+    9
+  ],
   "distro": "debian",
   "user_packages": [],
   "debian_variant": "minbase",
@@ -12,18 +17,27 @@
   "HandleLidSwitch": "ignore",
   "boot_quiet": true,
   "boot_splash": true,
+  "dont_show_splash_on_poweroff": true,
+  "dont_use_splash_on_efi": false,
   "splash_bg": "0, 0, 0",
   "splash_mode": "contain",
   "splash_scale": 0.7,
   "root_expand": true,
+  "root_readonly": false,
   "allow_updatescript": true,
+  "separate_data_partition": false,
   "weston_shell": "kiosk",
   "session_user": "user",
   "session_mode": "tty",
+  "minlogotime": 10,
+  "cmdline": "",
   "export_x86_64": true,
   "export_x86": false,
+  "export_arm64": false,
   "export_img_bios_mbr": true,
   "export_img_bios_gpt": false,
   "export_img_uefi_gpt": true,
-  "export_img_bios_and_uefi_gpt": false
+  "export_img_bios_and_uefi_gpt": false,
+  "export_img_opi_zero3": false,
+  "export_img_rpi_64": false
 }
