@@ -566,6 +566,25 @@ def prepair_platforms(platforms_root):
 
                 compile_dts(source_full, out_full)
 
+def platform_get_devicetree_override(platforms_names):
+    for platform_name in platforms_names:
+        dt_dir = os.path.join(platform_name, 'devicetree')
+        if not os.path.isdir(dt_dir):
+            continue
+
+        override_path = os.path.join(dt_dir, 'override.txt')
+        if os.path.is_file(override_path):
+            with open(override_path, 'r', encoding='utf-8') as f:
+                content = f.read().strip()
+                if len(content) > 0:
+                    pass
+    
+    return None
+        
+
+def copy_files(from_path, to_path):
+    buildExecute(["cp", "-a", from_path + "/.", to_path])
+
 def setup_write_files():
     etc_config = os.path.join(path_temp_syslbuild, "files", "etc_config")
     systemd_config = os.path.join(path_temp_syslbuild, "files", "systemd_config")
@@ -637,13 +656,14 @@ ShowStatus={"no" if current_project.boot_quiet else "yes"}
     setup_bootlogo()
     setup_graphic()
 
-    buildExecute(["cp", "-a", os.path.join(path_resources, "files") + "/.", user_files])
+    copy_files(os.path.join(path_resources, "files"), user_files)
+    copy_files(os.path.join(path_resources, "platforms"), platforms)
+
     shutil.copy(os.path.join(path_resources, "runshell.sh"), os.path.join(path_temp_syslbuild, "files", "runshell.sh"))
     shutil.copy(os.path.join(path_resources, "preinit.sh"), os.path.join(path_temp_syslbuild, "files", "preinit.sh"))
     shutil.copy("gnuboxmaker/runshell_launcher.sh", os.path.join(path_temp_syslbuild, "files", "runshell_launcher.sh"))
     shutil.copy("gnuboxmaker/run_session_wayland.sh", os.path.join(path_temp_syslbuild, "files", "run_session_wayland.sh"))
     shutil.copy("gnuboxmaker/run_session_x11.sh", os.path.join(path_temp_syslbuild, "files", "run_session_x11.sh"))
-    buildExecute(["cp", "-a", os.path.join(path_resources, "platforms") + "/.", platforms])
 
     prepair_platforms(platforms)
 
@@ -1213,7 +1233,10 @@ avoid_warnings=1
                 ["initramfs_rpi_5.img", "/initramfs_2712"],
 
                 ["files/cmdline_rpi_64.txt", "/cmdline.txt"],
-                ["files/config_rpi_64.txt", "/config.txt"]
+                ["files/config_rpi_64.txt", "/config.txt"],
+
+                ["files/rpi_devicetree", "/"],
+                ["files/rpi_overlays", "/overlays"]
             ]
         })
 
