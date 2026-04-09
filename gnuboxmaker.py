@@ -1022,13 +1022,13 @@ boot_delay=0
 avoid_warnings=1
 """
 
-    override = platform_get_devicetree_override(rpi_64_platforms)
-    if override:
-        config_txt += f"\ndevice_tree={override}"
+    # override = platform_get_devicetree_override(rpi_64_platforms)
+    # if override:
+    #    config_txt += f"\ndevice_tree={override}"
 
     overlays = platform_get_devicetree_overlays(rpi_64_platforms)
     for overlay in overlays:
-        config_txt += f"\ndtoverlay={os.path.splitext(overlay)[0]}"
+        config_txt += f"\ndtoverlay={overlay}"
 
     writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_64.txt"), "root=/dev/mmcblk0p2 " + cmdline + " waitFbAfterModules\n")
     writeText(os.path.join(path_temp_syslbuild, "files", "config_rpi_64.txt"), config_txt)
@@ -1124,6 +1124,16 @@ avoid_warnings=1
     })
 
 def export_opi_zero3(builditems, cmdline, appendPartitions):
+    dtboList_active = []
+    for overlay in platform_get_devicetree_overlays(opi_zero3_platforms):
+        dtboList_active.append(overlay + ".dtbo")
+
+    devicetree = platform_get_devicetree_override(opi_zero3_platforms)
+    if devicetree:
+        devicetree = devicetree + ".dtb"
+    else:
+        devicetree = "sun50i-h618-orangepi-zero3.dtb"
+
     builditems.append({
         "architectures": ["arm64"],
 
@@ -1134,12 +1144,12 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         "singleboardType": "uboot-16",
 
         "bootloader": "blobs/u-boot-sunxi-with-spl.bin",
-        "bootloaderDtb": platform_get_devicetree_override(opi_zero3_platforms) or "sun50i-h618-orangepi-zero3.dtb",
+        "bootloaderDtb": devicetree,
         "dtbList": [
             "kernel_image/arm64/opi_zero3/sun50i-h618-orangepi-zero3.dtb"
         ] + platform_get_files(opi_zero3_platforms, "devicetree", "dtb"),
         "dtboList": platform_get_files(opi_zero3_platforms, "devicetree", "dtbo"),
-        "dtboList_active": platform_get_devicetree_overlays(opi_zero3_platforms),
+        "dtboList_active": dtboList_active,
 
         "kernel": "kernel_image/arm64/opi_zero3/kernel.img",
         "initramfs": "initramfs_opi_zero3.img",
