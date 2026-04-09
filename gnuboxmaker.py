@@ -552,22 +552,22 @@ def prepair_platforms(platforms_root):
         if not os.path.isdir(dt_dir):
             continue
 
-        for root, dirs, files in os.walk(dt_dir):
-            for file in files:
-                # Определяем расширение исходного файла
-                if file.endswith('.dts'):
-                    out_ext = '.dtb'
-                elif file.endswith('.dtso'):
-                    out_ext = '.dtbo'
-                else:
-                    continue  # пропускаем другие файлы
+        for file in os.listdir(dt_dir):
+            full_path = os.path.join(dt_dir, file)
+            if not os.path.isfile(full_path):
+                continue
 
-                source_full = os.path.join(root, file)
-                base_name = os.path.splitext(file)[0]  # без расширения
-                out_file = base_name + out_ext
-                out_full = os.path.join(root, out_file)
+            if file.endswith('.dts'):
+                out_ext = '.dtb'
+            elif file.endswith('.dtso'):
+                out_ext = '.dtbo'
+            else:
+                continue
 
-                compile_dts(source_full, out_full)
+            base_name = os.path.splitext(file)[0]
+            out_file = base_name + out_ext
+            out_full = os.path.join(dt_dir, out_file)
+            compile_dts(full_path, out_full)
 
 def platform_get_devicetree_override(platforms_names):
     platforms_path = os.path.join(path_temp_syslbuild, "files", "platforms")
@@ -602,6 +602,26 @@ def platform_get_devicetree_overlays(platforms_names):
                     return content.splitlines()
     
     return []
+
+def platform_get_devicetree_files(platforms_names, extension):
+    platforms_path = os.path.join(path_temp_syslbuild, "files", "platforms")
+
+    overlays_files = []
+
+    for platform_name in platforms_names:
+        dt_dir = os.path.join(platforms_path, platform_name, 'devicetree')
+        if not os.path.isdir(dt_dir):
+            continue
+
+        for file in os.listdir(dt_dir):
+            full_path = os.path.join(dt_dir, file)
+            if not os.path.isfile(full_path):
+                continue
+            
+            if full_path.endswith('.' + extension):
+                overlays_files.append(os.path.join(platforms_path, platform_name, 'devicetree'))
+    
+    return overlays_files
 
 def copy_files(from_path, to_path):
     buildExecute(["cp", "-a", from_path + "/.", to_path])
@@ -1065,10 +1085,10 @@ avoid_warnings=1
             ["initramfs_rpi_5.img", "/initramfs_2712"],
 
             ["files/cmdline_rpi_64.txt", "/cmdline.txt"],
-            ["files/config_rpi_64.txt", "/config.txt"],
+            ["files/config_rpi_64.txt", "/config.txt"] #,
 
-            ["files/rpi_devicetree", "/"],
-            ["files/rpi_overlays", "/overlays"]
+            # ["files/rpi_devicetree", "/"],
+            # ["files/rpi_overlays", "/overlays"]
         ]
     })
 
@@ -1117,10 +1137,8 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         "bootloaderDtb": platform_get_devicetree_override(opi_zero3_platforms) or "sun50i-h618-orangepi-zero3.dtb",
         "dtbList": [
             "kernel_image/arm64/opi_zero3/sun50i-h618-orangepi-zero3.dtb"
-        ],
-        "dtboList": [
-
-        ],
+        ] + platform_get_devicetree_override_files(opi_zero3_platforms),
+        "dtboList": platform_get_devicetree_overlays_files(opi_zero3_platforms),
         "dtboList_active": platform_get_devicetree_overlays(opi_zero3_platforms),
 
         "kernel": "kernel_image/arm64/opi_zero3/kernel.img",
