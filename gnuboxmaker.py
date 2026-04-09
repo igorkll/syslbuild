@@ -1022,9 +1022,9 @@ boot_delay=0
 avoid_warnings=1
 """
 
-    # override = platform_get_devicetree_override(rpi_64_platforms)
-    # if override:
-    #    config_txt += f"\ndevice_tree={override}"
+    override = platform_get_devicetree_override(rpi_64_platforms)
+    if override:
+        config_txt += f"\ndevice_tree={override}"
 
     overlays = platform_get_devicetree_overlays(rpi_64_platforms)
     for overlay in overlays:
