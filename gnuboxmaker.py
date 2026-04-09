@@ -567,8 +567,10 @@ def prepair_platforms(platforms_root):
                 compile_dts(source_full, out_full)
 
 def platform_get_devicetree_override(platforms_names):
+    platforms_path = os.path.join(path_temp_syslbuild, "files", "platforms")
+
     for platform_name in platforms_names:
-        dt_dir = os.path.join(platform_name, 'devicetree')
+        dt_dir = os.path.join(platforms_path, platform_name, 'devicetree')
         if not os.path.isdir(dt_dir):
             continue
 
@@ -582,8 +584,10 @@ def platform_get_devicetree_override(platforms_names):
     return None
 
 def platform_get_devicetree_overlays(platforms_names):
+    platforms_path = os.path.join(path_temp_syslbuild, "files", "platforms")
+
     for platform_name in platforms_names:
-        dt_dir = os.path.join(platform_name, 'devicetree')
+        dt_dir = os.path.join(platforms_path, platform_name, 'devicetree')
         if not os.path.isdir(dt_dir):
             continue
 
@@ -1138,8 +1142,7 @@ def setup_build_targets(builditems, cmdline):
         })
 
     if current_project.export_img_rpi_64:
-        writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_64.txt"), "root=/dev/mmcblk0p2 " + cmdline + " waitFbAfterModules\n")
-        writeText(os.path.join(path_temp_syslbuild, "files", "config_rpi_64.txt"), f"""# For more options and information see
+        config_txt = f"""# For more options and information see
 # http://rptl.io/configtxt
 # Some settings may impact device functionality. See link above for details
 
@@ -1193,7 +1196,14 @@ dtoverlay=dwc2,dr_mode=host
 disable_splash=1
 boot_delay=0
 avoid_warnings=1
-""")
+"""
+
+        overlays = platform_get_devicetree_overlays("rpi_64", "arm64", "all")
+        for overlay in overlays:
+            config_txt += f"\ndtoverlay={os.path.splitext(overlay)[0]}"
+
+        writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_64.txt"), "root=/dev/mmcblk0p2 " + cmdline + " waitFbAfterModules\n")
+        writeText(os.path.join(path_temp_syslbuild, "files", "config_rpi_64.txt"), config_txt)
 
         builditems.append({
             "architectures": ["arm64"],
@@ -1441,6 +1451,7 @@ def update_project_structure():
             f.write(".temp\n")
             f.write("last.log\n")
 
+    init_platform("all")
     init_platform("arm64")
     init_platform("opi_zero3")
     init_platform("rpi_64")
