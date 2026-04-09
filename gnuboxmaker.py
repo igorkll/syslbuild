@@ -578,7 +578,7 @@ def platform_get_devicetree_override(platforms_names):
             continue
 
         override_path = os.path.join(dt_dir, 'override.txt')
-        if os.path.is_file(override_path):
+        if os.path.isfile(override_path):
             with open(override_path, 'r', encoding='utf-8') as f:
                 content = f.read().strip()
                 if len(content) > 0:
@@ -595,7 +595,7 @@ def platform_get_devicetree_overlays(platforms_names):
             continue
 
         overlays_path = os.path.join(dt_dir, 'overlays.txt')
-        if os.path.is_file(overlays_path):
+        if os.path.isfile(overlays_path):
             with open(overlays_path, 'r', encoding='utf-8') as f:
                 content = f.read().strip()
                 if len(content) > 0:
