@@ -1528,7 +1528,14 @@ def singleboardBuild(item):
                 if "initramfs" in item:
                     kernel_args = f"initrd=/{initramfsFileName} " + kernel_args
             
-            f.write(f"APPEND {kernel_args}")
+            f.write(f"APPEND {kernel_args}\n")
+
+            if "dtboList_active" in item:
+                active_overlays = []
+                for active_overlay in item["dtboList_active"]:
+                    active_overlays.append(f"/dtbs/overlay/{active_overlay}")
+
+                f.write(f"fdtoverlays {" ".join(active_overlays)}\n")
 
         # boot partition
         buildFilesystem({

@@ -945,11 +945,197 @@ def setup_build_base(builditems):
         "label": "rootfs"
     })
 
-def get_platform_devicetree():
-    pass
+def export_rpi_64(builditems, cmdline, appendPartitions):
+    config_txt = f"""# For more options and information see
+# http://rptl.io/configtxt
+# Some settings may impact device functionality. See link above for details
+
+# Uncomment some or all of these to enable the optional hardware interfaces
+#dtparam=i2c_arm=on
+#dtparam=i2s=on
+#dtparam=spi=on
+
+# Enable audio (loads snd_bcm2835)
+dtparam=audio=on
+
+# Additional overlays and parameters are documented
+# /boot/firmware/overlays/README
+
+# Automatically load overlays for detected cameras
+camera_auto_detect=1
+
+# Automatically load overlays for detected DSI displays
+display_auto_detect=1
+
+# Automatically load initramfs files, if found
+auto_initramfs=1
+
+# Enable DRM VC4 V3D driver
+dtoverlay=vc4-kms-v3d
+max_framebuffers=2
+
+# Don't have the firmware create an initial video= setting in cmdline.txt.
+# Use the kernel's default instead.
+disable_fw_kms_setup=1
+
+# Run in 64-bit mode
+arm_64bit=1
+
+# Disable compensation for displays with overscan
+disable_overscan=1
+
+# Run as fast as firmware / board allows
+arm_boost=1
+
+[cm4]
+# Enable host mode on the 2711 built-in XHCI USB controller.
+# This line should be removed if the legacy DWC2 controller is required
+# (e.g. for USB device mode) or if USB support is not required.
+otg_mode=1
+
+[cm5]
+dtoverlay=dwc2,dr_mode=host
+
+[all]
+disable_splash=1
+boot_delay=0
+avoid_warnings=1
+"""
+
+    override = platform_get_devicetree_override(rpi_64_platforms)
+    if override:
+        config_txt += f"\ndevice_tree={override}"
+
+    overlays = platform_get_devicetree_overlays(rpi_64_platforms)
+    for overlay in overlays:
+        config_txt += f"\ndtoverlay={os.path.splitext(overlay)[0]}"
+
+    writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_64.txt"), "root=/dev/mmcblk0p2 " + cmdline + " waitFbAfterModules\n")
+    writeText(os.path.join(path_temp_syslbuild, "files", "config_rpi_64.txt"), config_txt)
+
+    builditems.append({
+        "architectures": ["arm64"],
+
+        "type": "gitclone",
+        "name": "rpi_64_firmware",
+        "export": False,
+
+        "git_url": "https://github.com/raspberrypi/firmware",
+        "git_branch": "master",
+        "git_checkout": "1.20250915"
+    })
+
+    builditems.append({
+        "architectures": ["arm64"],
+
+        "type": "directory",
+        "name": "boot_rpi_64",
+        "export": False,
+
+        "items": [
+            ["rpi_64_firmware/boot/COPYING.linux", "/COPYING.linux"],
+            ["rpi_64_firmware/boot/LICENCE.broadcom", "/LICENCE.broadcom"],
+            ["rpi_64_firmware/boot/overlays", "/overlays"],
+            ["rpi_64_firmware/boot/fixup.dat", "/fixup.dat"],
+            ["rpi_64_firmware/boot/fixup4.dat", "/fixup4.dat"],
+            ["rpi_64_firmware/boot/fixup4cd.dat", "/fixup4cd.dat"],
+            ["rpi_64_firmware/boot/fixup4db.dat", "/fixup4db.dat"],
+            ["rpi_64_firmware/boot/fixup4x.dat", "/fixup4x.dat"],
+            ["rpi_64_firmware/boot/fixup_cd.dat", "/fixup_cd.dat"],
+            ["rpi_64_firmware/boot/fixup_db.dat", "/fixup_db.dat"],
+            ["rpi_64_firmware/boot/fixup_x.dat", "/fixup_x.dat"],
+            ["rpi_64_firmware/boot/start.elf", "/start.elf"],
+            ["rpi_64_firmware/boot/start4.elf", "/start4.elf"],
+            ["rpi_64_firmware/boot/start4cd.elf", "/start4cd.elf"],
+            ["rpi_64_firmware/boot/start4db.elf", "/start4db.elf"],
+            ["rpi_64_firmware/boot/start4x.elf", "/start4x.elf"],
+            ["rpi_64_firmware/boot/start_cd.elf", "/start_cd.elf"],
+            ["rpi_64_firmware/boot/start_db.elf", "/start_db.elf"],
+            ["rpi_64_firmware/boot/start_x.elf", "/start_x.elf"],
+            ["rpi_64_firmware/boot/bootcode.bin", "/bootcode.bin"],
+
+            ["kernel_image/arm64/rpi_64/boot", "/"],
+            ["kernel_image/arm64/rpi_64/kernel.img", "/kernel8.img"],
+            ["kernel_image/arm64/rpi_64/kernel_config", "/kernel8_config"],
+            ["initramfs_rpi_64.img", "/initramfs8"],
+
+            ["kernel_image/arm64/rpi_5/boot", "/"],
+            ["kernel_image/arm64/rpi_5/kernel.img", "/kernel_2712.img"],
+            ["kernel_image/arm64/rpi_5/kernel_config", "/kernel2712_config"],
+            ["initramfs_rpi_5.img", "/initramfs_2712"],
+
+            ["files/cmdline_rpi_64.txt", "/cmdline.txt"],
+            ["files/config_rpi_64.txt", "/config.txt"],
+
+            ["files/rpi_devicetree", "/"],
+            ["files/rpi_overlays", "/overlays"]
+        ]
+    })
+
+    builditems.append({
+        "architectures": ["arm64"],
+
+        "type": "filesystem",
+        "name": "boot_rpi_64.img",
+        "export": False,
+
+        "source": "boot_rpi_64",
+
+        "fs_type": "fat32",
+        "size": "(auto * 1.2) + (100 * 1024 * 1024)",
+        "minsize": "64MB",
+        "label": "BOOT"
+    })
+
+    builditems.append({
+        "architectures": ["arm64"],
+
+        "type": "full-disk-image",
+        "name": f"{current_project_name} RPI 64.img",
+        "export": True,
+
+        "size": "auto + (10 * 1024 * 1024)",
+
+        "partitionTable": "dos",
+        "partitions": [
+            ["boot_rpi_64.img", "c"],
+            ["rootfs.img", "linux"]
+        ] + appendPartitions
+    })
+
+def export_opi_zero3(builditems, cmdline, appendPartitions):
+    builditems.append({
+        "architectures": ["arm64"],
+
+        "type": "singleboard",
+        "name": f"{current_project_name} OPI ZERO 3.img",
+        "export": True,
+
+        "singleboardType": "uboot-16",
+
+        "bootloader": "blobs/u-boot-sunxi-with-spl.bin",
+        "bootloaderDtb": platform_get_devicetree_override(opi_zero3_platforms) or "sun50i-h618-orangepi-zero3.dtb",
+        "dtbList": [
+            "kernel_image/arm64/opi_zero3/sun50i-h618-orangepi-zero3.dtb"
+        ],
+        "dtboList": [
+
+        ],
+        "dtboList_active": platform_get_devicetree_overlays(opi_zero3_platforms),
+
+        "kernel": "kernel_image/arm64/opi_zero3/kernel.img",
+        "initramfs": "initramfs_opi_zero3.img",
+        "rootfs": "rootfs.img",
+        "appendPartitions": appendPartitions,
+
+        "kernel_args_auto": True,
+        "kernel_rootfs_auto": "manual",
+        "kernel_args": cmdline + " cma=512M waitFbBeforeModules" # why is "waitFbBeforeModules" here? because in this FUCKING Chinese board, half of the peripherals start with a fucking delay, and it should be initialized by the time plymouth is launched
+    })
 
 def setup_build_targets(builditems, cmdline):
     appendPartitions = []
+
     if current_project.separate_data_partition:
         builditems.append({
             "type": "filesystem",
@@ -1119,188 +1305,10 @@ def setup_build_targets(builditems, cmdline):
         })
 
     if current_project.export_img_opi_zero3:
-        builditems.append({
-            "architectures": ["arm64"],
-
-            "type": "singleboard",
-            "name": f"{current_project_name} OPI ZERO 3.img",
-            "export": True,
-
-            "singleboardType": "uboot-16",
-
-            "bootloader": "blobs/u-boot-sunxi-with-spl.bin",
-            "bootloaderDtb": "sun50i-h618-orangepi-zero3.dtb",
-            "dtbList": [
-                "kernel_image/arm64/opi_zero3/sun50i-h618-orangepi-zero3.dtb"
-            ],
-
-            "kernel": "kernel_image/arm64/opi_zero3/kernel.img",
-            "initramfs": "initramfs_opi_zero3.img",
-            "rootfs": "rootfs.img",
-            "appendPartitions": appendPartitions,
-
-            "kernel_args_auto": True,
-            "kernel_rootfs_auto": "manual",
-            "kernel_args": cmdline + " cma=512M waitFbBeforeModules" # why is "waitFbBeforeModules" here? because in this FUCKING Chinese board, half of the peripherals start with a fucking delay, and it should be initialized by the time plymouth is launched
-        })
+        export_opi_zero3(builditems, cmdline, appendPartitions)
 
     if current_project.export_img_rpi_64:
-        config_txt = f"""# For more options and information see
-# http://rptl.io/configtxt
-# Some settings may impact device functionality. See link above for details
-
-# Uncomment some or all of these to enable the optional hardware interfaces
-#dtparam=i2c_arm=on
-#dtparam=i2s=on
-#dtparam=spi=on
-
-# Enable audio (loads snd_bcm2835)
-dtparam=audio=on
-
-# Additional overlays and parameters are documented
-# /boot/firmware/overlays/README
-
-# Automatically load overlays for detected cameras
-camera_auto_detect=1
-
-# Automatically load overlays for detected DSI displays
-display_auto_detect=1
-
-# Automatically load initramfs files, if found
-auto_initramfs=1
-
-# Enable DRM VC4 V3D driver
-dtoverlay=vc4-kms-v3d
-max_framebuffers=2
-
-# Don't have the firmware create an initial video= setting in cmdline.txt.
-# Use the kernel's default instead.
-disable_fw_kms_setup=1
-
-# Run in 64-bit mode
-arm_64bit=1
-
-# Disable compensation for displays with overscan
-disable_overscan=1
-
-# Run as fast as firmware / board allows
-arm_boost=1
-
-[cm4]
-# Enable host mode on the 2711 built-in XHCI USB controller.
-# This line should be removed if the legacy DWC2 controller is required
-# (e.g. for USB device mode) or if USB support is not required.
-otg_mode=1
-
-[cm5]
-dtoverlay=dwc2,dr_mode=host
-
-[all]
-disable_splash=1
-boot_delay=0
-avoid_warnings=1
-"""
-
-        override = platform_get_devicetree_override(rpi_64_platforms)
-        if override:
-            
-
-        overlays = platform_get_devicetree_overlays(rpi_64_platforms)
-        for overlay in overlays:
-            config_txt += f"\ndtoverlay={os.path.splitext(overlay)[0]}"
-
-        writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_64.txt"), "root=/dev/mmcblk0p2 " + cmdline + " waitFbAfterModules\n")
-        writeText(os.path.join(path_temp_syslbuild, "files", "config_rpi_64.txt"), config_txt)
-
-        builditems.append({
-            "architectures": ["arm64"],
-
-            "type": "gitclone",
-            "name": "rpi_64_firmware",
-            "export": False,
-
-            "git_url": "https://github.com/raspberrypi/firmware",
-            "git_branch": "master",
-            "git_checkout": "1.20250915"
-        })
-
-        builditems.append({
-            "architectures": ["arm64"],
-
-            "type": "directory",
-            "name": "boot_rpi_64",
-            "export": False,
-
-            "items": [
-                ["rpi_64_firmware/boot/COPYING.linux", "/COPYING.linux"],
-                ["rpi_64_firmware/boot/LICENCE.broadcom", "/LICENCE.broadcom"],
-                ["rpi_64_firmware/boot/overlays", "/overlays"],
-                ["rpi_64_firmware/boot/fixup.dat", "/fixup.dat"],
-                ["rpi_64_firmware/boot/fixup4.dat", "/fixup4.dat"],
-                ["rpi_64_firmware/boot/fixup4cd.dat", "/fixup4cd.dat"],
-                ["rpi_64_firmware/boot/fixup4db.dat", "/fixup4db.dat"],
-                ["rpi_64_firmware/boot/fixup4x.dat", "/fixup4x.dat"],
-                ["rpi_64_firmware/boot/fixup_cd.dat", "/fixup_cd.dat"],
-                ["rpi_64_firmware/boot/fixup_db.dat", "/fixup_db.dat"],
-                ["rpi_64_firmware/boot/fixup_x.dat", "/fixup_x.dat"],
-                ["rpi_64_firmware/boot/start.elf", "/start.elf"],
-                ["rpi_64_firmware/boot/start4.elf", "/start4.elf"],
-                ["rpi_64_firmware/boot/start4cd.elf", "/start4cd.elf"],
-                ["rpi_64_firmware/boot/start4db.elf", "/start4db.elf"],
-                ["rpi_64_firmware/boot/start4x.elf", "/start4x.elf"],
-                ["rpi_64_firmware/boot/start_cd.elf", "/start_cd.elf"],
-                ["rpi_64_firmware/boot/start_db.elf", "/start_db.elf"],
-                ["rpi_64_firmware/boot/start_x.elf", "/start_x.elf"],
-                ["rpi_64_firmware/boot/bootcode.bin", "/bootcode.bin"],
-
-                ["kernel_image/arm64/rpi_64/boot", "/"],
-                ["kernel_image/arm64/rpi_64/kernel.img", "/kernel8.img"],
-                ["kernel_image/arm64/rpi_64/kernel_config", "/kernel8_config"],
-                ["initramfs_rpi_64.img", "/initramfs8"],
-
-                ["kernel_image/arm64/rpi_5/boot", "/"],
-                ["kernel_image/arm64/rpi_5/kernel.img", "/kernel_2712.img"],
-                ["kernel_image/arm64/rpi_5/kernel_config", "/kernel2712_config"],
-                ["initramfs_rpi_5.img", "/initramfs_2712"],
-
-                ["files/cmdline_rpi_64.txt", "/cmdline.txt"],
-                ["files/config_rpi_64.txt", "/config.txt"],
-
-                ["files/rpi_devicetree", "/"],
-                ["files/rpi_overlays", "/overlays"]
-            ]
-        })
-
-        builditems.append({
-            "architectures": ["arm64"],
-
-            "type": "filesystem",
-            "name": "boot_rpi_64.img",
-            "export": False,
-
-            "source": "boot_rpi_64",
-
-            "fs_type": "fat32",
-            "size": "(auto * 1.2) + (100 * 1024 * 1024)",
-            "minsize": "64MB",
-            "label": "BOOT"
-        })
-
-        builditems.append({
-            "architectures": ["arm64"],
-
-            "type": "full-disk-image",
-            "name": f"{current_project_name} RPI 64.img",
-            "export": True,
-
-            "size": "auto + (10 * 1024 * 1024)",
-
-            "partitionTable": "dos",
-            "partitions": [
-                ["boot_rpi_64.img", "c"],
-                ["rootfs.img", "linux"]
-            ] + appendPartitions
-        })
+        export_rpi_64(builditems, cmdline, appendPartitions)
 
 def generate_syslbuild_project():
     cmdline = f"{"ro" if current_project.root_readonly else "rw"} rootwait=60 selinux=0 makevartmp plymouth.ignore-serial-consoles mount_bootmnt console=tty1 preinit=/root/preinit.sh {current_project.cmdline}"
