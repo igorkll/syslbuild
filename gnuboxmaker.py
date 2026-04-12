@@ -7,7 +7,7 @@ from dataclasses import dataclass, asdict, field
 from tkinter import ttk
 from pathlib import Path
 import shutil
-import json
+import json5
 import subprocess
 import sys
 import time
@@ -61,6 +61,7 @@ class Project:
 
     minlogotime: int = 10
     cmdline: str = ""
+    exclude_cmdline: list[str] = field(default_factory=list)
 
     export_x86_64: bool = True
     export_x86: bool = False
@@ -76,12 +77,12 @@ class Project:
 
 def raw_load_project(path):
     with open(path, "r", encoding="utf-8") as f:
-        data = json.load(f)
+        data = json5.load(f)
         return Project(**data)
 
 def raw_save_project(path, proj):
     with open(path, "w", encoding="utf-8") as f:
-        json.dump(asdict(proj), f, indent=2, ensure_ascii=False)
+        json5.dump(asdict(proj), f, indent=2, ensure_ascii=False)
 
 # -1 - версия проекта ниже версии тула
 # 0 - версии совпадают
@@ -1366,7 +1367,7 @@ def generate_syslbuild_project():
     }
 
     with open(path_temp_syslbuild_file, "w") as f:
-        json.dump(syslbuild_project, f, indent=2, ensure_ascii=False)
+        json5.dump(syslbuild_project, f, indent=2, ensure_ascii=False)
 
     with open(os.path.join(path_temp_syslbuild, "grub.cfg"), "w") as f:
         grubcfg = f"""set cmdline="{cmdline}" """

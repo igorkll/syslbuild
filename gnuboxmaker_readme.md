@@ -80,7 +80,7 @@ a similar program for creating Windows images for embedded devices: https://gith
 * .temp - temporary files used during the build process
 
 ## devicetree
-
+you can create a custom devicetree to connect the perepherals
 * devicetree/PLATFORM_NAME/override.txt - you can specify overrides for .dtb/.dts here, specify a name without an extension
 * devicetree/PLATFORM_NAME/overlays.txt - here you can specify a list of overlays .dtbo/.dtso specify names without extension by separating the names with a line break
 * devicetree/PLATFORM_NAME - here you can add your .dtb and .dtbo files to the image. you can also add it here.dts and .dtso files and they will end up in the image as already compiled .dtb and .dtbo

@@ -2,7 +2,7 @@
   "gnubox_version": [
     1,
     3,
-    7
+    9
   ],
   "distro": "debian",
   "user_packages": [
@@ -31,6 +31,7 @@
     "libgtk-3-0",
     "nano"
   ],
+  "exclude_packages": [],
   "debian_variant": "minbase",
   "debian_suite": "trixie",
   "debian_snapshot": "http://snapshot.debian.org/archive/debian/20260217T143331Z",
@@ -56,13 +57,13 @@
   "session_mode": "wayland",
   "minlogotime": 10,
   "cmdline": "",
-  "export_x86_64": true,
+  "export_x86_64": false,
   "export_x86": false,
-  "export_arm64": false,
+  "export_arm64": true,
   "export_img_bios_mbr": false,
   "export_img_bios_gpt": false,
   "export_img_uefi_gpt": false,
   "export_img_bios_and_uefi_gpt": true,
   "export_img_opi_zero3": true,
-  "export_img_rpi_64": true
+  "export_img_rpi_64": false
 }

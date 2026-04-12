@@ -1535,7 +1535,8 @@ def singleboardBuild(item):
                 for active_overlay in item["dtboList_active"]:
                     active_overlays.append(f"/dtbs/overlay/{active_overlay}")
 
-                f.write(f"fdtoverlays {" ".join(active_overlays)}\n")
+                if len(active_overlays) > 0:
+                    f.write(f"fdtoverlays {" ".join(active_overlays)}\n")
 
         # boot partition
         buildFilesystem({
