@@ -103,6 +103,11 @@ def checkVersion(project):
 class CancelGUI(Exception):
     pass
 
+def exclude_cmdline(cmdline, exclude_list):
+    parts = cmdline.split()
+    filtered = [p for p in parts if p not in exclude_list]
+    return ' '.join(filtered)
+
 def buildLog(logstr, quiet=False):
     if not quiet:
         logstr = f"---------------- GNUBOX MAKER: {logstr}"
@@ -1003,7 +1008,7 @@ avoid_warnings=1
     for overlay in overlays:
         config_txt += f"\ndtoverlay={overlay}"
 
-    writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_64.txt"), "root=/dev/mmcblk0p2 " + cmdline + " waitFbAfterModules\n")
+    writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_64.txt"), exclude_cmdline("root=/dev/mmcblk0p2 " + cmdline + " waitFbAfterModules\n", current_project.exclude_cmdline))
     writeText(os.path.join(path_temp_syslbuild, "files", "config_rpi_64.txt"), config_txt)
 
     builditems.append({
@@ -1138,7 +1143,7 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
 
         "kernel_args_auto": True,
         "kernel_rootfs_auto": "manual",
-        "kernel_args": cmdline + " cma=512M waitFbBeforeModules" # why is "waitFbBeforeModules" here? because in this FUCKING Chinese board, half of the peripherals start with a fucking delay, and it should be initialized by the time plymouth is launched
+        "kernel_args": exclude_cmdline(cmdline + " cma=512M waitFbBeforeModules", current_project.exclude_cmdline) # why is "waitFbBeforeModules" here? because in this FUCKING Chinese board, half of the peripherals start with a fucking delay, and it should be initialized by the time plymouth is launched
     })
 
 def setup_build_targets(builditems, cmdline):
@@ -1368,6 +1373,8 @@ def generate_syslbuild_project():
 
     with open(path_temp_syslbuild_file, "w") as f:
         json5.dump(syslbuild_project, f, indent=2, ensure_ascii=False)
+
+    cmdline = exclude_cmdline(cmdline, current_project.exclude_cmdline)
 
     with open(os.path.join(path_temp_syslbuild, "grub.cfg"), "w") as f:
         grubcfg = f"""set cmdline="{cmdline}" """
