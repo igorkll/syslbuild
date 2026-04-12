@@ -30,7 +30,8 @@
 
         "kernel_config_changes_files": [
             "kernel_config_changes.txt",
-            "kernel_config_changes_opi_zero3.txt"
+            "kernel_config_changes_opi_zero3.txt",
+            "kernel_config_changes_singleboards.txt"
         ],
 
         "defconfig": "defconfig",

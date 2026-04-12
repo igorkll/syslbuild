@@ -30,7 +30,8 @@
 
         "kernel_config_changes_files": [
             "kernel_config_changes.txt",
-            "kernel_config_changes_rpi_64.txt"
+            "kernel_config_changes_rpi_64.txt",
+            "kernel_config_changes_singleboards.txt"
         ],
 
         "defconfig": "bcm2711_defconfig",
