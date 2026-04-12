@@ -81,9 +81,9 @@ a similar program for creating Windows images for embedded devices: https://gith
 
 ## platforms
 this mechanism allows you to set some platform-dependent parameters
-* devicetree/override.txt - you can specify overrides for .dtb here, specify a name without an extension
-* devicetree/overlays.txt - here you can specify a list of overlays .dtbo specify names without extension by separating the names with a line break
-* devicetree - here you can add your .dtb and .dtbo files to the image. you can also add it here.dts and .dtso files and they will end up in the image as already compiled .dtb and .dtbo
+* platforms/PLATFORM_NAME/devicetree/override.txt - you can specify overrides for .dtb here, specify a name without an extension
+* platforms/PLATFORM_NAME/devicetree/overlays.txt - here you can specify a list of overlays .dtbo specify names without extension by separating the names with a line break
+* platforms/PLATFORM_NAME/devicetree - here you can add your .dtb and .dtbo files to the image. you can also add it here.dts and .dtso files and they will end up in the image as already compiled .dtb and .dtbo
 
 ## args
 * you can pass the path to the *.gnb file to gnubox maker and the build will happen automatically after which the program will terminate. The GUI will not appear

@@ -21,8 +21,8 @@ session_mode_variants = ["wayland", "x11", "tty", "init"]
 weston_shell_variants = ["kiosk", "desktop"]
 splash_mode_variants = ["center", "fill", "contain", "cover"]
 
-rpi_64_platforms = ["rpi_64", "arm64", "all"]
-opi_zero3_platforms = ["opi_zero3", "arm64", "all"]
+rpi_64_platforms = ["rpi_64"]
+opi_zero3_platforms = ["opi_zero3"]
 
 @dataclass
 class Project:
@@ -536,24 +536,14 @@ def compile_dts(source_path, output_path):
     except subprocess.CalledProcessError as e:
         print(f"[FAIL] {source_path}:\n  {e.stderr}", file=sys.stderr)
 
-def prepair_platforms(platforms_root):
-    """
-    Обходит все поддиректории в platforms_root.
-    В каждой, где есть подпапка 'devicetree', находит все .dts и .dtso файлы
-    и компилирует их в .dtb или .dtbo соответственно с отладочными символами (-@).
-    """
-
-    for plat_name in os.listdir(platforms_root):
-        plat_path = os.path.join(platforms_root, plat_name)
+def prepair_devicetree(devicetree):
+    for plat_name in os.listdir(devicetree):
+        plat_path = os.path.join(devicetree, plat_name)
         if not os.path.isdir(plat_path):
             continue
 
-        dt_dir = os.path.join(plat_path, 'devicetree')
-        if not os.path.isdir(dt_dir):
-            continue
-
-        for file in os.listdir(dt_dir):
-            full_path = os.path.join(dt_dir, file)
+        for file in os.listdir(plat_path):
+            full_path = os.path.join(plat_path, file)
             if not os.path.isfile(full_path):
                 continue
 
@@ -566,10 +556,10 @@ def prepair_platforms(platforms_root):
 
             base_name = os.path.splitext(file)[0]
             out_file = base_name + out_ext
-            out_full = os.path.join(dt_dir, out_file)
+            out_full = os.path.join(plat_path, out_file)
             compile_dts(full_path, out_full)
 
-def platform_get_devicetree_override(platforms_names):
+def get_devicetree_override(platform):
     platforms_path = os.path.join(path_temp_syslbuild, "files", "platforms")
 
     for platform_name in platforms_names:
@@ -586,7 +576,7 @@ def platform_get_devicetree_override(platforms_names):
     
     return None
 
-def platform_get_devicetree_overlays(platforms_names):
+def get_devicetree_overlays(platform):
     platforms_path = os.path.join(path_temp_syslbuild, "files", "platforms")
 
     for platform_name in platforms_names:
@@ -603,23 +593,22 @@ def platform_get_devicetree_overlays(platforms_names):
     
     return []
 
-def platform_get_files(platforms_names, directory, extension):
-    platforms_path = os.path.join(path_temp_syslbuild, "files", "platforms")
+def devicetree_get_files(platform, extension):
+    devicetree = os.path.join(path_temp_syslbuild, "files", "devicetree")
 
     files = []
 
-    for platform_name in reversed(platforms_names):
-        dt_dir = os.path.join(platforms_path, platform_name, directory)
-        if not os.path.isdir(dt_dir):
-            continue
+    dt_dir = os.path.join(devicetree, platform, directory)
+    if not os.path.isdir(dt_dir):
+        continue
 
-        for file in sorted(os.listdir(dt_dir)):
-            full_path = os.path.join(dt_dir, file)
-            if not os.path.isfile(full_path):
-                continue
-            
-            if full_path.endswith('.' + extension):
-                files.append(os.path.join("files", "platforms", platform_name, directory, file))
+    for file in sorted(os.listdir(dt_dir)):
+        full_path = os.path.join(dt_dir, file)
+        if not os.path.isfile(full_path):
+            continue
+        
+        if full_path.endswith('.' + extension):
+            files.append(os.path.join("files", "devicetree", platform_name, file))
     
     return files
 
@@ -630,12 +619,12 @@ def setup_write_files():
     etc_config = os.path.join(path_temp_syslbuild, "files", "etc_config")
     systemd_config = os.path.join(path_temp_syslbuild, "files", "systemd_config")
     user_files = os.path.join(path_temp_syslbuild, "files", "user_files")
-    platforms = os.path.join(path_temp_syslbuild, "files", "platforms")
+    devicetree = os.path.join(path_temp_syslbuild, "files", "devicetree")
 
     os.makedirs(etc_config, exist_ok=True)
     os.makedirs(systemd_config, exist_ok=True)
     os.makedirs(user_files, exist_ok=True)
-    os.makedirs(platforms, exist_ok=True)
+    os.makedirs(devicetree, exist_ok=True)
 
     writeText(os.path.join(systemd_config, "logind.conf"), f"""[Login]
 NAutoVTs=0
@@ -698,7 +687,7 @@ ShowStatus={"no" if current_project.boot_quiet else "yes"}
     setup_graphic()
 
     copy_files(os.path.join(path_resources, "files"), user_files)
-    copy_files(os.path.join(path_resources, "platforms"), platforms)
+    copy_files(os.path.join(path_resources, "devicetree"), devicetree)
 
     shutil.copy(os.path.join(path_resources, "runshell.sh"), os.path.join(path_temp_syslbuild, "files", "runshell.sh"))
     shutil.copy(os.path.join(path_resources, "preinit.sh"), os.path.join(path_temp_syslbuild, "files", "preinit.sh"))
@@ -706,7 +695,7 @@ ShowStatus={"no" if current_project.boot_quiet else "yes"}
     shutil.copy("gnuboxmaker/run_session_wayland.sh", os.path.join(path_temp_syslbuild, "files", "run_session_wayland.sh"))
     shutil.copy("gnuboxmaker/run_session_x11.sh", os.path.join(path_temp_syslbuild, "files", "run_session_x11.sh"))
 
-    prepair_platforms(platforms)
+    prepair_devicetree(devicetree)
 
 def copy_bins(name):
     output_path = os.path.join(path_temp_syslbuild, name)
@@ -1456,10 +1445,8 @@ def build_project():
         else:
             stop_error("Failed to build")
 
-def init_platform(name):
-    platforms = os.path.join(path_resources, "platforms")
-    platform = os.path.join(platforms, name)
-    devicetree = os.path.join(platform, "devicetree")
+def init_devicetree(name):
+    devicetree = os.path.join(path_resources, "devicetree", name)
 
     os.makedirs(devicetree, exist_ok=True)
 
@@ -1501,10 +1488,8 @@ def update_project_structure():
             f.write(".temp\n")
             f.write("last.log\n")
 
-    init_platform("all")
-    init_platform("arm64")
-    init_platform("opi_zero3")
-    init_platform("rpi_64")
+    init_devicetree("opi_zero3")
+    init_devicetree("rpi_64")
 
 def load_project(path):
     global current_project
