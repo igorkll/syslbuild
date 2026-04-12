@@ -21,9 +21,6 @@ session_mode_variants = ["wayland", "x11", "tty", "init"]
 weston_shell_variants = ["kiosk", "desktop"]
 splash_mode_variants = ["center", "fill", "contain", "cover"]
 
-rpi_64_platforms = ["rpi_64"]
-opi_zero3_platforms = ["opi_zero3"]
-
 @dataclass
 class Project:
     gnubox_version: list[int] = field(default_factory=lambda: [0, 0, 0])
@@ -560,36 +557,30 @@ def prepair_devicetree(devicetree):
             compile_dts(full_path, out_full)
 
 def get_devicetree_override(platform):
-    platforms_path = os.path.join(path_temp_syslbuild, "files", "platforms")
+    dt_dir = os.path.join(path_temp_syslbuild, "files", "devicetree", platform)
+    if not os.path.isdir(dt_dir):
+        continue
 
-    for platform_name in platforms_names:
-        dt_dir = os.path.join(platforms_path, platform_name, 'devicetree')
-        if not os.path.isdir(dt_dir):
-            continue
-
-        override_path = os.path.join(dt_dir, 'override.txt')
-        if os.path.isfile(override_path):
-            with open(override_path, 'r', encoding='utf-8') as f:
-                content = f.read().strip()
-                if len(content) > 0:
-                    return content
+    override_path = os.path.join(dt_dir, 'override.txt')
+    if os.path.isfile(override_path):
+        with open(override_path, 'r', encoding='utf-8') as f:
+            content = f.read().strip()
+            if len(content) > 0:
+                return content
     
     return None
 
 def get_devicetree_overlays(platform):
-    platforms_path = os.path.join(path_temp_syslbuild, "files", "platforms")
+    dt_dir = os.path.join(path_temp_syslbuild, "files", "devicetree", platform)
+    if not os.path.isdir(dt_dir):
+        continue
 
-    for platform_name in platforms_names:
-        dt_dir = os.path.join(platforms_path, platform_name, 'devicetree')
-        if not os.path.isdir(dt_dir):
-            continue
-
-        overlays_path = os.path.join(dt_dir, 'overlays.txt')
-        if os.path.isfile(overlays_path):
-            with open(overlays_path, 'r', encoding='utf-8') as f:
-                content = f.read().strip()
-                if len(content) > 0:
-                    return content.splitlines()
+    overlays_path = os.path.join(dt_dir, 'overlays.txt')
+    if os.path.isfile(overlays_path):
+        with open(overlays_path, 'r', encoding='utf-8') as f:
+            content = f.read().strip()
+            if len(content) > 0:
+                return content.splitlines()
     
     return []
 
