@@ -594,11 +594,9 @@ def get_devicetree_overlays(platform):
     return []
 
 def devicetree_get_files(platform, extension):
-    devicetree = os.path.join(path_temp_syslbuild, "files", "devicetree")
-
     files = []
 
-    dt_dir = os.path.join(devicetree, platform, directory)
+    dt_dir = os.path.join(path_temp_syslbuild, "files", "devicetree", platform)
     if not os.path.isdir(dt_dir):
         continue
 
@@ -608,7 +606,7 @@ def devicetree_get_files(platform, extension):
             continue
         
         if full_path.endswith('.' + extension):
-            files.append(os.path.join("files", "devicetree", platform_name, file))
+            files.append(os.path.join("files", "devicetree", platform, file))
     
     return files
 
@@ -1011,11 +1009,11 @@ boot_delay=0
 avoid_warnings=1
 """
 
-    override = platform_get_devicetree_override(rpi_64_platforms)
+    override = get_devicetree_override("rpi_64")
     if override:
         config_txt += f"\ndevice_tree={override}.dtb"
 
-    overlays = platform_get_devicetree_overlays(rpi_64_platforms)
+    overlays = get_devicetree_overlays("rpi_64")
     for overlay in overlays:
         config_txt += f"\ndtoverlay={overlay}"
 
@@ -1070,11 +1068,11 @@ avoid_warnings=1
         ["files/config_rpi_64.txt", "/config.txt"]
     ]
 
-    dtbList = platform_get_files(rpi_64_platforms, "devicetree", "dtb")
+    dtbList = devicetree_get_files("rpi_64", "dtb")
     for dtb in dtbList:
         items.append([dtb, f"/{os.path.basename(dtb)}"])
 
-    dtboList = platform_get_files(rpi_64_platforms, "devicetree", "dtbo")
+    dtboList = devicetree_get_files("rpi_64", "dtbo")
     for dtbo in dtboList:
         items.append([dtbo, f"/overlays/{os.path.basename(dtbo)}"])
 
@@ -1121,10 +1119,10 @@ avoid_warnings=1
 
 def export_opi_zero3(builditems, cmdline, appendPartitions):
     dtboList_active = []
-    for overlay in platform_get_devicetree_overlays(opi_zero3_platforms):
+    for overlay in get_devicetree_overlays("opi_zero3"):
         dtboList_active.append(overlay + ".dtbo")
 
-    devicetree = platform_get_devicetree_override(opi_zero3_platforms)
+    devicetree = get_devicetree_override("opi_zero3")
     if devicetree:
         devicetree = devicetree + ".dtb"
     else:
@@ -1143,8 +1141,8 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         "bootloaderDtb": devicetree,
         "dtbList": [
             "kernel_image/arm64/opi_zero3/sun50i-h618-orangepi-zero3.dtb"
-        ] + platform_get_files(opi_zero3_platforms, "devicetree", "dtb"),
-        "dtboList": platform_get_files(opi_zero3_platforms, "devicetree", "dtbo"),
+        ] + devicetree_get_files("opi_zero3", "dtb"),
+        "dtboList": devicetree_get_files("opi_zero3", "dtbo"),
         "dtboList_active": dtboList_active,
 
         "kernel": "kernel_image/arm64/opi_zero3/kernel.img",
