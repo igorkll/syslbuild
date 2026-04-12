@@ -558,29 +558,25 @@ def prepair_devicetree(devicetree):
 
 def get_devicetree_override(platform):
     dt_dir = os.path.join(path_temp_syslbuild, "files", "devicetree", platform)
-    if not os.path.isdir(dt_dir):
-        continue
-
-    override_path = os.path.join(dt_dir, 'override.txt')
-    if os.path.isfile(override_path):
-        with open(override_path, 'r', encoding='utf-8') as f:
-            content = f.read().strip()
-            if len(content) > 0:
-                return content
+    if os.path.isdir(dt_dir):
+        override_path = os.path.join(dt_dir, 'override.txt')
+        if os.path.isfile(override_path):
+            with open(override_path, 'r', encoding='utf-8') as f:
+                content = f.read().strip()
+                if len(content) > 0:
+                    return content
     
     return None
 
 def get_devicetree_overlays(platform):
     dt_dir = os.path.join(path_temp_syslbuild, "files", "devicetree", platform)
-    if not os.path.isdir(dt_dir):
-        continue
-
-    overlays_path = os.path.join(dt_dir, 'overlays.txt')
-    if os.path.isfile(overlays_path):
-        with open(overlays_path, 'r', encoding='utf-8') as f:
-            content = f.read().strip()
-            if len(content) > 0:
-                return content.splitlines()
+    if os.path.isdir(dt_dir):
+        overlays_path = os.path.join(dt_dir, 'overlays.txt')
+        if os.path.isfile(overlays_path):
+            with open(overlays_path, 'r', encoding='utf-8') as f:
+                content = f.read().strip()
+                if len(content) > 0:
+                    return content.splitlines()
     
     return []
 
@@ -588,16 +584,14 @@ def devicetree_get_files(platform, extension):
     files = []
 
     dt_dir = os.path.join(path_temp_syslbuild, "files", "devicetree", platform)
-    if not os.path.isdir(dt_dir):
-        continue
-
-    for file in sorted(os.listdir(dt_dir)):
-        full_path = os.path.join(dt_dir, file)
-        if not os.path.isfile(full_path):
-            continue
-        
-        if full_path.endswith('.' + extension):
-            files.append(os.path.join("files", "devicetree", platform, file))
+    if os.path.isdir(dt_dir):
+        for file in sorted(os.listdir(dt_dir)):
+            full_path = os.path.join(dt_dir, file)
+            if not os.path.isfile(full_path):
+                continue
+            
+            if full_path.endswith('.' + extension):
+                files.append(os.path.join("files", "devicetree", platform, file))
     
     return files
 
