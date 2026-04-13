@@ -108,6 +108,7 @@ you can create a custom devicetree to connect the perepherals
 * the real boot partition is mounted in the "/bootmnt" directory and is accessible from updatescript via the path "/updateroot/bootmnt"
 * if you use a separate data partition for data, it will be expanded the first time you turn it on, regardless of root_expand. the root_expand itself will be IGNORED and the root partition will NOT be expanded
 * the data partition is created with the ext4 filesystem in the /data directory
+* to build gnubox maker from source after cloning the repository, run "prepair.sh ". this is necessary to build a default kernel.
 
 ## what should I do if the project build fails?
 * make sure that EACH of your chroot scripts creates a /.chrootend file at the end
