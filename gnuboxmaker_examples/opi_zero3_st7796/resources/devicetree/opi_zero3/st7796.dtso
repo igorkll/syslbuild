@@ -1,6 +1,8 @@
 /dts-v1/;
 /plugin/;
 
+#include <dt-bindings/gpio/gpio.h>
+
 / {
     compatible = "allwinner,sun50i-h616";
 
@@ -8,16 +10,34 @@
         target = <&spi1>;
         __overlay__ {
             status = "okay";
-            cs-gpios = <&pio 7 14 GPIO_ACTIVE_LOW>; // PI14
+            #address-cells = <1>;
+            #size-cells = <0>;
+            pinctrl-names = "default";
+            pinctrl-0 = <&spi1_pins>;
+            cs-gpios = <&pio 0 13 GPIO_ACTIVE_LOW>; // CS: PA13 (пин 11)
 
-            st7796: panel@0 {
-                compatible = "sitronix,st7789v"; // Используем compatible от st7789v
+            display@0 {
+                compatible = "sitronix,st7789v";
                 reg = <0>;
                 spi-max-frequency = <40000000>;
 
-                dc-gpios = <&pio 7 15 GPIO_ACTIVE_HIGH>; // PI15
-                reset-gpios = <&pio 7 16 GPIO_ACTIVE_HIGH>; // PI16
+                dc-gpios = <&pio 0 2 GPIO_ACTIVE_HIGH>;   // DC: PA2 (пин 7)
+                reset-gpios = <&pio 0 0 GPIO_ACTIVE_HIGH>; // RST: PA0 (пин 10)
                 backlight = <&backlight>;
+
+                rotation = <90>;
+            };
+        };
+    };
+
+    fragment@1 {
+        target-path = "/";
+        __overlay__ {
+            backlight: backlight {
+                compatible = "gpio-backlight";
+                gpios = <&pio 0 18 GPIO_ACTIVE_HIGH>; // BL: PA18
+                default-on;
+                status = "okay";
             };
         };
     };
