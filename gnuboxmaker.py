@@ -874,6 +874,11 @@ def setup_export_initramfs(builditems):
     else:
         stop_error(f"unknown distro \"{current_project.distro}\"")
 
+def getWaitFbStr(afterModules):
+    if current_project.boot_splash:
+        return "waitFbAfterModules" if afterModules else "waitFbBeforeModules"
+    return ""
+
 def setup_build_base(builditems):
     setup_build_distro(builditems)
     setup_write_files()
@@ -1047,7 +1052,7 @@ avoid_warnings=1
     for overlay in overlays:
         config_txt += f"\ndtoverlay={overlay}"
 
-    writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_64.txt"), exclude_string("root=/dev/mmcblk0p2 " + cmdline + " waitFbAfterModules\n", current_project.exclude_cmdline))
+    writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_64.txt"), exclude_string("root=/dev/mmcblk0p2 " + cmdline + f" {getWaitFbStr(True)}\n", current_project.exclude_cmdline))
     writeText(os.path.join(path_temp_syslbuild, "files", "config_rpi_64.txt"), config_txt)
 
     builditems.append({
@@ -1182,7 +1187,7 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
 
         "kernel_args_auto": True,
         "kernel_rootfs_auto": "manual",
-        "kernel_args": exclude_string(cmdline + " cma=512M waitFbBeforeModules", current_project.exclude_cmdline) # why is "waitFbBeforeModules" here? because in this FUCKING Chinese board, half of the peripherals start with a fucking delay, and it should be initialized by the time plymouth is launched
+        "kernel_args": exclude_string(cmdline + f" cma=512M {getWaitFbStr(False)}", current_project.exclude_cmdline) # why is "waitFbBeforeModules" here? because in this FUCKING Chinese board, half of the peripherals start with a fucking delay, and it should be initialized by the time plymouth is launched
     })
 
 def setup_build_targets(builditems, cmdline):
