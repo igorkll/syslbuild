@@ -1,0 +1,24 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+    compatible = "allwinner,sun50i-h616";
+
+    fragment@0 {
+        target = <&spi1>;
+        __overlay__ {
+            status = "okay";
+            cs-gpios = <&pio 7 14 GPIO_ACTIVE_LOW>; // PI14
+
+            st7796: panel@0 {
+                compatible = "sitronix,st7789v"; // Используем compatible от st7789v
+                reg = <0>;
+                spi-max-frequency = <40000000>;
+
+                dc-gpios = <&pio 7 15 GPIO_ACTIVE_HIGH>; // PI15
+                reset-gpios = <&pio 7 16 GPIO_ACTIVE_HIGH>; // PI16
+                backlight = <&backlight>;
+            };
+        };
+    };
+};
