@@ -1,8 +1,0 @@
-# Soft dependencies extracted from modules themselves.
-softdep xts pre: ecb
-softdep ipmi_msghandler post: ipmi_devintf
-softdep vc4 pre: snd-soc-hdmi-codec
-softdep wm8994 pre: wm8994_regulator
-softdep genet pre: mdio-bcm-unimac
-softdep r8169 pre: realtek
-softdep xt_LOG pre: nf_log_syslog
