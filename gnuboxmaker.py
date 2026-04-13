@@ -45,6 +45,9 @@ class Project:
     dont_show_splash_on_poweroff: bool = True
     dont_use_splash_on_efi: bool = False
 
+    uartlogs: bool = False
+    uartlogs_speed: int = 115200
+
     splash_bg: str = "0, 0, 0"
     splash_mode: str = "contain"
     splash_scale: float = 0.7
@@ -1328,7 +1331,11 @@ def setup_build_targets(builditems, cmdline):
         export_rpi_64(builditems, cmdline, appendPartitions)
 
 def generate_syslbuild_project():
-    cmdline = f"{"ro" if current_project.root_readonly else "rw"} rootwait=60 selinux=0 makevartmp plymouth.ignore-serial-consoles mount_bootmnt console=tty1 preinit=/root/preinit.sh {current_project.cmdline}"
+    cmdline_console = "console=tty1"
+    if current_project.uartlogs:
+        cmdline_console += f" console=ttyS0,{current_project.uartlogs_speed}"
+
+    cmdline = f"{"ro" if current_project.root_readonly else "rw"} rootwait=60 selinux=0 makevartmp plymouth.ignore-serial-consoles mount_bootmnt {cmdline_console} preinit=/root/preinit.sh {current_project.cmdline}"
 
     if current_project.root_expand and not current_project.separate_data_partition:
         cmdline += " root_processing root_expand"
