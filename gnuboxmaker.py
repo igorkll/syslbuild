@@ -8,6 +8,7 @@ from tkinter import ttk
 from pathlib import Path
 import shutil
 import json5
+import json
 import subprocess
 import sys
 import time
@@ -85,7 +86,7 @@ def raw_load_project(path):
 
 def raw_save_project(path, proj):
     with open(path, "w", encoding="utf-8") as f:
-        json5.dump(asdict(proj), f, indent=2, ensure_ascii=False)
+        json.dump(asdict(proj), f, indent=2, ensure_ascii=False)
 
 # -1 - версия проекта ниже версии тула
 # 0 - версии совпадают
@@ -1384,7 +1385,7 @@ def generate_syslbuild_project():
     }
 
     with open(path_temp_syslbuild_file, "w") as f:
-        json5.dump(syslbuild_project, f, indent=2, ensure_ascii=False)
+        json.dump(syslbuild_project, f, indent=2, ensure_ascii=False)
 
     cmdline = exclude_string(cmdline, current_project.exclude_cmdline)
 
