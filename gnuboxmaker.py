@@ -1479,7 +1479,7 @@ def update_project_structure():
         copyFile(preinit_path, "gnuboxmaker/preinit.sh")
 
     logo_path_png = os.path.join(path_resources, "logo.png")
-    logo_path_gif = os.path.join(path_resources, "logo.gif")
+    logo_path_gif = os.path.join(path_resources, "logo.gif") # gif на экране загрузки еще не реализован
     if not os.path.isfile(logo_path_png) and not os.path.isfile(logo_path_gif):
         copyFile(logo_path_png, "gnuboxmaker.png")
 
