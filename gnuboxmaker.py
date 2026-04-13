@@ -48,6 +48,7 @@ class Project:
 
     uartlogs: bool = False
     uartlogs_speed: int = 115200
+    uartlogs_rootshell: bool = False
 
     splash_bg: str = "0, 0, 0"
     splash_mode: str = "contain"
@@ -293,6 +294,9 @@ systemctl mask plymouth-kexec.service"""
     if current_project.session_mode != "init":
         aaa_setup += "\n\nsystemctl enable run_shell.service"
 
+    if current_project.uartlogs_rootshell:
+        aaa_setup += "\n\nsystemctl enable uartshell.service"
+
     aaa_setup += "\n\ntouch /.chrootend"
     return aaa_setup
 
@@ -437,6 +441,26 @@ RestartSec=0
 [Install]
 WantedBy=default.target"""
         writeText(os.path.join(systemd_config, "system", "run_shell.service"), content)
+
+    if current_project.uartlogs_rootshell:
+        content = f"""[Unit]
+Description=rootshell on UART
+After=multi-user.target
+
+[Service]
+Type=idle
+ExecStart=-/sbin/agetty --autologin root --noclear ttyS0 {current_project.uartlogs_speed} vt102
+Restart=always
+RestartSec=0
+StandardInput=tty
+StandardOutput=tty
+TTYPath=/dev/ttyS0
+TTYReset=yes
+TTYVHangup=yes
+
+[Install]
+WantedBy=multi-user.target"""
+        writeText(os.path.join(systemd_config, "system", "uartshell.service"), content)
 
 
 def setup_graphic():
