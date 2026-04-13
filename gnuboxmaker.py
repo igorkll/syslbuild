@@ -485,6 +485,9 @@ focus-animation=none
 [keyboard]
 vt-switching=false
 
+[libinput]
+enable-tap=true
+
 [autolaunch]
 path=/runshell_launcher.sh
 watch=true""")
