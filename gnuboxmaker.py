@@ -103,10 +103,13 @@ def checkVersion(project):
 class CancelGUI(Exception):
     pass
 
-def exclude_cmdline(cmdline, exclude_list):
-    parts = cmdline.split()
+def exclude_string(lstr, exclude_list):
+    parts = lstr.split()
     filtered = [p for p in parts if p not in exclude_list]
     return ' '.join(filtered)
+
+def exclude_array(arr, exclude_list):
+    return [item for item in arr if item not in exclude_list]
 
 def buildLog(logstr, quiet=False):
     if not quiet:
@@ -327,6 +330,7 @@ def setup_build_distro(builditems):
             "sed",
             "mawk",
             "kexec-tools",
+            "alsa-utils",
 
             "firmware-linux",
             "firmware-brcm80211",
@@ -359,7 +363,7 @@ def setup_build_distro(builditems):
             include.append("matchbox-window-manager")
 
         include += current_project.user_packages
-        include = [item for item in include if item not in current_project.exclude_packages]
+        include = exclude_array(include, current_project.exclude_packages)
 
         builditems.append({
             "type": "debian",
@@ -1008,7 +1012,7 @@ avoid_warnings=1
     for overlay in overlays:
         config_txt += f"\ndtoverlay={overlay}"
 
-    writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_64.txt"), exclude_cmdline("root=/dev/mmcblk0p2 " + cmdline + " waitFbAfterModules\n", current_project.exclude_cmdline))
+    writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_64.txt"), exclude_string("root=/dev/mmcblk0p2 " + cmdline + " waitFbAfterModules\n", current_project.exclude_cmdline))
     writeText(os.path.join(path_temp_syslbuild, "files", "config_rpi_64.txt"), config_txt)
 
     builditems.append({
@@ -1143,7 +1147,7 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
 
         "kernel_args_auto": True,
         "kernel_rootfs_auto": "manual",
-        "kernel_args": exclude_cmdline(cmdline + " cma=512M waitFbBeforeModules", current_project.exclude_cmdline) # why is "waitFbBeforeModules" here? because in this FUCKING Chinese board, half of the peripherals start with a fucking delay, and it should be initialized by the time plymouth is launched
+        "kernel_args": exclude_string(cmdline + " cma=512M waitFbBeforeModules", current_project.exclude_cmdline) # why is "waitFbBeforeModules" here? because in this FUCKING Chinese board, half of the peripherals start with a fucking delay, and it should be initialized by the time plymouth is launched
     })
 
 def setup_build_targets(builditems, cmdline):
@@ -1374,7 +1378,7 @@ def generate_syslbuild_project():
     with open(path_temp_syslbuild_file, "w") as f:
         json5.dump(syslbuild_project, f, indent=2, ensure_ascii=False)
 
-    cmdline = exclude_cmdline(cmdline, current_project.exclude_cmdline)
+    cmdline = exclude_string(cmdline, current_project.exclude_cmdline)
 
     with open(os.path.join(path_temp_syslbuild, "grub.cfg"), "w") as f:
         grubcfg = f"""set cmdline="{cmdline}" """
