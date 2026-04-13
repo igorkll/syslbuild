@@ -442,7 +442,7 @@ RestartSec=0
 WantedBy=default.target"""
         writeText(os.path.join(systemd_config, "system", "run_shell.service"), content)
 
-    if current_project.uartlogs_rootshell:
+    if current_project.uartlogs_rootshell: # какого хуя это гавно запускается в chroot при сборке ААААААААААААААА БЛЯТЬ
         content = f"""[Unit]
 Description=rootshell on UART
 After=multi-user.target
