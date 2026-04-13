@@ -428,6 +428,7 @@ TTYVHangup=yes
 TTYVTDisallocate=no
 StandardInput=tty
 StandardOutput=tty
+ExecStartPre=/bin/sh -c 'stty -echo < /dev/tty1'
 ExecStart=-/bin/login -f {current_project.session_user}
 Restart=always
 RestartSec=0
