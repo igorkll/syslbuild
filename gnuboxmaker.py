@@ -572,11 +572,11 @@ def compile_dts(source_path, output_path):
     try:
         subprocess.run(cmd, check=True, capture_output=True, text=True)
         if os.path.isfile(path):
-            print(f"[OK] {source_path} -> {output_path}")
+            buildLog(f"[OK] {source_path} -> {output_path}")
         else:
-            print(f"[FAIL] {source_path}")
+            stop_error(f"[FAIL] {source_path}")
     except subprocess.CalledProcessError as e:
-        print(f"[FAIL] {source_path}:\n  {e.stderr}", file=sys.stderr)
+        stop_error(f"[FAIL] {source_path}:\n  {e.stderr}", file=sys.stderr)
 
 def prepair_devicetree(devicetree):
     for plat_name in os.listdir(devicetree):
