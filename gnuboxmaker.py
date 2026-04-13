@@ -571,7 +571,10 @@ def compile_dts(source_path, output_path):
     cmd = ['dtc', '-@', '-I', 'dts', '-O', 'dtb', '-o', output_path, source_path]
     try:
         subprocess.run(cmd, check=True, capture_output=True, text=True)
-        print(f"[OK] {source_path} -> {output_path}")
+        if os.path.isfile(path):
+            print(f"[OK] {source_path} -> {output_path}")
+        else:
+            print(f"[FAIL] {source_path}")
     except subprocess.CalledProcessError as e:
         print(f"[FAIL] {source_path}:\n  {e.stderr}", file=sys.stderr)
 
