@@ -72,10 +72,6 @@ class Project:
     cmdline: str = ""
     exclude_cmdline: list[str] = field(default_factory=list)
 
-    delete_apt: bool = True
-    delete_dpkg: bool = True
-    delete_man: bool = True
-
     export_x86_64: bool = True
     export_x86: bool = False
     export_arm64: bool = False
