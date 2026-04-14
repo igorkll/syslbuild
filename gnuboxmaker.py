@@ -575,7 +575,7 @@ def compile_dts(source_path, output_path):
     cmd = ['dtc', '-@', '-I', 'dts', '-O', 'dtb', '-o', output_path, source_path]
     try:
         subprocess.run(cmd, check=True, capture_output=True, text=True)
-        if os.path.isfile(path):
+        if os.path.isfile(output_path):
             buildLog(f"[OK] {source_path} -> {output_path}")
         else:
             stop_error(f"[FAIL] {source_path}")
