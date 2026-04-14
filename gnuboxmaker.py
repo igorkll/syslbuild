@@ -58,6 +58,10 @@ class Project:
     root_readonly: bool = False
     allow_updatescript: bool = True
     separate_data_partition: bool = False
+    minsize_boot_partition: str = "64MB"
+    minsize_efi_partition: str = "64MB"
+    minsize_root_partition: str = "64MB"
+    minsize_data_partition: str = "64MB"
 
     weston_shell: str = "kiosk"
 
@@ -983,7 +987,7 @@ def setup_build_base(builditems):
 
         "fs_type": "ext4",
         "size": "(auto * 1.2) + (100 * 1024 * 1024)", 
-        "minsize": "64MB",
+        "minsize": current_project.minsize_root_partition,
         "label": "rootfs"
     })
 
@@ -1132,7 +1136,7 @@ avoid_warnings=1
 
         "fs_type": "fat32",
         "size": "(auto * 1.2) + (100 * 1024 * 1024)",
-        "minsize": "64MB",
+        "minsize": current_project.minsize_boot_partition,
         "label": "BOOT"
     })
 
@@ -1185,6 +1189,8 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         "rootfs": "rootfs.img",
         "appendPartitions": appendPartitions,
 
+        "boot_partition_minsize": current_project.minsize_boot_partition,
+
         "kernel_args_auto": True,
         "kernel_rootfs_auto": "manual",
         "kernel_args": exclude_string(cmdline + f" cma=512M {getWaitFbStr(False)}", current_project.exclude_cmdline) # why is "waitFbBeforeModules" here? because in this FUCKING Chinese board, half of the peripherals start with a fucking delay, and it should be initialized by the time plymouth is launched
@@ -1200,7 +1206,7 @@ def setup_build_targets(builditems, cmdline):
             "export": False,
 
             "fs_type": "ext4",
-            "size": "64M",
+            "size": current_project.minsize_data_partition,
             "label": "DATA",
 
             "chmod": [
@@ -1293,8 +1299,10 @@ def setup_build_targets(builditems, cmdline):
 
             "fs_arg": "-F32",
             "fs_type": "fat",
-            "size": "256M",
-            "label": "EFI"
+            "size": "256MB",
+            "label": "EFI",
+
+            "minsize": current_project.minsize_efi_partition
         })
 
     if current_project.export_img_uefi_gpt:

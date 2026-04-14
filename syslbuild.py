@@ -1547,7 +1547,7 @@ def singleboardBuild(item):
 
             "fs_type": "fat32",
             "size": "(auto * 1.2) + (100 * 1024 * 1024)",
-            "minsize": "64MB",
+            "minsize": item.get("boot_partition_minsize", "64MB"),
             "label": "BOOT"
         })
 

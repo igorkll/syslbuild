@@ -729,6 +729,8 @@ these changes to the kernel config are applied automatically when building the k
             "initramfs": "initramfs.img", //optional
             "rootfs": "rootfs.img", //optional
 
+            "boot_partition_minsize": "64MB", //optional
+
             //optional
             "prepandPartitions": [
                 ["example.img", "c"]
