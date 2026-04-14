@@ -28,6 +28,8 @@ sudo apt install -y device-tree-compiler
 sudo pip install json5 --break-system-packages
 sudo pip install asteval --break-system-packages
 
+./prepair.sh
+
 DEST="/opt/syslbuild"
 sudo mkdir -p "$DEST"
 sudo cp -r ./* "$DEST"
