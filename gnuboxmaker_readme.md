@@ -30,8 +30,10 @@ a similar program for creating Windows images for embedded devices: https://gith
 
 ## bugs
 * HDMI audio does not work on orange pi zero 3 (it works on raspberry pi 64)
+* WIFI does not work on orange pi zero 3 (it works on raspberry pi 64)
 * "screen idle time" does not work on wayland
 * x11 mode does not work on Raspberry pi 64
+* there is a rather long loading time on the orange pi zero 3. This is due to the platform features. It may take ~20 seconds from the power supply to the appearance of your logo.
 
 ## supported platforms
 * x86_64 (BIOS, UEFI)
@@ -94,7 +96,6 @@ you can create a custom devicetree to connect the perepherals
 * "chroot" is executed in systemd-nspawn
 * Attention! since the gnubox maker projects are building from root in the host system, be careful what you build
 * despite the presence of command-line arguments for building via tty, gnubox maker must BE run from its working directory (otherwise it will not work)
-* there is a rather long loading time on the orange pi zero 3. This is due to the platform features. It may take ~20 seconds from the power supply to the appearance of your logo.
 * in order for GPU acceleration to work on raspberry pi 64, you need to select at least this debian version: trixie 20260217T143331Z. older versions have a Mesa version that is incompatible with the raspberry pi board
 * if you use boot splash, single-board computers will wait for framebuffer to appear when turned on and will not continue booting without a connected monitor.
 

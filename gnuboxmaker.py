@@ -72,6 +72,10 @@ class Project:
     cmdline: str = ""
     exclude_cmdline: list[str] = field(default_factory=list)
 
+    delete_apt: bool = True
+    delete_dpkg: bool = True
+    delete_man: bool = True
+
     export_x86_64: bool = True
     export_x86: bool = False
     export_arm64: bool = False
@@ -403,8 +407,8 @@ def setup_download(builditems):
         "name": "custom-debian-initramfs-init",
         "export": False,
 
-        "git_url": "https://github.com/igorkll/custom-debian-initramfs-init",
-        "git_checkout": "1.5.6"
+        "git_url": "https://github.com/igorkll/custom-debian-initramfs-init" #,
+        # "git_checkout": "1.5.6"
     })
 
     def addExtract(fromdir, name):
@@ -1527,6 +1531,10 @@ def update_project_structure():
     logo_path_gif = os.path.join(path_resources, "logo.gif") # gif на экране загрузки еще не реализован
     if not os.path.isfile(logo_path_png) and not os.path.isfile(logo_path_gif):
         copyFile(logo_path_png, "gnuboxmaker.png")
+
+    startup_sound = os.path.join(path_resources, "startup.wav")
+    if not os.path.isfile(startup_sound):
+        copyFile(startup_sound, "gnuboxmaker/startup.wav")
 
     gitignore_path = os.path.join(current_project_directory, ".gitignore")
     if not os.path.isfile(gitignore_path):
