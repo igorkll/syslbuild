@@ -8,7 +8,7 @@ data_link() {
     /nativemount --bind "/root/data/$1" "/root/$1"
 }
 
-for x in $(cat /proc/cmdline); do
+for x in $(cat /root/proc/cmdline); do
     case $x in
         home_link)
             data_link "home"
