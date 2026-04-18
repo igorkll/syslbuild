@@ -763,6 +763,7 @@ ShowStatus={"no" if current_project.boot_quiet else "yes"}
     shutil.copy("gnuboxmaker/run_session_wayland.sh", os.path.join(path_temp_syslbuild, "files", "run_session_wayland.sh"))
     shutil.copy("gnuboxmaker/run_session_x11.sh", os.path.join(path_temp_syslbuild, "files", "run_session_x11.sh"))
     shutil.copy("gnuboxmaker/system_preinit.sh", os.path.join(path_temp_syslbuild, "files", "system_preinit.sh"))
+    shutil.copy("gnuboxmaker/system_init_hook.sh", os.path.join(path_temp_syslbuild, "files", "system_init_hook.sh"))
 
     prepair_devicetree(devicetree)
 
@@ -936,6 +937,7 @@ def setup_build_base(builditems):
 
         ["custom_init.sh", "/usr/share/initramfs-tools/init", [0, 0, "0755"]],
         ["custom_init_hook.sh", "/etc/initramfs-tools/hooks/custom_init_hook.sh", [0, 0, "0755"]],
+        ["files/system_init_hook.sh", "/etc/initramfs-tools/hooks/system_init_hook.sh", [0, 0, "0755"]],
 
         ["files/user_files", "/", [0, 0, "0755"]],
     ]
