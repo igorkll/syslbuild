@@ -44,7 +44,7 @@ class Project:
 
     boot_quiet: bool = True
     boot_splash: bool = True
-    boot_sound: str = "none"
+    boot_sound: str = "init"
     dont_show_splash_on_poweroff: bool = True
     dont_use_splash_on_efi: bool = False
 
@@ -938,10 +938,12 @@ def setup_build_base(builditems):
         ["custom_init.sh", "/usr/share/initramfs-tools/init", [0, 0, "0755"]],
         ["custom_init_hook.sh", "/etc/initramfs-tools/hooks/custom_init_hook.sh", [0, 0, "0755"]],
         ["files/system_init_hook.sh", "/etc/initramfs-tools/hooks/system_init_hook.sh", [0, 0, "0755"]],
-        ["files/startup.wav", "/startup.wav", [0, 0, "0755"]],
 
         ["files/user_files", "/", [0, 0, "0755"]],
     ]
+
+    if current_project.boot_sound == "init" or (current_project.boot_sound == "logo" and current_project.boot_splash):
+        items.append(["files/startup.wav", "/startup.wav", [0, 0, "0755"]])
 
     directories = []
 
