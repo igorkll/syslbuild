@@ -1420,6 +1420,12 @@ def generate_syslbuild_project():
 
     cmdline = f"{"ro" if current_project.root_readonly else "rw"} rootwait=60 selinux=0 plymouth.ignore-serial-consoles mount_bootmnt {cmdline_console} preinit=/root/system_preinit.sh {current_project.cmdline}"
 
+    if current_project.boot_sound == "init":
+        cmdline += " startupsound_afterMountRoot=/startup.wav"
+    
+    if current_project.boot_sound == "logo" and current_project.boot_splash:
+        cmdline += " startupsound_afterLogoShow=/startup.wav"
+
     if current_project.var_is_temp and not (current_project.separate_data_partition and current_project.separate_data_partition_var_link):
         cmdline += " makevartmp"
 
