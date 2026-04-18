@@ -58,6 +58,7 @@ class Project:
     root_readonly: bool = False
     allow_updatescript: bool = True
     separate_data_partition: bool = False
+    separate_data_partition_home_link: bool = True
     minsize_boot_partition: str = "64MB"
     minsize_efi_partition: str = "64MB"
     minsize_root_partition: str = "64MB"
@@ -255,6 +256,17 @@ systemctl mask getty@tty6.service
 systemctl mask serial-getty@.service
 systemctl mask container-getty@.service
 systemctl mask console-getty.service
+
+# ------------
+
+if [ -d "/lib/firmware/brcm/" ]; then
+    cd /lib/firmware/brcm/
+
+    ln -sf ../cypress/cyfmac43455-sdio.bin brcmfmac43455-sdio.raspberrypi,4-model-b.bin
+    ln -sf ../cypress/cyfmac43455-sdio.bin brcmfmac43455-sdio.raspberrypi,5-model-b.bin
+
+    cd /
+fi
 
 # ------------
 
@@ -1380,13 +1392,15 @@ def generate_syslbuild_project():
     if current_project.uartlogs:
         cmdline_console += f" console=ttyS0,{current_project.uartlogs_speed}"
 
-    cmdline = f"{"ro" if current_project.root_readonly else "rw"} rootwait=60 selinux=0 makevartmp plymouth.ignore-serial-consoles mount_bootmnt {cmdline_console} preinit=/root/preinit.sh {current_project.cmdline}"
+    cmdline = f"{"ro" if current_project.root_readonly else "rw"} rootwait=60 selinux=0 makevartmp plymouth.ignore-serial-consoles mount_bootmnt {cmdline_console} preinit=/root/system_preinit.sh {current_project.cmdline}"
 
     if current_project.root_expand and not current_project.separate_data_partition:
         cmdline += " root_processing root_expand"
 
     if current_project.separate_data_partition:
         cmdline += " mount_data"
+        if current_project.separate_data_partition_home_link:
+            cmdline += " home_link"
 
     if current_project.allow_updatescript:
         cmdline += " allow_updatescript"
