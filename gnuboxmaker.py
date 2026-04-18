@@ -938,6 +938,7 @@ def setup_build_base(builditems):
         ["custom_init.sh", "/usr/share/initramfs-tools/init", [0, 0, "0755"]],
         ["custom_init_hook.sh", "/etc/initramfs-tools/hooks/custom_init_hook.sh", [0, 0, "0755"]],
         ["files/system_init_hook.sh", "/etc/initramfs-tools/hooks/system_init_hook.sh", [0, 0, "0755"]],
+        ["files/startup.wav", "/startup.wav", [0, 0, "0755"]],
 
         ["files/user_files", "/", [0, 0, "0755"]],
     ]
