@@ -597,6 +597,12 @@ image_sprite.SetZ(-1);"""
 
     writeText(os.path.join(bootlogo_files, "bootlogo.script"), bootlogo_script)
 
+def setup_bootsound():
+    project_startup_sound_wav_path = os.path.join(path_resources, "startup.wav")
+
+    if current_project.boot_sound == "init" or (current_project.boot_sound == "logo" and current_project.boot_splash):
+        copyFile(os.path.join(path_temp_syslbuild, "files", "startup.wav"), project_startup_sound_wav_path)
+
 def compile_dts(source_path, output_path):
     """Компилирует .dts/.dtso файл в .dtb/.dtbo с символами (-@)."""
     cmd = ['dtc', '-@', '-I', 'dts', '-O', 'dtb', '-o', output_path, source_path]
@@ -744,6 +750,7 @@ ShowStatus={"no" if current_project.boot_quiet else "yes"}
 
     setup_autologin()
     setup_bootlogo()
+    setup_bootsound()
     setup_graphic()
 
     copy_files(os.path.join(path_resources, "files"), user_files)
