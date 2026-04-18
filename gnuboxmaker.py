@@ -227,7 +227,7 @@ def setup_build_architectures(architectures):
     if current_project.export_arm64:
         architectures.append("arm64")
 
-def gen_default_chroot_script():
+def gen_default_first_chroot_script():
     if current_project.session_mode == "wayland" or current_project.session_mode == "x11":
         user_shell = "/run_session.sh"
     else:
@@ -309,14 +309,21 @@ systemctl mask plymouth-reboot.service
 systemctl mask plymouth-halt.service
 systemctl mask plymouth-kexec.service"""
 
-    if current_project.session_mode != "init":
-        aaa_setup += "\n\nsystemctl enable run_shell.service"
-
-    if current_project.uartlogs_rootshell:
-        aaa_setup += "\n\nsystemctl enable uartshell.service"
-
     aaa_setup += "\n\ntouch /.chrootend"
     return aaa_setup
+
+def gen_default_last_chroot_script():
+    zzz_setup = ""
+
+    if current_project.session_mode != "init":
+        zzz_setup += "\n\nsystemctl enable run_shell.service"
+
+    if current_project.uartlogs_rootshell:
+        zzz_setup += "\n\nsystemctl enable uartshell.service"
+
+    zzz_setup += "\n\ntouch /.chrootend"
+
+    return zzz_setup
 
 def setup_chroot_script():
     chroot_project_directory = os.path.join(path_resources, "chroot")
@@ -327,7 +334,11 @@ def setup_chroot_script():
 
     with open(os.path.join(chroot_scripts_directory, "aaa_setup.sh"), "w") as f:
         scripts.append(f"chroot/aaa_setup.sh")
-        f.write(gen_default_chroot_script())
+        f.write(gen_default_first_chroot_script())
+
+    with open(os.path.join(chroot_scripts_directory, "zzz_setup.sh"), "w") as f:
+        scripts.append(f"chroot/zzz_setup.sh")
+        f.write(gen_default_last_chroot_script())
 
     for f in sorted(Path(chroot_project_directory).iterdir(), key=lambda p: p.name):
         if f.is_file():
