@@ -59,6 +59,8 @@ class Project:
     allow_updatescript: bool = True
     separate_data_partition: bool = False
     separate_data_partition_home_link: bool = True
+    separate_data_partition_var_link: bool = False
+    var_is_temp: bool = True
     minsize_boot_partition: str = "64MB"
     minsize_efi_partition: str = "64MB"
     minsize_root_partition: str = "64MB"
@@ -698,6 +700,7 @@ HandleLidSwitchDocked={current_project.HandleLidSwitch}
 LidSwitchIgnoreInhibited=no""")
 
     writeText(os.path.join(systemd_config, "journald.conf"), f"""[Journal]
+Storage=none
 ForwardToSyslog=no
 ForwardToKMsg=no
 ForwardToConsole=no
@@ -735,9 +738,11 @@ ShowStatus={"no" if current_project.boot_quiet else "yes"}
 
     shutil.copy(os.path.join(path_resources, "runshell.sh"), os.path.join(path_temp_syslbuild, "files", "runshell.sh"))
     shutil.copy(os.path.join(path_resources, "preinit.sh"), os.path.join(path_temp_syslbuild, "files", "preinit.sh"))
+
     shutil.copy("gnuboxmaker/runshell_launcher.sh", os.path.join(path_temp_syslbuild, "files", "runshell_launcher.sh"))
     shutil.copy("gnuboxmaker/run_session_wayland.sh", os.path.join(path_temp_syslbuild, "files", "run_session_wayland.sh"))
     shutil.copy("gnuboxmaker/run_session_x11.sh", os.path.join(path_temp_syslbuild, "files", "run_session_x11.sh"))
+    shutil.copy("gnuboxmaker/system_preinit.sh", os.path.join(path_temp_syslbuild, "files", "system_preinit.sh"))
 
     prepair_devicetree(devicetree)
 
@@ -907,6 +912,7 @@ def setup_build_base(builditems):
         ["files/runshell.sh", "/runshell.sh", [0, 0, "0755"]],
         ["files/runshell_launcher.sh", "/runshell_launcher.sh", [0, 0, "0755"]],
         ["files/preinit.sh", "/preinit.sh", [0, 0, "0755"]],
+        ["files/system_preinit.sh", "/system_preinit.sh", [0, 0, "0755"]],
 
         ["custom_init.sh", "/usr/share/initramfs-tools/init", [0, 0, "0755"]],
         ["custom_init_hook.sh", "/etc/initramfs-tools/hooks/custom_init_hook.sh", [0, 0, "0755"]],
@@ -1392,15 +1398,22 @@ def generate_syslbuild_project():
     if current_project.uartlogs:
         cmdline_console += f" console=ttyS0,{current_project.uartlogs_speed}"
 
-    cmdline = f"{"ro" if current_project.root_readonly else "rw"} rootwait=60 selinux=0 makevartmp plymouth.ignore-serial-consoles mount_bootmnt {cmdline_console} preinit=/root/system_preinit.sh {current_project.cmdline}"
+    cmdline = f"{"ro" if current_project.root_readonly else "rw"} rootwait=60 selinux=0 plymouth.ignore-serial-consoles mount_bootmnt {cmdline_console} preinit=/root/system_preinit.sh {current_project.cmdline}"
+
+    if current_project.var_is_temp and not (current_project.separate_data_partition and current_project.separate_data_partition_var_link):
+        cmdline += " makevartmp"
 
     if current_project.root_expand and not current_project.separate_data_partition:
         cmdline += " root_processing root_expand"
 
     if current_project.separate_data_partition:
         cmdline += " mount_data"
+
         if current_project.separate_data_partition_home_link:
             cmdline += " home_link"
+
+        if current_project.separate_data_partition_var_link:
+            cmdline += " var_link"
 
     if current_project.allow_updatescript:
         cmdline += " allow_updatescript"

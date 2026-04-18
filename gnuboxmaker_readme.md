@@ -112,6 +112,8 @@ you can create a custom devicetree to connect the perepherals
 * if you use a separate data partition for data, it will be expanded the first time you turn it on, regardless of root_expand. the root_expand itself will be IGNORED and the root partition will NOT be expanded
 * the data partition is created with the ext4 filesystem in the /data directory
 * to build gnubox maker from source after cloning the repository, run "prepair.sh ". this is necessary to build a default kernel.
+* the "separate_data_partition_home_link" parameters make the /home and /root directories symlinks to their copies in the /data section. it only works with "separate_data_partition" enabled
+* the "separate_data_partition_var_link" parameter makes the /var directory a symlink to its copy in /data. it only works with "separate_data_partition" enabled and automatically turns "var_is_temp" off
 
 ## what should I do if the project build fails?
 * make sure that EACH of your chroot scripts creates a /.chrootend file at the end
