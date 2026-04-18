@@ -21,6 +21,7 @@ session_user_variants = ["user", "root"]
 session_mode_variants = ["wayland", "x11", "tty", "init"]
 weston_shell_variants = ["kiosk", "desktop"]
 splash_mode_variants = ["center", "fill", "contain", "cover"]
+boot_sound_variants = ["none", "init", "logo"]
 
 @dataclass
 class Project:
@@ -43,6 +44,7 @@ class Project:
 
     boot_quiet: bool = True
     boot_splash: bool = True
+    boot_sound: str = "none"
     dont_show_splash_on_poweroff: bool = True
     dont_use_splash_on_efi: bool = False
 
