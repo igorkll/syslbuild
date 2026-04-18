@@ -315,7 +315,7 @@ systemctl mask plymouth-kexec.service"""
     return aaa_setup
 
 def gen_default_last_chroot_script():
-    zzz_setup = ""
+    zzz_setup = "#!/bin/bash"
 
     if current_project.session_mode != "init":
         zzz_setup += "\n\nsystemctl enable run_shell.service"
@@ -330,16 +330,17 @@ def gen_default_last_chroot_script():
 def setup_chroot_script():
     chroot_project_directory = os.path.join(path_resources, "chroot")
     chroot_scripts_directory = os.path.join(path_temp_syslbuild, "chroot")
-    scripts = []
+    scripts = [
+        f"chroot/aaa_setup.sh",
+        f"chroot/zzz_setup.sh"
+    ]
 
     os.makedirs(chroot_scripts_directory, exist_ok=True)
 
     with open(os.path.join(chroot_scripts_directory, "aaa_setup.sh"), "w") as f:
-        scripts.append(f"chroot/aaa_setup.sh")
         f.write(gen_default_first_chroot_script())
 
     with open(os.path.join(chroot_scripts_directory, "zzz_setup.sh"), "w") as f:
-        scripts.append(f"chroot/zzz_setup.sh")
         f.write(gen_default_last_chroot_script())
 
     for f in sorted(Path(chroot_project_directory).iterdir(), key=lambda p: p.name):
