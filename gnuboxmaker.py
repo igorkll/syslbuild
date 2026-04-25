@@ -316,7 +316,8 @@ systemctl mask plymouth-kexec.service"""
     if current_project.integrate_liamounts:
         aaa_setup += "\n" + f"""cd /liamounts
 ./install.sh
-cd /"""
+cd /
+rm -rf /liamounts"""
 
     aaa_setup += "\n\ntouch /.chrootend"
     return aaa_setup
