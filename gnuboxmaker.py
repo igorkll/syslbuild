@@ -77,6 +77,8 @@ class Project:
     cmdline: str = ""
     exclude_cmdline: list[str] = field(default_factory=list)
 
+    integrate_liamounts: bool = False
+
     export_x86_64: bool = True
     export_x86: bool = False
     export_arm64: bool = False
@@ -311,6 +313,11 @@ systemctl mask plymouth-reboot.service
 systemctl mask plymouth-halt.service
 systemctl mask plymouth-kexec.service"""
 
+    if current_project.integrate_liamounts:
+        aaa_setup += "\n" + f"""cd /liamounts
+./install.sh
+cd /"""
+
     aaa_setup += "\n\ntouch /.chrootend"
     return aaa_setup
 
@@ -330,16 +337,15 @@ def gen_default_last_chroot_script():
 def setup_chroot_script():
     chroot_project_directory = os.path.join(path_resources, "chroot")
     chroot_scripts_directory = os.path.join(path_temp_syslbuild, "chroot")
-    scripts = [
-        f"chroot/aaa_setup.sh",
-        f"chroot/zzz_setup.sh"
-    ]
+    scripts = []
 
     os.makedirs(chroot_scripts_directory, exist_ok=True)
 
+    scripts.append(f"chroot/aaa_setup.sh")
     with open(os.path.join(chroot_scripts_directory, "aaa_setup.sh"), "w") as f:
         f.write(gen_default_first_chroot_script())
 
+    scripts.append(f"chroot/zzz_setup.sh")
     with open(os.path.join(chroot_scripts_directory, "zzz_setup.sh"), "w") as f:
         f.write(gen_default_last_chroot_script())
 
@@ -426,14 +432,15 @@ def setup_build_distro(builditems):
         stop_error(f"unknown distro \"{current_project.distro}\"")
 
 def setup_download(builditems):
-    builditems.append({
-        "type": "gitclone",
-        "name": "custom-debian-initramfs-init",
-        "export": False,
+    def addDownload(name, version):
+        builditems.append({
+            "type": "gitclone",
+            "name": name,
+            "export": False,
 
-        "git_url": "https://github.com/igorkll/custom-debian-initramfs-init",
-        "git_checkout": "1.5.7"
-    })
+            "git_url": f"https://github.com/igorkll/{name}",
+            "git_checkout": version
+        })
 
     def addExtract(fromdir, name):
         builditems.append({
@@ -445,8 +452,12 @@ def setup_download(builditems):
             "path": f"/{name}"
         })
 
+    addDownload("custom-debian-initramfs-init", "1.5.7")
     addExtract("custom-debian-initramfs-init", "custom_init.sh")
     addExtract("custom-debian-initramfs-init", "custom_init_hook.sh")
+
+    if current_project.integrate_liamounts:
+        addDownload("liamounts", "2.1")
 
 def setup_autologin():
     systemd_config = os.path.join(path_temp_syslbuild, "files", "systemd_config")
@@ -944,7 +955,10 @@ def setup_build_base(builditems):
     ]
 
     if current_project.boot_sound == "init" or (current_project.boot_sound == "logo" and current_project.boot_splash):
-        items.append(["files/startup.wav", "/startup.wav", [0, 0, "0755"]])
+        items.append(["files/startup.wav", "/startup.wav", [0, 0, "0644"]])
+
+    if current_project.integrate_liamounts:
+        items.append(["liamounts", "/liamounts", [0, 0, "0755"]])
 
     directories = []
 
