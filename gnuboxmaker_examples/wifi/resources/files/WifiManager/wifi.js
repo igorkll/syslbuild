@@ -18,7 +18,7 @@ function isWifiEnabled() {
     });
 }
 
-function enableWifi(enable) {
+function setWifiEnabled(enable) {
     return new Promise((resolve, reject) => {
         let state
         if (enable) {

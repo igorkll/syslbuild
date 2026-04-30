@@ -25,6 +25,7 @@ function refreshWifiNetworks() {
     }).catch(err => console.error(err))
 }
 
+setWifiEnabled(true)
 refreshWifiNetworks()
 
 document.getElementById("refresh-button").addEventListener("pointerup", event => {
