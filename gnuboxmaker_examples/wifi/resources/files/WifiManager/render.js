@@ -13,10 +13,11 @@ function addWifiNetwork(name) {
 function refreshWifiNetworks() {
     wifiList.htmlContent = ''
 
-    for (let i = 0; i < 10; i++) {
-        addWifiNetwork("test12")
-        addWifiNetwork("test2")
-    }
+    getWiFiList().then(list => {
+        list.forEach(name => {
+            addWifiNetwork(name)
+        });
+    }).catch(console.error);
 }
 
 refreshWifiNetworks()
