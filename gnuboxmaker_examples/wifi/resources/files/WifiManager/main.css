@@ -85,3 +85,13 @@ img {
     border-radius: 15px;
     background-color: rgb(255, 255, 255);
 }
+
+@media (hover: hover) and (pointer: fine) {
+    .control-button:hover {
+        background-color: rgb(217, 217, 217);
+    }
+}
+
+.control-button:active {
+    background-color: rgb(156, 156, 156);
+}

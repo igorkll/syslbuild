@@ -19,5 +19,3 @@ function getWiFiList() {
         });
     });
 }
-
-getWiFiList().then(list => console.log(list)).catch(console.error);

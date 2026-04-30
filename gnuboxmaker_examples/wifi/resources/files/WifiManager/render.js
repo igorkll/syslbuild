@@ -10,16 +10,21 @@ function addWifiNetwork(name) {
     wifiList.appendChild(wifiItem)
 }
 
+let requestId = 0
 function refreshWifiNetworks() {
-    wifiList.htmlContent = ''
+    wifiList.innerHTML = ''
+    const currentRequest = ++requestId
 
     getWiFiList().then(list => {
-        list.forEach(name => {
-            addWifiNetwork(name)
-        });
-    }).catch(console.error);
+        if (currentRequest !== requestId) return
+        list.forEach(name => addWifiNetwork(name))
+    }).catch(err => console.error(err))
 }
 
 refreshWifiNetworks()
+
+document.getElementById("refresh-button").addEventListener("pointerup", event => {
+    refreshWifiNetworks()
+})
 
 }
