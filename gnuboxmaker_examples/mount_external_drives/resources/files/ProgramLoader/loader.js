@@ -23,13 +23,17 @@ function setStatus(status) {
         case 1:
             splashText.textContent = 'Launching program...'
             break;
+
+        case 2:
+            splashText.textContent = 'Music playing'
+            break;
     }
 }
 
-async function isFile(path) {
+async function isDirectory(path) {
     try {
         const stats = await afs.stat(path)
-        return !stats.isDirectory()
+        return stats.isDirectory()
     } catch (err) {
         return false
     }
@@ -37,17 +41,21 @@ async function isFile(path) {
 
 // ---------------------- runProgram
 
-async function runProgram(programPath) {
-    const currentProcess = spawn(programPath, [], {
+let currentProcess
+
+async function runProgram(programPath) { // нада сделать чтобы он указывал рабочию директорию как корень флешки
+    currentProcess = spawn(programPath, [], {
         stdio: 'inherit',
         shell: true
     })
 
     const exitPromise = new Promise((resolve) => {
         currentProcess.on('close', (code) => {
+            currentProcess = null
             resolve()
         })
         currentProcess.on('error', (err) => {
+            currentProcess = null
             resolve()
         })
     })
@@ -58,6 +66,7 @@ async function runProgram(programPath) {
 // ---------------------- refreshDisks
 
 let isScanning = false
+let currentMountPath
 
 async function refreshDisks() {
     if (isScanning) return
@@ -70,9 +79,19 @@ async function refreshDisks() {
             if (entry.isDirectory()) {
                 const mountPath = path.join(AUTOMOUNTS_DIR, entry.name)
                 const programloaderPath = path.join(mountPath, PROGRAM_LOADER_FILE)
-                if (await isFile(programloaderPath)) {
+                const audioPath = path.join(mountPath, AUDIO_FILE)
+                const videoPath = path.join(mountPath, VIDEO_FILE)
+
+                if (!(await isDirectory(programloaderPath))) {
+                    currentMountPath = mountPath
                     setStatus(1)
                     await runProgram(programloaderPath)
+                    setStatus(0)
+                    break
+                } else if (!(await isDirectory(audioPath))) {
+                    currentMountPath = mountPath
+                    setStatus(2)
+                    
                     setStatus(0)
                     break
                 }
@@ -89,5 +108,15 @@ setStatus(0)
 
 refreshDisks()
 setInterval(refreshDisks, 1000)
+
+async function checkMediaValid() {
+    if (!(await isDirectory(currentMountPath))) {
+        if (currentProcess) {
+            currentProcess.kill()
+        }
+    }
+}
+
+setInterval(checkMediaValid, 1000)
 
 }
