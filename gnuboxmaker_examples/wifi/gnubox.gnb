@@ -2,7 +2,7 @@
   "gnubox_version": [
     1,
     3,
-    9
+    10
   ],
   "distro": "debian",
   "user_packages": [
@@ -44,6 +44,7 @@
   "HandleLidSwitch": "ignore",
   "boot_quiet": false,
   "boot_splash": false,
+  "boot_sound": "none",
   "dont_show_splash_on_poweroff": true,
   "dont_use_splash_on_efi": false,
   "uartlogs": true,
@@ -69,6 +70,7 @@
   "minlogotime": 10,
   "cmdline": "",
   "exclude_cmdline": [],
+  "integrate_liamounts": false,
   "export_x86_64": false,
   "export_x86": false,
   "export_arm64": true,
