@@ -12,10 +12,10 @@ const VIDEO_FILE = 'video.mp4'
 
 async function isFile(path) {
     try {
-        const stats = await afs.stat(path);
+        const stats = await afs.stat(path)
         return !stats.isDirectory()
     } catch (err) {
-        return false;
+        return false
     }
 }
 
@@ -25,30 +25,29 @@ let isRunning = false
 
 async function runProgram(programPath) {
     if (isRunning) return
-
-    isRunning = true;
+    isRunning = true
 
     currentProcess = spawn(programPath, [], {
         stdio: 'inherit',
         shell: true
-    });
+    })
 
     const exitPromise = new Promise((resolve) => {
         currentProcess.on('close', (code) => {
-            console.log(`[Монитор] Процесс завершён с кодом ${code}`);
-            isRunning = false;
-            currentProcess = null;
-            resolve();
-        });
+            console.log(`[Монитор] Процесс завершён с кодом ${code}`)
+            isRunning = false
+            currentProcess = null
+            resolve()
+        })
         currentProcess.on('error', (err) => {
-            console.error(`[Монитор] Ошибка при запуске процесса: ${err.message}`);
-            isRunning = false;
-            currentProcess = null;
-            resolve();
-        });
-    });
+            console.error(`[Монитор] Ошибка при запуске процесса: ${err.message}`)
+            isRunning = false
+            currentProcess = null
+            resolve()
+        })
+    })
 
-    await exitPromise;
+    await exitPromise
 }
 
 // ---------------------- refreshDisks
@@ -60,19 +59,20 @@ async function refreshDisks() {
     isScanning = true
 
     try {
-        const entries = await afs.readdir(AUTOMOUNTS_DIR, { withFileTypes: true });
+        const entries = await afs.readdir(AUTOMOUNTS_DIR, { withFileTypes: true })
 
         for (const entry of entries) {
             if (entry.isDirectory()) {
                 const mountPath = path.join(AUTOMOUNTS_DIR, entry.name)
                 const programloaderPath = path.join(mountPath, PROGRAM_LOADER_FILE)
                 if (await isFile(programloaderPath)) {
-                    
+                    runProgram(programloaderPath)
+                    break
                 }
             }
         }
     } catch (err) {
-        console.error(err.message);
+        console.error(err.message)
     }
 
     isScanning = false
