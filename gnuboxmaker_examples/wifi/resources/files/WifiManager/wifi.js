@@ -1,5 +1,23 @@
 const { exec } = require('child_process');
 
+function isWifiEnabled() {
+    return new Promise((resolve, reject) => {
+        exec('nmcli radio wifi', (error, stdout, stderr) => {
+            if (error) {
+                reject(error);
+                return;
+            }
+            if (stderr) {
+                reject(new Error(stderr));
+                return;
+            }
+            
+            const status = stdout.trim().toLowerCase();
+            resolve(status === 'enabled');
+        });
+    });
+}
+
 function getWiFiList() {
     return new Promise((resolve, reject) => {
         exec('nmcli -t -f SSID,SIGNAL,SECURITY dev wifi list', (err, stdout, stderr) => {
