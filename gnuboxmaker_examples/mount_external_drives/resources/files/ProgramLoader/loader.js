@@ -7,6 +7,8 @@ const { spawn } = require('child_process')
 
 const AUTOMOUNTS_DIR = '/automounts'
 const PROGRAM_LOADER_FILE = 'programloader'
+const AUDIO_FILE = 'audio.mp3'
+const VIDEO_FILE = 'video.mp4'
 
 async function isFile(path) {
     try {
@@ -31,7 +33,7 @@ async function refreshDisks() {
                 const mountPath = path.join(AUTOMOUNTS_DIR, entry.name)
                 const programloaderPath = path.join(mountPath, PROGRAM_LOADER_FILE)
                 if (await isFile(programloaderPath)) {
-                    console.log(programloaderPath)
+                    
                 }
             }
         }
