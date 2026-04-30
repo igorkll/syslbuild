@@ -19,10 +19,44 @@ async function isFile(path) {
     }
 }
 
+// ---------------------- runProgram
+
+let isRunning = false
+
+async function runProgram(programPath) {
+    if (isRunning) return
+
+    isRunning = true;
+
+    currentProcess = spawn(programPath, [], {
+        stdio: 'inherit',
+        shell: true
+    });
+
+    const exitPromise = new Promise((resolve) => {
+        currentProcess.on('close', (code) => {
+            console.log(`[Монитор] Процесс завершён с кодом ${code}`);
+            isRunning = false;
+            currentProcess = null;
+            resolve();
+        });
+        currentProcess.on('error', (err) => {
+            console.error(`[Монитор] Ошибка при запуске процесса: ${err.message}`);
+            isRunning = false;
+            currentProcess = null;
+            resolve();
+        });
+    });
+
+    await exitPromise;
+}
+
+// ---------------------- refreshDisks
+
 let isScanning = false
 
 async function refreshDisks() {
-    if (isScanning) return
+    if (isScanning || isRunning) return
     isScanning = true
 
     try {
