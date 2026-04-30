@@ -43,7 +43,7 @@ async function isDirectory(path) {
 
 let currentProcess
 
-async function runProgram(programPath) { // нада сделать чтобы он указывал рабочию директорию как корень флешки
+async function runProgram(programPath) {
     currentProcess = spawn(programPath, [], {
         stdio: 'inherit',
         cwd: path.dirname(programPath)
