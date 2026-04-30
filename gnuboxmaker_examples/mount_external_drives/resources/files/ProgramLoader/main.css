@@ -10,6 +10,7 @@ html, body {
     height: 100%;
 
     overflow: hidden;
+    cursor: none;
 }
 
 body {
@@ -53,6 +54,11 @@ img {
     }
 }
 
+@keyframes rotationAnimation {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 .insert-image {
     position: absolute;
     top: 50%;
@@ -65,6 +71,11 @@ img {
 
 .floatUpDown {
     animation: floatUpDown 1.2s ease-in-out infinite alternate;
+}
+
+.rotationAnimation {
+    animation: rotationAnimation 0.7667s linear infinite;
+    transform-origin: center;
 }
 
 .usb-image {

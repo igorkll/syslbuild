@@ -17,11 +17,13 @@ const usbImage = document.getElementById("usb-image")
 const mediaImg = document.getElementById("media-img")
 const overlay = document.getElementById("overlay")
 const videoplayer = document.getElementById("videoplayer")
+const mediaImgContainer = document.getElementById("media-img-container")
 
 function setStatus(status) {
     usbImage.style.display = ''
     mediaImg.src = 'media.png'
     overlay.style.display = 'none'
+    mediaImgContainer.classList.remove("rotationAnimation")
 
     switch (status) {
         case 0:
@@ -33,8 +35,9 @@ function setStatus(status) {
             break;
 
         case 2:
+            mediaImgContainer.classList.add("rotationAnimation")
             splashText.textContent = 'Music playing'
-            mediaImg.src = 'media.png'
+            mediaImg.src = 'music.png'
             usbImage.style.display = 'none'
             break;
 
