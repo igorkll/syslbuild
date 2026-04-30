@@ -44,7 +44,7 @@
   "HandleLidSwitch": "ignore",
   "boot_quiet": true,
   "boot_splash": true,
-  "boot_sound": "init",
+  "boot_sound": "logo",
   "dont_show_splash_on_poweroff": true,
   "dont_use_splash_on_efi": false,
   "uartlogs": true,
