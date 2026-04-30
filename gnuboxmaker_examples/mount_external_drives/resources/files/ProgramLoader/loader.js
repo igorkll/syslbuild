@@ -43,6 +43,15 @@ function setStatus(status) {
     }
 }
 
+async function isFile(path) {
+    try {
+        const stats = await afs.stat(path)
+        return stats.isFile()
+    } catch (err) {
+        return false
+    }
+}
+
 async function isDirectory(path) {
     try {
         const stats = await afs.stat(path)
@@ -82,7 +91,20 @@ let isScanning = false
 let currentMountPath
 
 async function waitMediaDetach() {
-    
+    while (true) {
+        try {
+            await afs.access(currentMountPath);
+            await new Promise(resolve => setTimeout(resolve, 500));
+        } catch (err) {
+            if (err.code === 'ENOENT') {
+                console.log(`Директория ${currentMountPath} исчезла`);
+                break;
+            } else {
+                console.error(`Ошибка при проверке ${currentMountPath}:`, err);
+                break;
+            }
+        }
+    }
 }
 
 async function refreshDisks() {
@@ -99,23 +121,29 @@ async function refreshDisks() {
                 const audioPath = path.join(mountPath, AUDIO_FILE)
                 const videoPath = path.join(mountPath, VIDEO_FILE)
 
-                if (!(await isDirectory(programloaderPath))) {
+                if (await isFile(programloaderPath)) {
                     currentMountPath = mountPath
                     setStatus(1)
                     await runProgram(programloaderPath)
                     setStatus(0)
                     break
-                } else if (!(await isDirectory(audioPath))) {
+                } else if (await isFile(audioPath)) {
                     currentMountPath = mountPath
+                    videoplayer.src = audioPath
+                    videoplayer.play()
                     setStatus(2)
                     await waitMediaDetach()
                     setStatus(0)
+                    videoplayer.pause()
                     break
-                } else if (!(await isDirectory(videoPath))) {
+                } else if (await isFile(videoPath)) {
                     currentMountPath = mountPath
+                    videoplayer.src = videoPath
+                    videoplayer.play()
                     setStatus(3)
                     await waitMediaDetach()
                     setStatus(0)
+                    videoplayer.pause()
                     break
                 }
             }
