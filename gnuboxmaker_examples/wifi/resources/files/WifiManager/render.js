@@ -25,9 +25,10 @@ function refreshWifiNetworks() {
         console.log(list)
         list.forEach(name => addWifiNetwork(name))
         
-        if (list.lenght == 0) {
+        if (list.length == 0) {
             let splashBox = document.createElement("div")
             splashBox.classList.add("splash-box")
+            splashBox.textContent = 'There are no wifi networks available'
             wifiList.appendChild(splashBox)
         }
     }).catch(err => console.error(err))

@@ -56,9 +56,9 @@ img {
 
 .splash-box {
     position: relative;
-    top: 0;
-    left: 0;
-    transition: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 
     width: 300px;
     height: 200px;
@@ -66,6 +66,11 @@ img {
     background-color: rgb(255, 255, 255);
     padding: 15px;
     border-radius: 15px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
 .wifi-item {
