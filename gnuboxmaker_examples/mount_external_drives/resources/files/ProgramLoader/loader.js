@@ -10,6 +10,22 @@ const PROGRAM_LOADER_FILE = 'programloader'
 const AUDIO_FILE = 'audio.mp3'
 const VIDEO_FILE = 'video.mp4'
 
+// ----------------------
+
+const splashText = document.getElementById("splash-text")
+
+function setStatus(status) {
+    switch (status) {
+        case 0:
+            splashText.textContent = 'Insert game or music media'
+            break;
+
+        case 1:
+            splashText.textContent = 'Launching program...'
+            break;
+    }
+}
+
 async function isFile(path) {
     try {
         const stats = await afs.stat(path)
@@ -21,28 +37,17 @@ async function isFile(path) {
 
 // ---------------------- runProgram
 
-let isRunning = false
-
 async function runProgram(programPath) {
-    if (isRunning) return
-    isRunning = true
-
-    currentProcess = spawn(programPath, [], {
+    const currentProcess = spawn(programPath, [], {
         stdio: 'inherit',
         shell: true
     })
 
     const exitPromise = new Promise((resolve) => {
         currentProcess.on('close', (code) => {
-            console.log(`[Монитор] Процесс завершён с кодом ${code}`)
-            isRunning = false
-            currentProcess = null
             resolve()
         })
         currentProcess.on('error', (err) => {
-            console.error(`[Монитор] Ошибка при запуске процесса: ${err.message}`)
-            isRunning = false
-            currentProcess = null
             resolve()
         })
     })
@@ -55,7 +60,7 @@ async function runProgram(programPath) {
 let isScanning = false
 
 async function refreshDisks() {
-    if (isScanning || isRunning) return
+    if (isScanning) return
     isScanning = true
 
     try {
@@ -66,7 +71,9 @@ async function refreshDisks() {
                 const mountPath = path.join(AUTOMOUNTS_DIR, entry.name)
                 const programloaderPath = path.join(mountPath, PROGRAM_LOADER_FILE)
                 if (await isFile(programloaderPath)) {
-                    runProgram(programloaderPath)
+                    setStatus(1)
+                    await runProgram(programloaderPath)
+                    setStatus(0)
                     break
                 }
             }
@@ -77,6 +84,8 @@ async function refreshDisks() {
 
     isScanning = false
 }
+
+setStatus(0)
 
 refreshDisks()
 setInterval(refreshDisks, 1000)
