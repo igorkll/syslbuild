@@ -51,6 +51,21 @@ img {
     flex: 1;
 
     overflow: auto;
+    position: relative;
+}
+
+.splash-box {
+    position: relative;
+    top: 0;
+    left: 0;
+    transition: translate(-50%, -50%);
+
+    width: 300px;
+    height: 200px;
+
+    background-color: rgb(255, 255, 255);
+    padding: 15px;
+    border-radius: 15px;
 }
 
 .wifi-item {

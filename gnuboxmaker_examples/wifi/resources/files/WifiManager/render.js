@@ -21,7 +21,15 @@ function refreshWifiNetworks() {
 
     getWiFiList().then(list => {
         if (currentRequest !== requestId) return
+        
+        console.log(list)
         list.forEach(name => addWifiNetwork(name))
+        
+        if (list.lenght == 0) {
+            let splashBox = document.createElement("div")
+            splashBox.classList.add("splash-box")
+            wifiList.appendChild(splashBox)
+        }
     }).catch(err => console.error(err))
 }
 
