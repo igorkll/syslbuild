@@ -8,6 +8,10 @@ function addWifiNetwork(name) {
     wifiItem.textContent = name
 
     wifiList.appendChild(wifiItem)
+
+    wifiItem.addEventListener("pointerup", event => {
+        
+    })
 }
 
 let requestId = 0
