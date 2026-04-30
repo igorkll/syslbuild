@@ -18,6 +18,29 @@ function isWifiEnabled() {
     });
 }
 
+function enableWifi(enable) {
+    return new Promise((resolve, reject) => {
+        let state
+        if (enable) {
+            state = 'on'
+        } else {
+            state = 'off'
+        }
+
+        exec('nmcli radio wifi ' + state, (error, stdout, stderr) => {
+            if (error) {
+                reject(error);
+                return;
+            }
+            if (stderr) {
+                reject(new Error(stderr));
+                return;
+            }
+            resolve();
+        });
+    });
+}
+
 function getWiFiList() {
     return new Promise((resolve, reject) => {
         exec('nmcli -t -f SSID,SIGNAL,SECURITY dev wifi list', (err, stdout, stderr) => {
