@@ -34,6 +34,7 @@ function setStatus(status) {
 
         case 2:
             splashText.textContent = 'Music playing'
+            mediaImg.src = 'media.png'
             usbImage.style.display = 'none'
             break;
 
@@ -97,10 +98,10 @@ async function waitMediaDetach() {
             await new Promise(resolve => setTimeout(resolve, 500));
         } catch (err) {
             if (err.code === 'ENOENT') {
-                console.log(`Директория ${currentMountPath} исчезла`);
+                console.log(`Media detached ${currentMountPath}`);
                 break;
             } else {
-                console.error(`Ошибка при проверке ${currentMountPath}:`, err);
+                console.error(`Failed check ${currentMountPath}:`, err);
                 break;
             }
         }
