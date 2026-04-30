@@ -21,33 +21,28 @@ function wifiSplash(text) {
     wifiList.appendChild(splashBox)
 }
 
-let requestId = 0
-function refreshWifiNetworks() {
+async function refreshWifiNetworks() {
     wifiList.innerHTML = ''
 
-    if (isWifiExists()) {
-        if (isWifiAvailable()) {
-            const currentRequest = ++requestId
-            getWiFiList().then(list => {
-                if (currentRequest !== requestId) return
-                
-                console.log(list)
-                list.forEach(name => addWifiNetwork(name))
-                
-                if (list.length == 0) {
-                    wifiSplash('There are no wifi networks available')
-                }
-            }).catch(err => console.error(err))
+    if (await isWifiExists()) {
+        if (await isWifiAvailable()) {
+            let list = await getWiFiList()
+            
+            console.log(list)
+            list.forEach(name => addWifiNetwork(name))
+            
+            if (list.length == 0) {
+                wifiSplash('There are no wifi networks available')
+            }
         } else {
-            wifiSplash('')
+            wifiSplash('Problems with the wifi driver')
         }
     } else {
-
+        wifiSplash('Your device does not support wifi')
     }
 }
 
-setWifiEnabled(true)
-refreshWifiNetworks()
+setWifiEnabled(true).then(_ => refreshWifiNetworks())
 
 document.getElementById("refresh-button").addEventListener("pointerup", event => {
     refreshWifiNetworks()
