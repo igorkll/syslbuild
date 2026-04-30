@@ -15,10 +15,13 @@ const VIDEO_FILE = 'video.mp4'
 const splashText = document.getElementById("splash-text")
 const usbImage = document.getElementById("usb-image")
 const mediaImg = document.getElementById("media-img")
+const overlay = document.getElementById("overlay")
+const videoplayer = document.getElementById("videoplayer")
 
 function setStatus(status) {
     usbImage.style.display = ''
     mediaImg.src = 'media.png'
+    overlay.style.display = 'none'
 
     switch (status) {
         case 0:
@@ -32,6 +35,10 @@ function setStatus(status) {
         case 2:
             splashText.textContent = 'Music playing'
             usbImage.style.display = 'none'
+            break;
+
+        case 3:
+            overlay.style.display = ''
             break;
     }
 }
