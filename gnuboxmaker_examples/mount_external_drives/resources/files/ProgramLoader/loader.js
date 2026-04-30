@@ -13,8 +13,13 @@ const VIDEO_FILE = 'video.mp4'
 // ----------------------
 
 const splashText = document.getElementById("splash-text")
+const usbImage = document.getElementById("usb-image")
+const mediaImg = document.getElementById("media-img")
 
 function setStatus(status) {
+    usbImage.style.display = ''
+    mediaImg.src = 'media.png'
+
     switch (status) {
         case 0:
             splashText.textContent = 'Insert game or music media'
@@ -26,6 +31,7 @@ function setStatus(status) {
 
         case 2:
             splashText.textContent = 'Music playing'
+            usbImage.style.display = 'none'
             break;
     }
 }

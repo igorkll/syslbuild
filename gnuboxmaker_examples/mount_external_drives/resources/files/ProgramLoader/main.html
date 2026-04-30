@@ -8,11 +8,11 @@
     <div class="main-container">
         <div class="insert-image">
             <div class="floatUpDown size-normalizer" style="height: 100%;">
-                <img src="media.png" style="object-fit: contain;"></img>
+                <img id="media-img" src="media.png" style="object-fit: contain;"></img>
             </div>
         </div>
 
-        <div class="usb-image">
+        <div class="usb-image" id="usb-image">
             <div class="size-normalizer" style="height: 100%;">
                 <img src="usb.png" style="object-fit: contain; transform: scale(0.47) translate(0, 60vh);"></img>
             </div>
@@ -20,6 +20,10 @@
 
         <div class="splash-text" id="splash-text">
             Insert game or music media
+        </div>
+
+        <div class="overlay size-normalizer">
+            <video id="media"></video>
         </div>
     </div>
 
