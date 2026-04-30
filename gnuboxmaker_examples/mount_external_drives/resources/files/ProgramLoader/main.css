@@ -44,7 +44,30 @@ img {
     gap: 20px;
 }
 
+@keyframes floatUpDown {
+    0% {
+        transform: translateY(1vh);
+    }
+    100% {
+        transform: translateY(-1vh);
+    }
+}
+
 .insert-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    width: 50vh;
+    height: 50vh;
+}
+
+.floatUpDown {
+    animation: floatUpDown 1.2s ease-in-out infinite alternate;
+}
+
+.usb-image {
     position: absolute;
     top: 50%;
     left: 50%;
