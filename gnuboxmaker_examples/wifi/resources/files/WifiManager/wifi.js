@@ -1,75 +1,75 @@
-const { exec } = require('child_process');
+const { exec } = require('child_process')
 
 function isWifiExists() {
     return new Promise((resolve, reject) => {
         exec('nmcli -t device status', (error, stdout, stderr) => {
             if (error) {
-                reject(error);
-                return;
+                reject(error)
+                return
             }
             if (stderr) {
-                reject(new Error(stderr));
-                return;
+                reject(new Error(stderr))
+                return
             }
 
-            const lines = stdout.trim().split('\n');
+            const lines = stdout.trim().split('\n')
             for (const line of lines) {
-                const fields = line.split(':');
-                const type = fields[1];
+                const fields = line.split(':')
+                const type = fields[1]
                 if (type === 'wifi') {
-                    resolve(true);
-                    return;
+                    resolve(true)
+                    return
                 }
             }
-            resolve(false);
-        });
-    });
+            resolve(false)
+        })
+    })
 }
 
 function isWifiAvailable() {
     return new Promise((resolve, reject) => {
         exec('nmcli -t device status', (error, stdout, stderr) => {
             if (error) {
-                reject(error);
-                return;
+                reject(error)
+                return
             }
             if (stderr) {
-                reject(new Error(stderr));
-                return;
+                reject(new Error(stderr))
+                return
             }
 
-            const lines = stdout.trim().split('\n');
+            const lines = stdout.trim().split('\n')
             for (const line of lines) {
-                const fields = line.split(':');
-                const type = fields[1];
-                const state = fields[2]; // STATE — третье поле
+                const fields = line.split(':')
+                const type = fields[1]
+                const state = fields[2] // STATE — третье поле
                 
                 if (type === 'wifi' && state !== 'unavailable') {
-                    resolve(true);
-                    return;
+                    resolve(true)
+                    return
                 }
             }
-            resolve(false);
-        });
-    });
+            resolve(false)
+        })
+    })
 }
 
 function isWifiEnabled() {
     return new Promise((resolve, reject) => {
         exec('nmcli radio wifi', (error, stdout, stderr) => {
             if (error) {
-                reject(error);
-                return;
+                reject(error)
+                return
             }
             if (stderr) {
-                reject(new Error(stderr));
-                return;
+                reject(new Error(stderr))
+                return
             }
             
-            const status = stdout.trim().toLowerCase();
-            resolve(status === 'enabled');
-        });
-    });
+            const status = stdout.trim().toLowerCase()
+            resolve(status === 'enabled')
+        })
+    })
 }
 
 function setWifiEnabled(enable) {
@@ -83,34 +83,63 @@ function setWifiEnabled(enable) {
 
         exec('nmcli radio wifi ' + state, (error, stdout, stderr) => {
             if (error) {
-                reject(error);
-                return;
+                reject(error)
+                return
             }
             if (stderr) {
-                reject(new Error(stderr));
-                return;
+                reject(new Error(stderr))
+                return
             }
-            resolve();
-        });
-    });
+            resolve()
+        })
+    })
+}
+
+const wifiObjectFormatter = 'SSID,SIGNAL,SECURITY'
+function getWifiObject(line) {
+    const [ssid, signal, security] = line.split(':')
+    return {
+        ssid,
+        signal: parseInt(signal, 10),
+        security: security || 'Open'
+    }
 }
 
 function getWiFiList() {
     return new Promise((resolve, reject) => {
-        exec('nmcli -t -f SSID,SIGNAL,SECURITY dev wifi list', (err, stdout, stderr) => {
-            if (err) return reject(err);
-            if (stderr) return reject(stderr);
+        exec(`nmcli -t -f ${wifiObjectFormatter} dev wifi list`, (err, stdout, stderr) => {
+            if (err) return reject(err)
+            if (stderr) return reject(stderr)
             
-            const networks = [];
-            const lines = stdout.trim().split('\n');
+            const networks = []
+            const lines = stdout.trim().split('\n')
             
             for (const line of lines) {
-                const [ssid, signal, security] = line.split(':');
-                if (ssid && ssid !== '--') {
-                    networks.push({ ssid, signal: parseInt(signal, 10), security: security || 'Open' });
+                const wifiObject = getWifiObject(line)
+                networks.push(wifiObject)
+            }
+            resolve(networks)
+        })
+    })
+}
+
+function getCurrentWifiSSID() {
+    return new Promise((resolve, reject) => {
+        exec('nmcli -t -f NAME,TYPE connection show --active', (error, stdout, stderr) => {
+            if (error) {
+                reject(error)
+                return
+            }
+
+            const lines = stdout.trim().split('\n')
+            for (const line of lines) {
+                const [name, type] = line.split(':')
+                if (type === 'wifi') {
+                    resolve(name)
+                    return
                 }
             }
-            resolve(networks);
-        });
-    });
+            resolve(null)
+        })
+    })
 }
