@@ -24,18 +24,26 @@ function wifiSplash(text) {
 let requestId = 0
 function refreshWifiNetworks() {
     wifiList.innerHTML = ''
-    const currentRequest = ++requestId
 
-    getWiFiList().then(list => {
-        if (currentRequest !== requestId) return
-        
-        console.log(list)
-        list.forEach(name => addWifiNetwork(name))
-        
-        if (list.length == 0) {
-            wifiSplash('There are no wifi networks available')
+    if (isWifiExists()) {
+        if (isWifiAvailable()) {
+            const currentRequest = ++requestId
+            getWiFiList().then(list => {
+                if (currentRequest !== requestId) return
+                
+                console.log(list)
+                list.forEach(name => addWifiNetwork(name))
+                
+                if (list.length == 0) {
+                    wifiSplash('There are no wifi networks available')
+                }
+            }).catch(err => console.error(err))
+        } else {
+            wifiSplash('')
         }
-    }).catch(err => console.error(err))
+    } else {
+
+    }
 }
 
 setWifiEnabled(true)
