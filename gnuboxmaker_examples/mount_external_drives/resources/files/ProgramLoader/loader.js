@@ -46,7 +46,7 @@ let currentProcess
 async function runProgram(programPath) { // нада сделать чтобы он указывал рабочию директорию как корень флешки
     currentProcess = spawn(programPath, [], {
         stdio: 'inherit',
-        shell: true
+        cwd: path.dirname(programPath)
     })
 
     const exitPromise = new Promise((resolve) => {
