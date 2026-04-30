@@ -1,4 +1,4 @@
-let debug = false
+let debug = true
 
 const { app, BrowserWindow, globalShortcut, ipcMain } = require('electron')
 const path = require('path')
@@ -9,7 +9,7 @@ function createWindow () {
         fullscreen: !debug,
         width: 1280,
         height: 720,
-        backgroundColor: '#2e2c29',
+        show: false,
         webPreferences: {
             devTools: debug, // DON'T FORGET TO TURN OFF THE DAMN DEVTOOLS!
             nodeIntegration: true,
@@ -18,6 +18,11 @@ function createWindow () {
     })
 
     globalShortcut.register('F11', () => {})
+
+    win.once('ready-to-show', () => {
+        win.show();
+    });
+
     win.loadFile(path.join(__dirname, 'main.html'))
 
     if (debug) win.openDevTools()
