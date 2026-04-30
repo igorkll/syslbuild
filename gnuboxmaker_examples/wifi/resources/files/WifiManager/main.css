@@ -1,0 +1,39 @@
+*, *::after, *::before {
+    box-sizing: border-box;
+}
+
+html, body {
+    padding: 0;
+    margin: 0;
+
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    background-color: rgb(40, 113, 156);
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.wifi-list {
+    flex: 1;
+}
+
+.wifi-item {
+    
+}
+
+.control-container {
+    height: 80px;
+}
