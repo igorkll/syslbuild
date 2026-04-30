@@ -81,6 +81,10 @@ async function runProgram(programPath) {
 let isScanning = false
 let currentMountPath
 
+async function waitMediaDetach() {
+    
+}
+
 async function refreshDisks() {
     if (isScanning) return
     isScanning = true
@@ -104,7 +108,13 @@ async function refreshDisks() {
                 } else if (!(await isDirectory(audioPath))) {
                     currentMountPath = mountPath
                     setStatus(2)
-                    
+                    await waitMediaDetach()
+                    setStatus(0)
+                    break
+                } else if (!(await isDirectory(videoPath))) {
+                    currentMountPath = mountPath
+                    setStatus(3)
+                    await waitMediaDetach()
                     setStatus(0)
                     break
                 }
@@ -123,10 +133,8 @@ refreshDisks()
 setInterval(refreshDisks, 1000)
 
 async function checkMediaValid() {
-    if (!(await isDirectory(currentMountPath))) {
-        if (currentProcess) {
-            currentProcess.kill()
-        }
+    if (currentProcess && !(await isDirectory(currentMountPath))) {
+        currentProcess.kill()
     }
 }
 
