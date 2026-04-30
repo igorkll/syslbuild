@@ -1,3 +1,3 @@
 #!/bin/bash
 
-electron /ElectronApplication --enable-gpu-rasterization --ignore-gpu-blocklist --ozone-platform=wayland --enable-features=UseOzonePlatform
+electron /ProgramLoader --enable-gpu-rasterization --ignore-gpu-blocklist --ozone-platform=wayland --enable-features=UseOzonePlatform
