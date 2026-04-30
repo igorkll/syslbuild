@@ -14,6 +14,13 @@ function addWifiNetwork(name) {
     })
 }
 
+function wifiSplash(text) {
+    let splashBox = document.createElement("div")
+    splashBox.classList.add("splash-box")
+    splashBox.textContent = text
+    wifiList.appendChild(splashBox)
+}
+
 let requestId = 0
 function refreshWifiNetworks() {
     wifiList.innerHTML = ''
@@ -26,10 +33,7 @@ function refreshWifiNetworks() {
         list.forEach(name => addWifiNetwork(name))
         
         if (list.length == 0) {
-            let splashBox = document.createElement("div")
-            splashBox.classList.add("splash-box")
-            splashBox.textContent = 'There are no wifi networks available'
-            wifiList.appendChild(splashBox)
+            wifiSplash('There are no wifi networks available')
         }
     }).catch(err => console.error(err))
 }

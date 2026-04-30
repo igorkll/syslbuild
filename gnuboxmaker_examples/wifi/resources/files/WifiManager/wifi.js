@@ -1,5 +1,59 @@
 const { exec } = require('child_process');
 
+function isWifiExists() {
+    return new Promise((resolve, reject) => {
+        exec('nmcli -t device status', (error, stdout, stderr) => {
+            if (error) {
+                reject(error);
+                return;
+            }
+            if (stderr) {
+                reject(new Error(stderr));
+                return;
+            }
+
+            const lines = stdout.trim().split('\n');
+            for (const line of lines) {
+                const fields = line.split(':');
+                const type = fields[1];
+                if (type === 'wifi') {
+                    resolve(true);
+                    return;
+                }
+            }
+            resolve(false);
+        });
+    });
+}
+
+function isWifiAvailable() {
+    return new Promise((resolve, reject) => {
+        exec('nmcli -t device status', (error, stdout, stderr) => {
+            if (error) {
+                reject(error);
+                return;
+            }
+            if (stderr) {
+                reject(new Error(stderr));
+                return;
+            }
+
+            const lines = stdout.trim().split('\n');
+            for (const line of lines) {
+                const fields = line.split(':');
+                const type = fields[1];
+                const state = fields[2]; // STATE — третье поле
+                
+                if (type === 'wifi' && state !== 'unavailable') {
+                    resolve(true);
+                    return;
+                }
+            }
+            resolve(false);
+        });
+    });
+}
+
 function isWifiEnabled() {
     return new Promise((resolve, reject) => {
         exec('nmcli radio wifi', (error, stdout, stderr) => {
