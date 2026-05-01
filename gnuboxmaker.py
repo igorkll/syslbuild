@@ -78,6 +78,7 @@ class Project:
     exclude_cmdline: list[str] = field(default_factory=list)
 
     integrate_liamounts: bool = False
+    integrate_xwayland: bool = True
 
     export_x86_64: bool = True
     export_x86: bool = False
@@ -403,6 +404,8 @@ def setup_build_distro(builditems):
 
         if current_project.session_mode == "wayland":
             include.append("weston")
+            if current_project.integrate_xwayland:
+                include.append("xwayland")
         elif current_project.session_mode == "x11":
             include.append("xserver-xorg")
             include.append("xinit")
@@ -518,6 +521,7 @@ def setup_graphic():
         writeText(os.path.join(etc_config, "xdg", "weston", "weston.ini"), f"""[core]
 shell={current_project.weston_shell}-shell.so
 idle-time={current_project.screen_idle_time}
+xwayland={"true" if current_project.integrate_xwayland else "false"}
 
 [shell]
 background-color=0xff000000
