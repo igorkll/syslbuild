@@ -27,15 +27,10 @@ function createWindow () {
 
             const ctrlOrCmd = input.control || input.meta
             if (ctrlOrCmd) {
-                if (input.code === 'KeyR') {
-                    isBlocked = true
-                }
-                if (input.code === 'KeyW') {
-                    isBlocked = true
-                }
-                if (input.code === 'KeyQ') {
-                    isBlocked = true
-                }
+                isBlocked = input.code === 'KeyR' ||
+                    input.code === 'KeyW' ||
+                    input.code === 'KeyQ' ||
+                    input.code === 'KeyM'
             }
 
             if (isBlocked) {
