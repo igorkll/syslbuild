@@ -409,6 +409,10 @@ def setup_build_distro(builditems):
             include.append("x11-xserver-utils")
             include.append("matchbox-window-manager")
 
+        if current_project.integrate_liamounts:
+            include.append("at")
+            include.append("bindfs")
+
         include += current_project.user_packages
         include = exclude_array(include, current_project.exclude_packages)
 
