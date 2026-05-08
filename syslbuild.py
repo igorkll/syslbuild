@@ -31,13 +31,19 @@ def loadTempPaths():
     global path_temp_kernel_sources
     
     path_temp_architecture = os.path.join(path_temp, architecture)
-    os.makedirs(path_temp_architecture, exist_ok=True)
+    if architecture != "ALL":
+        os.makedirs(path_temp_architecture, exist_ok=True)
+        if args.g:
+            deleteAny(path_temp_architecture)
     
     path_build = os.path.join(path_temp_architecture, "build")
     path_build_checksums = os.path.join(path_temp_architecture, "build_checksums")
     path_temp_cache_pacman = os.path.join(path_temp_architecture, "pacman")
     path_temp_pacman_conf = os.path.join(path_temp_architecture, "pacman.conf")
     path_temp_kernel_build = os.path.join(path_temp_architecture, "kernel_build")
+
+    if architecture != "ALL" and args.g:
+        deleteAny(path_temp_architecture)
 
     path_temp_temp = os.path.join(path_temp, "temp")
     path_logs = os.path.join(path_temp, "logs")
@@ -2049,6 +2055,7 @@ if __name__ == "__main__":
     parser.add_argument("-n", action="store_true", help="does the build anew, does not use the cache")
     parser.add_argument("-d", action="store_true", help="do not use the download cache of the kernel sources")
     parser.add_argument("-e", action="store_true", help="completely clears the entire cache before building")
+    parser.add_argument("-g", action="store_true", help="deletes the files of the architecture being builded before building. saves downloaded kernel sources")
     args = parser.parse_args()
     
     requireRoot()
