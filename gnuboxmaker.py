@@ -62,6 +62,7 @@ class Project:
     separate_data_partition: bool = False
     separate_data_partition_home_link: bool = True
     separate_data_partition_var_link: bool = False
+    separate_data_partition_etc_link: bool = False
     var_is_temp: bool = True
     minsize_boot_partition: str = "64MB"
     minsize_efi_partition: str = "64MB"
@@ -1469,6 +1470,9 @@ def generate_syslbuild_project():
 
         if current_project.separate_data_partition_var_link:
             cmdline += " var_link"
+
+        if current_project.separate_data_partition_etc_link:
+            cmdline += " etc_link"
 
     if current_project.allow_updatescript:
         cmdline += " allow_updatescript"

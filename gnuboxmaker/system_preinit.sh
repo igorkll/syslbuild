@@ -18,6 +18,10 @@ for x in $(cat /root/proc/cmdline); do
         var_link)
             data_link "var"
             ;;
+
+        etc_link)
+            data_link "etc"
+            ;;
     esac
 done
 
