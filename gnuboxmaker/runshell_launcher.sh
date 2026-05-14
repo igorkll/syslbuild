@@ -1,8 +1,15 @@
 #!/bin/bash
 
 if [ -e "/.session_mode_tty" ]; then
-    # disable echo mode
-    stty -echo >/dev/null 2>&1
+    if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
+        # disable echo mode
+        stty -echo >/dev/null 2>&1
+    else
+        reset
+        clear
+        exec bash
+        exit
+    fi
 fi
 
 while true; do
