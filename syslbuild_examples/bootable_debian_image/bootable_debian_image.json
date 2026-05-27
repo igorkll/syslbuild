@@ -14,7 +14,8 @@
             "kernel": "default",
             "include": [
                 "cowsay",
-                "plymount"
+                "plymouth",
+                "plymouth-themes"
             ],
 
             "variant": "minbase", //we use a snapshot for a deterministic build
@@ -86,7 +87,7 @@
             "partitions": [
                 ["bios boot.img", "bios"],
                 ["efi boot.img", "efi"],
-                ["example-distro rootfs.img", "linux"]
+                ["rootfs.img", "linux"]
             ],
 
             "bootloader": {
