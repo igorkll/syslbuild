@@ -1008,18 +1008,36 @@ def collect_sources(item):
     sources = []
     dirs = item.get("sources-dirs", [])
     recursive = item.get("sources-dirs-recursive", False)
-    exts = item.get("sources-dirs-extensions", None)  # optional. if this is not specified, syslbuild will take all files.
+    exts = item.get("sources-dirs-extensions", None) # optional. if this is not specified, syslbuild will take all files.
+    exclude = item.get("sources-dirs-exclude", [])
+
+    def is_excluded(path):
+        name = os.path.basename(path)
+        return any(name == ex or path.endswith(ex) for ex in exclude)
 
     for d in dirs:
         if recursive:
             for root, _, files in os.walk(d):
                 for f in files:
+                    full = os.path.join(root, f)
+
+                    if is_excluded(full):
+                        continue
+
                     if exts is None or any(f.endswith(ext) for ext in exts):
-                        sources.append(os.path.join(root, f))
+                        sources.append(full)
+
         else:
             for f in os.listdir(d):
                 full = os.path.join(d, f)
-                if os.path.isfile(full) and (exts is None or any(f.endswith(ext) for ext in exts)):
+
+                if not os.path.isfile(full):
+                    continue
+
+                if is_excluded(full):
+                    continue
+
+                if exts is None or any(f.endswith(ext) for ext in exts):
                     sources.append(full)
 
     return sources

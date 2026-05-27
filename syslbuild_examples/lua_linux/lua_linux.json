@@ -26,12 +26,14 @@
                 "-Wextra"
             ],
             "LDFLAGS": [
-                "-static"
+                "-static",
+                "-lm"
             ],
 
-            "sources-dirs": ["lua-source/src"],
+            "sources-dirs": ["sources/lua-5.3.6/src"],
             "sources-dirs-extensions": [".c", ".cpp"],
-            "sources-dirs-recursive": true
+            "sources-dirs-recursive": true,
+            "sources-dirs-exclude": ["sources/lua-5.3.6/src/luac.c"]
         },
 
         // --------------------------------- initramfs

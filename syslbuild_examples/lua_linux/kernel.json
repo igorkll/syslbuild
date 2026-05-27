@@ -1,7 +1,7 @@
 [
     {
         "type": "kernel",
-        "name": "kernel",
+        "name": "kernel.img",
         "export": false,
 
         "kernel_source_url": "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.8.12.tar.xz",

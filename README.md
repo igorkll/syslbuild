@@ -265,6 +265,7 @@ these changes to the kernel config are applied automatically when building the k
             "sources-dirs": ["my-sources"],
             "sources-dirs-extensions": [".c", ".cpp"], //optional. if this is not specified, syslbuild will take all files.
             "sources-dirs-recursive": true,
+            "sources-dirs-exclude": ["my-sources/src/luac.c"], //optional
             
             "forkbase": true //marking the builditem as the base for creating forks
         },
