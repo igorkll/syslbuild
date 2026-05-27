@@ -13,7 +13,7 @@
 
             "kernel": "default",
             "include": [
-                "cowsay",
+                "cowsay", //example package
 
                 "initramfs-tools",
                 "systemd",
