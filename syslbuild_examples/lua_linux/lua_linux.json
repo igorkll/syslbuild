@@ -16,6 +16,19 @@
             "type": "include",
             "file": "initramfs.json"
         },
+
+        // --------------------------------- rootfs
+        {
+            "type": "directory",
+            "name": "rootfs",
+            "export": false,
+
+            "items": [
+                ["custom-executable", "/init"],
+                ["custom-executable", "/init"],
+                ["initramfs.img", "/init"]
+            ]
+        },
         
         // --------------------------------- bootable image
         {
@@ -41,7 +54,7 @@
         },
         {
             "architectures": ["amd64"],
-            
+
             "type": "full-disk-image",
             "name": "lua linux (EFI+BIOS).img",
             "export": true,
