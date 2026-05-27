@@ -3,9 +3,9 @@ this is a minimal linux bootable from the init.lua file. as an initialization sy
 you can do anything in it  
 this example is well suited for embedded  
 
-## rootfs directory
+## rootfs_files directory
 * files that end up in rootfs. including your custom lua files
 
-## initramfs directory
+## initramfs_files directory
 * files that end up in initramfs. You usually don't need to edit them.
 

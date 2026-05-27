@@ -44,7 +44,7 @@
 
             "items": [
                 ["lua", "/lua", [0, 0, "755"]],
-                ["initramfs", "/", [0, 0, "755"]]
+                ["initramfs_files", "/", [0, 0, "755"]]
             ]
         },
         {
@@ -64,8 +64,20 @@
             "items": [
                 ["initramfs.img", "/initramfs.img"],
                 ["kernel.img", "/kernel.img"],
-                ["rootfs", "/", [0, 0, "755"]]
+                ["rootfs_files", "/", [0, 0, "755"]]
             ]
+        },
+        {
+            "type": "filesystem",
+            "name": "rootfs.img",
+            "export": false,
+
+            "source": "rootfs",
+
+            "fs_type": "ext4",
+            "size": "(auto * 1.2) + (100 * 1024 * 1024)",
+            "minsize": "64MB",
+            "label": "rootfs"
         },
         
         // --------------------------------- bootable image (BIOS/UEFI)
