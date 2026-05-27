@@ -15,6 +15,15 @@
 
         // --------------------------------- initramfs
         {
+            "type": "directory",
+            "name": "initramfs directory",
+            "export": false,
+
+            "items": [
+                ["initramfs", "/", [0, 0, "755"]]
+            ]
+        },
+        {
             "type": "initramfs",
             "name": "initramfs.img",
             "export": false,
@@ -31,7 +40,7 @@
             "items": [
                 ["initramfs.img", "/initramfs.img"],
                 ["kernel.img", "/kernel.img"],
-                ["files", "/", [0, 0, "755"]]
+                ["rootfs", "/", [0, 0, "755"]]
             ]
         },
         
