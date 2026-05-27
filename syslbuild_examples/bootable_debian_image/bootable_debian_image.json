@@ -14,8 +14,16 @@
             "kernel": "default",
             "include": [
                 "cowsay",
-                "plymouth",
-                "plymouth-themes"
+
+                "initramfs-tools",
+                "systemd",
+                "systemd-sysv",
+                "systemd-resolved",
+                "dbus",
+                "dbus-user-session",
+
+                "bash",
+                "sudo"
             ],
 
             "variant": "minbase", //we use a snapshot for a deterministic build
