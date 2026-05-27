@@ -1,0 +1,123 @@
+{
+    "architectures": [
+        "amd64",
+        "i386"
+    ],
+
+    "builditems": [
+        // ----------------------------------- debian rootfs
+        {
+            "type": "debian",
+            "name": "debian",
+            "export": false,
+
+            "kernel": "default",
+            "include": [
+                "cowsay", //example package
+
+                "initramfs-tools",
+                "systemd",
+                "systemd-sysv",
+                "systemd-resolved",
+                "dbus",
+                "dbus-user-session",
+
+                "bash",
+                "sudo",
+
+                "plymouth",
+                "plymouth-themes",
+
+                "lightdm",
+                "xfce4"
+            ],
+
+            "variant": "minbase", //we use a snapshot for a deterministic build
+            "suite": "bookworm",
+            "url": "http://snapshot.debian.org/archive/debian/20250809T133719Z"
+        },
+
+        {
+            "type": "directory",
+            "name": "debian_with_overlay",
+            "export": false,
+
+            "items": [
+                ["debian", "/"],
+                ["overlay", "/", [0, 0, "0755"]]
+            ]
+        },
+        
+        {
+            "type": "smart-chroot",
+            "name": "debian_with_chroot",
+            "export": false,
+
+            "source": "debian_with_overlay",
+            "scripts": [
+                "chroot.sh"
+            ]
+        },
+
+        {
+            "type": "filesystem",
+            "name": "rootfs.img",
+            "export": false,
+
+            "source": "debian_with_chroot",
+
+            "fs_type": "ext4",
+            "size": "(auto * 1.2) + (100 * 1024 * 1024)",
+            "minsize": "64MB",
+            "label": "rootfs"
+        },
+
+        // ----------------------------------- bootable image
+        {
+            "type": "filesystem",
+            "name": "bios boot.img",
+            "export": false,
+
+            "size": "1M"
+        },
+        {
+            "type": "filesystem",
+            "name": "efi boot.img",
+            "export": false,
+
+            "fs_arg": "-F32",
+            "fs_type": "fat",
+            "size": "64M",
+            "label": "EFI"
+        },
+        {
+            "type": "full-disk-image",
+            "name": "debian (EFI+BIOS).img",
+            "export": true,
+
+            "size": "auto + (10 * 1024 * 1024)",
+
+            "partitionTable": "gpt",
+            "partitions": [
+                ["bios boot.img", "bios"],
+                ["efi boot.img", "efi"],
+                ["rootfs.img", "linux"]
+            ],
+
+            "bootloader": {
+                "type": "grub",
+                "config": "grub_fastboot.cfg",
+                "esp": 1,
+                "boot": 2,
+                "efiAndBios": true,
+                "modules": [
+                    "normal",
+                    "part_msdos",
+                    "part_gpt",
+                    "ext2",
+                    "configfile"
+                ]
+            }
+        }
+    ]
+}
