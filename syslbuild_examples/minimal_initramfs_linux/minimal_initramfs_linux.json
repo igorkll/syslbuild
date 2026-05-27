@@ -1,0 +1,34 @@
+{
+    "architectures": [
+        "amd64"
+    ],
+
+    "builditems": [
+        {
+            "type": "include",
+            "file": "download.json"
+        },
+        {
+            "type": "kernel",
+            "name": "kernel",
+            "export": false,
+
+            "kernel_source_url": "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.8.12.tar.xz",
+            "kernel_output_file": "bzImage",
+    
+            "patches": [
+                "disable_vt_swithing_from_keyboard.patch",
+                "disable_sysrq.patch",
+                "disable_cad.patch",
+                "disable_keyboard_echo_by_default.patch",
+                "disable_tty_signals.patch",
+                "disable_tty_control_flow.patch"
+            ],
+    
+            "kernel_config_changes_files": [
+                "kernel_config_changes.txt",
+                "kernel_config_changes_x86.txt"
+            ]
+        }
+    ]
+}
