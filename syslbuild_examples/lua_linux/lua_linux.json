@@ -13,6 +13,27 @@
             "file": "kernel.json"
         },
 
+        // --------------------------------- lua
+        {
+            "type": "gcc-build",
+            "name": "lua",
+            "export": false,
+
+            "CFLAGS": [
+                "-O2",
+                "-ffreestanding",
+                "-Wall",
+                "-Wextra"
+            ],
+            "LDFLAGS": [
+                "-static"
+            ],
+
+            "sources-dirs": ["lua-source/src"],
+            "sources-dirs-extensions": [".c", ".cpp"],
+            "sources-dirs-recursive": true
+        },
+
         // --------------------------------- initramfs
         {
             "type": "directory",
@@ -20,6 +41,7 @@
             "export": false,
 
             "items": [
+                ["lua", "/lua", [0, 0, "755"]],
                 ["initramfs", "/", [0, 0, "755"]]
             ]
         },
