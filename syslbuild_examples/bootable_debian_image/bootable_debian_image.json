@@ -21,12 +21,35 @@
             "suite": "bookworm",
             "url": "http://snapshot.debian.org/archive/debian/20250809T133719Z"
         },
+
+        {
+            "type": "directory",
+            "name": "debian_with_overlay",
+            "export": false,
+
+            "items": [
+                ["debian", "/"],
+                ["overlay", "/", [0, 0, "0755"]]
+            ]
+        },
+        
+        {
+            "type": "smart-chroot",
+            "name": "debian_with_chroot",
+            "export": false,
+
+            "source": "debian_with_overlay",
+            "scripts": [
+                "chroot.sh"
+            ]
+        },
+
         {
             "type": "filesystem",
             "name": "rootfs.img",
             "export": false,
 
-            "source": "debian",
+            "source": "debian_with_chroot",
 
             "fs_type": "ext4",
             "size": "(auto * 1.2) + (100 * 1024 * 1024)",
