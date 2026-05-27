@@ -29,7 +29,8 @@
                 "plymouth-themes",
 
                 "lightdm",
-                "xfce4"
+                "xfce4",
+                "xorg"
             ],
 
             "variant": "minbase", //we use a snapshot for a deterministic build
