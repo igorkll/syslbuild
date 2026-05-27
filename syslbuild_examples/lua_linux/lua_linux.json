@@ -1,0 +1,51 @@
+{
+    "architectures": [
+        "amd64"
+    ],
+
+    "builditems": [
+        {
+            "type": "include",
+            "file": "download.json"
+        },
+        {
+            "type": "include",
+            "file": "kernel.json"
+        },
+        {
+            "type": "include",
+            "file": "initramfs.json"
+        },
+        
+        
+        {
+            "type": "full-disk-image",
+            "name": "debian (EFI+BIOS).img",
+            "export": true,
+
+            "size": "auto + (10 * 1024 * 1024)",
+
+            "partitionTable": "gpt",
+            "partitions": [
+                ["bios boot.img", "bios"],
+                ["efi boot.img", "efi"],
+                ["rootfs.img", "linux"]
+            ],
+
+            "bootloader": {
+                "type": "grub",
+                "config": "grub_fastboot.cfg",
+                "esp": 1,
+                "boot": 2,
+                "efiAndBios": true,
+                "modules": [
+                    "normal",
+                    "part_msdos",
+                    "part_gpt",
+                    "ext2",
+                    "configfile"
+                ]
+            }
+        }
+    ]
+}
