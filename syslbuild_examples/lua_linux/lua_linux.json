@@ -17,10 +17,33 @@
             "file": "initramfs.json"
         },
         
-        
+        // --------------------------------- bootable image
         {
+            "architectures": ["amd64"],
+            
+            "type": "filesystem",
+            "name": "bios boot.img",
+            "export": false,
+
+            "size": "1M"
+        },
+        {
+            "architectures": ["amd64"],
+
+            "type": "filesystem",
+            "name": "efi boot.img",
+            "export": false,
+
+            "fs_arg": "-F32",
+            "fs_type": "fat",
+            "size": "64M",
+            "label": "EFI"
+        },
+        {
+            "architectures": ["amd64"],
+            
             "type": "full-disk-image",
-            "name": "debian (EFI+BIOS).img",
+            "name": "lua linux (EFI+BIOS).img",
             "export": true,
 
             "size": "auto + (10 * 1024 * 1024)",
