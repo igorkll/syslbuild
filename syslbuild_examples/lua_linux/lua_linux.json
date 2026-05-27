@@ -12,9 +12,14 @@
             "type": "include",
             "file": "kernel.json"
         },
+
+        // --------------------------------- initramfs
         {
-            "type": "include",
-            "file": "initramfs.json"
+            "type": "initramfs",
+            "name": "initramfs.img",
+            "export": false,
+    
+            "source": "initramfs directory"
         },
 
         // --------------------------------- rootfs
@@ -24,15 +29,15 @@
             "export": false,
 
             "items": [
-                ["custom-executable", "/init"],
-                ["custom-executable", "/init"],
-                ["initramfs.img", "/init"]
+                ["initramfs.img", "/initramfs.img"],
+                ["kernel.img", "/kernel.img"],
+                ["files", "/", [0, 0, "755"]]
             ]
         },
         
-        // --------------------------------- bootable image
+        // --------------------------------- bootable image (BIOS/UEFI)
         {
-            "architectures": ["amd64"],
+            "architectures": ["amd64", "i386"],
             
             "type": "filesystem",
             "name": "bios boot.img",
@@ -41,7 +46,7 @@
             "size": "1M"
         },
         {
-            "architectures": ["amd64"],
+            "architectures": ["amd64", "i386"],
 
             "type": "filesystem",
             "name": "efi boot.img",
@@ -53,7 +58,7 @@
             "label": "EFI"
         },
         {
-            "architectures": ["amd64"],
+            "architectures": ["amd64", "i386"],
 
             "type": "full-disk-image",
             "name": "lua linux (EFI+BIOS).img",

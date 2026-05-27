@@ -1,9 +1,0 @@
-[
-    {
-        "type": "initramfs",
-        "name": "initramfs.img",
-        "export": false,
-
-        "source": "initramfs directory"
-    }
-]
