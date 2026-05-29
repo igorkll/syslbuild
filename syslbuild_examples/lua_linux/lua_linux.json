@@ -64,6 +64,7 @@
             "items": [
                 ["initramfs.img", "/initramfs.img"],
                 ["kernel.img", "/kernel.img"],
+                ["lua", "/lua", [0, 0, "755"]],
                 ["rootfs_files", "/", [0, 0, "755"]]
             ]
         },
