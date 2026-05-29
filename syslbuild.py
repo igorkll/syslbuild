@@ -1989,8 +1989,23 @@ def prepairBuildItems(builditems):
     i = len(builditems) - 1
     while i >= 0:
         builditem = builditems[i]
-        if builditem.get("template", False) or ("architectures" in builditem and not architecture in builditem["architectures"]):
+        filtered_delete = False
+
+        if builditem.get("build-if-filter-exists", False) and len(filters) == 0:
+            filtered_delete = True
+        
+        if builditem.get("build-if-filter-not-exists", False) and len(filters) > 0:
+            filtered_delete = True
+
+        if "build-if-all-filters-exists" in builditem and not all(x in B for x in filters):
+            filtered_delete = True
+
+        if "build-if-one-filter-exists" in builditem:
+            filtered_delete = True
+
+        if builditem.get("template", False) or ("architectures" in builditem and not architecture in builditem["architectures"]) or filtered_delete:
             del builditems[i]
+        
         i -= 1
 
     for builditem in builditems:
@@ -2066,6 +2081,7 @@ def changeOutputRights(path):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="an assembly system for creating Linux distributions. it is focused on embedded distributions")
     parser.add_argument("--arch", choices=["ALL", "amd64", "i386", "arm64", "armhf", "armel"], type=str, required=True, help="the processor architecture for which the build will be made")
+    parser.add_argument("--filters", type=str, help="specify build filters to assemble specific project elements. multiple filters can be specified via \",\"")
     parser.add_argument("--output", type=str, help="path to output directory")
     parser.add_argument("--temp", type=str, help="path to .temp directory")
     parser.add_argument("--lastlog", type=str, help="additional log file")
@@ -2078,11 +2094,16 @@ if __name__ == "__main__":
     
     requireRoot()
 
-    if "temp" in args and args.temp:
+    if args.temp:
         path_temp = args.temp
     
-    if "output" in args and args.output:
+    if args.output:
         path_output = args.output
+
+    if args.filters:
+        filters = args.filters.split(",")
+    else:
+        filters = []
     
     architecture = args.arch
     loadTempPaths()
@@ -2091,7 +2112,7 @@ if __name__ == "__main__":
         deleteAny(path_output)
     log_file = getLogFile()
     
-    if "lastlog" in args and args.lastlog:
+    if args.lastlog:
         log_file2 = open(args.lastlog, "w")
     else:
         log_file2 = None

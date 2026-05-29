@@ -178,6 +178,7 @@ sudo pip install asteval --break-system-packages
 * forkArraysCombine - if this flag is set in builditem when creating a fork (not in forkbase!!!) When creating a fork, arrays do not overwrite but complement each other. by default, this flag has the value false.
 * template - this key is used to exclude any builditem from the build. created for use with forkbase. if you set it to true, this element will not participate in the build, but it can still be forked via forkbase. this tag is not inherited during fork
 * deleteBuildItemKeys - deletes the keys. created for use with fork. it can be placed in any subject inside the builditem
+* build-if-filter-exists - if this key is set to true, this builditem will be collected only if at least one filter is installed (no matter which one)
 
 ## keys that are not inherited by fork
 * forkbase - these are the control keys of the fork itself, they are not inherited by the fork
