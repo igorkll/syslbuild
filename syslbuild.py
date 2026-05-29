@@ -1993,14 +1993,15 @@ def prepairBuildItems(builditems):
 
         if builditem.get("build-if-filter-exists", False) and len(filters) == 0:
             filtered_delete = True
-        
-        if builditem.get("build-if-filter-not-exists", False) and len(filters) > 0:
+        elif builditem.get("build-if-filter-not-exists", False) and len(filters) > 0:
             filtered_delete = True
-
-        if "build-if-all-filters-exists" in builditem and not all(x in B for x in filters):
+        elif "build-if-all-filters-exists" in builditem and not all(x in filters for x in builditem["build-if-all-filters-exists"]):
             filtered_delete = True
-
-        if "build-if-one-filter-exists" in builditem:
+        elif "build-if-one-filter-exists" in builditem and not any(x in filters for x in builditem["build-if-one-filter-exists"]):
+            filtered_delete = True
+        elif "build-if-not-all-filters-exists" in builditem and all(x in filters for x in builditem["build-if-not-all-filters-exists"]):
+            filtered_delete = True
+        elif "build-if-not-one-filter-exists" in builditem and any(x in filters for x in builditem["build-if-not-one-filter-exists"]):
             filtered_delete = True
 
         if builditem.get("template", False) or ("architectures" in builditem and not architecture in builditem["architectures"]) or filtered_delete:
