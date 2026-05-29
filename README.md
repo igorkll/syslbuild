@@ -1061,6 +1061,103 @@ these changes to the kernel config are applied automatically when building the k
             "git_url": "https://github.com/armbian/linux",
             "git_branch": "example", //optional
             "git_checkout": "example" //optional
+        },
+
+        // filter builditem examples
+        {
+            // this builditem will only be built if at least one filter is specified
+            // example:
+            // --filters debug
+            // --filters test,wayland
+            "type": "gcc-build",
+            "name": "example1",
+
+            "build-if-filter-exists": true
+        },
+        {
+            // this builditem will only be built if NO filters are specified
+            // example:
+            // ./build.py --arch amd64 project.json
+            "type": "gcc-build",
+            "name": "example2",
+
+            "build-if-filter-not-exists": true
+        },
+        {
+            // this builditem will only be built if ALL specified filters exist
+            // required filters:
+            // debug AND wayland
+            //
+            // works:
+            // --filters debug,wayland
+            // --filters debug,wayland,test
+            //
+            // does NOT work:
+            // --filters debug
+            // --filters wayland
+            "type": "gcc-build",
+            "name": "example3",
+
+            "build-if-all-filters-exists": [
+                "debug",
+                "wayland"
+            ]
+        },
+        {
+            // this builditem will be built if AT LEAST ONE filter exists
+            //
+            // works:
+            // --filters debug
+            // --filters test,wayland
+            //
+            // does NOT work:
+            // --filters release
+            "type": "gcc-build",
+            "name": "example4",
+
+            "build-if-one-filter-exists": [
+                "debug",
+                "wayland"
+            ]
+        },
+        {
+            // this builditem will NOT be built
+            // if ALL specified filters exist at the same time
+            //
+            // blocked:
+            // --filters debug,wayland
+            //
+            // works:
+            // --filters debug
+            // --filters wayland
+            // --filters release
+            "type": "gcc-build",
+            "name": "example5",
+
+            "build-if-not-all-filters-exists": [
+                "debug",
+                "wayland"
+            ]
+        },
+        {
+            // this builditem will NOT be built
+            // if AT LEAST ONE specified filter exists
+            //
+            // blocked:
+            // --filters debug
+            // --filters wayland
+            // --filters test,debug
+            //
+            // works:
+            // --filters release
+            // no filters
+            "type": "gcc-build",
+            "name": "example6",
+
+            "build-if-not-one-filter-exists": [
+                "debug",
+                "wayland"
+            ]
         }
     ]
 }
