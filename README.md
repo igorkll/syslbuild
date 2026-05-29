@@ -172,13 +172,18 @@ sudo pip install asteval --break-system-packages
 * realtime
 
 ## builditem universal keys
-* architectures - if the builditem has an array with that name, then the build will only be performed if it has an architecture for which it is being built
-* forkbase - this element becomes the base for creating forks
-* fork - it takes as a basis (forks) the nearest previous element from forkbase. When dictionaries merge, the matching keys (including arrays) overwrite each other. if the forkArraysCombine flag is set when creating a fork (not in forkbase!!!) the arrays do not overwrite each other, but complement each other.
-* forkArraysCombine - if this flag is set in builditem when creating a fork (not in forkbase!!!) When creating a fork, arrays do not overwrite but complement each other. by default, this flag has the value false.
-* template - this key is used to exclude any builditem from the build. created for use with forkbase. if you set it to true, this element will not participate in the build, but it can still be forked via forkbase. this tag is not inherited during fork
-* deleteBuildItemKeys - deletes the keys. created for use with fork. it can be placed in any subject inside the builditem
-* build-if-filter-exists - if this key is set to true, this builditem will be collected only if at least one filter is installed (no matter which one)
+* architectures - if the builditem contains this array, the builditem will only be built for the architectures listed in it.
+* forkbase - marks this builditem as a base element for forks.
+* fork - creates a fork from the nearest previous builditem marked with `forkbase`. when dictionaries are merged, matching keys overwrite each other. arrays also overwrite each other unless `forkArraysCombine` is enabled.
+* forkArraysCombine - works only in the builditem that performs the fork (not in `forkbase`). if set to true, arrays are merged instead of overwritten during fork creation. default value is `false`.
+* template - excludes the builditem from the build process. intended for use with `forkbase`. if set to `true`, the builditem itself will not be built, but it can still be used as a base for forks. this key is not inherited during forking.
+* deleteBuildItemKeys - removes keys from the resulting builditem. intended for use with `fork`. can be placed inside any object within the builditem.
+* build-if-filter-exists - if set to `true`, the builditem will only be built when at least one filter is specified.
+* build-if-filter-not-exists - if set to `true`, the builditem will only be built when no filters are specified.
+* build-if-all-filters-exists - array of filter names. the builditem will only be built if all specified filters are present.
+* build-if-one-filter-exists - array of filter names. the builditem will only be built if at least one specified filter is present.
+* build-if-not-all-filters-exists - array of filter names. the builditem will not be built if all specified filters are present.
+* build-if-not-one-filter-exists - array of filter names. the builditem will not be built if at least one specified filter is present.
 
 ## keys that are not inherited by fork
 * forkbase - these are the control keys of the fork itself, they are not inherited by the fork
