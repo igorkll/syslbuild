@@ -272,6 +272,8 @@ if [ -d "/lib/firmware/brcm/" ]; then
 
     ln -sf ../cypress/cyfmac43455-sdio.bin brcmfmac43455-sdio.raspberrypi,4-model-b.bin
     ln -sf ../cypress/cyfmac43455-sdio.bin brcmfmac43455-sdio.raspberrypi,5-model-b.bin
+    ln -sf ../cypress/cyfmac43430-sdio.bin brcmfmac43430-sdio.raspberrypi,3-model-b.bin
+    ln -sf ../cypress/cyfmac43455-sdio.bin brcmfmac43455-sdio.raspberrypi,3-model-b-plus.bin
 
     cd /
 fi
@@ -1190,7 +1192,11 @@ avoid_warnings=1
         "name": "boot_rpi_64",
         "export": False,
 
-        "items": items
+        "items": items,
+
+        "directories": [
+            ["/rpi_64", [0, 0, "0000"]]
+        ]
     })
 
     builditems.append({
@@ -1251,6 +1257,8 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         ] + devicetree_get_files("opi_zero3", "dtb"),
         "dtboList": devicetree_get_files("opi_zero3", "dtbo"),
         "dtboList_active": dtboList_active,
+
+        "trigger_boot_flag": "opi_zero3",
 
         "kernel": "kernel_image/arm64/opi_zero3/kernel.img",
         "initramfs": "initramfs_opi_zero3.img",

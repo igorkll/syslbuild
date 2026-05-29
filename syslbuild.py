@@ -1530,6 +1530,9 @@ def singleboardBuild(item):
             for dtb in item["dtboList"]:
                 buildDirectoryBuilditem["items"].append([dtb, pathConcat("/dtbs/overlay", os.path.basename(dtb)), [0, 0, "0644"]])
 
+        if "trigger_boot_flag" in item:
+            buildDirectoryBuilditem["directories"].append([item["trigger_boot_flag"], [0, 0, "0000"]])
+
         buildDirectory(buildDirectoryBuilditem)
 
         # boot config
