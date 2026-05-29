@@ -2,7 +2,7 @@
   "gnubox_version": [
     1,
     3,
-    10
+    12
   ],
   "distro": "debian",
   "user_packages": [
@@ -58,6 +58,7 @@
   "separate_data_partition": true,
   "separate_data_partition_home_link": true,
   "separate_data_partition_var_link": false,
+  "separate_data_partition_etc_link": false,
   "var_is_temp": true,
   "minsize_boot_partition": "64MB",
   "minsize_efi_partition": "64MB",
@@ -70,9 +71,10 @@
   "cmdline": "",
   "exclude_cmdline": [],
   "integrate_liamounts": true,
-  "export_x86_64": true,
+  "integrate_xwayland": true,
+  "export_x86_64": false,
   "export_x86": false,
-  "export_arm64": false,
+  "export_arm64": true,
   "export_img_bios_mbr": false,
   "export_img_bios_gpt": false,
   "export_img_uefi_gpt": false,
