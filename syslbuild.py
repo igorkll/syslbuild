@@ -1043,13 +1043,17 @@ def collect_sources(item):
     return sources
 
 def gccBuild(item):
-    buildExecute(
-        [gccNames[architecture] + "-gcc"] +
-        item.get("CFLAGS", []) +
-        item.get("sources", collect_sources(item)) +
-        item.get("LDFLAGS", []) +
-        ["-o", getItemPath(item)]
-    )
+    gccargs = [gccNames[architecture] + "-gcc"]
+
+    if "sysroot" in item:
+        gccargs += ["--sysroot=" + findItem(item["sysroot"])]
+
+    gccargs += item.get("CFLAGS", [])
+    gccargs += item.get("sources", collect_sources(item))
+    gccargs += item.get("LDFLAGS", [])
+    gccargs += ["-o", getItemPath(item)]
+
+    buildExecute(gccargs)
 
 def buildInitramfs(item):
     source = findDirectory(item)

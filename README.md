@@ -256,6 +256,9 @@ these changes to the kernel config are applied automatically when building the k
             "name": "custom-executable",
             "export": false,
 
+            // optional. allows you to use the directory as a sysroot for gcc
+            "sysroot": "any builditem directory",
+
             "CFLAGS": [
                 "-O2",
                 "-ffreestanding",
