@@ -1,6 +1,5 @@
 [
     {
-        "build-if-no-filters-or-one-filter-exists": ["rpi_64"],
 
         "type": "kernel",
         "name": "kernel_rpi_64.img",

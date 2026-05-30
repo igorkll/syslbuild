@@ -13,6 +13,8 @@
             "file": "download.json"
         },
         {
+            "build-if-no-filters-or-one-filter-exists": ["x86"],
+
             "architectures": [
                 "amd64",
                 "i386"
@@ -22,6 +24,8 @@
             "file": "x86.json"
         },
         {
+            "build-if-no-filters-or-one-filter-exists": ["opi_zero3"],
+
             "architectures": [
                 "arm64"
             ],
@@ -30,6 +34,8 @@
             "file": "opi_zero3.json"
         },
         {
+            "build-if-no-filters-or-one-filter-exists": ["rpi_64"],
+
             "architectures": [
                 "arm64"
             ],
@@ -38,6 +44,8 @@
             "file": "rpi_64.json"
         },
         {
+            "build-if-no-filters-or-one-filter-exists": ["rpi_5"],
+
             "architectures": [
                 "arm64"
             ],

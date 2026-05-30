@@ -1,7 +1,5 @@
 [
     {
-        "build-if-no-filters-or-one-filter-exists": ["x86"],
-
         "type": "kernel",
         "name": "kernel.img",
         "export": true,

@@ -1,7 +1,5 @@
 [
     {
-        "build-if-no-filters-or-one-filter-exists": ["rpi_5"],
-
         "type": "kernel",
         "name": "kernel_rpi_5.img",
         "export": false,

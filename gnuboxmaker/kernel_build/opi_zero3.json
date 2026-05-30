@@ -1,7 +1,5 @@
 [
     {
-        "build-if-no-filters-or-one-filter-exists": ["opi_zero3"],
-
         "type": "kernel",
         "name": "kernel_opi_zero3.img",
         "export": false,
