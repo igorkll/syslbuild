@@ -1,0 +1,51 @@
+From d604bdd177cfefcfa968dfee5aa2089f84d5ac48 Mon Sep 17 00:00:00 2001
+From: misuzu <bakalolka@gmail.com>
+Date: Thu, 24 Apr 2025 14:16:37 +0300
+Subject: [PATCH 18/18] wireless: uwe5622: NixOS support
+
+---
+ drivers/net/wireless/uwe5622/Makefile                      | 2 +-
+ drivers/net/wireless/uwe5622/unisocwcn/platform/wcn_boot.c | 2 +-
+ drivers/net/wireless/uwe5622/unisocwifi/rf_marlin3.c       | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/wireless/uwe5622/Makefile b/drivers/net/wireless/uwe5622/Makefile
+index dfa95009d29a..a38bc197124a 100644
+--- a/drivers/net/wireless/uwe5622/Makefile
++++ b/drivers/net/wireless/uwe5622/Makefile
+@@ -6,5 +6,5 @@ UNISOCWCN_DIR := $(srctree)/drivers/net/wireless/uwe5622/unisocwcn/
+ UNISOC_BSP_INCLUDE := $(UNISOCWCN_DIR)/include
+ export UNISOC_BSP_INCLUDE
+ 
+-UNISOC_FW_PATH_CONFIG := "/lib/firmware/uwe5622/"
++UNISOC_FW_PATH_CONFIG := "/run/current-system/firmware/"
+ export UNISOC_FW_PATH_CONFIG
+diff --git a/drivers/net/wireless/uwe5622/unisocwcn/platform/wcn_boot.c b/drivers/net/wireless/uwe5622/unisocwcn/platform/wcn_boot.c
+index 1558f1c03de0..0af6d1e6a597 100644
+--- a/drivers/net/wireless/uwe5622/unisocwcn/platform/wcn_boot.c
++++ b/drivers/net/wireless/uwe5622/unisocwcn/platform/wcn_boot.c
+@@ -101,7 +101,7 @@ struct gpio_config {
+ #endif
+ static char *wcn_fw_path[WCN_FW_MAX_PATH_NUM] = {
+ 	UNISOC_FW_PATH_DEFAULT,		/* most of projects */
+-	"/lib/firmware/"		/* allwinner r328... */
++	"/run/current-system/firmware/"
+ };
+ #define WCN_FW_NAME	"wcnmodem.bin"
+ #define GNSS_FW_NAME	"gnssmodem.bin"
+diff --git a/drivers/net/wireless/uwe5622/unisocwifi/rf_marlin3.c b/drivers/net/wireless/uwe5622/unisocwifi/rf_marlin3.c
+index ca307f12ac99..1f4ecf9e12fa 100644
+--- a/drivers/net/wireless/uwe5622/unisocwifi/rf_marlin3.c
++++ b/drivers/net/wireless/uwe5622/unisocwifi/rf_marlin3.c
+@@ -21,7 +21,7 @@
+ #ifdef CUSTOMIZE_WIFI_CFG_PATH
+ #define WIFI_BOARD_CFG_PATH CUSTOMIZE_WIFI_CFG_PATH
+ #else
+-#define WIFI_BOARD_CFG_PATH "/lib/firmware"
++#define WIFI_BOARD_CFG_PATH "/run/current-system/firmware/"
+ #endif
+ 
+ #define CF_TAB(NAME, MEM_OFFSET, TYPE) \
+-- 
+2.49.0
+

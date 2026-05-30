@@ -29,7 +29,26 @@
             "disable_keyboard_echo_by_default.patch",
             "disable_tty_signals.patch",
             "disable_tty_control_flow.patch",
-            "patches.armbian.6.18/arm64-dts-sun50i-h616-orangepi-zero2-zero3-add-wifi.patch"
+
+            "patches.armbian.6.18/arm64-dts-sun50i-h616-orangepi-zero2-zero3-add-wifi.patch",
+
+            "uwe5622-nixos-main/0001-introduce-uwe5622-driver-for-kernel-6.3.patch",
+            "uwe5622-nixos-main/0002-apply-bugfixes-for-uwe5622-driver.patch",
+            "uwe5622-nixos-main/0003-drivers-uwe5622-fix-compilation-on-6.3-kernels.patch",
+            "uwe5622-nixos-main/0004-fix-driver-for-kernel-6.4.patch",
+            "uwe5622-nixos-main/0005-uwe5622-various-warning-and-firmware-path-fixes.patch",
+            "uwe5622-nixos-main/0006-Add-to-section-Makefile-CONFIG_SPARD_WLAN_SUPPORT-uw.patch",
+            "uwe5622-nixos-main/0007-fix-spreadtrum-sprd-bluetooth-broken-park-link-statu.patch",
+            "uwe5622-nixos-main/0008-port-uwe5622-driver-to-kernel-6.1.patch",
+            "uwe5622-nixos-main/0009-wifi-uwe-fix-uwe5622-tty-sdio.patch",
+            "uwe5622-nixos-main/0010-wireless-fix-setting-mac-address-for-netdev-in-uwe56.patch",
+            "uwe5622-nixos-main/0011-wireless-uwe5622-Fix-compilation-with-6.7-kernel.patch",
+            "uwe5622-nixos-main/0012-Patching-kernel-rockchip64-files-drivers-net-wireles.patch",
+            "uwe5622-nixos-main/0013-wireless-uwe5622-Fix-compilation-with-6.11-kernel.patch",
+            "uwe5622-nixos-main/0014-use-DECLARE_FLEX_ARRAY-macro-to-avoid-spanning-write.patch",
+            //"uwe5622-nixos-main/0015-arm64-dts-h616-add-wifi-support-for-orange-pi-zero-2.patch",
+            "uwe5622-nixos-main/0016-wireless-uwe5622-https-6xyun.cn-article-orangepi-3b-.patch",
+            "uwe5622-nixos-main/0017-wireless-uwe5622-Fix-Makefiles.patch"
         ],
 
         "kernel_config_changes_files": [
