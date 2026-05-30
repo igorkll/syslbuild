@@ -13,6 +13,9 @@
         "result_config_name": "kernel_config_rpi_5",
         "result_config_export": false,
 
+        "symvers_name": "Module_symvers",
+        "symvers_export": false,
+
         "kernel_source_git": "https://github.com/raspberrypi/linux",
         "kernel_source_git_branch": "rpi-6.12.y",
         "kernel_source_git_checkout": "359f37f0faefb712add32a39f98751aea67d5c1f",
@@ -69,7 +72,8 @@
             ["kernel_headers_rpi_5", "/kernel_headers"],
             ["kernel_modules_rpi_5", "/kernel_modules"],
             ["kernel_rpi_5.img", "/kernel.img"],
-            ["kernel_config_rpi_5", "/kernel_config"]
+            ["kernel_config_rpi_5", "/kernel_config"],
+            ["Module_symvers", "/Module.symvers"]
         ]
     }
 ]

@@ -13,6 +13,9 @@
         "result_config_name": "kernel_config_opi_zero3",
         "result_config_export": false,
 
+        "symvers_name": "Module_symvers",
+        "symvers_export": false,
+
         "kernel_source_git": "https://github.com/igorkll/linux-1",
         "kernel_source_git_branch": "h616-var",
         "kernel_source_git_checkout": "dab97acb882cae70993a825156452a8fc850fbf3",
@@ -50,7 +53,8 @@
             ["kernel_headers_opi_zero3", "/kernel_headers"],
             ["kernel_modules_opi_zero3", "/kernel_modules"],
             ["kernel_opi_zero3.img", "/kernel.img"],
-            ["kernel_config_opi_zero3", "/kernel_config"]
+            ["kernel_config_opi_zero3", "/kernel_config"],
+            ["Module_symvers", "/Module.symvers"]
         ]
     }
 ]

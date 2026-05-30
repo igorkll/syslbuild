@@ -1299,6 +1299,12 @@ def buildKernel(item):
         buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "headers_install", f"INSTALL_HDR_PATH={os.path.abspath(export_path)}"], True, None, kernel_sources)
         recursionDeleleSymlinks(export_path)
 
+    if "symvers_name" in item:
+        buildLog(f"exporting symvers...")
+        additionalExportProcess(kernel_sources, [
+            ["Module.symvers", item["symvers_name"], item.get("symvers_export", False)],
+        ])
+
     if "additional_export" in item:
         additionalExportProcess(kernel_sources, item["additional_export"])
 
@@ -2009,6 +2015,8 @@ def prepairBuildItems(builditems):
         elif "build-if-not-all-filters-exists" in builditem and all(x in filters for x in builditem["build-if-not-all-filters-exists"]):
             filtered_delete = True
         elif "build-if-not-one-filter-exists" in builditem and any(x in filters for x in builditem["build-if-not-one-filter-exists"]):
+            filtered_delete = True
+        elif "build-if-no-filters-or-one-filter-exists" in builditem and len(filters) > 0 and not any(x in filters for x in builditem["build-if-no-filters-or-one-filter-exists"]):
             filtered_delete = True
 
         if builditem.get("template", False) or ("architectures" in builditem and not architecture in builditem["architectures"]) or filtered_delete:

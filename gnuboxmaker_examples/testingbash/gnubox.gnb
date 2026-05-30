@@ -5,7 +5,27 @@
     0
   ],
   "distro": "debian",
-  "user_packages": [],
+  "user_packages": [
+    "glmark2",
+    "network-manager",
+
+    "mesa-utils",
+    "libgl1-mesa-dri",
+    "libgbm1",
+    "libdrm2",
+
+    "libegl1",
+
+    "weston",
+    "xwayland",
+    "xserver-xorg",
+    "xinit",
+    "x11-xserver-utils",
+    "matchbox-window-manager",
+
+    "glmark2-es2-drm",
+    "kmscube"
+  ],
   "exclude_packages": [],
   "debian_variant": "minbase",
   "debian_suite": "trixie",

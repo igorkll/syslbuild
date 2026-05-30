@@ -184,6 +184,7 @@ sudo pip install asteval --break-system-packages
 * build-if-one-filter-exists - array of filter names. the builditem will only be built if at least one specified filter is present.
 * build-if-not-all-filters-exists - array of filter names. the builditem will not be built if all specified filters are present.
 * build-if-not-one-filter-exists - array of filter names. the builditem will not be built if at least one specified filter is present.
+* build-if-no-filters-or-one-filter-exists - build an element if no filters are set or at least one matches
 
 ## keys that are not inherited by fork
 * forkbase - these are the control keys of the fork itself, they are not inherited by the fork
@@ -831,6 +832,9 @@ these changes to the kernel config are applied automatically when building the k
 
             "result_config_name": "custom_amd64_kernel_config",
             "result_config_export": false,
+
+            "symvers_name": "Module.symvers",
+            "symvers_export": true,
 
             // the url for downloading the kernel source code
             // single-board computers like the orange pi usually require their own core
