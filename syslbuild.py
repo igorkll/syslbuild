@@ -2004,6 +2004,7 @@ def prepairBuildItems(builditems):
         builditem = builditems[i]
         filtered_delete = False
 
+        # БЛЯТЬ. какого хуя фильтры на include игнорируются СУКААААААААААААА
         if builditem.get("build-if-filter-exists", False) and len(filters) == 0:
             filtered_delete = True
         elif builditem.get("build-if-filter-not-exists", False) and len(filters) > 0:
