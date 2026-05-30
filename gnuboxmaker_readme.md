@@ -9,7 +9,7 @@ Gnubox Maker creates a special Linux system for a single application. After laun
 By default, Gnubox maker provides a completely clean loading screen (with your logo optional) and the complete inability to exit the application embedded in the image  
 Gnubox maker is ideally suited for: household appliances, ATM, car radios, smart home control panels  
 wherever you need a closed linux for one application, Gnubox maker will be an ideal option for generating an image for a ready-made device  
-A minimum of 60 GB of free space on a PC is recommended for using Gnubox maker  
+A minimum of 100 GB of free space on a PC is recommended for using Gnubox maker  
 Gnubox maker secures the build from the project, which allows you to save the configuration and repeat the build of the system  
 as well as Gnubox maker projects can be controlled via git  
 The .img images for x86 / x86_64 that Gnubox maker generates are universal. they can be written to a USB drive or to a hard disk/SSD. also, when the device is turned on for the first time, the partition size will increase to the maximum possible (up to the entire available disk space) so that the OS can use all available space  
