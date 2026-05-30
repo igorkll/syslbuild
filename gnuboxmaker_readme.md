@@ -25,7 +25,7 @@ ATTENTION. Starting from version 1.3.9, the kernels do not go with the program, 
 ## roadmap
 * gui with system settings and choice of platforms for export
 * add support for creating 64-bit images for 32-bit UEFI (yes, for those very old intel atom tablets)
-* add support for custom kernels and device tree overlays to the program
+* add support for custom kernels
 * increase the display time of the logo so that the user does not have to look at a black screen
 
 ## bugs
