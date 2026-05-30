@@ -1,5 +1,7 @@
 [
     {
+        "build-if-no-filters-or-one-filter-exists": ["opi_zero3"],
+
         "type": "kernel",
         "name": "kernel_opi_zero3.img",
         "export": false,
@@ -28,7 +30,8 @@
             "disable_cad.patch",
             "disable_keyboard_echo_by_default.patch",
             "disable_tty_signals.patch",
-            "disable_tty_control_flow.patch"
+            "disable_tty_control_flow.patch",
+            "patches.armbian.6.18/arm64-dts-sun50i-h616-orangepi-zero2-zero3-add-wifi.patch"
         ],
 
         "kernel_config_changes_files": [
