@@ -1043,8 +1043,8 @@ def setup_build_base(builditems):
             "name": "opi_zero3_firmware",
             "export": False,
 
-            "git_url": "https://github.com/orangepi-xunlong/firmware",
-            "git_checkout": "db5e86200ae592c467c4cfa50ec0c66cbc40b158"
+            "git_url": "https://github.com/armbian/firmware",
+            "git_checkout": "4050e02da2dce2b74c97101f7964ecfb962f5aec"
         })
         additional_arm_items.append(["opi_zero3_firmware", "/lib/firmware"])
 
