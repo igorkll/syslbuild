@@ -479,7 +479,7 @@ def setup_autologin():
         content = f"""[Unit]
 Description=shell
 After=graphical.target
-StartLimit IntervalSec=0
+StartLimitIntervalSec=0
 
 [Service]
 Type=simple
