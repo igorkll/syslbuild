@@ -747,9 +747,7 @@ def umountFilesystem(mount_path):
 
 def rawItemsProcess(items, itemsDirectory):
     for itemObj in items:
-        itemPathOrRawItem = findItem(itemObj[0])
         outputPath = pathConcat(itemsDirectory, itemObj[1])
-        buildLog(f"Copy item: {itemPathOrRawItem} > {outputPath}")
 
         changeRights = None
         if len(itemObj) >= 3:
@@ -758,7 +756,12 @@ def rawItemsProcess(items, itemsDirectory):
         writeRaw = False
         if len(itemObj) >= 4:
             writeRaw = itemObj[3]
-        
+            itemPathOrRawItem = itemObj[0]
+            buildLog(f"Write item: {itemPathOrRawItem} > {outputPath}")
+        else:
+            itemPathOrRawItem = findItem(itemObj[0])
+            buildLog(f"Copy item: {itemPathOrRawItem} > {outputPath}")
+            
         if not changeRights and isUserItem(itemObj[0]):
             changeRights = DEFAULT_RIGHTS
         
@@ -766,7 +769,7 @@ def rawItemsProcess(items, itemsDirectory):
             buildLog(f"With custom rights: {changeRights}")
         
         if writeRaw:
-            writeRawItem(outputPath, changeRights)
+            writeRawItem(itemPathOrRawItem, outputPath, changeRights)
         else:
             copyItemFiles(itemPathOrRawItem, outputPath, changeRights)
 
