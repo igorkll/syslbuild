@@ -24,7 +24,9 @@
     "matchbox-window-manager",
 
     "glmark2-es2-drm",
-    "kmscube"
+    "kmscube",
+    
+    "nano"
   ],
   "exclude_packages": [],
   "debian_variant": "minbase",
