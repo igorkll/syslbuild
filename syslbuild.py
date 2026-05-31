@@ -1975,13 +1975,36 @@ def deleteBuildItemKeysProcess(builditemDict):
         if isinstance(v, dict):
             deleteBuildItemKeysProcess(v)
 
-def includeArchitectureCheck(builditem):
-    return ("architectures" not in builditem) or (architecture in builditem["architectures"])
+def buildItemArchitectureDeleteCheck(builditem):
+    return "architectures" in builditem and not architecture in builditem["architectures"]
+
+def buildItemFilterDeleteCheck(builditem):
+    filtered_delete = False
+
+    if builditem.get("build-if-filter-exists", False) and len(filters) == 0:
+        filtered_delete = True
+    elif builditem.get("build-if-filter-not-exists", False) and len(filters) > 0:
+        filtered_delete = True
+    elif "build-if-all-filters-exists" in builditem and not all(x in filters for x in builditem["build-if-all-filters-exists"]):
+        filtered_delete = True
+    elif "build-if-one-filter-exists" in builditem and not any(x in filters for x in builditem["build-if-one-filter-exists"]):
+        filtered_delete = True
+    elif "build-if-not-all-filters-exists" in builditem and all(x in filters for x in builditem["build-if-not-all-filters-exists"]):
+        filtered_delete = True
+    elif "build-if-not-one-filter-exists" in builditem and any(x in filters for x in builditem["build-if-not-one-filter-exists"]):
+        filtered_delete = True
+    elif "build-if-no-filters-or-one-filter-exists" in builditem and len(filters) > 0 and not any(x in filters for x in builditem["build-if-no-filters-or-one-filter-exists"]):
+        filtered_delete = True
+
+    return filtered_delete
+
+def buildItemDeleteCheck(builditem):
+    return buildItemArchitectureDeleteCheck(builditem) or buildItemFilterDeleteCheck(builditem)
 
 def includeProcess(builditems, included=None):
     includeDetected=False
     for builditem in builditems:
-        if "type" in builditem and builditem["type"] == "include" and includeArchitectureCheck(builditem):
+        if "type" in builditem and builditem["type"] == "include" and not buildItemDeleteCheck(builditem):
             includeDetected=True
 
     if includeDetected:
@@ -1991,7 +2014,7 @@ def includeProcess(builditems, included=None):
         newBuilditems = []
         for builditem in builditems:
             if "type" in builditem and builditem["type"] == "include":
-                if includeArchitectureCheck(builditem):
+                if not buildItemDeleteCheck(builditem):
                     includeFilePath = builditem["file"]
                     if includeFilePath in included:
                         buildLog(f"double include the \"{includeFilePath}\" file")
@@ -2029,25 +2052,8 @@ def prepairBuildItems(builditems):
     i = len(builditems) - 1
     while i >= 0:
         builditem = builditems[i]
-        filtered_delete = False
 
-        # БЛЯТЬ. какого хуя фильтры на include игнорируются СУКААААААААААААА
-        if builditem.get("build-if-filter-exists", False) and len(filters) == 0:
-            filtered_delete = True
-        elif builditem.get("build-if-filter-not-exists", False) and len(filters) > 0:
-            filtered_delete = True
-        elif "build-if-all-filters-exists" in builditem and not all(x in filters for x in builditem["build-if-all-filters-exists"]):
-            filtered_delete = True
-        elif "build-if-one-filter-exists" in builditem and not any(x in filters for x in builditem["build-if-one-filter-exists"]):
-            filtered_delete = True
-        elif "build-if-not-all-filters-exists" in builditem and all(x in filters for x in builditem["build-if-not-all-filters-exists"]):
-            filtered_delete = True
-        elif "build-if-not-one-filter-exists" in builditem and any(x in filters for x in builditem["build-if-not-one-filter-exists"]):
-            filtered_delete = True
-        elif "build-if-no-filters-or-one-filter-exists" in builditem and len(filters) > 0 and not any(x in filters for x in builditem["build-if-no-filters-or-one-filter-exists"]):
-            filtered_delete = True
-
-        if builditem.get("template", False) or ("architectures" in builditem and not architecture in builditem["architectures"]) or filtered_delete:
+        if builditem.get("template", False) or buildItemDeleteCheck(builditem):
             del builditems[i]
         
         i -= 1
