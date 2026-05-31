@@ -1046,7 +1046,7 @@ def setup_build_base(builditems):
             "git_url": "https://github.com/orangepi-xunlong/firmware",
             "git_checkout": "db5e86200ae592c467c4cfa50ec0c66cbc40b158"
         })
-        additional_arm_items.append(["opi_zero3_firmware", "."])
+        additional_arm_items.append(["opi_zero3_firmware", "/lib/firmware"])
 
     builditems.append({
         "architectures": ["arm64"],
