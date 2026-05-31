@@ -477,7 +477,7 @@ def setup_autologin():
         content = f"""[Unit]
 Description=shell
 After=graphical.target
-StartLimitIntervalSec=0
+StartLimit IntervalSec=0
 
 [Service]
 Type=simple
@@ -1034,21 +1034,16 @@ def setup_build_base(builditems):
         "directories": directories
     })
 
-    additional_arm_items = []
-    if current_project.export_img_opi_zero3:
-        builditems.append({
-            "architectures": ["arm64"],
+    builditems.append({
+        "architectures": ["arm64"],
 
-            "type": "gitclone",
-            "name": "opi_zero3_firmware",
-            "export": False,
+        "type": "gitclone",
+        "name": "opi_zero3_firmware",
+        "export": False,
 
-            "git_url": "https://github.com/armbian/firmware",
-            "git_checkout": "4050e02da2dce2b74c97101f7964ecfb962f5aec"
-        })
-        additional_arm_items.append(["opi_zero3_firmware/wifi_2355b001_1ant.ini", "/lib/firmware/wifi_2355b001_1ant.ini", [0, 0, "0644"]])
-        additional_arm_items.append(["opi_zero3_firmware/wcnmodem.bin", "/lib/firmware/wcnmodem.bin", [0, 0, "0644"]])
-        additional_arm_items.append(["opi_zero3_firmware/uwe5622", "/lib/firmware/uwe5622", [0, 0, "0755"]])
+        "git_url": "https://github.com/armbian/firmware",
+        "git_checkout": "4050e02da2dce2b74c97101f7964ecfb962f5aec"
+    })
 
     builditems.append({
         "architectures": ["arm64"],
@@ -1058,8 +1053,11 @@ def setup_build_base(builditems):
         "export": False,
 
         "items": [
-            ["rootfs directory x4", "."]
-        ] + additional_arm_items,
+            ["rootfs directory x4", "."],
+            ["opi_zero3_firmware/wifi_2355b001_1ant.ini", "/lib/firmware/wifi_2355b001_1ant.ini", [0, 0, "0644"]],
+            ["opi_zero3_firmware/wcnmodem.bin", "/lib/firmware/wcnmodem.bin", [0, 0, "0644"]],
+            ["opi_zero3_firmware/uwe5622", "/lib/firmware/uwe5622", [0, 0, "0755"]]
+        ],
 
         "directories": directories
     })
