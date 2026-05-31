@@ -31,6 +31,8 @@ while true; do
             0) reboot --no-wall ;;
             1) shutdown --no-wall now ;;
             2)
+                reset
+                printf '\e[?12h\e[?25h'
                 stty echo
                 exec bash
                 stty -echo
