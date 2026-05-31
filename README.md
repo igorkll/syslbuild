@@ -357,7 +357,8 @@ these changes to the kernel config are applied automatically when building the k
             "export": false,
 
             "items": [
-                ["custom-executable", "/init"]
+                ["custom-executable", "/init"],
+                ["just write text", "/text", [0, 0, "0644"], true]
             ]
         },
         {

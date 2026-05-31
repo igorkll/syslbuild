@@ -641,6 +641,19 @@ def copyItemFiles(fromPath, toPath, changeRights=None):
         if changeRights:
             changeAccessRights(toPath, changeRights)
 
+def writeRawItem(raw, toPath, changeRights=None):
+    deleteAny(toPath)
+
+    file_dir = os.path.dirname(toPath)
+    if not os.path.isdir(file_dir):
+        makedirsChangeRights(file_dir)
+
+    with open(toPath, "w") as f:
+        f.write(raw)
+
+    if changeRights:
+        changeAccessRights(toPath, changeRights)
+
 def allocateFile(path, size):
     buildLog(f"Allocation file with size {size}: {path}")
 
@@ -734,13 +747,17 @@ def umountFilesystem(mount_path):
 
 def rawItemsProcess(items, itemsDirectory):
     for itemObj in items:
-        itemPath = findItem(itemObj[0])
+        itemPathOrRawItem = findItem(itemObj[0])
         outputPath = pathConcat(itemsDirectory, itemObj[1])
-        buildLog(f"Copy item: {itemPath} > {outputPath}")
+        buildLog(f"Copy item: {itemPathOrRawItem} > {outputPath}")
 
         changeRights = None
         if len(itemObj) >= 3:
             changeRights = itemObj[2]
+
+        writeRaw = False
+        if len(itemObj) >= 4:
+            writeRaw = itemObj[3]
         
         if not changeRights and isUserItem(itemObj[0]):
             changeRights = DEFAULT_RIGHTS
@@ -748,7 +765,10 @@ def rawItemsProcess(items, itemsDirectory):
         if changeRights:
             buildLog(f"With custom rights: {changeRights}")
         
-        copyItemFiles(itemPath, outputPath, changeRights)
+        if writeRaw:
+            writeRawItem(outputPath, changeRights)
+        else:
+            copyItemFiles(itemPathOrRawItem, outputPath, changeRights)
 
 def buildDirectory(item):
     buildDirectoryPath = getItemFolder(item)
