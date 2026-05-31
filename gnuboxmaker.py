@@ -1048,7 +1048,7 @@ def setup_build_base(builditems):
         })
         additional_arm_items.append(["opi_zero3_firmware/wifi_2355b001_1ant.ini", "/lib/firmware/wifi_2355b001_1ant.ini", [0, 0, "0644"]])
         additional_arm_items.append(["opi_zero3_firmware/wcnmodem.bin", "/lib/firmware/wcnmodem.bin", [0, 0, "0644"]])
-        additional_arm_items.append(["opi_zero3_firmware/uwe5622", "/lib/firmware/uwe5622", [0, 0, "0644"]])
+        additional_arm_items.append(["opi_zero3_firmware/uwe5622", "/lib/firmware/uwe5622", [0, 0, "0755"]])
 
     builditems.append({
         "architectures": ["arm64"],
