@@ -1046,7 +1046,9 @@ def setup_build_base(builditems):
             "git_url": "https://github.com/armbian/firmware",
             "git_checkout": "4050e02da2dce2b74c97101f7964ecfb962f5aec"
         })
-        additional_arm_items.append(["opi_zero3_firmware", "/lib/firmware"])
+        additional_arm_items.append(["opi_zero3_firmware/wifi_2355b001_1ant.ini", "/lib/firmware/wifi_2355b001_1ant.ini", [0, 0, "0644"]])
+        additional_arm_items.append(["opi_zero3_firmware/wcnmodem.bin", "/lib/firmware/wcnmodem.bin", [0, 0, "0644"]])
+        additional_arm_items.append(["opi_zero3_firmware/uwe5622", "/lib/firmware/uwe5622", [0, 0, "0644"]])
 
     builditems.append({
         "architectures": ["arm64"],
