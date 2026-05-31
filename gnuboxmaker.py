@@ -1034,6 +1034,20 @@ def setup_build_base(builditems):
         "directories": directories
     })
 
+    additional_arm_items = []
+    if current_project.export_img_opi_zero3:
+        builditems.append({
+            "architectures": ["arm64"],
+
+            "type": "gitclone",
+            "name": "opi_zero3_firmware",
+            "export": False,
+
+            "git_url": "https://github.com/orangepi-xunlong/firmware",
+            "git_checkout": "db5e86200ae592c467c4cfa50ec0c66cbc40b158"
+        })
+        additional_arm_items.append(["opi_zero3_firmware", "."])
+
     builditems.append({
         "architectures": ["arm64"],
 
@@ -1043,7 +1057,7 @@ def setup_build_base(builditems):
 
         "items": [
             ["rootfs directory x4", "."]
-        ],
+        ] + additional_arm_items,
 
         "directories": directories
     })
