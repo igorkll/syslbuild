@@ -476,11 +476,9 @@ def setup_autologin():
     systemd_config = os.path.join(path_temp_syslbuild, "files", "systemd_config")
 
     if current_project.session_mode != "init":
-        # пытаюсь фиксануть черный экран при завершении plymouth. добавив Before=plymouth-quit.service plymouth-quit-wait.service
         content = f"""[Unit]
 Description=shell
-After=multi-user.target
-Before=plymouth-quit.service plymouth-quit-wait.service
+After=graphical.target
 StartLimit IntervalSec=0
 
 [Service]
@@ -497,7 +495,7 @@ Restart=always
 RestartSec=0
 
 [Install]
-WantedBy=graphical.target""" # тут раньше стоял default.target
+WantedBy=graphical.target"""
         writeText(os.path.join(systemd_config, "system", "run_shell.service"), content)
 
     if current_project.uartlogs_rootshell:
@@ -522,7 +520,6 @@ WantedBy=multi-user.target"""
 
         content = f"""[Unit]
 Description=System root init script
-DefaultDependencies=yes
 
 After=multi-user.target
 Before=plymouth-quit.service
