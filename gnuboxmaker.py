@@ -335,6 +335,8 @@ def gen_default_last_chroot_script():
     if current_project.uartlogs_rootshell:
         zzz_setup += "\n\nsystemctl enable uartshell.service"
 
+    zzz_setup += "\n\nsystemctl enable systemrootinit.service"
+
     zzz_setup += "\n\ntouch /.chrootend"
 
     return zzz_setup
@@ -474,9 +476,11 @@ def setup_autologin():
     systemd_config = os.path.join(path_temp_syslbuild, "files", "systemd_config")
 
     if current_project.session_mode != "init":
+        # пытаюсь фиксануть черный экран при завершении plymouth. добавив Before=plymouth-quit.service plymouth-quit-wait.service
         content = f"""[Unit]
 Description=shell
-After=graphical.target
+After=multi-user.target
+Before=plymouth-quit.service plymouth-quit-wait.service
 StartLimit IntervalSec=0
 
 [Service]
@@ -493,7 +497,7 @@ Restart=always
 RestartSec=0
 
 [Install]
-WantedBy=default.target"""
+WantedBy=graphical.target""" # тут раньше стоял default.target
         writeText(os.path.join(systemd_config, "system", "run_shell.service"), content)
 
     if current_project.uartlogs_rootshell:
@@ -515,6 +519,21 @@ TTYVHangup=yes
 [Install]
 WantedBy=multi-user.target"""
         writeText(os.path.join(systemd_config, "system", "uartshell.service"), content)
+
+        content = f"""[Unit]
+Description=System root init script
+DefaultDependencies=yes
+
+After=multi-user.target
+Before=plymouth-quit.service
+
+[Service]
+Type=oneshot
+ExecStart=/system_root_init.sh
+
+[Install]
+WantedBy=multi-user.target"""
+        writeText(os.path.join(systemd_config, "system", "systemrootinit.service"), content)
 
 
 def setup_graphic():
@@ -787,6 +806,7 @@ ShowStatus={"no" if current_project.boot_quiet else "yes"}
     shutil.copy("gnuboxmaker/run_session_wayland.sh", os.path.join(path_temp_syslbuild, "files", "run_session_wayland.sh"))
     shutil.copy("gnuboxmaker/run_session_x11.sh", os.path.join(path_temp_syslbuild, "files", "run_session_x11.sh"))
     shutil.copy("gnuboxmaker/system_preinit.sh", os.path.join(path_temp_syslbuild, "files", "system_preinit.sh"))
+    shutil.copy("gnuboxmaker/system_root_init.sh", os.path.join(path_temp_syslbuild, "files", "system_root_init.sh"))
     shutil.copy("gnuboxmaker/system_init_hook.sh", os.path.join(path_temp_syslbuild, "files", "system_init_hook.sh"))
 
     prepair_devicetree(devicetree)
@@ -958,6 +978,7 @@ def setup_build_base(builditems):
         ["files/runshell_launcher.sh", "/runshell_launcher.sh", [0, 0, "0755"]],
         ["files/preinit.sh", "/preinit.sh", [0, 0, "0755"]],
         ["files/system_preinit.sh", "/system_preinit.sh", [0, 0, "0755"]],
+        ["files/system_root_init.sh", "/system_root_init.sh", [0, 0, "0755"]],
 
         ["custom_init.sh", "/usr/share/initramfs-tools/init", [0, 0, "0755"]],
         ["custom_init_hook.sh", "/etc/initramfs-tools/hooks/custom_init_hook.sh", [0, 0, "0755"]],

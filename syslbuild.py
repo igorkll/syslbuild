@@ -1273,8 +1273,11 @@ def buildKernel(item):
         export_path = getItemPath(item, "result_config_name", "result_config_export")
         copyItemFiles(kernel_config_path, export_path)
 
-    # buildRawExecute(f"make KCFLAGS=\"-Wno-error=incompatible-pointer-types\" {ARCH_STR} {CROSS_COMPILE_STR} -j$(nproc)", True, kernel_sources) мне нужен какой то способ задавать это
-    buildRawExecute(f"make {ARCH_STR} {CROSS_COMPILE_STR} -j$(nproc)", True, kernel_sources)
+    additional_make_str = ""
+    if "additional_make_str" in item:
+        additional_make_str = item["additional_make_str"] + " "
+
+    buildRawExecute(f"make {additional_make_str}{ARCH_STR} {CROSS_COMPILE_STR} -j$(nproc)", True, kernel_sources)
 
     kernel_output_filename = item.get("kernel_output_file", "bzImage")
     kernel_output_file = pathConcat(kernel_sources, "arch", kernelArchitectures[architecture], "boot", kernel_output_filename)
