@@ -8,6 +8,8 @@
   "user_packages": [
     "glmark2",
     "network-manager",
+    "rfkill",
+    "iproute2",
 
     "mesa-utils",
     "libgl1-mesa-dri",
