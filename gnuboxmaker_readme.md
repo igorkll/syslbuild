@@ -98,7 +98,7 @@ you can create a custom devicetree to connect the perepherals
 ## startup sound modes
 * none - the power-on sound is not used
 * init - It plays the sound as early as possible. almost immediately after downloading the audio driver. ideal for devices without a screen like Bluetooth speakers.
-* logo - It plays a sound when the download logo appears. It ONLY works with "boot_splash" enabled AND DOES NOT WORK on devices without a screen.
+* logo - It plays a sound when the load logo appears. It ONLY works with "boot_splash" enabled AND DOES NOT WORK on devices without a screen.
 
 ## args
 * you can pass the path to the *.gnb file to gnubox maker and the build will happen automatically after which the program will terminate. The GUI will not appear
