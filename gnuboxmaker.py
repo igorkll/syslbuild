@@ -788,6 +788,10 @@ ShowStatus={"no" if current_project.boot_quiet else "yes"}
     shutil.copy("gnuboxmaker/system_preinit.sh", os.path.join(path_temp_syslbuild, "files", "system_preinit.sh"))
     shutil.copy("gnuboxmaker/system_init_hook.sh", os.path.join(path_temp_syslbuild, "files", "system_init_hook.sh"))
 
+    if current_project.allow_updatescript:
+        shutil.copy("gnuboxmaker/self_update.sh", os.path.join(path_temp_syslbuild, "files", "self_update.sh"))
+        shutil.copy("gnuboxmaker/updatescript.sh", os.path.join(path_temp_syslbuild, "files", "updatescript.sh"))
+
     prepair_devicetree(devicetree)
 
 def copy_bins(name):
@@ -966,6 +970,10 @@ def setup_build_base(builditems):
 
         ["files/user_files", "/", [0, 0, "0755"]],
     ]
+
+    if current_project.allow_updatescript:
+        items.append(["files/self_update.sh", "/self_update.sh", [0, 0, "0755"]])
+        items.append(["files/updatescript.sh", "/updatescript.sh", [0, 0, "0755"]])
 
     if current_project.boot_sound == "init" or (current_project.boot_sound == "logo" and current_project.boot_splash):
         items.append(["files/startup.wav", "/startup.wav", [0, 0, "0644"]])
