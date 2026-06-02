@@ -30,8 +30,6 @@ ATTENTION. Starting from version 1.3.9, the kernels do not go with the program, 
 
 ## bugs
 * HDMI audio does not work on orange pi zero 3 (it works on raspberry pi 64)
-* WIFI does not work on orange pi zero 3
-* WIFI does not work on raspberry pi
 * "screen idle time" does not work on wayland
 * x11 mode does not work on Raspberry pi 64
 * there is a rather long loading time on the orange pi zero 3. This is due to the platform features. It may take ~20 seconds from the power supply to the appearance of your logo.
@@ -66,7 +64,10 @@ ATTENTION. Starting from version 1.3.9, the kernels do not go with the program, 
 ## platforms support rate (from 0 to 10)
 * x86 - 9/10
 * raspberry pi 64 - 7/10
-* orange pi zero 3 - 4/10
+* orange pi zero 3 - 5/10
+
+## examples with a work network
+* gnuboxmaker_examples/testingbash
 
 ## used kernel patches (from https://github.com/igorkll/linux-embedded-patchs)
 * disable_vt_swithing_from_keyboard.patch - prevents the possibility of switching VT from the keyboard
