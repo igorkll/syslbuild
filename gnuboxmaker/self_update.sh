@@ -13,3 +13,8 @@ if [ ! -f "$BOOTIMAGE" ]; then
 fi
 
 
+file_dev=$(stat -c %d "$BOOTIMAGE")
+root_dev=$(stat -c %d /)
+data_dev=$(stat -c %d /data)
+
+
