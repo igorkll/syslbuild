@@ -31,7 +31,8 @@
             "disable_tty_control_flow.patch",
 
             //"patches.armbian.6.18/arm64-dts-sun50i-h616-orangepi-zero2-zero3-add-wifi.patch",
-            //"patches.armbian.6.18/drv-drm-sun4i-hdmi-add-audio-support.patch",
+            "patches.armbian.6.18/0702-arm64-dts-sun50i-h616-add-digital-audio-node.patch",
+            "patches.armbian.6.18/drv-drm-sun4i-hdmi-add-audio-support.patch",
 
             "uwe5622-nixos-main/0001-introduce-uwe5622-driver-for-kernel-6.3.patch",
             "uwe5622-nixos-main/0002-apply-bugfixes-for-uwe5622-driver.patch",
@@ -51,6 +52,8 @@
             "uwe5622-nixos-main/0016-wireless-uwe5622-https-6xyun.cn-article-orangepi-3b-.patch",
             "uwe5622-nixos-main/0017-wireless-uwe5622-Fix-Makefiles.patch"
         ],
+
+        "patches_ignore_errors": true,
 
         "kernel_config_changes_files": [
             "kernel_config_changes.txt",
