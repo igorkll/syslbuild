@@ -861,6 +861,10 @@ these changes to the kernel config are applied automatically when building the k
             // default: false
             "patches_ignore_errors": true,
 
+            // optional
+            // additional arguments for the patch program
+            "patches_additional_args": "--fuzz=3",
+
             // optional. by default, syslbuild chooses defconfig itself based on the architecture for which it is being built. but you can specify it yourself.
             //"defconfig": "i386_defconfig",
 

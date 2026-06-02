@@ -1167,9 +1167,14 @@ def copyKernel(item, kernel_sources):
 
     return copied_kernel_files, False
 
-def patchKernel(kernel_sources, patches, patches_ignore_errors=False):
-    for patchPath in patches:
-        buildRawExecute(f"patch -p1 < {os.path.abspath(findItem(patchPath))}", not patches_ignore_errors, kernel_sources)
+def applyPatches(sources, item):
+    if "patches" in item:
+        patches = item["patches"]
+        patches_ignore_errors = item.get("patches_ignore_errors", False)
+        patches_additional_args = item.get("patches_additional_args", "")
+
+        for patchPath in patches:
+            buildRawExecute(f"patch -p1 {patches_additional_args} < {os.path.abspath(findItem(patchPath))}", not patches_ignore_errors, sources)
 
 kernelArchitectures = {
     "amd64": "x86_64",
@@ -1273,8 +1278,8 @@ def buildKernel(item):
     if "items" in item:
         rawItemsProcess(item["items"], kernel_sources)
 
-    if realCopied and "patches" in item:
-        patchKernel(kernel_sources, item["patches"], item.get("patches_ignore_errors", False))
+    if realCopied:
+        applyPatches(kernel_sources, item)
 
     ARCH = kernelArchitectures[architecture]
     CROSS_COMPILE = gccNames[architecture]
