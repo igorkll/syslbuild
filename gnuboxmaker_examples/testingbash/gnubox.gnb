@@ -10,6 +10,7 @@
     "network-manager",
     "rfkill",
     "iproute2",
+    "wpasupplicant",
 
     "mesa-utils",
     "libgl1-mesa-dri",
