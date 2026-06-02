@@ -814,7 +814,7 @@ def setup_write_bins(builditems):
     items = [
         ["rootfs directory x2", "."],
         ["kernel_image/amd64/kernel_modules", "/usr"],
-        ["kernel_image/amd64/kernel.img", "/kernel.img", [0, 0, "0755"]]
+        ["kernel_image/amd64/kernel.img", "/kernel.img", [0, 0, "0644"]]
     ]
 
     # ЧТО ТУТ БЛЯТЬ С ПРАВАМИ ДОСТУПА. БЕЗ ЭТОЙ ХУЙНЮ НИХУЯ НЕ ПАШЕТ
@@ -838,7 +838,7 @@ def setup_write_bins(builditems):
     items = [
         ["rootfs directory x2", "."],
         ["kernel_image/i386/kernel_modules", "/usr"],
-        ["kernel_image/i386/kernel.img", "/kernel.img", [0, 0, "0755"]]
+        ["kernel_image/i386/kernel.img", "/kernel.img", [0, 0, "0644"]]
     ]
 
     if current_project.boot_splash or True:
@@ -1052,7 +1052,7 @@ def setup_build_base(builditems):
 
         "items": [
             ["rootfs directory x4", "."],
-            ["initramfs.img", "/initramfs.img", [0, 0, "0755"]]
+            ["initramfs.img", "/initramfs.img", [0, 0, "0644"]]
         ],
 
         "directories": directories
