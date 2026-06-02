@@ -29,7 +29,8 @@
     "glmark2-es2-drm",
     "kmscube",
     
-    "nano"
+    "nano",
+    "wget"
   ],
   "exclude_packages": [],
   "debian_variant": "minbase",
