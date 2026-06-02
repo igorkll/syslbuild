@@ -806,7 +806,8 @@ def setup_write_bins(builditems):
     directories = [
         ["/var/lib/plymouth", [0, 0, "0755"]],
         ["/var/spool/plymouth", [0, 0, "0755"]],
-        ["/run/plymouth", [0, 0, "0755"]]
+        ["/run/plymouth", [0, 0, "0755"]],
+        ["/lib/firmware", [0, 0, "0755"]]
     ]
 
     # ---------------------- x86_64
@@ -860,7 +861,21 @@ def setup_write_bins(builditems):
     ]
 
     if current_project.export_img_opi_zero3:
+        builditems.append({
+            "architectures": ["arm64"],
+
+            "type": "gitclone",
+            "name": "opi_zero3_firmware",
+            "export": False,
+
+            "git_url": "https://github.com/armbian/firmware",
+            "git_checkout": "4050e02da2dce2b74c97101f7964ecfb962f5aec"
+        })
+
         items.append(["kernel_image/arm64/opi_zero3/kernel_modules", "/usr"])
+        items.append(["opi_zero3_firmware/wifi_2355b001_1ant.ini", "/lib/firmware/wifi_2355b001_1ant.ini", [0, 0, "0644"]])
+        items.append(["opi_zero3_firmware/wcnmodem.bin", "/lib/firmware/wcnmodem.bin", [0, 0, "0644"]])
+        items.append(["opi_zero3_firmware/uwe5622", "/lib/firmware/uwe5622", [0, 0, "0755"]])
 
     if current_project.export_img_rpi_64:
         items.append(["kernel_image/arm64/rpi_64/kernel_modules", "/usr"])
@@ -1046,26 +1061,12 @@ def setup_build_base(builditems):
     builditems.append({
         "architectures": ["arm64"],
 
-        "type": "gitclone",
-        "name": "opi_zero3_firmware",
-        "export": False,
-
-        "git_url": "https://github.com/armbian/firmware",
-        "git_checkout": "4050e02da2dce2b74c97101f7964ecfb962f5aec"
-    })
-
-    builditems.append({
-        "architectures": ["arm64"],
-
         "type": "directory",
         "name": "rootfs directory x5",
         "export": False,
 
         "items": [
-            ["rootfs directory x4", "."],
-            ["opi_zero3_firmware/wifi_2355b001_1ant.ini", "/lib/firmware/wifi_2355b001_1ant.ini", [0, 0, "0644"]],
-            ["opi_zero3_firmware/wcnmodem.bin", "/lib/firmware/wcnmodem.bin", [0, 0, "0644"]],
-            ["opi_zero3_firmware/uwe5622", "/lib/firmware/uwe5622", [0, 0, "0755"]]
+            ["rootfs directory x4", "."]
         ],
 
         "directories": directories
