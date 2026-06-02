@@ -12,16 +12,20 @@ if [ ! -f "$BOOTIMAGE" ]; then
     exit 1
 fi
 
-
 file_dev=$(stat -c %d "$BOOTIMAGE")
 root_dev=$(stat -c %d /)
 data_dev=$(stat -c %d /data)
 
-if [ "$file_dev" -eq "$root_dev" ]; then
+if [ "$file_dev" -eq "$root_dev" ] || [ "$file_dev" -eq "$data_dev" ]; then
     mount -o remount,rw /
 
+    rm -rf /updatescript
     mkdir /updatescript
     cp updatescript.sh /updatescript/updatescript.sh
+    echo "$BOOTIMAGE" > /updatescript/path
+
+    sync
+    shutdown --no-wall now
 else
     echo the update file must be located on the root partition or on the data partition
 fi
