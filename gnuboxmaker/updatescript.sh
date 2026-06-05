@@ -26,7 +26,22 @@ image_rootfs_size=$(echo "$partitiontable" | jq '.partitiontable.partitions[] | 
 
 # ------------- get real partitions info
 
-# сделай тут проверки что разделы в образе не стали больше
+boot_size=$(blockdev --getsize "$boot_dev" 2>/dev/null || echo 0)
+rootfs_size=$(blockdev --getsize "$rootfs_dev" 2>/dev/null || echo 0)
+
+if [ -n "$image_boot_size" ] && [ -n "$boot_dev" ]; then
+    if [ "$image_boot_size" -gt "$boot_size" ]; then
+        echo "BOOT partition in image is bigger than target"
+        exit 1
+    fi
+fi
+
+if [ -n "$image_rootfs_size" ] && [ -n "$rootfs_dev" ]; then
+    if [ "$image_rootfs_size" -gt "$rootfs_size" ]; then
+        echo "ROOTFS partition in image is bigger than target"
+        exit 1
+    fi
+fi
 
 # ------------- flash new partitions
 
