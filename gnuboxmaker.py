@@ -1668,7 +1668,7 @@ def update_project_structure():
     logo_updating_path_png = os.path.join(path_resources, "logo_updating.png")
     logo_updating_path_gif = os.path.join(path_resources, "logo_updating.gif")
     if not os.path.isfile(logo_updating_path_png) and not os.path.isfile(logo_updating_path_gif):
-        copyFile(logo_updating_path_png, "logo_updating.png")
+        copyFile(logo_updating_path_png, "gnuboxmaker/logo_updating.png")
 
     startup_sound = os.path.join(path_resources, "startup.wav")
     if not os.path.isfile(startup_sound):
