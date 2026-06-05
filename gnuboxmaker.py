@@ -382,6 +382,7 @@ def setup_build_distro(builditems):
             "mawk",
             "kexec-tools",
             "alsa-utils",
+            "jq",
 
             "firmware-linux",
             "firmware-brcm80211",
