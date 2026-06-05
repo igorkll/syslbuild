@@ -14,11 +14,15 @@ umount /updateroot
 
 # ------------- find partitions in image
 
-image_boot_start=$(sfdisk -J "$image_path" | jq '.partitiontable.partitions[] | select(.name=="BOOT") | .start')
-image_boot_size=$(sfdisk -J "$image_path" | jq '.partitiontable.partitions[] | select(.name=="BOOT") | .size')
+partitiontable=$(sfdisk -J "$image_path")
 
-image_rootfs_start=$(sfdisk -J "$image_path" | jq '.partitiontable.partitions[] | select(.name=="rootfs") | .start')
-image_rootfs_size=$(sfdisk -J "$image_path" | jq '.partitiontable.partitions[] | select(.name=="rootfs") | .size')
+sector_size=$(echo "$partitiontable" | jq -r '.partitiontable.sectorsize')
+
+image_boot_start=$(echo "$partitiontable" | jq '.partitiontable.partitions[] | select(.name=="BOOT") | .start')
+image_boot_size=$(echo "$partitiontable" | jq '.partitiontable.partitions[] | select(.name=="BOOT") | .size')
+
+image_rootfs_start=$(echo "$partitiontable" | jq '.partitiontable.partitions[] | select(.name=="rootfs") | .start')
+image_rootfs_size=$(echo "$partitiontable" | jq '.partitiontable.partitions[] | select(.name=="rootfs") | .size')
 
 # ------------- get real partitions info
 
@@ -26,17 +30,17 @@ image_rootfs_size=$(sfdisk -J "$image_path" | jq '.partitiontable.partitions[] |
 # ------------- flash new partitions
 
 if [ -n "$boot_dev" ]; then
-    if [ -z "$boot_dev" ]; then
+    if [ -z "$image_boot_start" ]; then
         echo there are no boot partition in the image
         exit 1
     fi
-    dd if="$image_path" of="$boot_dev" bs=512 skip=$image_boot_start count=$image_boot_size
+    dd if="$image_path" of="$boot_dev" bs=$sector_size skip=$image_boot_start count=$image_boot_size
 fi
 
 if [ -n "$rootfs_dev" ]; then
-    if [ -z "$rootfs_dev" ]; then
+    if [ -z "$image_rootfs_start" ]; then
         echo there are no rootfs partition in the image
         exit 1
     fi
-    dd if="$image_path" of="$rootfs_dev" bs=512 skip=$image_rootfs_start count=$image_rootfs_size
+    dd if="$image_path" of="$rootfs_dev" bs=$sector_size skip=$image_rootfs_start count=$image_rootfs_size
 fi
