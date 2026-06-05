@@ -69,6 +69,10 @@ class Project:
     minsize_root_partition: str = "64MB"
     minsize_data_partition: str = "64MB"
 
+    size_boot_partition: str = "(auto * 1.2) + (100 * 1024 * 1024)"
+    size_efi_partition: str = "256MB"
+    size_root_partition: str = "(auto * 1.2) + (100 * 1024 * 1024)"
+
     weston_shell: str = "kiosk"
 
     session_user: str = "user"
@@ -1081,7 +1085,7 @@ def setup_build_base(builditems):
         "source": "rootfs directory x5",
 
         "fs_type": "ext4",
-        "size": "(auto * 1.2) + (100 * 1024 * 1024)", 
+        "size": current_project.size_root_partition, 
         "minsize": current_project.minsize_root_partition,
         "label": "rootfs"
     })
@@ -1234,7 +1238,7 @@ avoid_warnings=1
         "source": "boot_rpi_64",
 
         "fs_type": "fat32",
-        "size": "(auto * 1.2) + (100 * 1024 * 1024)",
+        "size": current_project.size_boot_partition,
         "minsize": current_project.minsize_boot_partition,
         "label": "BOOT"
     })
@@ -1291,6 +1295,7 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         "rootfs": "rootfs.img",
         "appendPartitions": appendPartitions,
 
+        "boot_partition_size": current_project.size_boot_partition,
         "boot_partition_minsize": current_project.minsize_boot_partition,
         "boot_partition_name": "BOOT",
 
@@ -1402,7 +1407,7 @@ def setup_build_targets(builditems, cmdline):
 
             "fs_arg": "-F32",
             "fs_type": "fat",
-            "size": "256MB",
+            "size": current_project.size_efi_partition,
             "label": "EFI",
 
             "minsize": current_project.minsize_efi_partition
