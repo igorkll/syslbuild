@@ -100,6 +100,12 @@ you can create a custom devicetree to connect the perepherals
 * init - It plays the sound as early as possible. almost immediately after downloading the audio driver. ideal for devices without a screen like Bluetooth speakers.
 * logo - It plays a sound when the load logo appears. It ONLY works with "boot_splash" enabled AND DOES NOT WORK on devices without a screen.
 
+## how self-update works
+The update itself allows you to update the device's firmware automatically using the same .img image that gnubox maker exports  
+in order for the self-update function to be available to you, make sure that the "allow_updatescript" flag is set in the project configuration  
+to start the self-update, you need to call the /self_update.sh script with root rights and pass him the path to the .img file  
+
+
 ## args
 * you can pass the path to the *.gnb file to gnubox maker and the build will happen automatically after which the program will terminate. The GUI will not appear
 
