@@ -26,8 +26,8 @@ image_rootfs_size=$(echo "$partitiontable" | jq '.partitiontable.partitions[] | 
 
 # ------------- get real partitions info
 
-boot_size=$(blockdev --getsize "$boot_dev" 2>/dev/null || echo 0)
-rootfs_size=$(blockdev --getsize "$rootfs_dev" 2>/dev/null || echo 0)
+boot_size=$(blockdev --getsize "$boot_dev" 2>/dev/null)
+rootfs_size=$(blockdev --getsize "$rootfs_dev" 2>/dev/null)
 
 if [ -n "$image_boot_size" ] && [ -n "$boot_dev" ]; then
     if [ "$image_boot_size" -gt "$boot_size" ]; then
