@@ -26,6 +26,7 @@ image_rootfs_size=$(echo "$partitiontable" | jq '.partitiontable.partitions[] | 
 
 # ------------- get real partitions info
 
+# сделай тут проверки что разделы в образе не стали больше
 
 # ------------- flash new partitions
 
