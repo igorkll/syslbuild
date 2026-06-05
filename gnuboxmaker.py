@@ -811,8 +811,7 @@ def setup_write_bins(builditems):
     directories = [
         ["/var/lib/plymouth", [0, 0, "0755"]],
         ["/var/spool/plymouth", [0, 0, "0755"]],
-        ["/run/plymouth", [0, 0, "0755"]],
-        ["/lib/firmware", [0, 0, "0755"]]
+        ["/run/plymouth", [0, 0, "0755"]]
     ]
 
     # ---------------------- x86_64
@@ -878,9 +877,9 @@ def setup_write_bins(builditems):
         })
 
         items.append(["kernel_image/arm64/opi_zero3/kernel_modules", "/usr"])
-        items.append(["opi_zero3_firmware/wifi_2355b001_1ant.ini", "/lib/firmware/wifi_2355b001_1ant.ini", [0, 0, "0644"]])
-        items.append(["opi_zero3_firmware/wcnmodem.bin", "/lib/firmware/wcnmodem.bin", [0, 0, "0644"]])
-        items.append(["opi_zero3_firmware/uwe5622", "/lib/firmware/uwe5622", [0, 0, "0755"]])
+        items.append(["opi_zero3_firmware/wifi_2355b001_1ant.ini", "/usr/lib/firmware/wifi_2355b001_1ant.ini", [0, 0, "0644"]])
+        items.append(["opi_zero3_firmware/wcnmodem.bin", "/usr/lib/firmware/wcnmodem.bin", [0, 0, "0644"]])
+        items.append(["opi_zero3_firmware/uwe5622", "/usr/lib/firmware/uwe5622", [0, 0, "0755"]])
 
     if current_project.export_img_rpi_64:
         items.append(["kernel_image/arm64/rpi_64/kernel_modules", "/usr"])
