@@ -28,7 +28,7 @@ while true; do
         esac
     elif [[ $key == " " ]]; then
         case $selected in
-            0) reboot --no-wall ;;
+            0) shutdown --no-wall -r now ;;
             1) shutdown --no-wall now ;;
             2)
                 reset
