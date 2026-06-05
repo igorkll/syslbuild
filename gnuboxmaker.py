@@ -1290,6 +1290,7 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         "appendPartitions": appendPartitions,
 
         "boot_partition_minsize": current_project.minsize_boot_partition,
+        "boot_partition_name": "BOOT",
 
         "kernel_args_auto": True,
         "kernel_rootfs_auto": "manual",

@@ -104,6 +104,11 @@ you can create a custom devicetree to connect the perepherals
 The update itself allows you to update the device's firmware automatically using the same .img image that gnubox maker exports  
 in order for the self-update function to be available to you, make sure that the "allow_updatescript" flag is set in the project configuration  
 to start the self-update, you need to call the /self_update.sh script with root rights and pass him the path to the .img file  
+if your shell runs as root, then this will not be a problem. if not, you can come up with your own way to increase privileges  
+for example, you can use a daemon running from root that will monitor a special path for the presence of an update file  
+alternatively, you can use a SUID binary that will accept the update file, validate it, and if everything is fine, then run a self-update (be careful with SUID)  
+keep in mind that the script itself /self_update.sh It DOES NOT VALIDATE the incoming .img file at ALL  
+he just assumes that the .img that you passed to /self_update.sh is the same .img that you recorded on the device and that it is suitable for this device  
 
 
 ## args

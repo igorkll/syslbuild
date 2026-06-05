@@ -746,6 +746,7 @@ these changes to the kernel config are applied automatically when building the k
             "rootfs": "rootfs.img", //optional
 
             "boot_partition_minsize": "64MB", //optional
+            "boot_partition_name": "BOOT",
 
             //optional
             "prepandPartitions": [
