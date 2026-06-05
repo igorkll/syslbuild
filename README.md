@@ -144,7 +144,7 @@ sudo pip install asteval --break-system-packages
 * debian-export-initramfs - it works the same way as debian-update-initramfs, but accepts the kernel config separately (not required if the config is already in your rootfs) and exports initramfs itself, not the entire rootfs with it. your rootfs must have the "initramfs-tools" package and the kernel modules installed.
 * smart-chroot - executes scripts inside the chroot. if the processor architecture does not match, then this builditem itself will copy and then delete qemu-static from your chroot. exports a new rootfs with executed chroot scripts inside
 * include - it allows you to connect another json file from the project, which in turn should contain only an array of builditems and nothing more at its root. In this case, the builditems array must be at the very root and immediately contain the builditem dictionaries.
-* singleboard - a specially created builditem for creating images for single-board computers like the orange pi
+* singleboard - a specially created builditem for creating images for single-board computers like the orange pi. its use is optional. you can completely replicate the "singleboard" builditem by combining other builditems to get a more complex behavior.
 * gitclone - clones the repository from git. it allows you to specify a branch and checkout
 
 ## build items features
@@ -726,11 +726,12 @@ these changes to the kernel config are applied automatically when building the k
             "export": true,
 
             // a mode compatible with your board must be selected
-            "singleboardType": "uboot-16",
+            "singleboardType": "uboot-offset",
 
             // the easiest way to get the bootloader is to get it from the original boot image. it is usually not only installed, but also lies as a separate file in the boot partition
             // due to the fact that the file size is extremely small, it can be stored in the project repository
             "bootloader": "u-boot-sunxi-with-spl.bin",
+            "bootloader_offset": 16,
             
             "dtbList": [ //device tree
                 "sun50i-h618-orangepi-zero3.dtb"
@@ -747,6 +748,7 @@ these changes to the kernel config are applied automatically when building the k
 
             "boot_partition_minsize": "64MB", //optional
             "boot_partition_name": "BOOT",
+            "boot_partition_size": "(auto * 1.2) + (100 * 1024 * 1024)",
 
             //optional
             "prepandPartitions": [

@@ -788,7 +788,7 @@ ShowStatus={"no" if current_project.boot_quiet else "yes"}
     shutil.copy("gnuboxmaker/system_preinit.sh", os.path.join(path_temp_syslbuild, "files", "system_preinit.sh"))
     shutil.copy("gnuboxmaker/system_init_hook.sh", os.path.join(path_temp_syslbuild, "files", "system_init_hook.sh"))
 
-    if current_project.allow_updatescript:
+    if current_project.allow_updatescript and current_project.separate_data_partition:
         shutil.copy("gnuboxmaker/self_update.sh", os.path.join(path_temp_syslbuild, "files", "self_update.sh"))
         shutil.copy("gnuboxmaker/updatescript.sh", os.path.join(path_temp_syslbuild, "files", "updatescript.sh"))
 
@@ -986,7 +986,7 @@ def setup_build_base(builditems):
         ["files/user_files", "/", [0, 0, "0755"]],
     ]
 
-    if current_project.allow_updatescript:
+    if current_project.allow_updatescript and current_project.separate_data_partition:
         items.append(["files/self_update.sh", "/self_update.sh", [0, 0, "0755"]])
         items.append(["files/updatescript.sh", "/updatescript.sh", [0, 0, "0755"]])
 
@@ -1272,9 +1272,10 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         "name": f"{current_project_name} OPI ZERO 3.img",
         "export": True,
 
-        "singleboardType": "uboot-16",
+        "singleboardType": "uboot-offset",
 
         "bootloader": "blobs/u-boot-sunxi-with-spl.bin",
+        "bootloader_offset": 16,
         "bootloaderDtb": devicetree,
         "dtbList": [
             "kernel_image/arm64/opi_zero3/sun50i-h618-orangepi-zero3.dtb"

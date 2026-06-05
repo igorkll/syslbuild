@@ -109,7 +109,9 @@ for example, you can use a daemon running from root that will monitor a special 
 alternatively, you can use a SUID binary that will accept the update file, validate it, and if everything is fine, then run a self-update (be careful with SUID)  
 keep in mind that the script itself /self_update.sh It DOES NOT VALIDATE the incoming .img file at ALL  
 he just assumes that the .img that you passed to /self_update.sh is the same .img that you recorded on the device and that it is suitable for this device  
-
+please note that the bootloader will not be affected during the self-update  
+also for launching /self_update.sh an .img file passed as a path to /self_update.sh must be located on the "DATA" section  
+using the script /self_update.sh it is impossible without a separate DATA section enabled. this script will not be in rootfs at all in this case  
 
 ## args
 * you can pass the path to the *.gnb file to gnubox maker and the build will happen automatically after which the program will terminate. The GUI will not appear

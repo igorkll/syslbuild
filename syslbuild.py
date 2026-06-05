@@ -1532,7 +1532,8 @@ def singleboardBuild(item):
     singleboardType = item["singleboardType"]
     builditemName = item["name"]
 
-    if singleboardType == "uboot-16":
+    # "uboot-16" is legacy
+    if singleboardType == "uboot-offset" or singleboardType == "uboot-16":
         bootdirName = builditemName + "_bootdir"
         bootfsName = builditemName + "_bootfs"
 
@@ -1615,19 +1616,20 @@ def singleboardBuild(item):
             "source": bootdirName,
 
             "fs_type": "fat32",
-            "size": "(auto * 1.2) + (100 * 1024 * 1024)",
+            "size": item.get("boot_partition_size", "(auto * 1.2) + (100 * 1024 * 1024)"),
             "minsize": item.get("boot_partition_minsize", "64MB"),
             "label": item.get("boot_partition_name", "BOOT")
         })
 
         # bootable image
+        bootloader_offset = item.get("bootloader_offset", 16)
         buildFullDiskImageBuilditem = {
             "name": builditemName,
             "export": readBool(item, "export"),
 
             "size": "auto + (16 * 1024 * 1024)",
 
-            "partitionsStartSector": 8192,
+            "partitionsStartSector": bootloader_offset * 512,
             "partitionTable": "dos",
             "partitions": [
                 [bootfsName, "linux"]
@@ -1638,7 +1640,7 @@ def singleboardBuild(item):
                 "binaries": [
                     {
                         "file": item["bootloader"],
-                        "sector": 16
+                        "sector": bootloader_offset
                     }
                 ]
             }
