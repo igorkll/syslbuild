@@ -26,5 +26,17 @@ image_rootfs_size=$(sfdisk -J "$image_path" | jq '.partitiontable.partitions[] |
 # ------------- flash new partitions
 
 if [ -n "$boot_dev" ]; then
-    dd if="$image_path" of="$boot_dev" bs=512 skip=$image_boot_start count=$((size_sector))
+    if [ -z "$boot_dev" ]; then
+        echo there are no boot partition in the image
+        exit 1
+    fi
+    dd if="$image_path" of="$boot_dev" bs=512 skip=$image_boot_start count=$image_boot_size
+fi
+
+if [ -n "$rootfs_dev" ]; then
+    if [ -z "$rootfs_dev" ]; then
+        echo there are no rootfs partition in the image
+        exit 1
+    fi
+    dd if="$image_path" of="$rootfs_dev" bs=512 skip=$image_rootfs_start count=$image_rootfs_size
 fi

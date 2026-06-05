@@ -113,6 +113,7 @@ please note that the bootloader will not be affected during the self-update
 also for launching /self_update.sh an .img file passed as a path to /self_update.sh must be located on the "DATA" section  
 using the script /self_update.sh it is impossible without a separate DATA section enabled. this script will not be in rootfs at all in this case  
 when self-updating, only the "BOOT" and "rootfs" sections are updated. also note that gnubox maker uses "BOOT" ONLY on single-board computers. on x86, there is an EFI partition (if the image is EFI-enabled), but it is not updated using self-update because it refers to the bootloader.  
+please note that the partition sizes CANNOT be increased during the update. therefore, when building the first image, reserve enough space for future updates using "minsize_root_partition" and "minsize_boot_partition"  
 
 ## args
 * you can pass the path to the *.gnb file to gnubox maker and the build will happen automatically after which the program will terminate. The GUI will not appear
