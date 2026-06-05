@@ -2,7 +2,7 @@
   "gnubox_version": [
     1,
     4,
-    0
+    1
   ],
   "distro": "debian",
   "user_packages": [
@@ -11,24 +11,19 @@
     "rfkill",
     "iproute2",
     "wpasupplicant",
-
     "mesa-utils",
     "libgl1-mesa-dri",
     "libgbm1",
     "libdrm2",
-
     "libegl1",
-
     "weston",
     "xwayland",
     "xserver-xorg",
     "xinit",
     "x11-xserver-utils",
     "matchbox-window-manager",
-
     "glmark2-es2-drm",
     "kmscube",
-    
     "nano",
     "wget"
   ],
@@ -65,6 +60,9 @@
   "minsize_efi_partition": "64MB",
   "minsize_root_partition": "64MB",
   "minsize_data_partition": "64MB",
+  "size_boot_partition": "(auto * 1.2) + (100 * 1024 * 1024)",
+  "size_efi_partition": "256MB",
+  "size_root_partition": "(auto * 1.2) + (100 * 1024 * 1024)",
   "weston_shell": "kiosk",
   "session_user": "root",
   "session_mode": "tty",
