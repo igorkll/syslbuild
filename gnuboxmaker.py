@@ -53,6 +53,7 @@ class Project:
     uartlogs_rootshell: bool = False
 
     splash_bg: str = "0, 0, 0"
+    splash_updating_bg: str = "0, 0, 0"
     splash_mode: str = "contain"
     splash_scale: float = 0.7
 
@@ -579,10 +580,12 @@ EndSection""")
 def setup_bootlogo():
     bootlogo_files = os.path.join(path_temp_syslbuild, "files", "bootlogo")
     project_logo_path = os.path.join(path_resources, "logo.png")
+    project_logo_updating_path = os.path.join(path_resources, "logo_updating.png")
 
     if current_project.boot_splash:
         copyFile(os.path.join(bootlogo_files, "bootlogo.plymouth"), "gnuboxmaker/bootlogo.plymouth")
         copyFile(os.path.join(bootlogo_files, "logo.png"), project_logo_path)
+        copyFile(os.path.join(bootlogo_files, "logo_updating.png"), project_logo_updating_path)
 
     if current_project.splash_mode == "fill":
         scale_code = f"""scaled_width = window_width;
@@ -599,10 +602,19 @@ scaled_height = Math.Int(img_height * img_scale);"""
 scaled_width = Math.Int(img_width * img_scale);
 scaled_height = Math.Int(img_height * img_scale);"""
 
-    bootlogo_script = f"""Window.SetBackgroundTopColor({current_project.splash_bg});
-Window.SetBackgroundBottomColor({current_project.splash_bg});
+    bootlogo_script = f"""
+mode = Plymouth.GetMode();
+if (mode == "system-upgrade") {{
+    Window.SetBackgroundTopColor({current_project.splash_updating_bg});
+    Window.SetBackgroundBottomColor({current_project.splash_updating_bg});
 
-image = Image("logo.png");
+    image = Image("logo_updating.png");
+}} else {{
+    Window.SetBackgroundTopColor({current_project.splash_bg});
+    Window.SetBackgroundBottomColor({current_project.splash_bg});
+
+    image = Image("logo.png");
+}}
 
 window_width = Window.GetWidth();
 window_height = Window.GetHeight();
@@ -1652,6 +1664,11 @@ def update_project_structure():
     logo_path_gif = os.path.join(path_resources, "logo.gif") # gif на экране загрузки еще не реализован
     if not os.path.isfile(logo_path_png) and not os.path.isfile(logo_path_gif):
         copyFile(logo_path_png, "gnuboxmaker.png")
+
+    logo_updating_path_png = os.path.join(path_resources, "logo_updating.png")
+    logo_updating_path_gif = os.path.join(path_resources, "logo_updating.gif")
+    if not os.path.isfile(logo_updating_path_png) and not os.path.isfile(logo_updating_path_gif):
+        copyFile(logo_updating_path_png, "logo_updating.png")
 
     startup_sound = os.path.join(path_resources, "startup.wav")
     if not os.path.isfile(startup_sound):
