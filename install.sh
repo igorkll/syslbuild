@@ -30,8 +30,6 @@ apt install -y device-tree-compiler
 pip install json5 --break-system-packages
 pip install asteval --break-system-packages
 
-./prepair.sh
-
 DEST="/opt/syslbuild"
 mkdir -p "$DEST"
 cp -r ./* "$DEST"
@@ -44,5 +42,8 @@ cp -f "gnuboxmaker.desktop" "/usr/share/applications/gnuboxmaker.desktop"
 chmod 755 "/usr/bin/syslbuild"
 chmod 755 "/usr/share/applications/syslbuild.desktop"
 chmod 755 "/usr/share/applications/gnuboxmaker.desktop"
+
+cd "$DEST"
+./prepair.sh
 
 update-desktop-database

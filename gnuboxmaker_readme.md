@@ -40,6 +40,8 @@ ATTENTION. Starting from version 1.3.9, the kernels do not go with the program, 
 * x86 (BIOS, UEFI)
 * orange pi zero 3
 * raspberry pi 5/4/3 (i tested this on raspberry pi 5, but in theory the image created via raspberry pi 64 should work on 5/4/3)
+if the platform you need is not available in gnubox maker, you can use syslbuild (a lower-level tool for creating embedded linux builds) where you can customize the build for any hardware you are interested in and do anything with the system  
+alternatively, you can fork gnubox maker and then offer a pull request  
 
 ## supported host systems
 * debian
@@ -63,7 +65,7 @@ ATTENTION. Starting from version 1.3.9, the kernels do not go with the program, 
 
 ## platforms support rate (from 0 to 10)
 * x86 - 9/10
-* raspberry pi 64 - 7/10
+* raspberry pi 64 - 8/10
 * orange pi zero 3 - 5/10
 
 ## examples with a work network
