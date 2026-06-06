@@ -51,7 +51,9 @@ class Project:
     uartlogs: bool = False
     uartlogs_speed: int = 115200
     uartlogs_rootshell: bool = False
+    
     exclude_tty1_from_consoles: bool = False
+    make_tty1_primaty_console: bool = False
 
     splash_bg: str = "0, 0, 0"
     splash_updating_bg: str = "0, 0, 0"
@@ -1498,11 +1500,14 @@ def setup_build_targets(builditems, cmdline):
 def generate_syslbuild_project():
     cmdline_console = ""
 
-    if not current_project.exclude_tty1_from_consoles:
+    if not current_project.exclude_tty1_from_consoles and not current_project.make_tty1_primaty_console:
         cmdline_console = " console=tty1"
 
     if current_project.uartlogs:
         cmdline_console += f" console=ttyS0,{current_project.uartlogs_speed}"
+
+    if not current_project.exclude_tty1_from_consoles and current_project.make_tty1_primaty_console:
+        cmdline_console = " console=tty1"
 
     if cmdline_console == "":
         cmdline_console = "console=null"
