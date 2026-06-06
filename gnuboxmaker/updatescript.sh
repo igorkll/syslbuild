@@ -4,8 +4,7 @@
 
 if [ "${0#/tmp/}" = "$0" ]; then
     echo "Moving self-update script to /tmp"
-    cp "$0" /tmp/updatescript.sh
-    chmod +x /tmp/updatescript.sh
+    cp -p "$0" /tmp/updatescript.sh
     exec /tmp/updatescript.sh "$@"
 fi
 
