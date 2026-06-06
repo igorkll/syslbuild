@@ -54,7 +54,7 @@
   "splash_scale": 0.7,
   "root_expand": false,
   "root_readonly": true,
-  "allow_updatescript": true,
+  "allow_updatescript": false,
   "separate_data_partition": true,
   "separate_data_partition_home_link": true,
   "separate_data_partition_var_link": false,

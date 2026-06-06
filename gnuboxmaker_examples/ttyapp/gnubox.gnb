@@ -29,7 +29,7 @@
   "splash_scale": 0.7,
   "root_expand": true,
   "root_readonly": false,
-  "allow_updatescript": true,
+  "allow_updatescript": false,
   "separate_data_partition": false,
   "separate_data_partition_home_link": true,
   "separate_data_partition_var_link": false,
