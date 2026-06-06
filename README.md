@@ -28,11 +28,12 @@ WARNING!!! if you read this text from GITHUB page please, download a release and
 ## subprojects
 * Gnubox maker - the simplest way to create kiosk/appliance builds of gnu/linux: https://github.com/igorkll/Gnubox-Maker
 
-## FAQ
-
-### what should I choose syslbuild or Gnubox maker?
+## what should I choose syslbuild or Gnubox maker?
 syslbuild is a low-level utility where you describe the system build yourself and can thoroughly control all partitions and files  
 gnubox maker is a high-level GUI program for creating kiosks and application linux systems. the main use case is single application linux  
+* if you need to thoroughly control the system you are building and be able to fully customize it - syslbuild
+* if you just need a way to create kiosk/application linux that runs one of your applications - gnubox maker
+* if you need custom hardware that is not available in the export support of gnubox maker - syslbuild
 
 ## build process
 you create a folder and in it a json file with a description of the project  
