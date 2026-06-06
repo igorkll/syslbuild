@@ -950,7 +950,7 @@ def installBootloader(item, path, partitionsOffsets, sectorsize):
                 sys.exit(1)
 
             bootloaderPath = findItem(binary["file"])
-            buildExecute([
+            buildExecute([ # нужно БЛЯТЬ ОПТИМИЗИРОВАТЬ, увеличив BS
                 "dd",
                 f"if={bootloaderPath}",
                 f"of={path}",
