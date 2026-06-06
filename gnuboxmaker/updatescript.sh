@@ -57,20 +57,28 @@ if [ -n "$ROOT_AT_1" ]; then # для export_img_bios_gpt и export_img_uefi_gpt
     image_rootfs_size=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[1].size')
 
     boot_dev=""
+
+    echo "root position: ROOT_AT_1"
 elif [ -n "$ROOT_AT_2" ]; then # для export_img_bios_and_uefi_gpt
     image_rootfs_start=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[2].start')
     image_rootfs_size=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[2].size')
 
     boot_dev=""
+
+    echo "root position: ROOT_AT_2"
 elif [ -n "$boot_dev" ] && [ -n "$rootfs_dev" ]; then # rootfs и boot (EFI раздел не считается, только для одноплатников)
     image_boot_start=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[0].start')
     image_boot_size=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[0].size')
 
     image_rootfs_start=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[1].start')
     image_rootfs_size=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[1].size')
-elif [ -n "$rootfs_dev" ]; then # когда есть только rootfs
+
+    echo "root position: BOOT-0 and rootfs-1"
+elif [ -n "$rootfs_dev" ]; then # когда есть только rootfs. то есть export_img_bios_mbr
     image_rootfs_start=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[0].start')
     image_rootfs_size=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[0].size')
+
+    echo "root position: rootfs-0"
 fi
 
 echo "partitiontable: $partitiontable"
