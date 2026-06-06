@@ -32,7 +32,7 @@ WARNING!!! if you read this text from GITHUB page please, download a release and
 
 ### what should I choose syslbuild or Gnubox maker?
 syslbuild is a low-level utility where you describe the system build yourself and can thoroughly control all partitions and files  
-
+gnubox maker is a high-level GUI program for creating kiosks and application linux systems. the main use case is single application linux  
 
 ## build process
 you create a folder and in it a json file with a description of the project  
