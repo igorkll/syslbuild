@@ -27,21 +27,21 @@ partitiontable=$(sfdisk -J "$image_path")
 
 sector_size=$(echo "$partitiontable" | jq -r '.partitiontable.sectorsize')
 
-# image_boot_start=$(echo "$partitiontable" | jq '.partitiontable.partitions[] | select(.name=="BOOT") | .start')
-# image_boot_size=$(echo "$partitiontable" | jq '.partitiontable.partitions[] | select(.name=="BOOT") | .size')
+# image_boot_start=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[] | select(.name=="BOOT") | .start')
+# image_boot_size=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[] | select(.name=="BOOT") | .size')
 
-# image_rootfs_start=$(echo "$partitiontable" | jq '.partitiontable.partitions[] | select(.name=="rootfs") | .start')
-# image_rootfs_size=$(echo "$partitiontable" | jq '.partitiontable.partitions[] | select(.name=="rootfs") | .size')
+# image_rootfs_start=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[] | select(.name=="rootfs") | .start')
+# image_rootfs_size=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[] | select(.name=="rootfs") | .size')
 
 if [ -n "$boot_dev" ] && [ -n "$rootfs_dev" ]; then
-    image_boot_start=$(echo "$partitiontable" | jq '.partitiontable.partitions[0].start')
-    image_boot_size=$(echo "$partitiontable" | jq '.partitiontable.partitions[0].size')
+    image_boot_start=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[0].start')
+    image_boot_size=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[0].size')
 
-    image_rootfs_start=$(echo "$partitiontable" | jq '.partitiontable.partitions[1].start')
-    image_rootfs_size=$(echo "$partitiontable" | jq '.partitiontable.partitions[1].size')
+    image_rootfs_start=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[1].start')
+    image_rootfs_size=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[1].size')
 elif [ -n "$rootfs_dev" ]; then
-    image_rootfs_start=$(echo "$partitiontable" | jq '.partitiontable.partitions[0].start')
-    image_rootfs_size=$(echo "$partitiontable" | jq '.partitiontable.partitions[0].size')
+    image_rootfs_start=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[0].start')
+    image_rootfs_size=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[0].size')
 fi
 
 echo "partitiontable: $partitiontable"
