@@ -28,6 +28,12 @@ WARNING!!! if you read this text from GITHUB page please, download a release and
 ## subprojects
 * Gnubox maker - the simplest way to create kiosk/appliance builds of gnu/linux: https://github.com/igorkll/Gnubox-Maker
 
+## FAQ
+
+### what should I choose syslbuild or Gnubox maker?
+syslbuild is a low-level utility where you describe the system build yourself and can thoroughly control all partitions and files  
+
+
 ## build process
 you create a folder and in it a json file with a description of the project  
 it describes the build items, each of which can be 'exported' and/or used in another build items  
