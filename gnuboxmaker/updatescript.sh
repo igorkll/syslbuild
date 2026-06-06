@@ -44,6 +44,9 @@ efi_start_part=$(echo "$partitiontable" | jq -r '
   | .start
 ')
 
+echo "bios_start_part: $bios_start_part"
+echo "efi_start_part: $efi_start_part"
+
 if { [ "$efi_start_part" != "null" ] && [ -n "$efi_start_part" ]; } \
 && { [ "$bios_start_part" != "null" ] && [ -n "$bios_start_part" ]; }; then # для export_img_bios_and_uefi_gpt
     ROOT_AT_2=y
