@@ -22,5 +22,5 @@ fi
 copy_exec /usr/bin/bash /usr/bin
 copy_exec /usr/bin/findmnt /usr/bin
 copy_exec /usr/bin/jq /usr/bin
-copy_exec /usr/bin/blockdev /usr/bin
+copy_exec /usr/sbin/blockdev /usr/sbin
 copy_exec /usr/bin/dd /usr/bin

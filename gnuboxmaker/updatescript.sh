@@ -9,8 +9,8 @@ mount -n -o move /updateroot/data /data
 
 boot_dev=$(findmnt -nro SOURCE /updateroot/bootmnt)
 rootfs_dev=$(findmnt -nro SOURCE /updateroot)
-echo "boot device $boot_dev"
-echo "rootfs device $rootfs_dev"
+echo "boot device: $boot_dev"
+echo "rootfs device: $rootfs_dev"
 
 image_path=$(cat /updateroot/updatescript/path)
 echo "update from image $image_path"
@@ -53,8 +53,8 @@ echo "image_rootfs_size: $image_rootfs_size"
 
 # ------------- get real partitions info
 
-boot_size=$(blockdev --getsize "$boot_dev" 2>/dev/null)
-rootfs_size=$(blockdev --getsize "$rootfs_dev" 2>/dev/null)
+boot_size=$(blockdev --getsize "$boot_dev")
+rootfs_size=$(blockdev --getsize "$rootfs_dev")
 
 echo "boot_size: $boot_size"
 echo "rootfs_size: $rootfs_size"
