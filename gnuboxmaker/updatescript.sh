@@ -16,10 +16,10 @@ image_path=$(cat /updateroot/updatescript/path)
 echo "update from image $image_path"
 
 echo "unmounting /updateroot/bootmnt"
-umount /updateroot/bootmnt
+/nativeumount -f /updateroot/bootmnt
 
 echo "unmounting /updateroot"
-umount /updateroot
+/nativeumount -f /updateroot
 
 # ------------- find partitions in image
 
