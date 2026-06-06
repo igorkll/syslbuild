@@ -2,6 +2,8 @@
 
 # ------------- mounts
 
+# как блять сделать работу на export_img_bios_gpt, export_img_uefi_gpt, export_img_bios_and_uefi_gpt
+
 echo "START SELF-UPDATE..."
 
 mkdir -p /data
@@ -29,19 +31,49 @@ partitiontable=$(sfdisk -J "$image_path")
 
 sector_size=$(echo "$partitiontable" | jq -r '.partitiontable.sectorsize')
 
-# image_boot_start=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[] | select(.name=="BOOT") | .start')
-# image_boot_size=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[] | select(.name=="BOOT") | .size')
+bios_start_0_part=$(echo "$partitiontable" | jq -r '
+  .partitiontable.partitions[0]
+  | select(.type == "21686148-6449-6E6F-744E-656564454649")
+  | .start
+')
 
-# image_rootfs_start=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[] | select(.name=="rootfs") | .start')
-# image_rootfs_size=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[] | select(.name=="rootfs") | .size')
+bios_start_1_part=$(echo "$partitiontable" | jq -r '
+  .partitiontable.partitions[1]
+  | select(.type == "21686148-6449-6E6F-744E-656564454649")
+  | .start
+')
 
-if [ -n "$boot_dev" ] && [ -n "$rootfs_dev" ]; then
+efi_start_0_part=$(echo "$partitiontable" | jq -r '
+  .partitiontable.partitions[0]
+  | select(.type == "C12A7328-F81F-11D2-BA4B-00A0C93EC93B")
+  | .start
+')
+
+if { [ "$efi_start_0_part" != "null" ] && [ -n "$efi_start_0_part" ]; } \
+&& { [ "$bios_start_1_part" != "null" ] && [ -n "$bios_start_1_part" ]; }; then # для export_img_bios_and_uefi_gpt
+    ROOT_AT_2=y
+elif { [ "$bios_start_0_part" != "null" ] && [ -n "$bios_start_0_part" ]; } \
+|| { [ "$efi_start_0_part" != "null" ] && [ -n "$efi_start_0_part" ]; }; then # для export_img_bios_gpt и export_img_uefi_gpt
+    ROOT_AT_1=y
+fi
+
+if [ -n "$ROOT_AT_1" ]; then # для export_img_bios_gpt и export_img_uefi_gpt
+    image_rootfs_start=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[1].start')
+    image_rootfs_size=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[1].size')
+
+    boot_dev=""
+elif [ -n "$ROOT_AT_2" ]; then # для export_img_bios_and_uefi_gpt
+    image_rootfs_start=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[2].start')
+    image_rootfs_size=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[2].size')
+
+    boot_dev=""
+elif [ -n "$boot_dev" ] && [ -n "$rootfs_dev" ]; then # rootfs и boot (EFI раздел не считается, только для одноплатников)
     image_boot_start=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[0].start')
     image_boot_size=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[0].size')
 
     image_rootfs_start=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[1].start')
     image_rootfs_size=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[1].size')
-elif [ -n "$rootfs_dev" ]; then
+elif [ -n "$rootfs_dev" ]; then # когда есть только rootfs
     image_rootfs_start=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[0].start')
     image_rootfs_size=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[0].size')
 fi
@@ -52,14 +84,19 @@ echo "image_boot_start: $image_boot_start"
 echo "image_boot_size: $image_boot_size"
 echo "image_rootfs_start: $image_rootfs_start"
 echo "image_rootfs_size: $image_rootfs_size"
+echo "result boot device: $boot_dev"
 
 # ------------- get real partitions info
 
-boot_size=$(blockdev --getsize "$boot_dev")
-rootfs_size=$(blockdev --getsize "$rootfs_dev")
+if [ -n "$boot_dev" ]; then
+    boot_size=$(blockdev --getsize "$boot_dev")
+    echo "boot_size: $boot_size"
+fi
 
-echo "boot_size: $boot_size"
-echo "rootfs_size: $rootfs_size"
+if [ -n "$rootfs_dev" ]; then
+    rootfs_size=$(blockdev --getsize "$rootfs_dev")
+    echo "rootfs_size: $rootfs_size"
+fi
 
 # ------------- check partitions size
 
