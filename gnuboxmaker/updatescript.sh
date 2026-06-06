@@ -1,9 +1,15 @@
 #!/bin/bash
 
-# ------------- mounts
+# ------------- copy script to tmp
 
-# как блять сделать работу на export_img_bios_gpt, export_img_uefi_gpt, export_img_bios_and_uefi_gpt
-# поправочка: ну вроде должно работать
+if [ "${0#/tmp/}" = "$0" ]; then
+    echo "Moving self-update script to /tmp"
+    cp "$0" /tmp/updatescript.sh
+    chmod +x /tmp/updatescript.sh
+    exec /tmp/updatescript.sh "$@"
+fi
+
+# ------------- mounts
 
 echo "START SELF-UPDATE..."
 
@@ -46,6 +52,9 @@ efi_start_part=$(echo "$partitiontable" | jq -r '
 
 echo "bios_start_part: $bios_start_part"
 echo "efi_start_part: $efi_start_part"
+
+# как блять сделать работу на export_img_bios_gpt, export_img_uefi_gpt, export_img_bios_and_uefi_gpt
+# поправочка: ну вроде должно работать
 
 if { [ "$efi_start_part" != "null" ] && [ -n "$efi_start_part" ]; } \
 && { [ "$bios_start_part" != "null" ] && [ -n "$bios_start_part" ]; }; then # для export_img_bios_and_uefi_gpt
