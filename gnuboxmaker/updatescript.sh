@@ -3,6 +3,7 @@
 # ------------- mounts
 
 # как блять сделать работу на export_img_bios_gpt, export_img_uefi_gpt, export_img_bios_and_uefi_gpt
+# поправочка: ну вроде должно работать
 
 echo "START SELF-UPDATE..."
 
