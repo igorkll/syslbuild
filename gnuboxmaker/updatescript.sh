@@ -21,6 +21,8 @@ echo "unmounting /updateroot/bootmnt"
 echo "unmounting /updateroot"
 /nativeumount -f /updateroot
 
+sync
+
 # ------------- find partitions in image
 
 partitiontable=$(sfdisk -J "$image_path")
@@ -59,6 +61,8 @@ rootfs_size=$(blockdev --getsize "$rootfs_dev")
 echo "boot_size: $boot_size"
 echo "rootfs_size: $rootfs_size"
 
+# ------------- check partitions size
+
 if [ -n "$image_boot_size" ] && [ -n "$boot_dev" ]; then
     if [ "$image_boot_size" -gt "$boot_size" ]; then
         echo "BOOT partition in image is bigger than target"
@@ -73,7 +77,7 @@ if [ -n "$image_rootfs_size" ] && [ -n "$rootfs_dev" ]; then
     fi
 fi
 
-# ------------- flash new partitions
+# ------------- check available image partitions
 
 if [ -n "$boot_dev" ] && [ -z "$image_boot_start" ]; then
     echo there are no BOOT partition in the image
@@ -84,6 +88,8 @@ if [ -n "$rootfs_dev" ] && [ -z "$image_rootfs_start" ]; then
     echo there are no rootfs partition in the image
     exit 1
 fi
+
+# ------------- flash new partitions
 
 BS=4M
 
@@ -102,5 +108,7 @@ if [ -n "$rootfs_dev" ]; then
     count_bytes=$(( image_rootfs_size * sector_size ))
     /nativedd if="$image_path" of="$rootfs_dev" bs=$BS skip=$skip_bytes count=$count_bytes status=progress conv=fsync iflag=skip_bytes,count_bytes
 fi
+
+# -------------
 
 echo "UPDATE DONE!"
