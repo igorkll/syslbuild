@@ -51,6 +51,7 @@ class Project:
     uartlogs: bool = False
     uartlogs_speed: int = 115200
     uartlogs_rootshell: bool = False
+    exclude_tty1_from_consoles: bool = False
 
     splash_bg: str = "0, 0, 0"
     splash_updating_bg: str = "0, 0, 0"
@@ -469,7 +470,7 @@ def setup_download(builditems):
             "path": f"/{name}"
         })
 
-    addDownload("custom-debian-initramfs-init", "1.5.7")
+    addDownload("custom-debian-initramfs-init", "1.5.8")
     addExtract("custom-debian-initramfs-init", "custom_init.sh")
     addExtract("custom-debian-initramfs-init", "custom_init_hook.sh")
 
@@ -1495,9 +1496,16 @@ def setup_build_targets(builditems, cmdline):
         export_rpi_64(builditems, cmdline, appendPartitions)
 
 def generate_syslbuild_project():
-    cmdline_console = "console=tty1"
+    cmdline_console = ""
+
+    if not current_project.exclude_tty1_from_consoles:
+        cmdline_console = " console=tty1"
+
     if current_project.uartlogs:
         cmdline_console += f" console=ttyS0,{current_project.uartlogs_speed}"
+
+    if cmdline_console == "":
+        cmdline_console = "console=null"
 
     cmdline = f"{"ro" if current_project.root_readonly else "rw"} rootwait=60 selinux=0 plymouth.ignore-serial-consoles mount_bootmnt {cmdline_console} preinit=/root/system_preinit.sh {current_project.cmdline}"
 
