@@ -223,6 +223,7 @@ these changes to the kernel config are applied automatically when building the k
 * add the ability to add additional files to the iso images
 * support for the operation (packing and unpacking) of initramfs with a multiblock structure
 * the ability to specify a filesystem revision
+* in directory items, you can specify the rights for directories and files in copy objects separately.
 
 ## roadmap completed
 * execution of arbitrary scripts in the system's chroot, with qemu-static support for execution during assembly for a different architecture
