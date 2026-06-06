@@ -59,10 +59,11 @@ class Project:
     splash_updating_bg: str = "0, 0, 0"
     splash_mode: str = "contain"
     splash_scale: float = 0.7
+    use_separate_splash_for_update: bool = True
 
     root_expand: bool = True
     root_readonly: bool = False
-    allow_updatescript: bool = True
+    allow_updatescript: bool = False
     separate_data_partition: bool = False
     separate_data_partition_home_link: bool = True
     separate_data_partition_var_link: bool = False
@@ -458,8 +459,8 @@ def setup_download(builditems):
             "name": name,
             "export": False,
 
-            "git_url": f"https://github.com/igorkll/{name}",
-            "git_checkout": version
+            "git_url": f"https://github.com/igorkll/{name}"# ,
+            # "git_checkout": version
         })
 
     def addExtract(fromdir, name):
@@ -1540,6 +1541,9 @@ def generate_syslbuild_project():
 
     if current_project.allow_updatescript:
         cmdline += " allow_updatescript"
+        
+        if not current_project.use_separate_splash_for_update:
+            cmdline += " updatescript_state_not_need_in_plymouth"
 
     if current_project.boot_splash:
         cmdline += f" minlogotime={current_project.minlogotime}"
