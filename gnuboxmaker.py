@@ -459,8 +459,8 @@ def setup_download(builditems):
             "name": name,
             "export": False,
 
-            "git_url": f"https://github.com/igorkll/{name}"# ,
-            # "git_checkout": version
+            "git_url": f"https://github.com/igorkll/{name}",
+            "git_checkout": version
         })
 
     def addExtract(fromdir, name):
@@ -473,7 +473,7 @@ def setup_download(builditems):
             "path": f"/{name}"
         })
 
-    addDownload("custom-debian-initramfs-init", "1.5.8")
+    addDownload("custom-debian-initramfs-init", "1.5.9")
     addExtract("custom-debian-initramfs-init", "custom_init.sh")
     addExtract("custom-debian-initramfs-init", "custom_init_hook.sh")
 
@@ -1540,7 +1540,7 @@ def generate_syslbuild_project():
             cmdline += " etc_link"
 
     if current_project.allow_updatescript:
-        cmdline += " allow_updatescript"
+        cmdline += " allow_updatescript while_after_updatescript_crash"
         
         if not current_project.use_separate_splash_for_update:
             cmdline += " updatescript_state_not_need_in_plymouth"
