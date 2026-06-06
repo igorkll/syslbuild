@@ -19,10 +19,10 @@ image_path=$(cat /updateroot/updatescript/path)
 echo "update from image $image_path"
 
 echo "unmounting /updateroot/bootmnt"
-/nativeumount -f /updateroot/bootmnt
+/nativeumount -fR /updateroot/bootmnt
 
 echo "unmounting /updateroot"
-/nativeumount -f /updateroot
+/nativeumount -fR /updateroot
 
 sync
 
