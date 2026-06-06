@@ -32,29 +32,23 @@ partitiontable=$(sfdisk -J "$image_path")
 
 sector_size=$(echo "$partitiontable" | jq -r '.partitiontable.sectorsize')
 
-bios_start_0_part=$(echo "$partitiontable" | jq -r '
-  .partitiontable.partitions[0]
+bios_start_part=$(echo "$partitiontable" | jq -r '
+  .partitiontable.partitions[]
   | select(.type == "21686148-6449-6E6F-744E-656564454649")
   | .start
 ')
 
-bios_start_1_part=$(echo "$partitiontable" | jq -r '
-  .partitiontable.partitions[1]
-  | select(.type == "21686148-6449-6E6F-744E-656564454649")
-  | .start
-')
-
-efi_start_0_part=$(echo "$partitiontable" | jq -r '
-  .partitiontable.partitions[0]
+efi_start_part=$(echo "$partitiontable" | jq -r '
+  .partitiontable.partitions[]
   | select(.type == "C12A7328-F81F-11D2-BA4B-00A0C93EC93B")
   | .start
 ')
 
-if { [ "$efi_start_0_part" != "null" ] && [ -n "$efi_start_0_part" ]; } \
-&& { [ "$bios_start_1_part" != "null" ] && [ -n "$bios_start_1_part" ]; }; then # для export_img_bios_and_uefi_gpt
+if { [ "$efi_start_part" != "null" ] && [ -n "$efi_start_part" ]; } \
+&& { [ "$bios_start_part" != "null" ] && [ -n "$bios_start_part" ]; }; then # для export_img_bios_and_uefi_gpt
     ROOT_AT_2=y
-elif { [ "$bios_start_0_part" != "null" ] && [ -n "$bios_start_0_part" ]; } \
-|| { [ "$efi_start_0_part" != "null" ] && [ -n "$efi_start_0_part" ]; }; then # для export_img_bios_gpt и export_img_uefi_gpt
+elif { [ "$bios_start_part" != "null" ] && [ -n "$bios_start_part" ]; } \
+|| { [ "$efi_start_part" != "null" ] && [ -n "$efi_start_part" ]; }; then # для export_img_bios_gpt и export_img_uefi_gpt
     ROOT_AT_1=y
 fi
 
