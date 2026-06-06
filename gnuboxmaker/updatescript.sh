@@ -2,7 +2,7 @@
 
 # ------------- mounts
 
-echo "start self update"
+echo "START SELF-UPDATE..."
 
 mkdir -p /data
 mount -n -o move /updateroot/data /data
@@ -85,12 +85,22 @@ if [ -n "$rootfs_dev" ] && [ -z "$image_rootfs_start" ]; then
     exit 1
 fi
 
+BS=4M
+
 if [ -n "$boot_dev" ]; then
     echo "start writing BOOT partition..."
-    dd if="$image_path" of="$boot_dev" bs=$sector_size skip=$image_boot_start count=$image_boot_size status=progress conv=fsync
+
+    skip_bytes=$(( image_boot_start * sector_size ))
+    count_bytes=$(( image_boot_size * sector_size ))
+    /nativedd if="$image_path" of="$boot_dev" bs=$BS skip=$skip_bytes count=$count_bytes status=progress conv=fsync iflag=skip_bytes,count_bytes
 fi
 
 if [ -n "$rootfs_dev" ]; then
     echo "start writing rootfs partition..."
-    dd if="$image_path" of="$rootfs_dev" bs=$sector_size skip=$image_rootfs_start count=$image_rootfs_size status=progress conv=fsync
+
+    skip_bytes=$(( image_rootfs_start * sector_size ))
+    count_bytes=$(( image_rootfs_size * sector_size ))
+    /nativedd if="$image_path" of="$rootfs_dev" bs=$BS skip=$skip_bytes count=$count_bytes status=progress conv=fsync iflag=skip_bytes,count_bytes
 fi
+
+echo "UPDATE DONE!"
