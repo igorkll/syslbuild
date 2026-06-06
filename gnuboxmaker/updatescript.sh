@@ -86,9 +86,11 @@ if [ -n "$rootfs_dev" ] && [ -z "$image_rootfs_start" ]; then
 fi
 
 if [ -n "$boot_dev" ]; then
-    dd if="$image_path" of="$boot_dev" bs=$sector_size skip=$image_boot_start count=$image_boot_size
+    echo "start writing BOOT partition..."
+    dd if="$image_path" of="$boot_dev" bs=$sector_size skip=$image_boot_start count=$image_boot_size status=progress conv=fsync
 fi
 
 if [ -n "$rootfs_dev" ]; then
-    dd if="$image_path" of="$rootfs_dev" bs=$sector_size skip=$image_rootfs_start count=$image_rootfs_size
+    echo "start writing rootfs partition..."
+    dd if="$image_path" of="$rootfs_dev" bs=$sector_size skip=$image_rootfs_start count=$image_rootfs_size status=progress conv=fsync
 fi
