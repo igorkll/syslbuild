@@ -1,15 +1,24 @@
 #!/bin/bash
 
 # ------------- mounts
+
+echo "start self update"
+
 mkdir -p /data
 mount -n -o move /updateroot/data /data
 
 boot_dev=$(findmnt -nro SOURCE /updateroot/bootmnt)
 rootfs_dev=$(findmnt -nro SOURCE /updateroot)
+echo "boot device $boot_dev"
+echo "rootfs device $rootfs_dev"
 
 image_path=$(cat /updateroot/updatescript/path)
+echo "update from image $image_path"
 
+echo "unmounting /updateroot/bootmnt"
 umount /updateroot/bootmnt
+
+echo "unmounting /updateroot"
 umount /updateroot
 
 # ------------- find partitions in image
@@ -24,10 +33,20 @@ image_boot_size=$(echo "$partitiontable" | jq '.partitiontable.partitions[] | se
 image_rootfs_start=$(echo "$partitiontable" | jq '.partitiontable.partitions[] | select(.name=="rootfs") | .start')
 image_rootfs_size=$(echo "$partitiontable" | jq '.partitiontable.partitions[] | select(.name=="rootfs") | .size')
 
+echo "partitiontable: $partitiontable"
+echo "sector_size: $sector_size"
+echo "image_boot_start: $image_boot_start"
+echo "image_boot_size: $image_boot_size"
+echo "image_rootfs_start: $image_rootfs_start"
+echo "image_rootfs_size: $image_rootfs_size"
+
 # ------------- get real partitions info
 
 boot_size=$(blockdev --getsize "$boot_dev" 2>/dev/null)
 rootfs_size=$(blockdev --getsize "$rootfs_dev" 2>/dev/null)
+
+echo "boot_size: $boot_size"
+echo "rootfs_size: $rootfs_size"
 
 if [ -n "$image_boot_size" ] && [ -n "$boot_dev" ]; then
     if [ "$image_boot_size" -gt "$boot_size" ]; then
@@ -38,25 +57,27 @@ fi
 
 if [ -n "$image_rootfs_size" ] && [ -n "$rootfs_dev" ]; then
     if [ "$image_rootfs_size" -gt "$rootfs_size" ]; then
-        echo "ROOTFS partition in image is bigger than target"
+        echo "rootfs partition in image is bigger than target"
         exit 1
     fi
 fi
 
 # ------------- flash new partitions
 
+if [ -n "$boot_dev" ] && [ -z "$image_boot_start" ]; then
+    echo there are no BOOT partition in the image
+    exit 1
+fi
+
+if [ -n "$rootfs_dev" ] && [ -z "$image_rootfs_start" ]; then
+    echo there are no rootfs partition in the image
+    exit 1
+fi
+
 if [ -n "$boot_dev" ]; then
-    if [ -z "$image_boot_start" ]; then
-        echo there are no boot partition in the image
-        exit 1
-    fi
     dd if="$image_path" of="$boot_dev" bs=$sector_size skip=$image_boot_start count=$image_boot_size
 fi
 
 if [ -n "$rootfs_dev" ]; then
-    if [ -z "$image_rootfs_start" ]; then
-        echo there are no rootfs partition in the image
-        exit 1
-    fi
     dd if="$image_path" of="$rootfs_dev" bs=$sector_size skip=$image_rootfs_start count=$image_rootfs_size
 fi
