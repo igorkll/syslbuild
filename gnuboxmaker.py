@@ -1514,7 +1514,9 @@ def generate_syslbuild_project():
         cmdline_console = " console=tty1"
 
     if cmdline_console == "":
-        cmdline_console = "console=null"
+        # for some reason, console=null causes the linux userspace to freeze completely. it will be necessary to develop a kernel module, something like dummy_console
+        # cmdline_console = "console=null"
+        cmdline_console = "console=ttyS0,115200"
 
     cmdline = f"{"ro" if current_project.root_readonly else "rw"} rootwait=60 selinux=0 plymouth.ignore-serial-consoles mount_bootmnt {cmdline_console} preinit=/root/system_preinit.sh {current_project.cmdline}"
 
@@ -1552,7 +1554,7 @@ def generate_syslbuild_project():
         cmdline += f" minlogotime={current_project.minlogotime}"
 
     if current_project.boot_quiet:
-        cmdline += f" systemd.show_status=false rd.systemd.show_status=false systemd.log_target=journal rd.systemd.log_target=journal udev.log_level=1 rd.udev.log_level=1 systemd.log_level=emerg rd.systemd.log_level=emerg clear noCursorBlink vt.global_cursor_default=0 quiet"
+        cmdline += f" systemd.show_status=false rd.systemd.show_status=false systemd.log_target=journal rd.systemd.log_target=journal udev.log_level=1 rd.udev.log_level=1 systemd.log_level=emerg rd.systemd.log_level=emerg clear noCursorBlink vt.global_cursor_default=0 printk.devkmsg=off quiet loglevel=0"
 
     boot_splash_substring = " splash earlysplash"
     if current_project.boot_splash:
