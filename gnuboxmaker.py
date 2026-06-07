@@ -53,7 +53,7 @@ class Project:
     uartlogs_rootshell: bool = False
     
     exclude_tty1_from_consoles: bool = False
-    exclude_tty1_from_consoles_in_quiet: bool = False
+    exclude_tty1_from_consoles_in_quiet: bool = True
     make_tty1_primary_console: bool = False
 
     splash_bg: str = "0, 0, 0"
@@ -1514,9 +1514,14 @@ def generate_syslbuild_project():
         cmdline_console = " console=tty1"
 
     if cmdline_console == "":
-        # for some reason, console=null causes the linux userspace to freeze completely. it will be necessary to develop a kernel module, something like dummy_console
+        # for some reason, console=null causes the linux userspace to freeze completely. it will be necessary to develop a kernel module, something like dummy_console (it turns out that there is a built-in ttynull)
         # cmdline_console = "console=null"
-        cmdline_console = "console=ttyS0,115200"
+
+        # crutch
+        # cmdline_console = "console=ttyS0,115200"
+
+        # I still found a working way to completely get rid of the logs using the built-in linux method. however, this requires enabling CONFIG_NULL_TTY in the kernel config.
+        cmdline_console = "console=ttynull"
 
     cmdline = f"{"ro" if current_project.root_readonly else "rw"} rootwait=60 selinux=0 plymouth.ignore-serial-consoles mount_bootmnt {cmdline_console} preinit=/root/system_preinit.sh {current_project.cmdline}"
 
