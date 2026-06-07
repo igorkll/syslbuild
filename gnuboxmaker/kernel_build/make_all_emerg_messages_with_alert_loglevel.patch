@@ -1,0 +1,13 @@
+diff --git a/include/linux/printk.h b/include/linux/printk.h
+index 2fde40cc9..ff7105b29 100755
+--- a/include/linux/printk.h
++++ b/include/linux/printk.h
+@@ -467,7 +467,7 @@ struct pi_entry {
+  * generate the format string.
+  */
+ #define pr_emerg(fmt, ...) \
+-	printk(KERN_EMERG pr_fmt(fmt), ##__VA_ARGS__)
++	printk(KERN_ALERT pr_fmt(fmt), ##__VA_ARGS__)
+ /**
+  * pr_alert - Print an alert-level message
+  * @fmt: format string

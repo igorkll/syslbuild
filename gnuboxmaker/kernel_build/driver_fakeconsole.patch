@@ -1,0 +1,64 @@
+diff --git a/drivers/tty/Kconfig b/drivers/tty/Kconfig
+index 5646dc624..1595515b6 100755
+--- a/drivers/tty/Kconfig
++++ b/drivers/tty/Kconfig
+@@ -8,6 +8,12 @@ config TTY
+ 	  TTY is required for any text terminals or serial port
+ 	  communication. Most users should leave this enabled.
+ 
++config FAKECONSOLE
++	bool "Fake console (drops printk output)"
++	default y
++	help
++		Outputs the core output to the void
++
+ if TTY
+ 
+ config VT
+diff --git a/drivers/tty/Makefile b/drivers/tty/Makefile
+index 07aca5184..d93675004 100755
+--- a/drivers/tty/Makefile
++++ b/drivers/tty/Makefile
+@@ -27,5 +27,6 @@ obj-$(CONFIG_GOLDFISH_TTY)	+= goldfish.o
+ obj-$(CONFIG_MIPS_EJTAG_FDC_TTY) += mips_ejtag_fdc.o
+ obj-$(CONFIG_VCC)		+= vcc.o
+ obj-$(CONFIG_RPMSG_TTY)		+= rpmsg_tty.o
++obj-$(CONFIG_FAKECONSOLE) += fakeconsole.o
+ 
+ obj-y += ipwireless/
+diff --git a/drivers/tty/fakeconsole.c b/drivers/tty/fakeconsole.c
+new file mode 100644
+index 000000000..fa6d6bc66
+--- /dev/null
++++ b/drivers/tty/fakeconsole.c
+@@ -0,0 +1,30 @@
++// SPDX-License-Identifier: GPL-2.0-only
++
++#include <linux/console.h>
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++
++static void fakecon_write(struct console *co, const char *s, unsigned int count)
++{
++}
++
++static int fakecon_setup(struct console *co, char *options)
++{
++    return 0;
++}
++
++static struct console fake_console = {
++    .name   = "fakeconsole",
++    .write  = fakecon_write,
++    .setup  = fakecon_setup,
++    .flags  = CON_ENABLED | CON_PRINTBUFFER,
++    .index  = -1,
++};
++
++static int __init fake_console_init(void)
++{
++    register_console(&fake_console);
++    return 0;
++}
++console_initcall(fake_console_init);

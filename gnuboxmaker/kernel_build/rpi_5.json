@@ -28,7 +28,10 @@
             "disable_cad.patch",
             "disable_keyboard_echo_by_default.patch",
             "disable_tty_signals.patch",
-            "disable_tty_control_flow.patch"
+            "disable_tty_control_flow.patch",
+            "disable_reboot_and_shutdown_emerg_messages.patch",
+            "make_all_emerg_messages_with_alert_loglevel.patch",
+            "driver_fakeconsole.patch"
         ],
 
         "kernel_config_changes_files": [

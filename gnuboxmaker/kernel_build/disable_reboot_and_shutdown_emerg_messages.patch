@@ -1,0 +1,43 @@
+diff --git a/kernel/reboot.c b/kernel/reboot.c
+index 22c16e256..93949c591 100755
+--- a/kernel/reboot.c
++++ b/kernel/reboot.c
+@@ -278,10 +278,10 @@ void kernel_restart(char *cmd)
+ 	do_kernel_restart_prepare();
+ 	migrate_to_reboot_cpu();
+ 	syscore_shutdown();
+-	if (!cmd)
+-		pr_emerg("Restarting system\n");
+-	else
+-		pr_emerg("Restarting system with command '%s'\n", cmd);
++	//if (!cmd)
++	//	pr_emerg("Restarting system\n");
++	//else
++	//	pr_emerg("Restarting system with command '%s'\n", cmd);
+ 	kmsg_dump(KMSG_DUMP_SHUTDOWN);
+ 	machine_restart(cmd);
+ }
+@@ -305,10 +305,10 @@ void kernel_halt(void)
+ 	kernel_shutdown_prepare(SYSTEM_HALT);
+ 	migrate_to_reboot_cpu();
+ 	syscore_shutdown();
+-	if (poweroff_fallback_to_halt)
+-		pr_emerg("Power off not available: System halted instead\n");
+-	else
+-		pr_emerg("System halted\n");
++	//if (poweroff_fallback_to_halt)
++	//	pr_emerg("Power off not available: System halted instead\n");
++	//else
++	//	pr_emerg("System halted\n");
+ 	kmsg_dump(KMSG_DUMP_SHUTDOWN);
+ 	machine_halt();
+ }
+@@ -696,7 +696,7 @@ void kernel_power_off(void)
+ 	do_kernel_power_off_prepare();
+ 	migrate_to_reboot_cpu();
+ 	syscore_shutdown();
+-	pr_emerg("Power down\n");
++	//pr_emerg("Power down\n");
+ 	kmsg_dump(KMSG_DUMP_SHUTDOWN);
+ 	machine_power_off();
+ }
