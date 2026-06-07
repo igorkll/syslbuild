@@ -31,7 +31,6 @@
             "disable_tty_control_flow.patch",
             "disable_reboot_and_shutdown_emerg_messages.patch",
             "make_all_emerg_messages_with_alert_loglevel.patch",
-            "driver_fakeconsole.patch",
 
             //"patches.armbian.6.18/arm64-dts-sun50i-h616-orangepi-zero2-zero3-add-wifi.patch",
             //"patches.armbian.6.18/0702-arm64-dts-sun50i-h616-add-digital-audio-node.patch",

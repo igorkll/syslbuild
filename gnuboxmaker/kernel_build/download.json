@@ -5,7 +5,7 @@
         "export": false,
 
         "git_url": "https://github.com/igorkll/linux-embedded-patchs",
-        "git_checkout": "4.0"
+        "git_checkout": "5.0"
     },
     {
         "type": "gitclone",
@@ -80,6 +80,22 @@
 
         "source": "linux-embedded-patchs",
         "path": "/disable_tty_signals.patch"
+    },
+    {
+        "type": "from-directory",
+        "name": "disable_reboot_and_shutdown_emerg_messages.patch",
+        "export": false,
+
+        "source": "linux-embedded-patchs",
+        "path": "/disable_reboot_and_shutdown_emerg_messages.patch"
+    },
+    {
+        "type": "from-directory",
+        "name": "make_all_emerg_messages_with_alert_loglevel.patch",
+        "export": false,
+
+        "source": "linux-embedded-patchs",
+        "path": "/make_all_emerg_messages_with_alert_loglevel.patch"
     },
 
     // extract "custom-debian-initramfs-init"
