@@ -1554,7 +1554,7 @@ def generate_syslbuild_project():
         cmdline += f" minlogotime={current_project.minlogotime}"
 
     if current_project.boot_quiet:
-        cmdline += f" systemd.show_status=false rd.systemd.show_status=false systemd.log_target=journal rd.systemd.log_target=journal udev.log_level=1 rd.udev.log_level=1 systemd.log_level=emerg rd.systemd.log_level=emerg clear noCursorBlink vt.global_cursor_default=0 printk.devkmsg=off quiet loglevel=0"
+        cmdline += f" systemd.show_status=false rd.systemd.show_status=false systemd.log_target=journal rd.systemd.log_target=journal udev.log_level=1 rd.udev.log_level=1 systemd.log_level=emerg rd.systemd.log_level=emerg clear noCursorBlink vt.global_cursor_default=0 quiet loglevel=0"
 
     boot_splash_substring = " splash earlysplash"
     if current_project.boot_splash:
