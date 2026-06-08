@@ -5,7 +5,7 @@
         "export": false,
 
         "git_url": "https://github.com/igorkll/linux-embedded-patchs",
-        "git_checkout": "5.2"
+        "git_checkout": "5.4"
     },
     {
         "type": "gitclone",
@@ -14,96 +14,6 @@
 
         "git_url": "https://github.com/igorkll/custom-debian-initramfs-init",
         "git_checkout": "1.5.2"
-    },
-
-    // extract "linux-embedded-patchs"
-    {
-        "type": "from-directory",
-        "name": "disable_cad.patch",
-        "export": false,
-
-        "source": "linux-embedded-patchs",
-        "path": "/disable_cad.patch"
-    },
-    {
-        "type": "from-directory",
-        "name": "disable_sysrq.patch",
-        "export": false,
-
-        "source": "linux-embedded-patchs",
-        "path": "/disable_sysrq.patch"
-    },
-    {
-        "type": "from-directory",
-        "name": "disable_printk.patch",
-        "export": false,
-
-        "source": "linux-embedded-patchs",
-        "path": "/disable_printk.patch"
-    },
-    {
-        "type": "from-directory",
-        "name": "disable_vt_swithing_from_keyboard.patch",
-        "export": false,
-
-        "source": "linux-embedded-patchs",
-        "path": "/disable_vt_swithing_from_keyboard.patch"
-    },
-    {
-        "type": "from-directory",
-        "name": "disable_vt_swithing_from_wayland.patch",
-        "export": false,
-
-        "source": "linux-embedded-patchs",
-        "path": "/disable_vt_swithing_from_wayland.patch"
-    },
-    {
-        "type": "from-directory",
-        "name": "disable_keyboard_echo_by_default.patch",
-        "export": false,
-
-        "source": "linux-embedded-patchs",
-        "path": "/disable_keyboard_echo_by_default.patch"
-    },
-    {
-        "type": "from-directory",
-        "name": "disable_tty_control_flow.patch",
-        "export": false,
-
-        "source": "linux-embedded-patchs",
-        "path": "/disable_tty_control_flow.patch"
-    },
-    {
-        "type": "from-directory",
-        "name": "disable_tty_signals.patch",
-        "export": false,
-
-        "source": "linux-embedded-patchs",
-        "path": "/disable_tty_signals.patch"
-    },
-    {
-        "type": "from-directory",
-        "name": "disable_reboot_and_shutdown_emerg_messages.patch",
-        "export": false,
-
-        "source": "linux-embedded-patchs",
-        "path": "/disable_reboot_and_shutdown_emerg_messages.patch"
-    },
-    {
-        "type": "from-directory",
-        "name": "disable_reboot_and_shutdown_emerg_messages_6.6.0.patch",
-        "export": false,
-
-        "source": "linux-embedded-patchs",
-        "path": "/6.6.0/disable_reboot_and_shutdown_emerg_messages.patch"
-    },
-    {
-        "type": "from-directory",
-        "name": "make_all_emerg_messages_with_alert_loglevel.patch",
-        "export": false,
-
-        "source": "linux-embedded-patchs",
-        "path": "/make_all_emerg_messages_with_alert_loglevel.patch"
     },
 
     // extract "custom-debian-initramfs-init"

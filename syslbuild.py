@@ -1281,6 +1281,9 @@ def buildKernel(item):
     if realCopied:
         applyPatches(kernel_sources, item)
 
+    if item.get("only_test_patches", False):
+        return
+
     ARCH = kernelArchitectures[architecture]
     CROSS_COMPILE = gccNames[architecture]
     ARCH_STR = f"ARCH={ARCH}"

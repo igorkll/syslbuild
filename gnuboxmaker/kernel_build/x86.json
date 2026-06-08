@@ -20,15 +20,15 @@
         "kernel_output_file": "bzImage",
 
         "patches": [
-            "disable_vt_swithing_from_keyboard.patch",
-            "disable_vt_swithing_from_wayland.patch",
-            "disable_sysrq.patch",
-            "disable_cad.patch",
-            "disable_keyboard_echo_by_default.patch",
-            "disable_tty_signals.patch",
-            "disable_tty_control_flow.patch",
-            "disable_reboot_and_shutdown_emerg_messages.patch",
-            "make_all_emerg_messages_with_alert_loglevel.patch"
+            "linux-embedded-patchs/disable_vt_swithing_from_keyboard.patch",
+            "linux-embedded-patchs/disable_vt_swithing_from_wayland.patch",
+            "linux-embedded-patchs/disable_sysrq.patch",
+            "linux-embedded-patchs/disable_cad.patch",
+            "linux-embedded-patchs/disable_keyboard_echo_by_default.patch",
+            "linux-embedded-patchs/disable_tty_signals.patch",
+            "linux-embedded-patchs/disable_tty_control_flow.patch",
+            "linux-embedded-patchs/disable_reboot_and_shutdown_emerg_messages.patch",
+            "linux-embedded-patchs/make_all_emerg_messages_with_alert_loglevel.patch"
         ],
 
         "kernel_config_changes_files": [

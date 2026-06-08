@@ -79,6 +79,8 @@ alternatively, you can fork gnubox maker and then offer a pull request
 * disable_keyboard_echo_by_default.patch - prevents typing characters on the screen from the keyboard before launching plymouth
 * disable_tty_control_flow.patch - disables control flow in the kernel
 * disable_tty_signals.patch - disables tty signals in the kernel
+* disable_reboot_and_shutdown_emerg_messages.patch - disables the output of shutdown/reboot messages.
+* make_all_emerg_messages_with_alert_loglevel.patch - makes all EMERG messages with loglevel alert so that they can be stopped using loglevel=0
 
 ## project structure
 * gnubox.gnb - the main file
