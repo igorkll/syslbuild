@@ -61,7 +61,8 @@ also, assembling a bootable img with an already installed system is also a separ
 * -d - do not use the download cache of the kernel sources
 * -e - completely clears the entire cache before building
 
-## supported architectures
+## supported export architectures
+* ALL - builds a project for all architectures from the list of project architectures
 * amd64
 * i386
 * arm64
