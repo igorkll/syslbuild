@@ -122,6 +122,10 @@ def buildLog(logstr, quiet=False):
         log_file2.write(logstr + "\n")
         log_file2.flush()
 
+    if log_file3:
+        log_file3.write(logstr + "\n")
+        log_file3.flush()
+
 def getSize(path):
     if os.path.isfile(path):
         return os.path.getsize(path)
@@ -181,6 +185,13 @@ def getLogFile():
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     filename = f"build_{architecture}_{timestamp}.log"
     filepath = pathConcat(path_logs, filename)
+
+    print(f"Log path: {filepath}")
+    return open(filepath, "w")
+
+def getLastLogFile():
+    os.makedirs(path_temp, exist_ok=True)
+    filepath = pathConcat(path_temp, "last.log")
 
     print(f"Log path: {filepath}")
     return open(filepath, "w")
@@ -2170,12 +2181,13 @@ if __name__ == "__main__":
     if args.e:
         deleteAny(path_temp)
         deleteAny(path_output)
-    log_file = getLogFile()
     
+    log_file = getLogFile()
+    log_file2 = getLastLogFile()
     if args.lastlog:
-        log_file2 = open(args.lastlog, "w")
+        log_file3 = open(args.lastlog, "w")
     else:
-        log_file2 = None
+        log_file3 = None
 
     buildLog("Syslbuild info:")
     buildLog(f"Syslbuild version: {formatVersion(VERSION)}")

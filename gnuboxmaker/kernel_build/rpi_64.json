@@ -30,7 +30,7 @@
             "linux-embedded-patchs/disable_keyboard_echo_by_default.patch",
             "linux-embedded-patchs/disable_tty_signals.patch",
             "linux-embedded-patchs/disable_tty_control_flow.patch",
-            "linux-embedded-patchs/disable_reboot_and_shutdown_emerg_messages.patch",
+            "linux-embedded-patchs/6.6.0/disable_reboot_and_shutdown_emerg_messages.patch",
             "linux-embedded-patchs/make_all_emerg_messages_with_alert_loglevel.patch"
         ],
 

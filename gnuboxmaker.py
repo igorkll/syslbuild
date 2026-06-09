@@ -787,6 +787,9 @@ ShowStatus={"no" if current_project.boot_quiet else "yes"}
     writeText(os.path.join(systemd_config, "user.conf"), f"""[Manager]
 {user_system_config_append}""")
 
+    writeText(os.path.join(systemd_config, "coredump.conf"), f"""[Coredump]
+Storage=none""")
+
     writeText(os.path.join(etc_config, "pam.d", "login"), f"""@include common-auth
 @include common-account
 @include common-session""")

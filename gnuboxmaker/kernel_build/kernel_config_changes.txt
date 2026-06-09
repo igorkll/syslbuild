@@ -1052,6 +1052,8 @@ CONFIG_TOUCHSCREEN_MSG2638=m
 CONFIG_TOUCHSCREEN_WM97XX=m
 CONFIG_TOUCHSCREEN_ZFORCE=m
 
+# not working... WTF... I'll make a patch later to disable coredump creation
+# CONFIG_COREDUMP=n
 
-CONFIG_COREDUMP=n
+
 CONFIG_NULL_TTY=y
