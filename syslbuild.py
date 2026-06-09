@@ -69,6 +69,8 @@ SIZE_UNITS = {
     "TB": 1024**4,
 }
 
+DD_BS = "4M"
+
 VERSION = [1, 4, 2]
 
 def formatVersion(version):
@@ -668,17 +670,14 @@ def writeRawItem(raw, toPath, changeRights=None):
 def allocateFile(path, size):
     buildLog(f"Allocation file with size {size}: {path}")
 
-    bs = 1024 * 1024
-    count = math.ceil(size / bs)
-
     buildExecute([
         "dd",
         "if=/dev/zero",
         f"of={path}",
-        "bs=" + str(bs),
-        "count=" + str(count)
+        f"bs={DD_BS}",
+        f"count={size}",
+        "iflag=count_bytes"
     ])
-    # buildExecute(["truncate", "-s", str(size), path])
 
 def formatFilesystem(path, item):
     fs_type = item["fs_type"]
@@ -961,13 +960,15 @@ def installBootloader(item, path, partitionsOffsets, sectorsize):
                 sys.exit(1)
 
             bootloaderPath = findItem(binary["file"])
-            buildExecute([ # нужно БЛЯТЬ ОПТИМИЗИРОВАТЬ, увеличив BS
+            buildExecute([
                 "dd",
                 f"if={bootloaderPath}",
                 f"of={path}",
-                f"bs={sectorsize}",
-                f"seek={bootloaderSector}",
-                "conv=notrunc"
+                f"bs={DD_BS}",
+                f"seek={bootloaderOffsetBytes}",
+                "conv=notrunc",
+                "status=progress",
+                "oflag=seek_bytes"
             ])
     else:
         buildLog("ERROR: unknown bootloader type")
@@ -1003,14 +1004,17 @@ def buildFullDiskImage(item):
     partitionsOffsets = []
     for i, paritition in enumerate(resultPartitions):
         start_sector = paritition["start"]
-        partitionsOffsets.append(start_sector * resultSectorsize)
+        start_bytes = start_sector * resultSectorsize
+        partitionsOffsets.append(start_bytes)
         buildExecute([
             "dd",
             f"if={partitionsPaths[i]}",
             f"of={path}",
-            f"bs={resultSectorsize}",
-            "seek=" + str(start_sector),
-            "conv=notrunc"
+            f"bs={DD_BS}",
+            f"seek={start_bytes}",
+            "conv=notrunc",
+            "status=progress",
+            "oflag=seek_bytes"
         ])
 
     # install bootloader
