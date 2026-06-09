@@ -2198,6 +2198,7 @@ if __name__ == "__main__":
     log_file2 = getLastLogFile()
     if args.lastlog:
         log_file3 = open(args.lastlog, "w")
+        print(f"Log path: {log_file3}")
     else:
         log_file3 = None
 
