@@ -13,6 +13,10 @@ WARNING!!! if you read this text from GITHUB page please, download a release and
 * syslbuild is able to create a boot image with a partition table itself, which can be convenient for creating a complete firmware.
 * please note that in syslbuild, the runtime environment may affect the build result. a better solution would be to create one VM for the entire project and build the project on that VM. it is better that the architecture matches the target architecture of the assembly, although this is not necessary due to qemu-static
 
+## the programs included in the package
+* syslbuild - creating custom linux systems from an assembly description file. allows you to fully control and customize the system. export to any platforms is possible
+* gnubox maker - a higher-level utility designed for creating kiosks and single application linux. wherever linux with a single application is needed (although this is not the only scenario), it supports export to a limited number of platforms
+
 ## installing
 * download the syslbuild release (NOT THE REPOSITORY BRANCH): https://github.com/igorkll/syslbuild/releases
 * unpack it in a convenient place
