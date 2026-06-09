@@ -1171,8 +1171,9 @@ def copyKernel(item, kernel_sources):
 
     copied_kernel_files = pathConcat(path_temp_kernel_build, hashlib.md5((kernel_sources + ":" + patches_checksum).encode("utf-8")).hexdigest())
     copied_kernel_files_flag = pathConcat(copied_kernel_files, ".copied")
+    patched_kernel_files_flag = pathConcat(copied_kernel_files, ".patched")
 
-    if not os.path.isdir(copied_kernel_files) or not os.path.isfile(copied_kernel_files_flag):
+    if not os.path.isdir(copied_kernel_files) or not os.path.isfile(copied_kernel_files_flag) or not os.path.isfile(patched_kernel_files_flag):
         deleteDirectory(copied_kernel_files)
         os.makedirs(copied_kernel_files, exist_ok=True)
         copyItemFiles(kernel_sources, copied_kernel_files)
@@ -1295,6 +1296,13 @@ def buildKernel(item):
 
     if realCopied:
         applyPatches(kernel_sources, item)
+        
+        # записываю .patched флаг даже если реальных патчей ядра не указано
+        # это нужно чтобы при следующей сборки не копировать файлы ядра заного
+        patched_kernel_files_flag = pathConcat(kernel_sources, ".patched")
+        with open(patched_kernel_files_flag, "w") as f:
+            pass
+        
 
     if item.get("only_test_patches", False):
         return
