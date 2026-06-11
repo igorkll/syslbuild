@@ -226,8 +226,7 @@ these changes to the kernel config are applied automatically when building the k
 * support for the operation (packing and unpacking) of initramfs with a multiblock structure
 * the ability to specify a filesystem revision
 * in directory items, you can specify the rights for directories and files in copy objects separately.
-
-## roadmap completed
+### completed
 * execution of arbitrary scripts in the system's chroot, with qemu-static support for execution during assembly for a different architecture
 * make a normal caching system
 * the ability to add custom files when building the kernel. sometimes it is necessary, for example, for boards with wifi to download the regulatory.db or, for example, to build the ubuntu kernel, where you need a couple of .pem files
