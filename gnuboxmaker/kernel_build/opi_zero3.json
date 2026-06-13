@@ -21,13 +21,13 @@
 
         "patches": [
             "linux-embedded-patchs/disable_vt_swithing_from_keyboard.patch",
-            "linux-embedded-patchs/disable_vt_swithing_from_wayland.patch",
+            //"linux-embedded-patchs/disable_vt_swithing_from_wayland.patch",
             "linux-embedded-patchs/disable_sysrq.patch",
             "linux-embedded-patchs/disable_cad.patch",
             "linux-embedded-patchs/disable_keyboard_echo_by_default.patch",
             "linux-embedded-patchs/disable_tty_signals.patch",
             "linux-embedded-patchs/disable_tty_control_flow.patch",
-            "linux-embedded-patchs/6.6.0/disable_reboot_and_shutdown_emerg_messages.patch",
+            //"linux-embedded-patchs/disable_reboot_and_shutdown_emerg_messages.patch",
             "linux-embedded-patchs/make_all_emerg_messages_with_alert_loglevel.patch",
 
             //"patches.armbian.6.18/arm64-dts-sun50i-h616-orangepi-zero2-zero3-add-wifi.patch",
@@ -523,7 +523,7 @@
             "sunxi-6.18/patches.armbian/drv-asoc-sunxi-sun4i-codec-select-capture-source.patch",
             "sunxi-6.18/patches.armbian/drv-asoc-sunxi-sun8i-codec-analog-enable-sound.patch",
             "sunxi-6.18/patches.armbian/drv-char-add-dump-reg-sysinfo-drivers.patch",
-            "sunxi-6.18/patches.armbian/drv-clk-gate-add-regmap-gate-support.patch",
+            //"sunxi-6.18/patches.armbian/drv-clk-gate-add-regmap-gate-support.patch",
             "sunxi-6.18/patches.armbian/drv-clk-sunxi-ng-fix-clock-handling-for-ccu-sun55i-a523.patch",
             "sunxi-6.18/patches.armbian/drv-clocksource-timer-fix-a64-timejump.patch",
             "sunxi-6.18/patches.armbian/drv-devfreq-sun8i-a33-mbus-disable-autorefresh.patch",
