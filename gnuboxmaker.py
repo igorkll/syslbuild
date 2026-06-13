@@ -23,6 +23,10 @@ weston_shell_variants = ["kiosk", "desktop"]
 splash_mode_variants = ["center", "fill", "contain", "cover"]
 boot_sound_variants = ["none", "init", "logo"]
 
+default_devicetree_overlays = {
+    ["opi_zero3"]: "gnuboxmaker/kernel_build/sunxi-6.18/overlay_64"
+}
+
 @dataclass
 class Project:
     gnubox_version: list[int] = field(default_factory=lambda: [0, 0, 0])
@@ -803,6 +807,9 @@ Storage=none""")
 
     copy_files(os.path.join(path_resources, "files"), user_files)
     copy_files(os.path.join(path_resources, "devicetree"), devicetree)
+
+    for platform, path in default_devicetree_overlays.items():
+        copy_files(path, os.path.join(devicetree, platform))
 
     shutil.copy(os.path.join(path_resources, "runshell.sh"), os.path.join(path_temp_syslbuild, "files", "runshell.sh"))
     shutil.copy(os.path.join(path_resources, "preinit.sh"), os.path.join(path_temp_syslbuild, "files", "preinit.sh"))

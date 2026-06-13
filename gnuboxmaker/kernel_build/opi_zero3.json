@@ -30,28 +30,6 @@
             //"linux-embedded-patchs/disable_reboot_and_shutdown_emerg_messages.patch",
             "linux-embedded-patchs/make_all_emerg_messages_with_alert_loglevel.patch",
 
-            //"patches.armbian.6.18/arm64-dts-sun50i-h616-orangepi-zero2-zero3-add-wifi.patch",
-            //"patches.armbian.6.18/0702-arm64-dts-sun50i-h616-add-digital-audio-node.patch",
-            //"patches.armbian.6.18/drv-drm-sun4i-hdmi-add-audio-support.patch",
-
-            //"uwe5622-nixos-main/0001-introduce-uwe5622-driver-for-kernel-6.3.patch",
-            //"uwe5622-nixos-main/0002-apply-bugfixes-for-uwe5622-driver.patch",
-            //"uwe5622-nixos-main/0003-drivers-uwe5622-fix-compilation-on-6.3-kernels.patch",
-            //"uwe5622-nixos-main/0004-fix-driver-for-kernel-6.4.patch",
-            //"uwe5622-nixos-main/0005-uwe5622-various-warning-and-firmware-path-fixes.patch",
-            //"uwe5622-nixos-main/0006-Add-to-section-Makefile-CONFIG_SPARD_WLAN_SUPPORT-uw.patch",
-            //"uwe5622-nixos-main/0007-fix-spreadtrum-sprd-bluetooth-broken-park-link-statu.patch",
-            //"uwe5622-nixos-main/0008-port-uwe5622-driver-to-kernel-6.1.patch",
-            //"uwe5622-nixos-main/0009-wifi-uwe-fix-uwe5622-tty-sdio.patch",
-            //"uwe5622-nixos-main/0010-wireless-fix-setting-mac-address-for-netdev-in-uwe56.patch",
-            //"uwe5622-nixos-main/0011-wireless-uwe5622-Fix-compilation-with-6.7-kernel.patch",
-            //"uwe5622-nixos-main/0012-Patching-kernel-rockchip64-files-drivers-net-wireles.patch",
-            //"uwe5622-nixos-main/0013-wireless-uwe5622-Fix-compilation-with-6.11-kernel.patch",
-            //"uwe5622-nixos-main/0014-use-DECLARE_FLEX_ARRAY-macro-to-avoid-spanning-write.patch",
-            //"uwe5622-nixos-main/0015-arm64-dts-h616-add-wifi-support-for-orange-pi-zero-2.patch",
-            //"uwe5622-nixos-main/0016-wireless-uwe5622-https-6xyun.cn-article-orangepi-3b-.patch",
-            //"uwe5622-nixos-main/0017-wireless-uwe5622-Fix-Makefiles.patch"
-
             "sunxi-6.18/patches.megous/a711-6.18/0001-nfc-pn544-Add-support-for-VBAT-PVDD-regulators.patch",
             "sunxi-6.18/patches.megous/a711-6.18/0002-bluetooth-bcm-Restore-drive_rts_on_open-true-behavio.patch",
             "sunxi-6.18/patches.megous/a711-6.18/0003-mmc-add-delay-after-power-class-selection.patch",
