@@ -624,6 +624,7 @@ def downloadFile(url, path):
 def buildDownload(item):
     downloadFile(item["url"], getItemPath(item))
 
+"""
 def changeAccessRights(path, changeRights):
     if len(changeRights) >= 3 and changeRights[2]:
         buildExecute(["chmod", "-R", changeRights[2], path])
@@ -631,6 +632,56 @@ def changeAccessRights(path, changeRights):
     chownString = chownStr(changeRights[0], changeRights[1])
     if chownString:
         buildExecute(["chown", "-R", chownString, path])
+"""
+
+def changeAccessRights(path, changeRights):
+    """
+    Устанавливает права и владельца на путь path.
+    
+    Старый формат changeRights:
+        [owner, group, perms]  или [owner, group] — perms применяется рекурсивно через chmod -R.
+    
+    Новый формат changeRights:
+        [[owner, group, perms_files], [owner, group, perms_dirs]]
+        — perms_files применяется только к файлам (find -type f)
+        — perms_dirs применяется только к каталогам (find -type d)
+        — владельцы применяются отдельно для файлов и каталогов (по соответствующим подспискам)
+    """
+    # --- Распознавание нового формата (список из двух подсписков) ---
+    if (isinstance(changeRights, list) and len(changeRights) == 2 and
+        isinstance(changeRights[0], list) and len(changeRights[0]) >= 3 and
+        isinstance(changeRights[1], list) and len(changeRights[1]) >= 3):
+        
+        # Распаковка
+        file_owner, file_group, file_perms = changeRights[0][0], changeRights[0][1], changeRights[0][2]
+        dir_owner,  dir_group,  dir_perms  = changeRights[1][0], changeRights[1][1], changeRights[1][2]
+        
+        # 1. Права доступа
+        if file_perms:
+            buildExecute(["find", path, "-type", "f", "-exec", "chmod", file_perms, "{}", "+"])
+        
+        if dir_perms:
+            buildExecute(["find", path, "-type", "d", "-exec", "chmod", dir_perms, "{}", "+"])
+        
+        # 2. Владелец (раздельно для файлов и каталогов)
+        if file_owner or file_group:
+            chown_files = chownStr(file_owner, file_group)
+            if chown_files:
+                buildExecute(["find", path, "-type", "f", "-exec", "chown", chown_files, "{}", "+"])
+        
+        if dir_owner or dir_group:
+            chown_dirs = chownStr(dir_owner, dir_group)
+            if chown_dirs:
+                buildExecute(["find", path, "-type", "d", "-exec", "chown", chown_dirs, "{}", "+"])
+    
+    # --- Старый формат (один список) ---
+    else:
+        if len(changeRights) >= 3 and changeRights[2]:
+            buildExecute(["chmod", "-R", changeRights[2], path])
+        
+        chown_str = chownStr(changeRights[0], changeRights[1])
+        if chown_str:
+            buildExecute(["chown", "-R", chown_str, path])
 
 def recursionDeleleSymlinks(directoryPath):
     buildRawExecute("find . -type l -exec rm -f {} +", True, directoryPath)

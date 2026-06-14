@@ -448,7 +448,8 @@ these changes to the kernel config are applied automatically when building the k
                 // i recommend always explicitly specifying access rights, except when they are already set in the item (for example, when building debian, the rights are taken from packages)
                 ["debian directory", "."],
                 ["downloaded file", "/home/test.mp3", [0, 0, "0755"]],
-                ["userfile.txt", "/home/userfile.txt", [0, 0, "0755"]] //file from the project folder
+                ["userfile.txt", "/home/userfile.txt", [0, 0, "0755"]], //file from the project folder
+                ["other directory with non-executable files", ".", [[0, 0, "0644"], [0, 0, "0755"]]] //you can specify permissions first for files and then for directories.
             ],
 
             "chmod": [

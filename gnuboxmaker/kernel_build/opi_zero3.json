@@ -616,7 +616,9 @@
 
             ["opi_zero3_firmware/wifi_2355b001_1ant.ini", "/firmware/wifi_2355b001_1ant.ini"],
             ["opi_zero3_firmware/wcnmodem.bin", "/firmware/wcnmodem.bin"],
-            ["opi_zero3_firmware/uwe5622", "/firmware/uwe5622"]
+            ["opi_zero3_firmware/uwe5622", "/firmware/uwe5622"],
+
+            ["opi_zero3_armbian/patch/kernel/archive/sunxi-6.18/overlay_64", "/overlays", [[0, 0, "0644"], [0, 0, "0755"]]]
         ]
     }
 ]
