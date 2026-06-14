@@ -24,7 +24,7 @@ splash_mode_variants = ["center", "fill", "contain", "cover"]
 boot_sound_variants = ["none", "init", "logo"]
 
 default_devicetree_overlays = {
-    "opi_zero3": "gnuboxmaker/default_dtso/opi_zero3"
+    "opi_zero3": "gnuboxmaker/kernel_build/output/arm64/opi_zero3/overlays"
 }
 
 @dataclass
@@ -848,11 +848,10 @@ def setup_write_bins(builditems):
     # ЧТО ТУТ БЛЯТЬ С ПРАВАМИ ДОСТУПА. БЕЗ ЭТОЙ ХУЙНЮ НИХУЯ НЕ ПАШЕТ
     # походу при копировании plymouth проставляет права доступа другим директориям а без этого мы получаем жопу и не поднимающийся dbus
     if current_project.boot_splash or True:
-        copy_bins("embedded-plymouth")
         directories.append(["/var/lib/plymouth", [0, 0, "0755"]])
         directories.append(["/var/spool/plymouth", [0, 0, "0755"]])
         directories.append(["/run/plymouth", [0, 0, "0755"]])
-        items.append(["embedded-plymouth/x86_64", "/", [0, 0, "0755"]])
+        items.append(["blobs/embedded-plymouth/x86_64", "/", [0, 0, "0755"]])
 
     builditems.append({
         "architectures": ["amd64"],
@@ -873,7 +872,7 @@ def setup_write_bins(builditems):
     ]
 
     if current_project.boot_splash or True:
-        items.append(["embedded-plymouth/x86", "/", [0, 0, "0755"]])
+        items.append(["blobs/embedded-plymouth/x86", "/", [0, 0, "0755"]])
 
     builditems.append({
         "architectures": ["i386"],
@@ -900,7 +899,7 @@ def setup_write_bins(builditems):
         items.append(["kernel_image/arm64/rpi_5/kernel_modules", "/usr"])
 
     if current_project.boot_splash or True:
-        items.append(["embedded-plymouth/arm64", "/", [0, 0, "0755"]])
+        items.append(["blobs/embedded-plymouth/arm64", "/", [0, 0, "0755"]])
 
     builditems.append({
         "architectures": ["arm64"],
@@ -1576,7 +1575,6 @@ def generate_syslbuild_project():
     deleteAny(os.path.join(path_temp_syslbuild, "chroot"))
     deleteAny(os.path.join(path_temp_syslbuild, "kernel_image"))
     deleteAny(os.path.join(path_temp_syslbuild, "blobs"))
-    deleteAny(os.path.join(path_temp_syslbuild, "embedded-plymouth"))
     
     setup_build_architectures(architectures)
     setup_download(builditems)

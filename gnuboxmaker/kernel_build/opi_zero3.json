@@ -518,7 +518,7 @@
             "opi_zero3_armbian/patch/kernel/archive/sunxi-6.18/patches.armbian/drv-asoc-sunxi-sun4i-codec-select-capture-source.patch",
             "opi_zero3_armbian/patch/kernel/archive/sunxi-6.18/patches.armbian/drv-asoc-sunxi-sun8i-codec-analog-enable-sound.patch",
             "opi_zero3_armbian/patch/kernel/archive/sunxi-6.18/patches.armbian/drv-char-add-dump-reg-sysinfo-drivers.patch",
-            //"opi_zero3_armbian/patch/kernel/archive/sunxi-6.18/patches.armbian/drv-clk-gate-add-regmap-gate-support.patch",
+            "opi_zero3_armbian/patch/kernel/archive/sunxi-6.18/patches.armbian/drv-clk-gate-add-regmap-gate-support.patch",
             "opi_zero3_armbian/patch/kernel/archive/sunxi-6.18/patches.armbian/drv-clk-sunxi-ng-fix-clock-handling-for-ccu-sun55i-a523.patch",
             "opi_zero3_armbian/patch/kernel/archive/sunxi-6.18/patches.armbian/drv-clocksource-timer-fix-a64-timejump.patch",
             "opi_zero3_armbian/patch/kernel/archive/sunxi-6.18/patches.armbian/drv-devfreq-sun8i-a33-mbus-disable-autorefresh.patch",
