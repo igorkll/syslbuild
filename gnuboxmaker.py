@@ -826,13 +826,14 @@ Storage=none""")
 
     prepair_devicetree(devicetree)
 
-def copy_bins(name):
-    output_path = os.path.join(path_temp_syslbuild, name)
+def copy_bins(name, output_name=None):
+    if output_name is None: output_name = name
+    output_path = os.path.join(path_temp_syslbuild, output_name)
     deleteAny(output_path)
     buildExecute(["cp", "-a", os.path.join("gnuboxmaker", name) + "/.", output_path])
 
 def setup_write_bins(builditems):
-    copy_bins("kernel_image")
+    copy_bins("kernel_build/output", "kernel_image")
     copy_bins("blobs")
 
     directories = []

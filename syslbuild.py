@@ -360,6 +360,11 @@ def buildRawExecute(cmd, checkValid=True, cwd=None):
 
     return "\n".join(output_lines)
 
+def doCommands(cwd, commands=None):
+    if commands:
+        for command in commands:
+            buildRawExecute(command, True, cwd)
+
 def buildItemLog(item, comment=None, comment2=None, hideExport=False):
     if comment is None:
         comment = "Building item ---------------- "
@@ -473,7 +478,7 @@ def buildDebian(item):
     buildExecute(cmd)
 
     hostsFile = """127.0.0.1 localhost
-    127.0.1.1 hostname"""
+127.0.1.1 hostname"""
 
     path_etc = pathConcat(itemFolder, "etc")
     makedirsChangeRights(path_etc, [0, 0, "0755"])
@@ -1295,7 +1300,9 @@ def buildKernel(item):
         rawItemsProcess(item["items"], kernel_sources)
 
     if realCopied:
+        doCommands(kernel_sources, item.get("pre_patches_commands", None))
         applyPatches(kernel_sources, item)
+        doCommands(kernel_sources, item.get("post_patches_commands", None))
         
         # записываю .patched флаг даже если реальных патчей ядра не указано
         # это нужно чтобы при следующей сборки не копировать файлы ядра заного

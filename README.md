@@ -100,6 +100,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * systemd-container
 * reset
 * device-tree-compiler
+* bash
 
 ## python dependencies
 * json5
@@ -866,6 +867,18 @@ these changes to the kernel config are applied automatically when building the k
                 "disable_sysrq.patch", // it completely prohibits the operation of sysrq, regardless of the kernel parameters
                 "disable_cad.patch", // blocks restarting by pressing ctrl+alt+del
                 "disable_printk.patch" // will make the kernel shut up
+            ],
+
+            // optional
+            // execute commands from the source code directory of the kernel
+            "pre_patches_commands": [
+                "any shell command",
+                "any shell command 2"
+            ],
+
+            "post_patches_commands": [
+                "any shell command",
+                "any shell command 2"
             ],
 
             // optional
