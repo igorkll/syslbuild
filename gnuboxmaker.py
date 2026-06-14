@@ -24,7 +24,7 @@ splash_mode_variants = ["center", "fill", "contain", "cover"]
 boot_sound_variants = ["none", "init", "logo"]
 
 default_devicetree_overlays = {
-    "opi_zero3": "gnuboxmaker/kernel_build/output/arm64/opi_zero3/overlays"
+#    "opi_zero3": "gnuboxmaker/kernel_build/output/arm64/opi_zero3/overlays"
 }
 
 @dataclass
