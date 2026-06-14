@@ -1169,9 +1169,16 @@ def downloadKernelFromGit(item):
 
 def copyKernel(item, kernel_sources):
     patches_checksum = {"array": []}
-    if "patches" in item:
-        for file in item["patches"]:
-            patches_checksum["array"].append(get_file_checksum(findItem(file)))
+
+    for file in item.get("pre_patches_commands"):
+        patches_checksum["array"].append(get_file_checksum(findItem(file)))
+
+    for file in item.get("patches"):
+        patches_checksum["array"].append(get_file_checksum(findItem(file)))
+
+    for file in item.get("post_patches_commands"):
+        patches_checksum["array"].append(get_file_checksum(findItem(file)))
+        
     patches_checksum = dictChecksum(patches_checksum)
 
     copied_kernel_files = pathConcat(path_temp_kernel_build, hashlib.md5((kernel_sources + ":" + patches_checksum).encode("utf-8")).hexdigest())
