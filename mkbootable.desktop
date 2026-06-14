@@ -1,0 +1,10 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=mkbootable
+Comment=creates a bootable image from your application
+Exec=/usr/bin/python3 /usr/bin/mkbootable.py
+Icon=/opt/syslbuild/mkbootable.png
+Terminal=true
+Categories=Development;Utility;

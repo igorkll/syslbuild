@@ -1,4 +1,5 @@
-# syslbuild + gnubox maker 1.4.3
+# syslbuild + gnubox maker + mkbootable 1.4.3
+# mkbootable It will be implemented later.
 an build system for creating Linux distributions. it is focused on embedded distributions  
 DOWNLOAD THE RELEASE, NOT THE REPOSITORY!  
 WARNING!!! if you read this text from GITHUB page please, download a release and read description there. on github this text is DEV syslbuild version (not released yet)  
@@ -13,9 +14,27 @@ WARNING!!! if you read this text from GITHUB page please, download a release and
 * syslbuild is able to create a boot image with a partition table itself, which can be convenient for creating a complete firmware.
 * please note that in syslbuild, the runtime environment may affect the build result. a better solution would be to create one VM for the entire project and build the project on that VM. it is better that the architecture matches the target architecture of the assembly, although this is not necessary due to qemu-static
 
+## subprojects
+* Gnubox maker - the simplest way to create kiosk/appliance builds of gnu/linux: https://github.com/igorkll/Gnubox-Maker
+* mkbootable - an even easier way to make a kiosk: https://github.com/igorkll/mkbootable
+
 ## the programs included in the package
 * syslbuild - creating custom linux systems from an assembly description file. allows you to fully control and customize the system. export to any platforms is possible
 * gnubox maker - a higher-level utility designed for creating kiosks and single application linux. wherever linux with a single application is needed (although this is not the only scenario), it supports export to a limited number of platforms
+* mkbootable - A VERY high-level utility. you need it if you literally already have a ready-made application and you just need to make a bootable image from your application. He can't do anything else
+
+## what should I choose syslbuild, Gnubox maker or mkbootable?
+syslbuild is a low-level utility where you describe the system build yourself and can thoroughly control all partitions and files  
+gnubox maker is a high-level GUI program for creating kiosks and application linux systems. the main use case is single application linux  
+* if you need to thoroughly control the system you are building and be able to fully customize it - syslbuild
+* if you just need a way to create kiosk/application linux that runs one of your applications - gnubox maker
+* if you need custom hardware that is not available in the export support of gnubox maker - syslbuild
+* I just need a bootable image right now - mkbootable
+
+## dependency chain within the project
+* syslbuild - main program
+* gnubox maker - it works via syslbuild
+* mkbootable - it works via gnubox maker
 
 ## installing
 * download the syslbuild release (NOT THE REPOSITORY BRANCH): https://github.com/igorkll/syslbuild/releases
@@ -28,16 +47,6 @@ WARNING!!! if you read this text from GITHUB page please, download a release and
 * https://github.com/igorkll/custom-debian-initramfs-init - custom /init script for debian initramfs
 * https://github.com/igorkll/WinBox-Maker - a program for creating embedded Windows images
 * https://github.com/igorkll/embedded-plymouth - plymouth with a patch to disable ESC key processing (so that the console cannot be displayed during boot)
-
-## subprojects
-* Gnubox maker - the simplest way to create kiosk/appliance builds of gnu/linux: https://github.com/igorkll/Gnubox-Maker
-
-## what should I choose syslbuild or Gnubox maker?
-syslbuild is a low-level utility where you describe the system build yourself and can thoroughly control all partitions and files  
-gnubox maker is a high-level GUI program for creating kiosks and application linux systems. the main use case is single application linux  
-* if you need to thoroughly control the system you are building and be able to fully customize it - syslbuild
-* if you just need a way to create kiosk/application linux that runs one of your applications - gnubox maker
-* if you need custom hardware that is not available in the export support of gnubox maker - syslbuild
 
 ## build process
 you create a folder and in it a json file with a description of the project  
