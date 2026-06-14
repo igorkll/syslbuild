@@ -5,7 +5,7 @@
         "export": false,
 
         "git_url": "https://github.com/armbian/firmware",
-        "git_checkout": "4050e02da2dce2b74c97101f7964ecfb962f5aec"
+        "git_checkout": "1d1d4ac234c23ea7d7dc85a001492f7e0e765f80" //1d1d4ac234c23ea7d7dc85a001492f7e0e765f80 / 4050e02da2dce2b74c97101f7964ecfb962f5aec
     },
     {
         "type": "gitclone",
