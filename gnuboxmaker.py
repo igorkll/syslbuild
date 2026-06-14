@@ -835,11 +835,7 @@ def setup_write_bins(builditems):
     copy_bins("kernel_image")
     copy_bins("blobs")
 
-    directories = [
-        ["/var/lib/plymouth", [0, 0, "0755"]],
-        ["/var/spool/plymouth", [0, 0, "0755"]],
-        ["/run/plymouth", [0, 0, "0755"]]
-    ]
+    directories = []
 
     # ---------------------- x86_64
     items = [
@@ -852,6 +848,9 @@ def setup_write_bins(builditems):
     # походу при копировании plymouth проставляет права доступа другим директориям а без этого мы получаем жопу и не поднимающийся dbus
     if current_project.boot_splash or True:
         copy_bins("embedded-plymouth")
+        directories.append(["/var/lib/plymouth", [0, 0, "0755"]])
+        directories.append(["/var/spool/plymouth", [0, 0, "0755"]])
+        directories.append(["/run/plymouth", [0, 0, "0755"]])
         items.append(["embedded-plymouth/x86_64", "/", [0, 0, "0755"]])
 
     builditems.append({
