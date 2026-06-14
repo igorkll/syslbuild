@@ -16,6 +16,11 @@ The .img images for x86 / x86_64 that Gnubox maker generates are universal. they
 a similar program for creating Windows images for embedded devices: https://github.com/igorkll/WinBox-Maker  
 ATTENTION. Starting from version 1.3.9, the kernels do not go with the program, but are assembled on the user's computer during installation. because of this, the installation can take a long time. up to several hours  
 
+## subprojects
+* syslbuild - a low-level build system for custom linux distributions: https://github.com/igorkll/syslbuild
+* Gnubox maker - the simplest way to create kiosk/appliance builds of gnu/linux: https://github.com/igorkll/Gnubox-Maker
+* mkbootable - an even easier way to make a kiosk/single application gnu/linux: https://github.com/igorkll/mkbootable
+
 ## installing
 * download the syslbuild release (NOT THE REPOSITORY BRANCH): https://github.com/igorkll/syslbuild/releases
 * unpack it in a convenient place

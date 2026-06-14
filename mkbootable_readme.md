@@ -6,6 +6,11 @@ the source code of mkbootable is located in the syslbuild repository as it is pa
 this project is an abstraction layer above Gnubox maker, which in turn is an abstraction layer above syslbuild  
 all of this is part of a single syslbuild project  
 
+## subprojects
+* syslbuild - a low-level build system for custom linux distributions: https://github.com/igorkll/syslbuild
+* Gnubox maker - the simplest way to create kiosk/appliance builds of gnu/linux: https://github.com/igorkll/Gnubox-Maker
+* mkbootable - an even easier way to make a kiosk/single application gnu/linux: https://github.com/igorkll/mkbootable
+
 ## installing
 * download the syslbuild release (NOT THE REPOSITORY BRANCH): https://github.com/igorkll/syslbuild/releases
 * unpack it in a convenient place

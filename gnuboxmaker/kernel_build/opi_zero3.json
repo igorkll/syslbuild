@@ -539,7 +539,8 @@
             "opi_zero3_armbian/patch/misc/wireless-uwe5622/uwe5622-fix-timer-api-changes-for-6.15-only-sunxi.patch",
             "opi_zero3_armbian/patch/misc/wireless-uwe5622/uwe5622-v6.16.patch",
             "opi_zero3_armbian/patch/misc/wireless-uwe5622/uwe5622-v6.17.patch",
-            "opi_zero3_armbian/patch/misc/wireless-uwe5622/uwe5622-v6.18.patch"
+            "opi_zero3_armbian/patch/misc/wireless-uwe5622/uwe5622-v6.18.patch",
+            "opi_zero3_armbian/patch/misc/wireless-uwe5622/uwe5622-v6.19.patch"
         ],
 
         "post_patches_commands": [

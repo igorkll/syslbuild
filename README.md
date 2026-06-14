@@ -15,8 +15,9 @@ WARNING!!! if you read this text from GITHUB page please, download a release and
 * please note that in syslbuild, the runtime environment may affect the build result. a better solution would be to create one VM for the entire project and build the project on that VM. it is better that the architecture matches the target architecture of the assembly, although this is not necessary due to qemu-static
 
 ## subprojects
+* syslbuild - a low-level build system for custom linux distributions: https://github.com/igorkll/syslbuild
 * Gnubox maker - the simplest way to create kiosk/appliance builds of gnu/linux: https://github.com/igorkll/Gnubox-Maker
-* mkbootable - an even easier way to make a kiosk: https://github.com/igorkll/mkbootable
+* mkbootable - an even easier way to make a kiosk/single application gnu/linux: https://github.com/igorkll/mkbootable
 
 ## the programs included in the package
 * syslbuild - creating custom linux systems from an assembly description file. allows you to fully control and customize the system. export to any platforms is possible
