@@ -1170,14 +1170,14 @@ def downloadKernelFromGit(item):
 def copyKernel(item, kernel_sources):
     patches_checksum = {"array": []}
 
-    for file in item.get("pre_patches_commands"):
+    for command in item.get("pre_patches_commands", []):
+        patches_checksum["array"].append(get_file_checksum(command))
+
+    for file in item.get("patches", []):
         patches_checksum["array"].append(get_file_checksum(findItem(file)))
 
-    for file in item.get("patches"):
-        patches_checksum["array"].append(get_file_checksum(findItem(file)))
-
-    for file in item.get("post_patches_commands"):
-        patches_checksum["array"].append(get_file_checksum(findItem(file)))
+    for command in item.get("post_patches_commands", []):
+        patches_checksum["array"].append(get_file_checksum(command))
         
     patches_checksum = dictChecksum(patches_checksum)
 
@@ -1316,7 +1316,6 @@ def buildKernel(item):
         patched_kernel_files_flag = pathConcat(kernel_sources, ".patched")
         with open(patched_kernel_files_flag, "w") as f:
             pass
-        
 
     if item.get("only_test_patches", False):
         return
