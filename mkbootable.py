@@ -34,6 +34,8 @@ if os.path.isdir(syslbuild_install_path):
 else:
     syslbuild_path = "."
 
+build_log(f"syslbuild path: {syslbuild_path}")
+
 # --------------------------------------- parsing cli arguments
 
 argsparser = argparse.ArgumentParser(
@@ -54,6 +56,7 @@ argsparser.add_argument("-o", "--output", default="image.img", help="output path
 
 argsparser.add_argument("--boot-logo", default=None, help="you can set a custom boot logo .png")
 argsparser.add_argument("--root-privileges", type=str2bool, default=False, help="if set to true, the application in the image will have root privileges")
+argsparser.add_argument("--clear-cache", type=str2bool, default=False, help="cleans up the cache before building")
 
 args = argsparser.parse_args()
 
@@ -253,6 +256,12 @@ def generate_project():
 
     project_config_path = os.path.join(project_path, "gnubox.gnb")
     project_resources = os.path.join(project_path, "resources")
+    project_temp = os.path.join(project_path, ".temp")
+    project_output = os.path.join(project_path, "output")
+
+    if args.clear_cache:
+        shutil.rmtree(project_temp)
+        shutil.rmtree(project_output)
 
     if os.path.isdir(project_resources):
         shutil.rmtree(project_resources)
