@@ -37,6 +37,11 @@ gnubox maker is a high-level GUI program for creating kiosks and application lin
 * gnubox maker - it works via syslbuild
 * mkbootable - it works via gnubox maker
 
+## the level of customization of the system in different programs of the package
+* syslbuild - complete customization of the assembled system
+* gnubox maker - partial customization. but most of them are already set up to create a kiosk
+* mkbootable - almost zero customization. Just download the app and get a bootable image
+
 ## installing
 * download the syslbuild release (NOT THE REPOSITORY BRANCH): https://github.com/igorkll/syslbuild/releases
 * unpack it in a convenient place

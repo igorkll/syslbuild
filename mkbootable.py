@@ -36,51 +36,110 @@ args = argsparser.parse_args()
 
 # ---------------------------------------
 
-project_configs
+platforms = {
+    ["desktop_64"] = {
+        "project_config": {
+            "export_x86_64": True,
+            "export_x86": False,
+            "export_arm64": False,
+            "export_img_bios_mbr": False,
+            "export_img_bios_gpt": False,
+            "export_img_uefi_gpt": False,
+            "export_img_bios_and_uefi_gpt": True,
+            "export_img_opi_zero3": False,
+            "export_img_rpi_64": False
+        },
+        "image_path": "output/amd64/project BIOS UEFI GPT.img"
+    },
+    ["desktop_32"] = {
+        "project_config": {
+            "export_x86_64": False,
+            "export_x86": True,
+            "export_arm64": False,
+            "export_img_bios_mbr": False,
+            "export_img_bios_gpt": True,
+            "export_img_uefi_gpt": False,
+            "export_img_bios_and_uefi_gpt": False,
+            "export_img_opi_zero3": False,
+            "export_img_rpi_64": False
+        },
+        "image_path": "output/i386/project BIOS GPT.img"
+    },
+    ["raspberry_pi_64"] = {
+        "project_config": {
+            "export_x86_64": False,
+            "export_x86": False,
+            "export_arm64": True,
+            "export_img_bios_mbr": False,
+            "export_img_bios_gpt": False,
+            "export_img_uefi_gpt": False,
+            "export_img_bios_and_uefi_gpt": False,
+            "export_img_opi_zero3": False,
+            "export_img_rpi_64": True
+        },
+        "image_path": "output/arm64/project RPI 64.img"
+    },
+    ["orange_pi_zero3"] = {
+        "project_config": {
+            "export_x86_64": False,
+            "export_x86": False,
+            "export_arm64": True,
+            "export_img_bios_mbr": False,
+            "export_img_bios_gpt": False,
+            "export_img_uefi_gpt": False,
+            "export_img_bios_and_uefi_gpt": False,
+            "export_img_opi_zero3": True,
+            "export_img_rpi_64": False
+        },
+        "image_path": "output/arm64/project OPI ZERO 3.img"
+    }
+}
 
 def generate_gnuboxmaker_config():
+    user_packages = {
+        # audio
+        "pipewire",
+        "pipewire-pulse",
+        "wireplumber",
+        "libspa-0.2-modules",
+        "alsa-utils",
+
+        # libs
+        "libpulse0",
+        "libnspr4",
+        "libnss3",
+        "libxss1",
+        "libasound2",
+        "libatk1.0-0",
+        "libatk-bridge2.0-0",
+        "libxcomposite1",
+        "libxcursor1",
+        "libxdamage1",
+        "libxrandr2",
+        "libxkbcommon0",
+        "libwayland-client0",
+        "libwayland-egl1",
+        "libgbm1",
+        "libgtk-3-0",
+
+        # tools
+        "nano",
+
+        # network
+        "network-manager",
+        "rfkill",
+        "iproute2",
+        "wpasupplicant",
+        "wget",
+
+        # other
+        "udisks2" # i use the standard udisks2 instead of liamounts. since user applications may have no idea what liamounts is and how it differs from udisks2.
+    }
+
     project_config = {
         "gnubox_version": [1, 4, 3],
         "distro": "debian",
-        "user_packages": [
-            # audio
-            "pipewire",
-            "pipewire-pulse",
-            "wireplumber",
-            "libspa-0.2-modules",
-            "alsa-utils",
-
-            # libs
-            "libpulse0",
-            "libnspr4",
-            "libnss3",
-            "libxss1",
-            "libasound2",
-            "libatk1.0-0",
-            "libatk-bridge2.0-0",
-            "libxcomposite1",
-            "libxcursor1",
-            "libxdamage1",
-            "libxrandr2",
-            "libxkbcommon0",
-            "libwayland-client0",
-            "libwayland-egl1",
-            "libgbm1",
-            "libgtk-3-0",
-
-            # tools
-            "nano",
-
-            # network
-            "network-manager",
-            "rfkill",
-            "iproute2",
-            "wpasupplicant",
-            "wget",
-
-            # other
-            "udisks2" # i use the standard udisks2 instead of liamounts. since user applications may have no idea what liamounts is and how it differs from udisks2.
-        ],
+        "user_packages": user_packages,
         "exclude_packages": [],
         "debian_variant": "minbase",
         "debian_suite": "trixie",
@@ -123,7 +182,7 @@ def generate_gnuboxmaker_config():
         "size_efi_partition": "256MB",
         "size_root_partition": "(auto * 1.2) + (100 * 1024 * 1024)",
         "weston_shell": "kiosk",
-        "session_user": "root",
+        "session_user": "root" if args.root-privileges else "user",
         "session_mode": "wayland",
         "minlogotime": 10,
         "cmdline": "",
@@ -132,4 +191,7 @@ def generate_gnuboxmaker_config():
         "integrate_xwayland": True
     }
 
-    project_config
+    project_config.update(platforms[args.platform]["project_config"])
+
+    return project_config
+    
