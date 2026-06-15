@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 import argparse
+import json
+import sys
+import os
+import math
+import hashlib
 
 def str2bool(v):
     if isinstance(v, bool):
@@ -10,6 +15,10 @@ def str2bool(v):
         return False
     else:
         raise argparse.ArgumentTypeError("Boolean value expected")
+
+def dict_checksum(tbl):
+    filtered = filter_underscored(tbl)
+    return hashlib.md5(json5.dumps(filtered).encode('utf-8')).hexdigest()
 
 # --------------------------------------- parsing cli arguments
 
@@ -95,7 +104,7 @@ platforms = {
     }
 }
 
-def generate_gnuboxmaker_config():
+def generate_project_config():
     user_packages = {
         # audio
         "pipewire",
@@ -194,4 +203,21 @@ def generate_gnuboxmaker_config():
     project_config.update(platforms[args.platform]["project_config"])
 
     return project_config
-    
+
+def get_project_path(project_config):
+    project_checksum = dict_checksum(project_config)
+    project_path = os.path.json(os.path.expanduser("~"), ".mkbootable", project_checksum)
+    os.makedirs(project_path, exist_ok=True)
+    return project_path
+
+def generate_project():
+    project_config = generate_project_config()
+    project_path = get_project_path(project_config)
+    project_config_path = os.path.json(project_path, "gnubox.gnb")
+
+    with open(project_config_path, "w") as f:
+        json.dump(project_config, f, indent=2, ensure_ascii=False)
+
+# ---------------------------------------
+
+generate_project()
