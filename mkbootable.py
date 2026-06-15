@@ -17,8 +17,13 @@ def str2bool(v):
         raise argparse.ArgumentTypeError("Boolean value expected")
 
 def dict_checksum(tbl):
-    filtered = filter_underscored(tbl)
-    return hashlib.md5(json5.dumps(filtered).encode('utf-8')).hexdigest()
+    return hashlib.md5(json.dumps(tbl).encode('utf-8')).hexdigest()
+
+syslbuild_install_path = "/opt/syslbuild"
+if os.path.isdir(syslbuild_install_path):
+    syslbuild_path = syslbuild_install_path
+else:
+    syslbuild_path = "."
 
 # --------------------------------------- parsing cli arguments
 
@@ -38,7 +43,7 @@ argsparser.add_argument(
 
 argsparser.add_argument("-o", "--output", default="image.img", help="output path to the boot image")
 
-argsparser.add_argument("--boot-logo", default=None, help="you can set a custom boot logo")
+argsparser.add_argument("--boot-logo", default=None, help="you can set a custom boot logo .png")
 argsparser.add_argument("--root-privileges", type=str2bool, default=False, help="if set to true, the application in the image will have root privileges")
 
 args = argsparser.parse_args()
@@ -46,7 +51,7 @@ args = argsparser.parse_args()
 # ---------------------------------------
 
 platforms = {
-    ["desktop_64"] = {
+    "desktop_64": {
         "project_config": {
             "export_x86_64": True,
             "export_x86": False,
@@ -60,7 +65,7 @@ platforms = {
         },
         "image_path": "output/amd64/project BIOS UEFI GPT.img"
     },
-    ["desktop_32"] = {
+    "desktop_32": {
         "project_config": {
             "export_x86_64": False,
             "export_x86": True,
@@ -74,7 +79,7 @@ platforms = {
         },
         "image_path": "output/i386/project BIOS GPT.img"
     },
-    ["raspberry_pi_64"] = {
+    "raspberry_pi_64": {
         "project_config": {
             "export_x86_64": False,
             "export_x86": False,
@@ -88,7 +93,7 @@ platforms = {
         },
         "image_path": "output/arm64/project RPI 64.img"
     },
-    ["orange_pi_zero3"] = {
+    "orange_pi_zero3": {
         "project_config": {
             "export_x86_64": False,
             "export_x86": False,
@@ -105,7 +110,7 @@ platforms = {
 }
 
 def generate_project_config():
-    user_packages = {
+    user_packages = [
         # audio
         "pipewire",
         "pipewire-pulse",
@@ -143,7 +148,7 @@ def generate_project_config():
 
         # other
         "udisks2" # i use the standard udisks2 instead of liamounts. since user applications may have no idea what liamounts is and how it differs from udisks2.
-    }
+    ]
 
     project_config = {
         "gnubox_version": [1, 4, 3],
@@ -191,7 +196,7 @@ def generate_project_config():
         "size_efi_partition": "256MB",
         "size_root_partition": "(auto * 1.2) + (100 * 1024 * 1024)",
         "weston_shell": "kiosk",
-        "session_user": "root" if args.root-privileges else "user",
+        "session_user": "root" if args.root_privileges else "user",
         "session_mode": "wayland",
         "minlogotime": 10,
         "cmdline": "",
@@ -206,17 +211,34 @@ def generate_project_config():
 
 def get_project_path(project_config):
     project_checksum = dict_checksum(project_config)
-    project_path = os.path.json(os.path.expanduser("~"), ".mkbootable", project_checksum)
+    project_path = os.path.join(os.path.expanduser("~"), ".mkbootable", project_checksum)
     os.makedirs(project_path, exist_ok=True)
     return project_path
+
+def get_application_logo():
+    return None
+
+def get_boot_logo():
+    if args.boot_logo:
+        return args.boot_logo
+
+    application_logo = get_application_logo()
+    if application_logo:
+        return application_logo
+
+    return os.path.join(syslbuild_path, "mkbootable.png")
 
 def generate_project():
     project_config = generate_project_config()
     project_path = get_project_path(project_config)
-    project_config_path = os.path.json(project_path, "gnubox.gnb")
+
+    project_config_path = os.path.join(project_path, "gnubox.gnb")
+    project_resources = os.path.join(project_path, "resources")
 
     with open(project_config_path, "w") as f:
         json.dump(project_config, f, indent=2, ensure_ascii=False)
+
+    shutil.copy(get_boot_logo(), os.path.join(project_resources, "logo.png"))
 
 # ---------------------------------------
 
