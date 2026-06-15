@@ -2268,6 +2268,7 @@ if __name__ == "__main__":
 
     buildLog("Syslbuild info:")
     buildLog(f"Syslbuild version: {formatVersion(VERSION)}")
+    buildLog(f"Syslbuild working directory: {os.getcwd()}")
     buildLog(";")
 
     with open(args.json_path, "r", encoding="utf-8") as f:

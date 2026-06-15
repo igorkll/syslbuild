@@ -1610,9 +1610,6 @@ boot"""
         f.write(grubcfg)
 
 def run_syslbuild():
-    # надо при сборке из tty вместо pkexec заюзать sudo
-    # что то не пашет если прога запущена из CLI но без рут. не находит путь
-
     cmd_base = [
         "bash", "-c",
         f"cd {path_temp_syslbuild!r} && {sys.executable!r} {os.path.abspath('syslbuild.py')!r} "
@@ -1623,7 +1620,10 @@ def run_syslbuild():
     ]
 
     if os.geteuid() != 0:
-        cmd = ["pkexec"] + cmd_base
+        if guiLoaded:
+            cmd = ["pkexec"] + cmd_base
+        else:
+            cmd = ["sudo"] + cmd_base
     else:
         cmd = cmd_base
 

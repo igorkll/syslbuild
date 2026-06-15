@@ -6,6 +6,8 @@ import os
 import math
 import hashlib
 import shutil
+import subprocess
+import pathlib
 
 def str2bool(v):
     if isinstance(v, bool):
@@ -49,7 +51,20 @@ argsparser.add_argument("--root-privileges", type=str2bool, default=False, help=
 
 args = argsparser.parse_args()
 
-# ---------------------------------------
+# --------------------------------------- get application info
+
+def get_application_logo():
+    return None
+
+def get_application_session_type():
+    suffix = pathlib.Path(args.application).suffix
+
+    if suffix == ".sh":
+        return "tty"
+    
+    return "wayland"
+
+# --------------------------------------- build project
 
 platforms = {
     "desktop_64": {
@@ -198,7 +213,7 @@ def generate_project_config():
         "size_root_partition": "(auto * 1.2) + (100 * 1024 * 1024)",
         "weston_shell": "kiosk",
         "session_user": "root" if args.root_privileges else "user",
-        "session_mode": "wayland",
+        "session_mode": get_application_session_type(),
         "minlogotime": 10,
         "cmdline": "",
         "exclude_cmdline": [],
@@ -215,9 +230,6 @@ def get_project_path(project_config):
     project_path = os.path.join(os.path.expanduser("~"), ".mkbootable", project_checksum)
     os.makedirs(project_path, exist_ok=True)
     return project_path
-
-def get_application_logo():
-    return None
 
 def get_boot_logo():
     if args.boot_logo:
@@ -246,9 +258,29 @@ def generate_project():
     return project_path
 
 def build_project(project_path):
-    pass
+    project_config_path = os.path.join(project_path, "gnubox.gnb")
+
+    cmd = [
+        "bash", "-c",
+        f"cd {syslbuild_path!r} && {sys.executable!r} {os.path.abspath('gnuboxmaker.py')!r} "
+        f"{project_config_path!r}"
+    ]
+    
+    subprocess.run(cmd)
+
+# экспортирует новую версию образа
+# перемешает файл, если раздел куда происходит экспорт является системным разделом то фактического копирования не будет
+# если после следующей сборки файла нет. значит сработал кеш и перезаписывать его и не нужно
+# но если экспорт происходит уже по новому пути то файл фактически не будет экспортирован до инвалидирования/очистки кеша
+def export_image(project_path):
+    image_path = platforms[args.platform]["image_path"]
+    image_full_path = os.path.join(project_path, image_path)
+
+    if os.path.isfile(image_full_path):
+        shutil.move(image_full_path, args.output)
 
 # ---------------------------------------
 
 project_path = generate_project()
 build_project(project_path)
+export_image(project_path)
