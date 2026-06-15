@@ -19,6 +19,12 @@ def str2bool(v):
     else:
         raise argparse.ArgumentTypeError("Boolean value expected")
 
+def build_log(logstr, quiet=False):
+    if not quiet:
+        logstr = f"------------------------ MKBOOTABLE: {logstr}"
+    
+    print(logstr)
+
 def dict_checksum(tbl):
     return hashlib.md5(json.dumps(tbl).encode('utf-8')).hexdigest()
 
@@ -79,7 +85,7 @@ platforms = {
             "export_img_opi_zero3": False,
             "export_img_rpi_64": False
         },
-        "image_path": "output/amd64/project BIOS UEFI GPT.img"
+        "image_path": "output/amd64/@ BIOS UEFI GPT.img"
     },
     "desktop_32": {
         "project_config": {
@@ -93,7 +99,7 @@ platforms = {
             "export_img_opi_zero3": False,
             "export_img_rpi_64": False
         },
-        "image_path": "output/i386/project BIOS GPT.img"
+        "image_path": "output/i386/@ BIOS GPT.img"
     },
     "raspberry_pi_64": {
         "project_config": {
@@ -107,7 +113,7 @@ platforms = {
             "export_img_opi_zero3": False,
             "export_img_rpi_64": True
         },
-        "image_path": "output/arm64/project RPI 64.img"
+        "image_path": "output/arm64/@ RPI 64.img"
     },
     "orange_pi_zero3": {
         "project_config": {
@@ -121,7 +127,7 @@ platforms = {
             "export_img_opi_zero3": True,
             "export_img_rpi_64": False
         },
-        "image_path": "output/arm64/project OPI ZERO 3.img"
+        "image_path": "output/arm64/@ OPI ZERO 3.img"
     }
 }
 
@@ -258,6 +264,8 @@ def generate_project():
     return project_path
 
 def build_project(project_path):
+    build_log(f"launch gnubox maker: {project_path}")
+
     project_config_path = os.path.join(project_path, "gnubox.gnb")
 
     cmd = [
@@ -274,10 +282,14 @@ def build_project(project_path):
 # но если экспорт происходит уже по новому пути то файл фактически не будет экспортирован до инвалидирования/очистки кеша
 def export_image(project_path):
     image_path = platforms[args.platform]["image_path"]
+    image_path = image_path.replace("@", os.path.basename(project_path))
     image_full_path = os.path.join(project_path, image_path)
 
     if os.path.isfile(image_full_path):
         shutil.move(image_full_path, args.output)
+        build_log(f"image exported: {args.output}")
+    else:
+        build_log(f"the image has not been exported (cached)")
 
 # ---------------------------------------
 
