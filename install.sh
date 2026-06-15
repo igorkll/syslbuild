@@ -58,4 +58,5 @@ echo "INSTALLER: prepair installed syslbuild"
 cd "$DEST"
 ./prepair.sh
 
+echo "INSTALLER: update-desktop-database"
 update-desktop-database

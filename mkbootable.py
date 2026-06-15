@@ -272,7 +272,7 @@ def build_project(project_path):
 
     cmd = [
         "bash", "-c",
-        f"cd {syslbuild_path!r} && {sys.executable!r} {os.path.abspath('gnuboxmaker.py')!r} "
+        f"cd {syslbuild_path!r} && {sys.executable!r} {os.path.join(syslbuild_path, 'gnuboxmaker.py')!r} "
         f"{project_config_path!r}"
     ]
     
