@@ -5,6 +5,7 @@ there will be nothing superfluous in the boot image created from your applicatio
 the source code of mkbootable is located in the syslbuild repository as it is part of a single project: https://github.com/igorkll/syslbuild  
 this project is an abstraction layer above Gnubox maker, which in turn is an abstraction layer above syslbuild  
 all of this is part of a single syslbuild project  
+the program cache is located at the path: /home/$USER/.mkbootable and can take up a HUGE AMOUNT. even if you have collected literally 3-5 applications, it is likely that this directory can weigh about 100 gigabytes  
 
 ## subprojects
 * syslbuild - a low-level build system for custom linux distributions: https://github.com/igorkll/syslbuild
@@ -15,6 +16,7 @@ all of this is part of a single syslbuild project
 * download the syslbuild release (NOT THE REPOSITORY BRANCH): https://github.com/igorkll/syslbuild/releases
 * unpack it in a convenient place
 * launch install.sh from root
+* wait for the installation process to finish (it can take up to 4 hours)
 * the unpacked files can now be deleted
 
 ## supported platforms

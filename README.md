@@ -41,6 +41,7 @@ gnubox maker is a high-level GUI program for creating kiosks and application lin
 * download the syslbuild release (NOT THE REPOSITORY BRANCH): https://github.com/igorkll/syslbuild/releases
 * unpack it in a convenient place
 * launch install.sh from root
+* wait for the installation process to finish (it can take up to 4 hours)
 * the unpacked files can now be deleted
 
 ## you may also be interested in
