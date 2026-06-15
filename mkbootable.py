@@ -254,6 +254,8 @@ def generate_project():
     project_config_path = os.path.join(project_path, "gnubox.gnb")
     project_resources = os.path.join(project_path, "resources")
 
+    if os.path.isdir(project_resources):
+        shutil.rmtree(project_resources)
     os.makedirs(project_resources, exist_ok=True)
 
     with open(project_config_path, "w") as f:
