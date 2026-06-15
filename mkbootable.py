@@ -5,6 +5,7 @@ import sys
 import os
 import math
 import hashlib
+import shutil
 
 def str2bool(v):
     if isinstance(v, bool):
@@ -235,11 +236,19 @@ def generate_project():
     project_config_path = os.path.join(project_path, "gnubox.gnb")
     project_resources = os.path.join(project_path, "resources")
 
+    os.makedirs(project_resources, exist_ok=True)
+
     with open(project_config_path, "w") as f:
         json.dump(project_config, f, indent=2, ensure_ascii=False)
 
     shutil.copy(get_boot_logo(), os.path.join(project_resources, "logo.png"))
 
+    return project_path
+
+def build_project(project_path):
+    pass
+
 # ---------------------------------------
 
-generate_project()
+project_path = generate_project()
+build_project(project_path)
