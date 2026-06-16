@@ -297,6 +297,8 @@ def export_image(project_path):
     image_full_path = os.path.join(project_path, image_path)
 
     if os.path.isfile(image_full_path):
+        if os.path.exists(args.output):
+            os.remove(args.output)
         shutil.move(image_full_path, args.output)
         build_log(f"image exported: {args.output}")
     else:
