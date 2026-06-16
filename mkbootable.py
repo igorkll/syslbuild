@@ -68,7 +68,7 @@ def get_application_logo():
 def get_application_session_type():
     suffix = pathlib.Path(args.application).suffix
 
-    if suffix == ".sh":
+    if suffix == ".sh" or True:
         return "tty"
     
     return "wayland"
@@ -287,22 +287,14 @@ def build_project(project_path):
     
     subprocess.run(cmd)
 
-# экспортирует новую версию образа
-# перемешает файл, если раздел куда происходит экспорт является системным разделом то фактического копирования не будет
-# если после следующей сборки файла нет. значит сработал кеш и перезаписывать его и не нужно
-# но если экспорт происходит уже по новому пути то файл фактически не будет экспортирован до инвалидирования/очистки кеша
 def export_image(project_path):
     image_path = platforms[args.platform]["image_path"]
     image_path = image_path.replace("@", os.path.basename(project_path))
     image_full_path = os.path.join(project_path, image_path)
 
-    if os.path.isfile(image_full_path):
-        if os.path.exists(args.output):
-            os.remove(args.output)
-        shutil.move(image_full_path, args.output)
-        build_log(f"image exported: {args.output}")
-    else:
-        build_log(f"the image has not been exported (cached)")
+    build_log("copy image file...")
+    shutil.copy(image_full_path, args.output)
+    build_log(f"image exported: {args.output}")
 
 # ---------------------------------------
 
