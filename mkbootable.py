@@ -207,7 +207,7 @@ def generate_project_config():
         "use_separate_splash_for_update": False,
         "root_expand": False,
         "root_readonly": False,
-        "allow_updatescript": True,
+        "allow_updatescript": False,
         "separate_data_partition": True,
         "separate_data_partition_home_link": True,
         "separate_data_partition_var_link": True,
@@ -224,7 +224,7 @@ def generate_project_config():
         "session_user": "root" if args.root_privileges else "user",
         "session_mode": get_application_session_type(),
         "minlogotime": 10,
-        "cmdline": "",
+        "cmdline": "clear noCursorBlink vt.global_cursor_default=0",
         "exclude_cmdline": [],
         "integrate_liamounts": False,
         "integrate_xwayland": True
@@ -234,9 +234,12 @@ def generate_project_config():
 
     return project_config
 
+def get_project_checksum(project_config):
+    return dict_checksum(project_config)
+
 def get_project_path(project_config):
-    project_checksum = dict_checksum(project_config)
-    project_path = os.path.join(os.path.expanduser("~"), ".mkbootable", project_checksum)
+    # project_checksum = get_project_checksum(project_config)
+    project_path = os.path.join(os.path.expanduser("~"), ".mkbootable", "project")
     os.makedirs(project_path, exist_ok=True)
     return project_path
 

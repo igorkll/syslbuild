@@ -464,8 +464,8 @@ def setup_download(builditems):
             "name": name,
             "export": False,
 
-            "git_url": f"https://github.com/igorkll/{name}",
-            "git_checkout": version
+            "git_url": f"https://github.com/igorkll/{name}"# ,
+            # "git_checkout": version
         })
 
     def addExtract(fromdir, name):
