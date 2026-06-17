@@ -343,7 +343,7 @@ def generate_project():
 
     project_runshell = os.path.join(project_resources, "runshell.sh")
     with open(project_runshell, "w") as f:
-        f.write("#!/bin/bash")
+        f.write("#!/bin/bash\n")
         f.write(application_command)
 
     return project_path
