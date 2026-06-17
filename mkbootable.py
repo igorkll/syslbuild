@@ -52,11 +52,18 @@ argsparser.add_argument(
     help="Target platform (default: desktop_64)"
 )
 
-argsparser.add_argument("-o", "--output", default="image.img", help="output path to the boot image")
+argsparser.add_argument(
+    "--mode",
+    choices=["auto", "graphic", "console"],
+    default="auto",
+    help="the launch mode of your application (default: auto)"
+)
 
 argsparser.add_argument("--boot-logo", default=None, help="you can set a custom boot logo .png")
 argsparser.add_argument("--root-privileges", type=str2bool, default=False, help="if set to true, the application in the image will have root privileges")
 argsparser.add_argument("--clear-cache", type=str2bool, default=False, help="cleans up the cache before building")
+
+argsparser.add_argument("-o", "--output", default="image.img", help="output path to the boot image")
 
 args = argsparser.parse_args()
 
@@ -65,10 +72,21 @@ args = argsparser.parse_args()
 def get_application_logo():
     return None
 
-def get_application_session_type():
-    suffix = pathlib.Path(args.application).suffix
+def get_application_path():
+    if os.path.isfile(args.application):
+        return args.application
+    
+    return shutil.which(args.application)
 
-    if suffix == ".sh" or True:
+def get_application_session_type():
+    if args.mode == "graphic":
+        return "wayland"
+    elif args.mode == "console":
+        return "tty"
+
+    suffix = pathlib.Path(get_application_path()).suffix
+
+    if suffix == ".sh":
         return "tty"
     
     return "wayland"
