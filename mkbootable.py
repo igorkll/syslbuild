@@ -291,6 +291,8 @@ def get_boot_logo():
 def generate_project():
     # ------------------------------------------ application base structure
 
+    build_log("make application structure...")
+
     project_config = generate_project_config()
     project_path = get_project_path(project_config)
 
@@ -309,6 +311,8 @@ def generate_project():
 
     # ------------------------------------------ write base files
 
+    build_log("writing base files...")
+
     with open(project_config_path, "w") as f:
         json.dump(project_config, f, indent=2, ensure_ascii=False)
 
@@ -318,6 +322,8 @@ def generate_project():
     os.makedirs(project_files)
 
     # ------------------------------------------ copy application files and make application command
+
+    build_log("copying application files...")
 
     application_path = get_application_path()
     if args.multi_file:
@@ -340,6 +346,8 @@ def generate_project():
         application_command = f"/{application_name}"
 
     # ------------------------------------------ write runshell.sh
+
+    build_log("writing runshell.sh...")
 
     project_runshell = os.path.join(project_resources, "runshell.sh")
     with open(project_runshell, "w") as f:
