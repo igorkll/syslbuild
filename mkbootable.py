@@ -326,24 +326,23 @@ def generate_project():
     build_log("copying application files...")
 
     application_path = get_application_path()
+    application_name = os.path.basename(application_path)
+
+    target_dir = os.path.join(project_files, "application")
+    os.makedirs(target_dir)
+
     if args.multi_file:
         application_dir = os.path.dirname(application_path)
-        application_name = os.path.basename(application_path)
 
-        target_dir = os.path.join(project_files, "application")
-        os.makedirs(target_dir)
         shutil.copytree(
             application_dir,
             target_dir,
             dirs_exist_ok=True
         )
-
-        application_command = f"/application/{application_name}"
     else:
-        application_name = os.path.basename(application_path)
-        shutil.copy(application_path, os.path.join(project_resources, "files", application_name))
+        shutil.copy(application_path, os.path.join(target_dir, application_name))
 
-        application_command = f"/{application_name}"
+    application_command = f"cd /application && /application/{application_name}"
 
     # ------------------------------------------ write runshell.sh
 
