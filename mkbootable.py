@@ -345,10 +345,6 @@ def generate_project():
     with open(project_runshell, "w") as f:
         f.write("#!/bin/bash\n")
         f.write(application_command)
-        f.write("\n")
-
-        # if application_session_type == "tty":
-        #     f.write("while :; do sleep 1; done\n")
 
     return project_path
 
