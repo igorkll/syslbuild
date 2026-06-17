@@ -95,10 +95,18 @@ def get_application_logo():
 
 def get_application_run_features():
     suffix = pathlib.Path(application_path).suffix
+    
+    if suffix == ".html":
+        return {
+            "packages": [],
+            "command": f"cd /application && firefox --kiosk {application_name}"
+        } 
+    elif suffix == ".flatpak":
+        pass
 
     return {
         "packages": [],
-        "command": f"cd /application && /application/{application_name}"
+        "command": f"cd /application && ./{application_name}"
     }
 
 # --------------------------------------- show info
