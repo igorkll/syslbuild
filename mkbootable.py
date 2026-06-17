@@ -297,12 +297,15 @@ def generate_project():
 
     shutil.copy(get_boot_logo(), os.path.join(project_resources, "logo.png"))
 
+    project_files = os.path.join(project_resources, "files")
+    os.makedirs(project_files)
+
     application_path = get_application_path()
     if args.multi_file:
         application_dir = os.path.dirname(application_path)
         application_name = os.path.basename(application_path)
 
-        target_dir = os.path.join(project_resources, "files", "application")
+        target_dir = os.path.join(project_files, "application")
         os.makedirs(target_dir)
         shutil.copytree(
             application_dir,
