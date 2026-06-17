@@ -61,17 +61,15 @@ argsparser.add_argument("-o", "--output", default="image.img", help="output path
 
 args = argsparser.parse_args()
 
-# --------------------------------------- show info
-
-syslbuild_install_path = "/opt/syslbuild"
-if os.path.isdir(syslbuild_install_path):
-    syslbuild_path = syslbuild_install_path
-else:
-    syslbuild_path = "."
-
-build_log(f"syslbuild path: {syslbuild_path}")
-
 # --------------------------------------- get application info
+
+def is_shebang(filepath):
+    try:
+        with open(filepath, 'rb') as f:
+            header = f.read(2)
+            return header == b'#!'
+    except (IOError, OSError):
+        return False
 
 def get_application_path():
     if os.path.isfile(args.application):
@@ -85,15 +83,31 @@ def get_application_session_type():
     elif args.mode == "console":
         return "tty"
 
-    suffix = pathlib.Path(get_application_path()).suffix
+    application_path = get_application_path()
+    suffix = pathlib.Path(application_path).suffix
 
-    if suffix == ".sh":
+    if suffix == ".sh" or is_shebang(application_path):
         return "tty"
     
     return "wayland"
 
 def get_application_logo():
     return None
+
+# --------------------------------------- show info
+
+syslbuild_install_path = "/opt/syslbuild"
+if os.path.isdir(syslbuild_install_path):
+    syslbuild_path = syslbuild_install_path
+else:
+    syslbuild_path = "."
+
+application_session_type = get_application_session_type()
+application_logo = get_application_logo()
+
+build_log(f"syslbuild path: {syslbuild_path}")
+build_log(f"application session type: {application_session_type}")
+build_log(f"application logo: {application_logo}")
 
 # --------------------------------------- build project
 
@@ -244,7 +258,7 @@ def generate_project_config():
         "size_root_partition": "(auto * 1.2) + (100 * 1024 * 1024)",
         "weston_shell": "kiosk",
         "session_user": "root" if args.root_privileges else "user",
-        "session_mode": get_application_session_type(),
+        "session_mode": application_session_type,
         "minlogotime": 10,
         "cmdline": "clear noCursorBlink vt.global_cursor_default=0",
         "exclude_cmdline": [],
@@ -269,13 +283,14 @@ def get_boot_logo():
     if args.boot_logo:
         return args.boot_logo
 
-    application_logo = get_application_logo()
     if application_logo:
         return application_logo
 
     return os.path.join(syslbuild_path, "mkbootable.png")
 
 def generate_project():
+    # ------------------------------------------ application base structure
+
     project_config = generate_project_config()
     project_path = get_project_path(project_config)
 
@@ -292,6 +307,8 @@ def generate_project():
         shutil.rmtree(project_resources)
     os.makedirs(project_resources, exist_ok=True)
 
+    # ------------------------------------------ write base files
+
     with open(project_config_path, "w") as f:
         json.dump(project_config, f, indent=2, ensure_ascii=False)
 
@@ -299,6 +316,8 @@ def generate_project():
 
     project_files = os.path.join(project_resources, "files")
     os.makedirs(project_files)
+
+    # ------------------------------------------ copy application files and make application command
 
     application_path = get_application_path()
     if args.multi_file:
@@ -313,17 +332,19 @@ def generate_project():
             dirs_exist_ok=True
         )
 
-        target_system_application_path = f"/application/{application_name}"
+        application_command = f"/application/{application_name}"
     else:
         application_name = os.path.basename(application_path)
         shutil.copy(application_path, os.path.join(project_resources, "files", application_name))
 
-        target_system_application_path = f"/{application_name}"
+        application_command = f"/{application_name}"
+
+    # ------------------------------------------ write runshell.sh
 
     project_runshell = os.path.join(project_resources, "runshell.sh")
     with open(project_runshell, "w") as f:
         f.write("#!/bin/bash")
-        f.write(target_system_application_path)
+        f.write(application_command)
 
     return project_path
 
