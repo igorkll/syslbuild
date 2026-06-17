@@ -452,8 +452,8 @@ def setup_download(builditems):
             "name": name,
             "export": False,
 
-            "git_url": f"https://github.com/igorkll/{name}"# ,
-            # "git_checkout": version
+            "git_url": f"https://github.com/igorkll/{name}",
+            "git_checkout": version
         })
 
     def addExtract(fromdir, name):
@@ -466,7 +466,7 @@ def setup_download(builditems):
             "path": f"/{name}"
         })
 
-    addDownload("custom-debian-initramfs-init", "1.5.9")
+    addDownload("custom-debian-initramfs-init", "1.5.10")
     addExtract("custom-debian-initramfs-init", "custom_init.sh")
     addExtract("custom-debian-initramfs-init", "custom_init_hook.sh")
 
