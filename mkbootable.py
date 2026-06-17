@@ -207,7 +207,7 @@ def generate_project_config():
         "use_separate_splash_for_update": False,
         "root_expand": False,
         "root_readonly": False,
-        "allow_updatescript": False,
+        "allow_updatescript": True,
         "separate_data_partition": True,
         "separate_data_partition_home_link": True,
         "separate_data_partition_var_link": True,

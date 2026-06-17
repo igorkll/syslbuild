@@ -28,3 +28,5 @@ done
 if [ -x "/root/preinit.sh" ]; then
     /root/preinit.sh
 fi
+
+sync

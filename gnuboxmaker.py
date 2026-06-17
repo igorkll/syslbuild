@@ -311,19 +311,7 @@ chown user:user /home/user"""
 cp -f /usr/share/plymouth/themes/bootlogo/bootlogo.plymouth /usr/share/plymouth/themes/default.plymouth
 
 # this trash break systemd quiet
-systemctl mask plymouth-read-write.service
-
-# systemctl mask plymouth-start.service
-# systemctl mask plymouth-read-write.service
-# systemctl mask plymouth-switch-root-initramfs.service
-# systemctl mask plymouth-reboot.service
-# systemctl mask plymouth-poweroff.service
-# systemctl mask plymouth-quit-wait.service
-# systemctl mask plymouth-quit.service
-# systemctl mask plymouth-kexec.service
-# systemctl mask plymouth-switch-root.service
-# systemctl mask plymouth-halt.service
-# systemctl mask plymouth-log.service"""
+systemctl mask plymouth-read-write.service"""
 
     if current_project.dont_show_splash_on_poweroff:
         aaa_setup += "\n" + f"""systemctl mask plymouth-poweroff.service
@@ -1519,7 +1507,7 @@ def generate_syslbuild_project():
         # I still found a working way to completely get rid of the logs using the built-in linux method. however, this requires enabling CONFIG_NULL_TTY in the kernel config.
         cmdline_console = "console=ttynull"
 
-    cmdline = f"{"ro" if current_project.root_readonly else "rw"} rootwait=60 selinux=0 plymouth.ignore-serial-consoles mount_bootmnt {cmdline_console} preinit=/root/system_preinit.sh {current_project.cmdline}"
+    cmdline = f"{"ro" if current_project.root_readonly else "rw"} rootwait=60 systemd.getty_auto=0 selinux=0 plymouth.ignore-serial-consoles mount_bootmnt {cmdline_console} preinit=/root/system_preinit.sh {current_project.cmdline}"
 
     if current_project.boot_sound == "init":
         cmdline += " startupsound_afterMountRoot=/startup.wav"
