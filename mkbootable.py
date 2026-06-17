@@ -57,9 +57,12 @@ argsparser.add_argument("--multi-file", type=str2bool, default=False, help="if s
 argsparser.add_argument("--debug", type=str2bool, default=False, help="if set to true, in UART0, the kernel log and root shell are running at 115200")
 argsparser.add_argument("--clear-cache", type=str2bool, default=False, help="cleans up the cache before building")
 
-argsparser.add_argument("-o", "--output", default="image.img", help="output path to the boot image")
+argsparser.add_argument("-o", "--output", default=None, help="output path to the boot image")
 
 args = argsparser.parse_args()
+
+if args.output is None:
+    args.output = Path(args.application).stem + ".img"
 
 # --------------------------------------- get application info
 
@@ -98,7 +101,7 @@ def get_application_run_features():
     
     if suffix == ".html":
         return {
-            "packages": [],
+            "packages": ["firefox-esr"],
             "command": f"cd /application && firefox --kiosk {application_name}"
         } 
     elif suffix == ".flatpak":
@@ -131,6 +134,7 @@ build_log(f"application name: {application_name}")
 build_log(f"application session type: {application_session_type}")
 build_log(f"application logo: {application_logo}")
 build_log(f"application run features: {application_run_features}")
+build_log(f"application output: {output}")
 
 # --------------------------------------- build project
 
