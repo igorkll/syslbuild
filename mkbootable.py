@@ -28,14 +28,6 @@ def build_log(logstr, quiet=False):
 def dict_checksum(tbl):
     return hashlib.md5(json.dumps(tbl).encode('utf-8')).hexdigest()
 
-syslbuild_install_path = "/opt/syslbuild"
-if os.path.isdir(syslbuild_install_path):
-    syslbuild_path = syslbuild_install_path
-else:
-    syslbuild_path = "."
-
-build_log(f"syslbuild path: {syslbuild_path}")
-
 # --------------------------------------- parsing cli arguments
 
 argsparser = argparse.ArgumentParser(
@@ -61,16 +53,25 @@ argsparser.add_argument(
 
 argsparser.add_argument("--boot-logo", default=None, help="you can set a custom boot logo .png")
 argsparser.add_argument("--root-privileges", type=str2bool, default=False, help="if set to true, the application in the image will have root privileges")
+argsparser.add_argument("--multi-file", type=str2bool, default=False, help="if set to true, then not only the application file will be added to the image, but also all files from its directory. use carefully so as not to add unnecessary files to the image")
+argsparser.add_argument("--debug", type=str2bool, default=False, help="if set to true, in UART0, the kernel log and root shell are running at 115200")
 argsparser.add_argument("--clear-cache", type=str2bool, default=False, help="cleans up the cache before building")
 
 argsparser.add_argument("-o", "--output", default="image.img", help="output path to the boot image")
 
 args = argsparser.parse_args()
 
-# --------------------------------------- get application info
+# --------------------------------------- show info
 
-def get_application_logo():
-    return None
+syslbuild_install_path = "/opt/syslbuild"
+if os.path.isdir(syslbuild_install_path):
+    syslbuild_path = syslbuild_install_path
+else:
+    syslbuild_path = "."
+
+build_log(f"syslbuild path: {syslbuild_path}")
+
+# --------------------------------------- get application info
 
 def get_application_path():
     if os.path.isfile(args.application):
@@ -90,6 +91,9 @@ def get_application_session_type():
         return "tty"
     
     return "wayland"
+
+def get_application_logo():
+    return None
 
 # --------------------------------------- build project
 
@@ -212,9 +216,9 @@ def generate_project_config():
         "boot_sound": "none",
         "dont_show_splash_on_poweroff": True,
         "dont_use_splash_on_efi": False,
-        "uartlogs": True,
+        "uartlogs": args.debug,
         "uartlogs_speed": 115200,
-        "uartlogs_rootshell": False,
+        "uartlogs_rootshell": args.debug,
         "exclude_tty1_from_consoles": True,
         "exclude_tty1_from_consoles_in_quiet": True,
         "make_tty1_primary_console": False,
@@ -292,6 +296,31 @@ def generate_project():
         json.dump(project_config, f, indent=2, ensure_ascii=False)
 
     shutil.copy(get_boot_logo(), os.path.join(project_resources, "logo.png"))
+
+    application_path = get_application_path()
+    if args.multi_file:
+        application_dir = os.path.dirname(application_path)
+        application_name = os.path.basename(application_path)
+
+        target_dir = os.path.join(project_resources, "files", "application")
+        os.makedirs(target_dir)
+        shutil.copytree(
+            application_dir,
+            target_dir,
+            dirs_exist_ok=True
+        )
+
+        target_system_application_path = f"/application/{application_name}"
+    else:
+        application_name = os.path.basename(application_path)
+        shutil.copy(application_path, os.path.join(project_resources, "files", application_name))
+
+        target_system_application_path = f"/{application_name}"
+
+    project_runshell = os.path.join(project_resources, "runshell.sh")
+    with open(project_runshell, "w") as f:
+        f.write("#!/bin/bash")
+        f.write(target_system_application_path)
 
     return project_path
 
