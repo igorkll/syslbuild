@@ -83,7 +83,6 @@ def get_application_session_type():
     elif args.mode == "console":
         return "tty"
 
-    application_path = get_application_path()
     suffix = pathlib.Path(application_path).suffix
 
     if suffix == ".sh" or is_shebang(application_path):
@@ -94,6 +93,14 @@ def get_application_session_type():
 def get_application_logo():
     return None
 
+def get_application_run_features():
+    suffix = pathlib.Path(application_path).suffix
+
+    return {
+        "packages": [],
+        "command": f"cd /application && /application/{application_name}"
+    }
+
 # --------------------------------------- show info
 
 syslbuild_install_path = "/opt/syslbuild"
@@ -102,12 +109,20 @@ if os.path.isdir(syslbuild_install_path):
 else:
     syslbuild_path = "."
 
+application_path = get_application_path()
+application_dir = os.path.dirname(application_path)
+application_name = os.path.basename(application_path)
 application_session_type = get_application_session_type()
 application_logo = get_application_logo()
+application_run_features = get_application_run_features()
 
 build_log(f"syslbuild path: {syslbuild_path}")
+build_log(f"application path: {application_path}")
+build_log(f"application dir: {application_dir}")
+build_log(f"application name: {application_name}")
 build_log(f"application session type: {application_session_type}")
 build_log(f"application logo: {application_logo}")
+build_log(f"application run features: {application_run_features}")
 
 # --------------------------------------- build project
 
@@ -210,6 +225,8 @@ def generate_project_config():
         # other
         "udisks2" # i use the standard udisks2 instead of liamounts. since user applications may have no idea what liamounts is and how it differs from udisks2.
     ]
+
+    user_packages += application_run_features["packages"]
 
     project_config = {
         "gnubox_version": [1, 4, 3],
@@ -325,15 +342,10 @@ def generate_project():
 
     build_log("copying application files...")
 
-    application_path = get_application_path()
-    application_name = os.path.basename(application_path)
-
     target_dir = os.path.join(project_files, "application")
     os.makedirs(target_dir)
 
     if args.multi_file:
-        application_dir = os.path.dirname(application_path)
-
         shutil.copytree(
             application_dir,
             target_dir,
@@ -342,7 +354,7 @@ def generate_project():
     else:
         shutil.copy(application_path, os.path.join(target_dir, application_name))
 
-    application_command = f"cd /application && /application/{application_name}"
+    application_command = application_run_features["command"]
 
     # ------------------------------------------ write runshell.sh
 
