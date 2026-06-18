@@ -52,7 +52,9 @@ argsparser.add_argument(
 )
 
 argsparser.add_argument("--boot-logo", default=None, help="you can set a custom boot logo .png")
+argsparser.add_argument("--chroot", default=None, help="you can specify a chroot script to modify the system during the image build stage.")
 argsparser.add_argument("--root-privileges", type=str2bool, default=False, help="if set to true, the application in the image will have root privileges")
+argsparser.add_argument("--sudo-privileges", type=str2bool, default=False, help="it is a more \"soft\" version of \"root-privileges\". the application will not be launched from root. but it will be able to get root by executing sudo. no password is required and the user will see sudo execution on the screen")
 argsparser.add_argument("--multi-file", type=str2bool, default=False, help="if set to true, then not only the application file will be added to the image, but also all files from its directory. use carefully so as not to add unnecessary files to the image")
 argsparser.add_argument("--debug", type=str2bool, default=False, help="if set to true, in UART0, the kernel log and root shell are running at 115200")
 argsparser.add_argument("--clear-cache", type=str2bool, default=False, help="cleans up the cache before building")
@@ -100,12 +102,19 @@ def get_application_run_features():
     suffix = pathlib.Path(application_path).suffix
     
     if suffix == ".html":
+        # у firefox какой то хуевый киоск. при загрузке на ~100 милисекунд моргает ui и не все хоткеи отключены. это позваляет выйти из киоска при наличии клавиатуры. что недопустимо
         return {
             "packages": ["firefox-esr"],
             "command": f"cd /application && firefox --kiosk {application_name}"
         } 
     elif suffix == ".flatpak":
         pass
+    elif suffix == ".sh" and not is_shebang(application_path):
+        # явно запускаю через bash если разширение .sh и в файле не указан shebank
+        return {
+            "packages": [],
+            "command": f"cd /application && bash {application_name}"
+        }
 
     return {
         "packages": [],
@@ -134,7 +143,7 @@ build_log(f"application name: {application_name}")
 build_log(f"application session type: {application_session_type}")
 build_log(f"application logo: {application_logo}")
 build_log(f"application run features: {application_run_features}")
-build_log(f"application output: {output}")
+build_log(f"application output: {args.output}")
 
 # --------------------------------------- build project
 
@@ -226,6 +235,7 @@ def generate_project_config():
 
         # tools
         "nano",
+        "sudo",
 
         # network
         "network-manager",
@@ -350,12 +360,23 @@ def generate_project():
     project_files = os.path.join(project_resources, "files")
     os.makedirs(project_files)
 
+    project_chroot = os.path.join(project_resources, "chroot")
+    os.makedirs(project_chroot)
+
+    shutil.copy(os.path.join(syslbuild_path, "mkbootable", "chroot.sh"), os.path.join(project_chroot, "chroot.sh"))
+
     # ------------------------------------------ copy application files and make application command
 
     build_log("copying application files...")
 
     target_dir = os.path.join(project_files, "application")
     os.makedirs(target_dir)
+
+    if args.chroot:
+        shutil.copy(args.chroot, os.path.join(project_files, ".user_chroot"))
+        if pathlib.Path(args.chroot).suffix == ".sh" and not is_shebang(args.chroot):
+            with open(os.path.join(project_files, ".user_chroot_bash"), "w") as f:
+                pass
 
     if args.multi_file:
         shutil.copytree(
