@@ -154,7 +154,7 @@ def get_web_logo():
         with urllib.request.urlopen(icons[0].url) as response:
             image_data = response.read()
         
-        # 
+        # I'm recoding the logo so that it's guaranteed to be readable by plymouth
         img = Image.open(io.BytesIO(image_data))
         img.save(last_extracted_logo_path, format='PNG')
         
