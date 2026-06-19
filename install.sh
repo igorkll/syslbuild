@@ -33,6 +33,8 @@ apt install -y device-tree-compiler
 echo "INSTALLER: install python packages"
 pip install json5 --break-system-packages
 pip install asteval --break-system-packages
+pip install favicon --break-system-packages
+pip install requests --break-system-packages
 
 echo "INSTALLER: copy syslbuild files"
 DEST="/opt/syslbuild"

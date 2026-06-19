@@ -8,6 +8,8 @@ import hashlib
 import shutil
 import subprocess
 import pathlib
+import favicon
+import requests
 
 def str2bool(v):
     if isinstance(v, bool):
@@ -30,6 +32,8 @@ def dict_checksum(tbl):
 
 # ---------------------------------------
 
+last_extracted_logo_path = ".mkbootable/last_extracted_logo.png"
+
 syslbuild_install_path = "/opt/syslbuild"
 if os.path.isdir(syslbuild_install_path):
     syslbuild_path = syslbuild_install_path
@@ -46,6 +50,7 @@ argsparser = argparse.ArgumentParser(
 )
 
 argsparser.add_argument("--application", default=None, help="the path to your application's executable file")
+argsparser.add_argument("--web", default=None, help="the link to the web page to be displayed in kiosk mode")
 
 argsparser.add_argument(
     "--platform",
@@ -72,6 +77,15 @@ argsparser.add_argument("--clear-cache", action='store_true', default=False, hel
 argsparser.add_argument("-o", "--output", default=None, help="output path to the boot image")
 
 args = argsparser.parse_args()
+
+# ---------------------------------------
+
+def get_browser(url):
+    # у firefox какой то хуевый киоск. при загрузке на ~100 милисекунд моргает ui и не все хоткеи отключены. это позваляет выйти из киоска при наличии клавиатуры. что недопустимо
+    return {
+        "packages": ["firefox-esr"],
+        "command": f"cd /application && firefox --kiosk {url}"
+    } 
 
 # --------------------------------------- get application info
 
@@ -105,13 +119,6 @@ def get_application_session_type():
 def get_application_logo():
     return None
 
-def get_browser(url):
-    # у firefox какой то хуевый киоск. при загрузке на ~100 милисекунд моргает ui и не все хоткеи отключены. это позваляет выйти из киоска при наличии клавиатуры. что недопустимо
-    return {
-        "packages": ["firefox-esr"],
-        "command": f"cd /application && firefox --kiosk {url}"
-    } 
-
 def get_application_run_features():
     suffix = pathlib.Path(application_path).suffix
     
@@ -134,6 +141,14 @@ def get_application_run_features():
 # --------------------------------------- get web info
 
 def get_web_logo():
+    icons = favicon.get(args.web)
+
+    if icons:
+        with urlopen(icons[0].url) as response:
+            Path(last_extracted_logo_path).write_bytes(response.read())
+        
+        return last_extracted_logo_path
+
     return None
 
 def get_web_run_features():
@@ -141,7 +156,7 @@ def get_web_run_features():
 
 # ---------------------------------------
 
-if "application" in args:
+if args.application:
     application_path = get_application_path()
     application_dir = os.path.dirname(application_path)
     application_name = os.path.basename(application_path)
@@ -155,7 +170,10 @@ if "application" in args:
     build_log(f"application path: {application_path}")
     build_log(f"application dir: {application_dir}")
     build_log(f"application name: {application_name}")
-elif "web" in args:
+elif args.web:
+    if args.output is None:
+        args.output = Path(args.web).stem + ".img"
+    
     session_type = "wayland"
     default_logo = get_web_logo()
     run_features = get_web_run_features()
@@ -387,25 +405,26 @@ def generate_project():
 
     # ------------------------------------------ setup payload
 
-    build_log("copying application files...")
+    if args.application:
+        build_log("copying application files...")
 
-    target_dir = os.path.join(project_files, "application")
-    os.makedirs(target_dir)
+        target_dir = os.path.join(project_files, "application")
+        os.makedirs(target_dir)
 
-    if args.chroot:
-        shutil.copy(args.chroot, os.path.join(project_files, ".user_chroot"))
-        if pathlib.Path(args.chroot).suffix == ".sh" and not is_shebang(args.chroot):
-            with open(os.path.join(project_files, ".user_chroot_bash"), "w") as f:
-                pass
+        if args.chroot:
+            shutil.copy(args.chroot, os.path.join(project_files, ".user_chroot"))
+            if pathlib.Path(args.chroot).suffix == ".sh" and not is_shebang(args.chroot):
+                with open(os.path.join(project_files, ".user_chroot_bash"), "w") as f:
+                    pass
 
-    if args.multi_file:
-        shutil.copytree(
-            application_dir,
-            target_dir,
-            dirs_exist_ok=True
-        )
-    else:
-        shutil.copy(application_path, os.path.join(target_dir, application_name))
+        if args.multi_file:
+            shutil.copytree(
+                application_dir,
+                target_dir,
+                dirs_exist_ok=True
+            )
+        else:
+            shutil.copy(application_path, os.path.join(target_dir, application_name))
 
     run_command = run_features["command"]
 

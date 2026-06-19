@@ -121,6 +121,8 @@ also, assembling a bootable img with an already installed system is also a separ
 ## python dependencies
 * json5
 * asteval
+* favicon
+* requests
 
 ## installing dependencies on debian systems
 ```
