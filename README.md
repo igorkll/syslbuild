@@ -172,6 +172,7 @@ sudo pip install asteval --break-system-packages
 * include - it allows you to connect another json file from the project, which in turn should contain only an array of builditems and nothing more at its root. In this case, the builditems array must be at the very root and immediately contain the builditem dictionaries.
 * singleboard - a specially created builditem for creating images for single-board computers like the orange pi. its use is optional. you can completely replicate the "singleboard" builditem by combining other builditems to get a more complex behavior.
 * gitclone - clones the repository from git. it allows you to specify a branch and checkout
+* execute-commands - if there is no "source", it simply executes commands from the project directory. if there is a "source", it clones it and executes commands in it.
 
 ## build items features
 * debian supports the "_min" variant, which is essentially a "custom" but with a minimal set package required for assembly

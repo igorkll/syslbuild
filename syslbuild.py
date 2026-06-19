@@ -822,12 +822,18 @@ def rawItemsProcess(items, itemsDirectory):
         writeRaw = False
         if len(itemObj) >= 4:
             writeRaw = itemObj[3]
-            itemPathOrRawItem = itemObj[0]
-            buildLog(f"Write item: {itemPathOrRawItem} > {outputPath}")
+        
+        if writeRaw:
+            rawItem = itemObj[0]
+            buildLog(f"Write item: {rawItem} > {outputPath}")
         else:
-            itemPathOrRawItem = findItem(itemObj[0])
-            buildLog(f"Copy item: {itemPathOrRawItem} > {outputPath}")
+            itemPath = findItem(itemObj[0])
+            buildLog(f"Copy item: {itemPath} > {outputPath}")
             
+        # так как папка с проектом может переносится через разные файловые системы
+        # и системы контроля версий
+        # права доступа на файлы из проекта должны быть указаны в конфиге проекта
+        # а не в самих файлов проекта
         if not changeRights and isUserItem(itemObj[0]):
             changeRights = DEFAULT_RIGHTS_0700
         
@@ -835,9 +841,9 @@ def rawItemsProcess(items, itemsDirectory):
             buildLog(f"With custom rights: {changeRights}")
         
         if writeRaw:
-            writeRawItem(itemPathOrRawItem, outputPath, changeRights)
+            writeRawItem(rawItem, outputPath, changeRights)
         else:
-            copyItemFiles(itemPathOrRawItem, outputPath, changeRights)
+            copyItemFiles(itemPath, outputPath, changeRights)
 
 def buildDirectory(item):
     buildDirectoryPath = getItemFolder(item)
@@ -1790,7 +1796,10 @@ def gitcloneBuild(item):
         buildExecute(["git", "checkout", "FETCH_HEAD"], True, None, output_folder)
 
 def cloneBuildItem(fromItem, newItem):
-    pass
+    newItemPath = getItemFolder(newItem)
+    oldItemPath = findItem(fromItem)
+    copyItemFiles(oldItemPath, newItemPath)
+    return newItemPath
 
 def executeCommands(item):
     commands = item.get("commands", [])
