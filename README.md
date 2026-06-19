@@ -128,6 +128,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * asteval
 * favicon
 * requests
+* Pillow
 
 ## installing dependencies on debian systems
 ```

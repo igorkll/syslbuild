@@ -11,6 +11,8 @@ import pathlib
 import favicon
 import requests
 import urllib
+import io
+from PIL import Image
 
 def str2bool(v):
     if isinstance(v, bool):
@@ -75,6 +77,9 @@ argsparser.add_argument("--sudo-privileges", action='store_true', default=False,
 argsparser.add_argument("--multi-file", action='store_true', default=False, help="then not only the application file will be added to the image, but also all files from its directory. use carefully so as not to add unnecessary files to the image")
 argsparser.add_argument("--debug", action='store_true', default=False, help="enable the kernel log and root shell at UART0 115200")
 argsparser.add_argument("--clear-cache", action='store_true', default=False, help="cleans up the cache before building")
+
+argsparser.add_argument("--wifi-name", default=None, help="the name of the wifi network for automatic connection")
+argsparser.add_argument("--wifi-password", default=None, help="the password of the wifi network for automatic connection")
 
 argsparser.add_argument("-o", "--output", default=None, help="output path to the boot image")
 
@@ -147,7 +152,10 @@ def get_web_logo():
 
     if icons:
         with urllib.request.urlopen(icons[0].url) as response:
-            pathlib.Path(last_extracted_logo_path).write_bytes(response.read())
+            image_data = response.read()
+        
+        img = Image.open(io.BytesIO(image_data))
+        img.save(last_extracted_logo_path, format='PNG')
         
         return last_extracted_logo_path
 

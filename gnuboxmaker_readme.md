@@ -1,4 +1,4 @@
-# Gnubox maker (BETA)
+# Gnubox maker (The GUI is not finished)
 ![preview](https://raw.githubusercontent.com/igorkll/Gnubox-Maker/refs/heads/main/preview.png)  
 the easiest way is to create an embedded/kiosk linux distribution with a single application that cannot be exited  
 it uses a patched linux kernel, which prevents switching VT and using ctrl+alt+del  
@@ -15,6 +15,7 @@ as well as Gnubox maker projects can be controlled via git
 The .img images for x86 / x86_64 that Gnubox maker generates are universal. they can be written to a USB drive or to a hard disk/SSD. also, when the device is turned on for the first time, the partition size will increase to the maximum possible (up to the entire available disk space) so that the OS can use all available space  
 a similar program for creating Windows images for embedded devices: https://github.com/igorkll/WinBox-Maker  
 ATTENTION. Starting from version 1.3.9, the kernels do not go with the program, but are assembled on the user's computer during installation. because of this, the installation can take a long time. up to several hours  
+if your task requires an even simpler program, you can consider mkbootable: https://github.com/igorkll/mkbootable  
 
 ## subprojects
 * syslbuild - a low-level build system for custom linux distributions: https://github.com/igorkll/syslbuild
