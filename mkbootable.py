@@ -154,6 +154,7 @@ def get_web_logo():
         with urllib.request.urlopen(icons[0].url) as response:
             image_data = response.read()
         
+        # 
         img = Image.open(io.BytesIO(image_data))
         img.save(last_extracted_logo_path, format='PNG')
         
@@ -415,17 +416,17 @@ def generate_project():
 
     # ------------------------------------------ setup payload
 
+    if args.chroot:
+        shutil.copy(args.chroot, os.path.join(project_files, ".user_chroot"))
+        if pathlib.Path(args.chroot).suffix == ".sh" and not is_shebang(args.chroot):
+            with open(os.path.join(project_files, ".user_chroot_bash"), "w") as f:
+                pass
+
     if args.application:
         build_log("copying application files...")
 
         target_dir = os.path.join(project_files, "application")
         os.makedirs(target_dir)
-
-        if args.chroot:
-            shutil.copy(args.chroot, os.path.join(project_files, ".user_chroot"))
-            if pathlib.Path(args.chroot).suffix == ".sh" and not is_shebang(args.chroot):
-                with open(os.path.join(project_files, ".user_chroot_bash"), "w") as f:
-                    pass
 
         if args.multi_file:
             shutil.copytree(
