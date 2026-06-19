@@ -91,6 +91,7 @@ class Project:
     minlogotime: int = 10
     cmdline: str = ""
     exclude_cmdline: list[str] = field(default_factory=list)
+    sudo_privileges: bool = False
 
     integrate_liamounts: bool = False
     integrate_xwayland: bool = True
@@ -325,6 +326,10 @@ systemctl mask plymouth-kexec.service"""
 cd /
 rm -rf /liamounts"""
 
+    if current_project.sudo_privileges:
+        aaa_setup += "\n" + f"""echo "user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/user-nopasswd
+chmod 440 /etc/sudoers.d/user-nopasswd"""
+
     aaa_setup += "\n\ntouch /.chrootend"
     return aaa_setup
 
@@ -391,6 +396,9 @@ def setup_build_distro(builditems):
             "firmware-realtek",
             "wireless-regdb"
         ]
+
+        if current_project.sudo_privileges:
+            include.append("sudo")
 
         # without this, no dependencies are set and nothing works. А МОЖЕТ БЛЯТЬ И НЕТ, я разберусь...
         if current_project.boot_splash or True:

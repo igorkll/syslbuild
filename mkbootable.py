@@ -235,7 +235,6 @@ def generate_project_config():
 
         # tools
         "nano",
-        "sudo",
 
         # network
         "network-manager",
@@ -301,6 +300,7 @@ def generate_project_config():
         "minlogotime": 10,
         "cmdline": "clear noCursorBlink vt.global_cursor_default=0",
         "exclude_cmdline": [],
+        "sudo_privileges": args.sudo_privileges,
         "integrate_liamounts": False,
         "integrate_xwayland": True
     }
