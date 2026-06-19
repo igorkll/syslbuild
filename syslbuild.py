@@ -1620,7 +1620,7 @@ def smartChroot(item):
     copyItemFiles(findItem(item["source"]), itemPath)
     for scriptPath in item["scripts"]:
         chroot_script_path = pathConcat(itemPath, ".syslbuild-smart-chroot.sh")
-        copyItemFiles(scriptPath, chroot_script_path, DEFAULT_RIGHTS_0755)
+        copyItemFiles(findItem(scriptPath), chroot_script_path, DEFAULT_RIGHTS_0755)
         if rawCrossChroot(itemPath, ["/.syslbuild-smart-chroot.sh"], item.get("use_systemd_container", False), item.get("manual_validation", False)):
             buildExecute("reset")
         else:
