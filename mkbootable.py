@@ -91,7 +91,7 @@ def get_browser(url):
     # у firefox какой то хуевый киоск. при загрузке на ~100 милисекунд моргает ui и не все хоткеи отключены. это позваляет выйти из киоска при наличии клавиатуры. что недопустимо
     return {
         "packages": ["firefox-esr"],
-        "command": f"cd /application && firefox --kiosk {url}"
+        "command": f"firefox --kiosk {url}"
     } 
 
 # --------------------------------------- get application info
