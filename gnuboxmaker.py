@@ -361,6 +361,8 @@ def setup_chroot_script():
     with open(os.path.join(chroot_scripts_directory, "zzz_setup.sh"), "w") as f:
         f.write(gen_default_last_chroot_script())
 
+    scripts.append(f"linux-embedded-setup-scripts/disable_shutdown_reboot_cmd_wall_messages.sh")
+
     for f in sorted(Path(chroot_project_directory).iterdir(), key=lambda p: p.name):
         if f.is_file():
             scripts.append(f"chroot/{f.name}")
@@ -464,19 +466,8 @@ def setup_download(builditems):
             "git_checkout": version
         })
 
-    def addExtract(fromdir, name):
-        builditems.append({
-            "type": "from-directory",
-            "name": name,
-            "export": False,
-
-            "source": fromdir,
-            "path": f"/{name}"
-        })
-
     addDownload("custom-debian-initramfs-init", "1.5.10")
-    addExtract("custom-debian-initramfs-init", "custom_init.sh")
-    addExtract("custom-debian-initramfs-init", "custom_init_hook.sh")
+    addDownload("linux-embedded-setup-scripts", "0.2")
 
     if current_project.integrate_liamounts:
         addDownload("liamounts", "2.1")
@@ -992,8 +983,8 @@ def setup_build_base(builditems):
         ["files/preinit.sh", "/preinit.sh", [0, 0, "0755"]],
         ["files/system_preinit.sh", "/system_preinit.sh", [0, 0, "0755"]],
 
-        ["custom_init.sh", "/usr/share/initramfs-tools/init", [0, 0, "0755"]],
-        ["custom_init_hook.sh", "/etc/initramfs-tools/hooks/custom_init_hook.sh", [0, 0, "0755"]],
+        ["custom-debian-initramfs-init/custom_init.sh", "/usr/share/initramfs-tools/init", [0, 0, "0755"]],
+        ["custom-debian-initramfs-init/custom_init_hook.sh", "/etc/initramfs-tools/hooks/custom_init_hook.sh", [0, 0, "0755"]],
         ["files/system_init_hook.sh", "/etc/initramfs-tools/hooks/system_init_hook.sh", [0, 0, "0755"]],
 
         ["files/user_files", "/", [0, 0, "0755"]],
