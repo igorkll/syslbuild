@@ -32,15 +32,19 @@ the program cache is located at the path: /home/$USER/.mkbootable and can take u
 * sh - just a shell script. it will be launched in a text tty, but without control flow and other kernel terminal hotkeys
 * html - the html file that will be opened in the browser
 
+## application arguments
+you have to pass one of them. but not more than one  
+* --application - the path to your application's executable file
+* --web - the link to the web page to be displayed in kiosk mode
+
 ## args
-* application - the path to your application's executable file
-* --platform - select an available platform from the list
+* --platform - select an available platform from the list (default: desktop_64)
 * --mode - auto/graphic/console select one of the launch modes for your application. By default, the mode is automatically defined as graphical for binary files and text for shell scripts. but it's better to specify it explicitly.
 * --boot-logo - you can set a custom boot logo .png
 * --chroot - you can specify a chroot script to modify the system during the image build stage.
-* --root-privileges - if set to true, the application in the image will have root privileges
+* --root-privileges - the application in the image will have root privileges
 * --sudo-privileges - it is a more "soft" version of "root-privileges". the application will not be launched from root. but it will be able to get root by executing sudo. no password is required and the user will see sudo execution on the screen
-* --multi-file - if set to true, then not only the application file will be added to the image, but also all files from its directory. use carefully so as not to add unnecessary files to the image
-* --debug - if set to true, in UART0, the kernel log and root shell are running at 115200
+* --multi-file - then not only the application file will be added to the image, but also all files from its directory. use carefully so as not to add unnecessary files to the image
+* --debug - enable the kernel log and root shell at UART0 115200
 * --clear-cache - cleans up the cache before building
 * --output - output path to the boot image

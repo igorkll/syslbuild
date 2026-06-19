@@ -28,6 +28,16 @@ def build_log(logstr, quiet=False):
 def dict_checksum(tbl):
     return hashlib.md5(json.dumps(tbl).encode('utf-8')).hexdigest()
 
+# ---------------------------------------
+
+syslbuild_install_path = "/opt/syslbuild"
+if os.path.isdir(syslbuild_install_path):
+    syslbuild_path = syslbuild_install_path
+else:
+    syslbuild_path = "."
+
+build_log(f"syslbuild path: {syslbuild_path}")
+
 # --------------------------------------- parsing cli arguments
 
 argsparser = argparse.ArgumentParser(
@@ -35,7 +45,7 @@ argsparser = argparse.ArgumentParser(
     description="create a bootable linux image from your application"
 )
 
-argsparser.add_argument("application", help="the path to your application's executable file")
+argsparser.add_argument("--application", default=None, help="the path to your application's executable file")
 
 argsparser.add_argument(
     "--platform",
@@ -53,18 +63,15 @@ argsparser.add_argument(
 
 argsparser.add_argument("--boot-logo", default=None, help="you can set a custom boot logo .png")
 argsparser.add_argument("--chroot", default=None, help="you can specify a chroot script to modify the system during the image build stage.")
-argsparser.add_argument("--root-privileges", type=str2bool, default=False, help="if set to true, the application in the image will have root privileges")
-argsparser.add_argument("--sudo-privileges", type=str2bool, default=False, help="it is a more \"soft\" version of \"root-privileges\". the application will not be launched from root. but it will be able to get root by executing sudo. no password is required and the user will see sudo execution on the screen")
-argsparser.add_argument("--multi-file", type=str2bool, default=False, help="if set to true, then not only the application file will be added to the image, but also all files from its directory. use carefully so as not to add unnecessary files to the image")
-argsparser.add_argument("--debug", type=str2bool, default=False, help="if set to true, in UART0, the kernel log and root shell are running at 115200")
-argsparser.add_argument("--clear-cache", type=str2bool, default=False, help="cleans up the cache before building")
+argsparser.add_argument("--root-privileges", action='store_true', default=False, help="the application in the image will have root privileges")
+argsparser.add_argument("--sudo-privileges", action='store_true', default=False, help="it is a more \"soft\" version of \"root-privileges\". the application will not be launched from root. but it will be able to get root by executing sudo. no password is required and the user will see sudo execution on the screen")
+argsparser.add_argument("--multi-file", action='store_true', default=False, help="then not only the application file will be added to the image, but also all files from its directory. use carefully so as not to add unnecessary files to the image")
+argsparser.add_argument("--debug", action='store_true', default=False, help="enable the kernel log and root shell at UART0 115200")
+argsparser.add_argument("--clear-cache", action='store_true', default=False, help="cleans up the cache before building")
 
 argsparser.add_argument("-o", "--output", default=None, help="output path to the boot image")
 
 args = argsparser.parse_args()
-
-if args.output is None:
-    args.output = Path(args.application).stem + ".img"
 
 # --------------------------------------- get application info
 
@@ -98,15 +105,18 @@ def get_application_session_type():
 def get_application_logo():
     return None
 
+def get_browser(url):
+    # у firefox какой то хуевый киоск. при загрузке на ~100 милисекунд моргает ui и не все хоткеи отключены. это позваляет выйти из киоска при наличии клавиатуры. что недопустимо
+    return {
+        "packages": ["firefox-esr"],
+        "command": f"cd /application && firefox --kiosk {url}"
+    } 
+
 def get_application_run_features():
     suffix = pathlib.Path(application_path).suffix
     
     if suffix == ".html":
-        # у firefox какой то хуевый киоск. при загрузке на ~100 милисекунд моргает ui и не все хоткеи отключены. это позваляет выйти из киоска при наличии клавиатуры. что недопустимо
-        return {
-            "packages": ["firefox-esr"],
-            "command": f"cd /application && firefox --kiosk {application_name}"
-        } 
+        return get_browser(application_name)
     elif suffix == ".flatpak":
         pass
     elif suffix == ".sh" and not is_shebang(application_path):
@@ -121,29 +131,39 @@ def get_application_run_features():
         "command": f"cd /application && ./{application_name}"
     }
 
-# --------------------------------------- show info
+# --------------------------------------- get web info
 
-syslbuild_install_path = "/opt/syslbuild"
-if os.path.isdir(syslbuild_install_path):
-    syslbuild_path = syslbuild_install_path
-else:
-    syslbuild_path = "."
+def get_web_logo():
+    return None
 
-application_path = get_application_path()
-application_dir = os.path.dirname(application_path)
-application_name = os.path.basename(application_path)
-application_session_type = get_application_session_type()
-application_logo = get_application_logo()
-application_run_features = get_application_run_features()
+def get_web_run_features():
+    return get_browser(args.web)
 
-build_log(f"syslbuild path: {syslbuild_path}")
-build_log(f"application path: {application_path}")
-build_log(f"application dir: {application_dir}")
-build_log(f"application name: {application_name}")
-build_log(f"application session type: {application_session_type}")
-build_log(f"application logo: {application_logo}")
-build_log(f"application run features: {application_run_features}")
-build_log(f"application output: {args.output}")
+# ---------------------------------------
+
+if "application" in args:
+    application_path = get_application_path()
+    application_dir = os.path.dirname(application_path)
+    application_name = os.path.basename(application_path)
+    session_type = get_application_session_type()
+    default_logo = get_application_logo()
+    run_features = get_application_run_features()
+
+    if args.output is None:
+        args.output = Path(args.application).stem + ".img"
+
+    build_log(f"application path: {application_path}")
+    build_log(f"application dir: {application_dir}")
+    build_log(f"application name: {application_name}")
+elif "web" in args:
+    session_type = "wayland"
+    default_logo = get_web_logo()
+    run_features = get_web_run_features()
+
+build_log(f"session type: {session_type}")
+build_log(f"default logo: {default_logo}")
+build_log(f"run features: {run_features}")
+build_log(f"output: {args.output}")
 
 # --------------------------------------- build project
 
@@ -247,7 +267,7 @@ def generate_project_config():
         "udisks2" # i use the standard udisks2 instead of liamounts. since user applications may have no idea what liamounts is and how it differs from udisks2.
     ]
 
-    user_packages += application_run_features["packages"]
+    user_packages += run_features["packages"]
 
     project_config = {
         "gnubox_version": [1, 4, 3],
@@ -296,7 +316,7 @@ def generate_project_config():
         "size_root_partition": "(auto * 1.2) + (100 * 1024 * 1024)",
         "weston_shell": "kiosk",
         "session_user": "root" if args.root_privileges else "user",
-        "session_mode": application_session_type,
+        "session_mode": session_type,
         "minlogotime": 10,
         "cmdline": "clear noCursorBlink vt.global_cursor_default=0",
         "exclude_cmdline": [],
@@ -322,8 +342,8 @@ def get_boot_logo():
     if args.boot_logo:
         return args.boot_logo
 
-    if application_logo:
-        return application_logo
+    if default_logo:
+        return default_logo
 
     return os.path.join(syslbuild_path, "mkbootable.png")
 
@@ -365,7 +385,7 @@ def generate_project():
 
     shutil.copy(os.path.join(syslbuild_path, "mkbootable", "chroot.sh"), os.path.join(project_chroot, "chroot.sh"))
 
-    # ------------------------------------------ copy application files and make application command
+    # ------------------------------------------ setup payload
 
     build_log("copying application files...")
 
@@ -387,7 +407,7 @@ def generate_project():
     else:
         shutil.copy(application_path, os.path.join(target_dir, application_name))
 
-    application_command = application_run_features["command"]
+    run_command = run_features["command"]
 
     # ------------------------------------------ write runshell.sh
 
@@ -396,7 +416,7 @@ def generate_project():
     project_runshell = os.path.join(project_resources, "runshell.sh")
     with open(project_runshell, "w") as f:
         f.write("#!/bin/bash\n")
-        f.write(application_command)
+        f.write(run_command)
 
     return project_path
 
