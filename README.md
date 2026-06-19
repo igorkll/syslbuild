@@ -15,9 +15,21 @@ WARNING!!! if you read this text from GITHUB page please, download a release and
 * please note that in syslbuild, the runtime environment may affect the build result. a better solution would be to create one VM for the entire project and build the project on that VM. it is better that the architecture matches the target architecture of the assembly, although this is not necessary due to qemu-static
 
 ## subprojects
-* syslbuild - a low-level build system for custom linux distributions: https://github.com/igorkll/syslbuild
+* syslbuild (main) - a low-level build system for custom linux distributions: https://github.com/igorkll/syslbuild
 * Gnubox maker - the simplest way to create kiosk/appliance builds of gnu/linux: https://github.com/igorkll/Gnubox-Maker
 * mkbootable - an even easier way to make a kiosk/single application gnu/linux: https://github.com/igorkll/mkbootable
+
+## installing
+* download the syslbuild release (NOT THE REPOSITORY BRANCH): https://github.com/igorkll/syslbuild/releases
+* unpack it in a convenient place
+* launch install.sh from root
+* wait for the installation process to finish (it can take up to 4 hours)
+* the unpacked files can now be deleted
+### supported host systems
+recommended OS: Ubuntu 24.04 LTS (Noble Numbat)  
+* debian
+* ubuntu
+* linux mint
 
 ## the programs included in the package
 * syslbuild - creating custom linux systems from an assembly description file. allows you to fully control and customize the system. export to any platforms is possible
@@ -41,18 +53,6 @@ gnubox maker is a high-level GUI program for creating kiosks and application lin
 * syslbuild - complete customization of the assembled system
 * gnubox maker - partial customization. but most of them are already set up to create a kiosk
 * mkbootable - almost zero customization. Just download the app and get a bootable image
-
-## installing
-* download the syslbuild release (NOT THE REPOSITORY BRANCH): https://github.com/igorkll/syslbuild/releases
-* unpack it in a convenient place
-* launch install.sh from root
-* wait for the installation process to finish (it can take up to 4 hours)
-* the unpacked files can now be deleted
-### supported host systems
-recommended OS: Ubuntu 24.04 LTS (Noble Numbat)  
-* debian
-* ubuntu
-* linux mint
 
 ## you may also be interested in
 * https://github.com/igorkll/linux-embedded-patchs - a set of patches for using the linux kernel on embedded locked-down devices

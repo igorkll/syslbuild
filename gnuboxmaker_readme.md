@@ -18,7 +18,7 @@ ATTENTION. Starting from version 1.3.9, the kernels do not go with the program, 
 if your task requires an even simpler program, you can consider mkbootable: https://github.com/igorkll/mkbootable  
 
 ## subprojects
-* syslbuild - a low-level build system for custom linux distributions: https://github.com/igorkll/syslbuild
+* syslbuild (main) - a low-level build system for custom linux distributions: https://github.com/igorkll/syslbuild
 * Gnubox maker - the simplest way to create kiosk/appliance builds of gnu/linux: https://github.com/igorkll/Gnubox-Maker
 * mkbootable - an even easier way to make a kiosk/single application gnu/linux: https://github.com/igorkll/mkbootable
 
