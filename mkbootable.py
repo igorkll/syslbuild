@@ -10,6 +10,7 @@ import subprocess
 import pathlib
 import favicon
 import requests
+import urllib
 
 def str2bool(v):
     if isinstance(v, bool):
@@ -144,8 +145,8 @@ def get_web_logo():
     icons = favicon.get(args.web)
 
     if icons:
-        with urlopen(icons[0].url) as response:
-            Path(last_extracted_logo_path).write_bytes(response.read())
+        with urllib.request.urlopen(icons[0].url) as response:
+            pathlib.Path(last_extracted_logo_path).write_bytes(response.read())
         
         return last_extracted_logo_path
 

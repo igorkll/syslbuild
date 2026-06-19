@@ -767,6 +767,11 @@ def formatFilesystem(path, item):
             cmd.append("-U")
         cmd.append(str(item["fsid"]))
 
+    if "revision" in item:
+        if "fat" not in fs_type:
+            cmd.append("-r")
+            cmd.append(str(item["revision"]))
+
     if fs_subtype is not None:
         cmd.append("-F")
         cmd.append(str(fs_subtype))
