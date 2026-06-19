@@ -48,6 +48,11 @@ gnubox maker is a high-level GUI program for creating kiosks and application lin
 * launch install.sh from root
 * wait for the installation process to finish (it can take up to 4 hours)
 * the unpacked files can now be deleted
+### supported host systems
+recommended OS: Ubuntu 24.04 LTS (Noble Numbat)  
+* debian
+* ubuntu
+* linux mint
 
 ## you may also be interested in
 * https://github.com/igorkll/linux-embedded-patchs - a set of patches for using the linux kernel on embedded locked-down devices

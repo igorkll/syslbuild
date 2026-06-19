@@ -18,6 +18,11 @@ the program cache is located at the path: /home/$USER/.mkbootable and can take u
 * launch install.sh from root
 * wait for the installation process to finish (it can take up to 4 hours)
 * the unpacked files can now be deleted
+### supported host systems
+recommended OS: Ubuntu 24.04 LTS (Noble Numbat)  
+* debian
+* ubuntu
+* linux mint
 
 ## supported platforms
 there may be nuances in the support of some platforms. read about it here: https://github.com/igorkll/Gnubox-Maker  

@@ -27,6 +27,11 @@ ATTENTION. Starting from version 1.3.9, the kernels do not go with the program, 
 * launch install.sh from root
 * wait for the installation process to finish (it can take up to 4 hours)
 * the unpacked files can now be deleted
+### supported host systems
+recommended OS: Ubuntu 24.04 LTS (Noble Numbat)  
+* debian
+* ubuntu
+* linux mint
 
 ## roadmap
 * gui with system settings and choice of platforms for export
@@ -49,11 +54,6 @@ ATTENTION. Starting from version 1.3.9, the kernels do not go with the program, 
 * raspberry pi 5/4/3 (i tested this on raspberry pi 5, but in theory the image created via raspberry pi 64 should work on 5/4/3)
 if the platform you need is not available in gnubox maker, you can use syslbuild (a lower-level tool for creating embedded linux builds) where you can customize the build for any hardware you are interested in and do anything with the system  
 alternatively, you can fork gnubox maker and then offer a pull request  
-
-## supported host systems
-* debian
-* ubuntu
-* linux mint
 
 ## projects used
 * syslbuild: https://github.com/igorkll/syslbuild

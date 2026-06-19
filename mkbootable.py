@@ -33,7 +33,8 @@ def dict_checksum(tbl):
 
 # ---------------------------------------
 
-last_extracted_logo_path = ".mkbootable/last_extracted_logo.png"
+mkbootable_data_path = os.path.join(os.path.expanduser("~"), ".mkbootable")
+last_extracted_logo_path = os.path.join(mkbootable_data_path, "last_extracted_logo.png")
 
 syslbuild_install_path = "/opt/syslbuild"
 if os.path.isdir(syslbuild_install_path):
@@ -353,7 +354,7 @@ def get_project_checksum(project_config):
 
 def get_project_path(project_config):
     # project_checksum = get_project_checksum(project_config)
-    project_path = os.path.join(os.path.expanduser("~"), ".mkbootable", "project")
+    project_path = os.path.join(mkbootable_data_path, "project")
     os.makedirs(project_path, exist_ok=True)
     return project_path
 
