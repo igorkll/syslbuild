@@ -53,7 +53,7 @@ def loadTempPaths():
 
 aeval = asteval.Interpreter()
 
-DEFAULT_RIGHTS = [0, 0, "0000"]
+DEFAULT_RIGHTS_0700 = [0, 0, "0700"]
 DEFAULT_RIGHTS_0755 = [0, 0, "0755"]
 
 SIZE_UNITS = {
@@ -179,7 +179,7 @@ def calcSize(sizeLitteral, folderOrFilelist=None):
 def makedirsChangeRights(path, changeRights=None):
     if not os.path.exists(path):
         os.makedirs(path)
-        changeAccessRights(path, changeRights or DEFAULT_RIGHTS)
+        changeAccessRights(path, changeRights or DEFAULT_RIGHTS_0700)
 
 def getLogFile():
     os.makedirs(path_logs, exist_ok=True)
@@ -579,14 +579,14 @@ def grubIsoImage(item):
     makedirsChangeRights(grubDirectory)
 
     if "kernel" in item:
-        copyItemFiles(findItem(item["kernel"]), pathConcat(bootDirectory, "vmlinuz"), DEFAULT_RIGHTS)
+        copyItemFiles(findItem(item["kernel"]), pathConcat(bootDirectory, "vmlinuz"), DEFAULT_RIGHTS_0700)
 
     if "initramfs" in item:
-        copyItemFiles(findItem(item["initramfs"]), pathConcat(bootDirectory, "initrd.img"), DEFAULT_RIGHTS)
+        copyItemFiles(findItem(item["initramfs"]), pathConcat(bootDirectory, "initrd.img"), DEFAULT_RIGHTS_0700)
 
     grub_cfg_path = pathConcat(grubDirectory, "grub.cfg")
     if "config" in item:
-        copyItemFiles(findItem(item["config"]), grub_cfg_path, DEFAULT_RIGHTS)
+        copyItemFiles(findItem(item["config"]), grub_cfg_path, DEFAULT_RIGHTS_0700)
     else:
         with open(grub_cfg_path, "w") as f:
             if "kernel" in item:
@@ -602,7 +602,7 @@ def grubIsoImage(item):
             if item.get("show_boot_process", False):
                 f.write("echo \"Booting...\"\n")
             f.write("boot\n")
-        changeAccessRights(grub_cfg_path, DEFAULT_RIGHTS)
+        changeAccessRights(grub_cfg_path, DEFAULT_RIGHTS_0700)
 
     cmd = ["grub-mkrescue", "-o", getItemPath(item), tempPath]
     if "modules" in item:
@@ -829,7 +829,7 @@ def rawItemsProcess(items, itemsDirectory):
             buildLog(f"Copy item: {itemPathOrRawItem} > {outputPath}")
             
         if not changeRights and isUserItem(itemObj[0]):
-            changeRights = DEFAULT_RIGHTS
+            changeRights = DEFAULT_RIGHTS_0700
         
         if changeRights:
             buildLog(f"With custom rights: {changeRights}")
@@ -849,7 +849,7 @@ def buildDirectory(item):
     if "directories" in item:
         for directoryData in item["directories"]:
             directoryPath = pathConcat(buildDirectoryPath, directoryData[0])
-            changeRights = directoryData[1] or DEFAULT_RIGHTS
+            changeRights = directoryData[1] or DEFAULT_RIGHTS_0700
 
             buildLog(f"Create empty directory: {directoryPath} {changeRights}")
             makedirsChangeRights(directoryPath, changeRights)
@@ -999,7 +999,7 @@ def installBootloader(item, path, partitionsOffsets, sectorsize):
 
         if "config" in bootloaderInfo:
             makedirsChangeRights(pathConcat(bootDirectory, "grub"))
-            copyItemFiles(findItem(bootloaderInfo["config"]), pathConcat(bootDirectory, "grub", "grub.cfg"), DEFAULT_RIGHTS)
+            copyItemFiles(findItem(bootloaderInfo["config"]), pathConcat(bootDirectory, "grub", "grub.cfg"), DEFAULT_RIGHTS_0700)
 
         umountFilesystem(path_mount)
 
@@ -1789,6 +1789,16 @@ def gitcloneBuild(item):
         buildExecute(["git", "fetch", "--depth=1", "origin", "HEAD"], True, None, output_folder)
         buildExecute(["git", "checkout", "FETCH_HEAD"], True, None, output_folder)
 
+def cloneBuildItem(fromItem, newItem):
+    pass
+
+def executeCommands(item):
+    commands = item.get("commands", [])
+    if "source" in item:
+        doCommands(cloneBuildItem(item["source"], item["name"]), commands)
+    else:
+        doCommands(".", commands)
+
 buildActions = {
     "debian": buildDebian,
     "download": buildDownload,
@@ -1808,7 +1818,8 @@ buildActions = {
     "debian-export-initramfs": debianExportInitramfs,
     "smart-chroot": smartChroot,
     "singleboard": singleboardBuild,
-    "gitclone": gitcloneBuild
+    "gitclone": gitcloneBuild,
+    "execute-commands": executeCommands
 }
 
 def get_file_checksum(file_path, hash_algo="sha256"):
@@ -1821,7 +1832,6 @@ def get_file_checksum(file_path, hash_algo="sha256"):
         return "failed_checksum"
 
     return h.hexdigest()
-
 
 def get_dir_checksum(dir_path, hash_algo="sha256"):
     # создаём хэш от всех файлов в директории
@@ -1846,6 +1856,7 @@ def getDependenciesFileOrDirectoryChecksum(pathOrChecksum, hash_algo="sha256"):
     
 # если какое то поле зависимостей ссылается на массив массивов то в втором массиве учитываются только элементы с индексом 0
 # ТАК И ЗАДУМАНО!
+# возможно стоит пересмотреть это архитектурное решение чтобы потом не запутатся при добавлении новых элементов сборки
 def getDependenciesFieldChecksum(fieldValue, filesOnly=False):
     def inlineFindItem(inputPath):
         if not filesOnly:
@@ -1939,6 +1950,9 @@ def getDependenciesSmartChroot(item):
 def getDependenciesSingleboard(item):
     return rawGetDependencies(item, ["bootloader", "initramfs", "kernel", "rootfs", "dtbList", "dtboList", "bootloaderDtb"], [])
 
+def getDependenciesExecuteCommands(item):
+    return rawGetDependencies(item, ["source"], [])
+
 getDependencies = {
     "debian": getDependenciesDebian,
     "directory": getDependenciesDirectory,
@@ -1954,7 +1968,8 @@ getDependencies = {
     "debian-update-initramfs": getDependenciesDebianUpdateInitramfs,
     "debian-export-initramfs": getDependenciesDebianExportInitramfs,
     "smart-chroot": getDependenciesSmartChroot,
-    "singleboard": getDependenciesSingleboard
+    "singleboard": getDependenciesSingleboard,
+    "execute-commands": getDependenciesExecuteCommands,
 }
 
 def filter_underscored(d):

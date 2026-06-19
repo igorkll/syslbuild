@@ -277,6 +277,37 @@ these changes to the kernel config are applied automatically when building the k
             "file": "project_part.json"
         },
 
+        // ---------------- raw commands execute
+        // executes commands from the project's root directory
+        // please do not use it in this form to modify existing builditems.
+        // as this will lead to cache failures and cross-compilation issues. instead,
+        // attach it to the builditem that you need to change via the "source" attribute and it will export the new builditem.
+        {
+            "type": "execute-commands",
+            "name": "any unique name", //despite the fact that if you don't bind execute-commands to anything, it won't export anything. Each builditem must still have a unique name.
+
+            "commands": [
+                "any shell command",
+                "any shell command 2"
+            ],
+        },
+
+        // executes commands in the assembly element specified in the "source" parameter. exports the result
+        {
+            "type": "execute-commands",
+            "name": "output name", //the name to export
+            "export": false,
+
+            // the name of the builditem that you want to modify using the command, and which will act as the root directory
+            "source": "my builditem",
+
+            // commands for modifying "my builditem"
+            "commands": [
+                "any shell command", 
+                "any shell command 2"
+            ],
+        },
+
         // ---------------- building custom executable
         {
             "type": "gcc-build",
@@ -456,7 +487,7 @@ these changes to the kernel config are applied automatically when building the k
                 // adding the previously built debian to the file system
                 // you can also import files/directories from your project's directory by simply specifying their name here
                 // items of the build added to syslbuild itself will take precedence, but if there is no build item with that name, then syslbuild will try to import the file/directory from the project folder
-                // when importing user files/directories, all UIDs and GIDs are default set to 0 and all access rights are set to 0000
+                // when importing user files/directories, all UIDs and GIDs are default set to 0 and all access rights are set to 0700
                 // this is done so that the build result is the same when cloning the repository from the version control system
                 // when adding an item, you can specify your UID/GID and access rights, if you do not do this, then for user files from the project folder they will automatically be changed to zero (as mentioned above) and for previously collected items they will be moved unchanged
                 // please note that this way you specify access rights recursively for all item elements, if you need a different behavior, then you must change it in a separate "chmod" block
@@ -814,6 +845,7 @@ these changes to the kernel config are applied automatically when building the k
 
             // default: false
             // if true, the original access rights will be saved
+            // 
             "save_rights": false,
 
             "source": "rootfs directory",
