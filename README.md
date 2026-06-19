@@ -1,4 +1,4 @@
-# syslbuild + gnubox maker + mkbootable 1.4.3
+# syslbuild + gnubox maker + mkbootable 1.5.0
 # mkbootable It will be implemented later.
 an build system for creating Linux distributions. it is focused on embedded distributions  
 DOWNLOAD THE RELEASE, NOT THE REPOSITORY!  
