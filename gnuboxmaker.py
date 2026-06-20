@@ -95,7 +95,9 @@ class Project:
 
     integrate_liamounts: bool = False
     integrate_xwayland: bool = True
+    integrate_firmwares: bool = True
     integrate_network: bool = True
+    integrate_network_wifi: bool = True
     integrate_audio: bool = True
 
     export_x86_64: bool = True
@@ -393,12 +395,7 @@ def setup_build_distro(builditems):
             "mawk",
             "kexec-tools",
             "alsa-utils",
-            "jq",
-
-            "firmware-linux",
-            "firmware-brcm80211",
-            "firmware-realtek",
-            "wireless-regdb"
+            "jq"
         ]
 
         if current_project.sudo_privileges:
@@ -414,16 +411,24 @@ def setup_build_distro(builditems):
             include.append("libasound2")
             include.append("libpulse0")
 
+        if current_project.integrate_firmwares:
+            include.append("firmware-linux")
+
         if current_project.integrate_network:
             include.append("network-manager")
             include.append("systemd-timesyncd")
-            include.append("rfkill")
             include.append("iproute2")
-            include.append("wpasupplicant")
             include.append("ca-certificates")
 
+            if current_project.integrate_network_wifi:
+                include.append("rfkill")
+                include.append("wpasupplicant")
+                include.append("wireless-regdb")
+                include.append("firmware-realtek")
+                include.append("firmware-brcm80211")
+
         # without this, no dependencies are set and nothing works. А МОЖЕТ БЛЯТЬ И НЕТ, я разберусь...
-        if current_project.boot_splash or True:
+        if current_project.boot_splash:
             include.append("plymouth") # install basic plymouth files. The part will later be replaced by embedded plymouth.
             include.append("plymouth-themes")
 
@@ -878,7 +883,7 @@ def setup_write_bins(builditems):
         ["kernel_image/i386/kernel.img", "/kernel.img", [0, 0, "0644"]]
     ]
 
-    if current_project.boot_splash or True:
+    if current_project.boot_splash:
         items.append(["blobs/embedded-plymouth/x86", "/", [0, 0, "0755"]])
 
     builditems.append({
@@ -899,13 +904,13 @@ def setup_write_bins(builditems):
 
     if current_project.export_img_opi_zero3:
         items.append(["kernel_image/arm64/opi_zero3/kernel_modules", "/usr"])
-        items.append(["kernel_image/arm64/opi_zero3/firmware", "/usr/lib/firmware", [0, 0, "0644"]])
+        items.append(["kernel_image/arm64/opi_zero3/firmware", "/usr/lib/firmware", [[0, 0, "0644"], [0, 0, "0755"]]])
 
     if current_project.export_img_rpi_64:
         items.append(["kernel_image/arm64/rpi_64/kernel_modules", "/usr"])
         items.append(["kernel_image/arm64/rpi_5/kernel_modules", "/usr"])
 
-    if current_project.boot_splash or True:
+    if current_project.boot_splash:
         items.append(["blobs/embedded-plymouth/arm64", "/", [0, 0, "0755"]])
 
     builditems.append({
