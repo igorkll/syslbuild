@@ -11,6 +11,7 @@
     "rfkill",
     "iproute2",
     "wpasupplicant",
+    "ca-certificates",
     "mesa-utils",
     "libgl1-mesa-dri",
     "libgbm1",

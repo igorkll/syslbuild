@@ -290,6 +290,7 @@ def generate_project_config():
         "rfkill",
         "iproute2",
         "wpasupplicant",
+        "ca-certificates",
         "wget",
 
         # other
