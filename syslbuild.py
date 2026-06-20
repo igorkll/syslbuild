@@ -1615,16 +1615,31 @@ def debianExportInitramfs(item):
             copyItemFiles(initramfsPath, exportInitramfsPath, DEFAULT_RIGHTS_0755)
             break
 
+def cloneBuildItem(fromItem, newItem):
+    newItemPath = getItemFolder(newItem)
+    oldItemPath = findItem(fromItem)
+    copyItemFiles(oldItemPath, newItemPath)
+    return newItemPath
+
 def smartChroot(item):
-    itemPath = getItemFolder(item)
-    copyItemFiles(findItem(item["source"]), itemPath)
-    for scriptPath in item["scripts"]:
+    itemPath = cloneBuildItem(item["source"], item)
+    
+    for scriptItem in item["scripts"]:
+        if isinstance(scriptItem, str):
+            scriptPath = scriptItem
+            use_systemd_container = item.get("use_systemd_container", False)
+            manual_validation = item.get("manual_validation", False)
+        else:
+            scriptPath = scriptItem[0]
+            use_systemd_container = scriptItem[1]
+            manual_validation = scriptItem[2]
+
         chroot_script_path = pathConcat(itemPath, ".syslbuild-smart-chroot.sh")
         copyItemFiles(findItem(scriptPath), chroot_script_path, DEFAULT_RIGHTS_0755)
-        if rawCrossChroot(itemPath, ["/.syslbuild-smart-chroot.sh"], item.get("use_systemd_container", False), item.get("manual_validation", False)):
+        if rawCrossChroot(itemPath, ["/.syslbuild-smart-chroot.sh"], use_systemd_container, manual_validation):
             buildExecute("reset")
         else:
-            buildLog(f"ERROR: with \"manual_validation\" enabled, the chroot script \"{os.path.basename(scriptPath)}\" did not create a file or directory on the path \"/.chrootend\"")
+            buildLog(f"ERROR: with \"manual_validation\" enabled, the chroot script \"{scriptPath}\" did not create a file or directory on the path \"/.chrootend\"")
             sys.exit(1)
 
         os.remove(chroot_script_path)
@@ -1800,16 +1815,10 @@ def gitcloneBuild(item):
         buildExecute(["git", "fetch", "--depth=1", "origin", "HEAD"], True, None, output_folder)
         buildExecute(["git", "checkout", "FETCH_HEAD"], True, None, output_folder)
 
-def cloneBuildItem(fromItem, newItem):
-    newItemPath = getItemFolder(newItem)
-    oldItemPath = findItem(fromItem)
-    copyItemFiles(oldItemPath, newItemPath)
-    return newItemPath
-
 def executeCommands(item):
     commands = item.get("commands", [])
     if "source" in item:
-        doCommands(cloneBuildItem(item["source"], item["name"]), commands)
+        doCommands(cloneBuildItem(item["source"], item), commands)
     else:
         doCommands(".", commands)
 

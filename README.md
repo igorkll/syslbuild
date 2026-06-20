@@ -1160,6 +1160,21 @@ these changes to the kernel config are applied automatically when building the k
             ]
         },
 
+        // You can also set different startup parameters for different scripts.
+        {
+            "type": "smart-chroot",
+            "name": "my_rootfs_with_chroot_scripts_changes",
+            "export": false,
+
+            "source": "my_rootfs",
+            "scripts": [
+                // path, use_systemd_container, manual_validation
+                ["script_in_project.sh", false, false], //chroot script
+                ["script_in_project_2.sh", true, true], //systemd-nspawn script with manual validation
+                ["script_in_project_3.sh", true, false] //systemd-nspawn script without manual validation
+            ]
+        },
+
         {
             "type": "gitclone",
             "name": "gitclone_repo",

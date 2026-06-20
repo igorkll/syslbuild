@@ -361,7 +361,7 @@ def setup_chroot_script():
     with open(os.path.join(chroot_scripts_directory, "zzz_setup.sh"), "w") as f:
         f.write(gen_default_last_chroot_script())
 
-    scripts.append(f"linux-embedded-setup-scripts/disable_shutdown_reboot_cmd_wall_messages.sh")
+    scripts.append([f"linux-embedded-setup-scripts/disable_shutdown_reboot_cmd_wall_messages.sh", False, False])
 
     for f in sorted(Path(chroot_project_directory).iterdir(), key=lambda p: p.name):
         if f.is_file():
