@@ -102,10 +102,10 @@ class Project:
     export_x86: bool = False
     export_arm64: bool = False
 
-    export_img_bios_mbr: bool = True
+    export_img_bios_mbr: bool = False
     export_img_bios_gpt: bool = False
-    export_img_uefi_gpt: bool = True
-    export_img_bios_and_uefi_gpt: bool = False
+    export_img_uefi_gpt: bool = False
+    export_img_bios_and_uefi_gpt: bool = True
 
     export_img_opi_zero3: bool = False
     export_img_rpi_64: bool = False
