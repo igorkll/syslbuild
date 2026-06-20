@@ -77,9 +77,6 @@ alternatively, you can fork gnubox maker and then offer a pull request
 * raspberry pi 64 - 8/10
 * orange pi zero 3 - 4/10
 
-## examples with a work network
-* gnuboxmaker_examples/testingbash
-
 ## used kernel patches (from https://github.com/igorkll/linux-embedded-patchs)
 * disable_vt_swithing_from_keyboard.patch - prevents the possibility of switching VT from the keyboard
 * disable_vt_swithing_from_wayland.patch - prevents the possibility of VT switching in wayland composers that do not have a setting that allows you to disable this (weston have setting to disable VT switching)
