@@ -1001,8 +1001,8 @@ def setup_build_base(builditems):
 
         ["sprdwl_ng", "/etc/modules-load.d/sprdwl_ng.conf", [0, 0, "0644"], True],
 
-        ["files/etc_config", "/etc", [0, 0, "0755"]],
-        ["files/systemd_config", "/etc/systemd", [0, 0, "0755"]],
+        ["files/etc_config", "/etc", RIGHTS_644_755],
+        ["files/systemd_config", "/etc/systemd", RIGHTS_644_755],
         ["files/runshell.sh", "/runshell.sh", [0, 0, "0755"]],
         ["files/runshell_launcher.sh", "/runshell_launcher.sh", [0, 0, "0755"]],
         ["files/preinit.sh", "/preinit.sh", [0, 0, "0755"]],
