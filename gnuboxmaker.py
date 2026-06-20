@@ -27,6 +27,8 @@ default_devicetree_overlays = {
 #    "opi_zero3": "gnuboxmaker/kernel_build/output/arm64/opi_zero3/overlays"
 }
 
+RIGHTS_644_755 = [[0, 0, "0644"], [0, 0, "0755"]]
+
 @dataclass
 class Project:
     gnubox_version: list[int] = field(default_factory=lambda: [0, 0, 0])
@@ -853,13 +855,11 @@ def setup_write_bins(builditems):
     # ---------------------- x86_64
     items = [
         ["rootfs directory x2", "."],
-        ["kernel_image/amd64/kernel_modules", "/usr"],
+        ["kernel_image/amd64/kernel_modules", "/usr", RIGHTS_644_755],
         ["kernel_image/amd64/kernel.img", "/kernel.img", [0, 0, "0644"]]
     ]
 
-    # ЧТО ТУТ БЛЯТЬ С ПРАВАМИ ДОСТУПА. БЕЗ ЭТОЙ ХУЙНЮ НИХУЯ НЕ ПАШЕТ
-    # походу при копировании plymouth проставляет права доступа другим директориям а без этого мы получаем жопу и не поднимающийся dbus
-    if current_project.boot_splash or True:
+    if current_project.boot_splash:
         directories.append(["/var/lib/plymouth", [0, 0, "0755"]])
         directories.append(["/var/spool/plymouth", [0, 0, "0755"]])
         directories.append(["/run/plymouth", [0, 0, "0755"]])
@@ -879,7 +879,7 @@ def setup_write_bins(builditems):
     # ---------------------- x86
     items = [
         ["rootfs directory x2", "."],
-        ["kernel_image/i386/kernel_modules", "/usr"],
+        ["kernel_image/i386/kernel_modules", "/usr", RIGHTS_644_755],
         ["kernel_image/i386/kernel.img", "/kernel.img", [0, 0, "0644"]]
     ]
 
@@ -903,12 +903,12 @@ def setup_write_bins(builditems):
     ]
 
     if current_project.export_img_opi_zero3:
-        items.append(["kernel_image/arm64/opi_zero3/kernel_modules", "/usr"])
-        items.append(["kernel_image/arm64/opi_zero3/firmware", "/usr/lib/firmware", [[0, 0, "0644"], [0, 0, "0755"]]])
+        items.append(["kernel_image/arm64/opi_zero3/kernel_modules", "/usr", RIGHTS_644_755])
+        items.append(["kernel_image/arm64/opi_zero3/firmware", "/usr/lib/firmware", RIGHTS_644_755])
 
     if current_project.export_img_rpi_64:
-        items.append(["kernel_image/arm64/rpi_64/kernel_modules", "/usr"])
-        items.append(["kernel_image/arm64/rpi_5/kernel_modules", "/usr"])
+        items.append(["kernel_image/arm64/rpi_64/kernel_modules", "/usr", RIGHTS_644_755])
+        items.append(["kernel_image/arm64/rpi_5/kernel_modules", "/usr", RIGHTS_644_755])
 
     if current_project.boot_splash:
         items.append(["blobs/embedded-plymouth/arm64", "/", [0, 0, "0755"]])
