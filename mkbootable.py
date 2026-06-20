@@ -287,6 +287,7 @@ def generate_project_config():
 
         # network
         "network-manager",
+        "systemd-timesyncd",
         "rfkill",
         "iproute2",
         "wpasupplicant",
