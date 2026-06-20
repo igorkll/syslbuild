@@ -95,6 +95,8 @@ class Project:
 
     integrate_liamounts: bool = False
     integrate_xwayland: bool = True
+    integrate_network: bool = True
+    integrate_audio: bool = True
 
     export_x86_64: bool = True
     export_x86: bool = False
@@ -401,6 +403,22 @@ def setup_build_distro(builditems):
 
         if current_project.sudo_privileges:
             include.append("sudo")
+
+        if current_project.integrate_audio:
+            include.append("pipewire")
+            include.append("pipewire-pulse")
+            include.append("pipewire-alsa")
+            include.append("wireplumber")
+            include.append("libspa-0.2-modules")
+            include.append("alsa-utils")
+
+        if current_project.integrate_network:
+            include.append("network-manager")
+            include.append("systemd-timesyncd")
+            include.append("rfkill")
+            include.append("iproute2")
+            include.append("wpasupplicant")
+            include.append("ca-certificates")
 
         # without this, no dependencies are set and nothing works. А МОЖЕТ БЛЯТЬ И НЕТ, я разберусь...
         if current_project.boot_splash or True:

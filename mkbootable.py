@@ -257,13 +257,6 @@ platforms = {
 
 def generate_project_config():
     user_packages = [
-        # audio
-        "pipewire",
-        "pipewire-pulse",
-        "wireplumber",
-        "libspa-0.2-modules",
-        "alsa-utils",
-
         # libs
         "libpulse0",
         "libnspr4",
@@ -284,14 +277,6 @@ def generate_project_config():
 
         # tools
         "nano",
-
-        # network
-        "network-manager",
-        "systemd-timesyncd",
-        "rfkill",
-        "iproute2",
-        "wpasupplicant",
-        "ca-certificates",
         "wget",
 
         # other
@@ -353,7 +338,9 @@ def generate_project_config():
         "exclude_cmdline": [],
         "sudo_privileges": args.sudo_privileges,
         "integrate_liamounts": False,
-        "integrate_xwayland": True
+        "integrate_xwayland": True,
+        "integrate_network": True,
+        "integrate_audio": True
     }
 
     project_config.update(platforms[args.platform]["project_config"])
