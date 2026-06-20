@@ -412,6 +412,7 @@ def setup_build_distro(builditems):
             include.append("alsa-utils")
             include.append("libasound2")
             include.append("libpulse0")
+            include.append("rtkit")
 
         if current_project.integrate_firmwares:
             include.append("firmware-linux")
