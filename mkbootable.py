@@ -284,7 +284,6 @@ def generate_project_config():
     user_packages += run_features["packages"]
 
     project_config = {
-        "gnubox_version": [1, 4, 3],
         "distro": "debian",
         "user_packages": user_packages,
         "exclude_packages": [],
@@ -321,24 +320,11 @@ def generate_project_config():
         "separate_data_partition_var_link": True,
         "separate_data_partition_etc_link": True,
         "var_is_temp": False,
-        "minsize_boot_partition": "64MB",
-        "minsize_efi_partition": "64MB",
-        "minsize_root_partition": "64MB",
-        "minsize_data_partition": "64MB",
-        "size_boot_partition": "(auto * 1.2) + (100 * 1024 * 1024)",
-        "size_efi_partition": "256MB",
-        "size_root_partition": "(auto * 1.2) + (100 * 1024 * 1024)",
-        "weston_shell": "kiosk",
         "session_user": "root" if args.root_privileges else "user",
         "session_mode": session_type,
         "minlogotime": 10,
         "cmdline": "clear noCursorBlink vt.global_cursor_default=0",
-        "exclude_cmdline": [],
-        "sudo_privileges": args.sudo_privileges,
-        "integrate_liamounts": False,
-        "integrate_xwayland": True,
-        "integrate_network": True,
-        "integrate_audio": True
+        "sudo_privileges": args.sudo_privileges
     }
 
     project_config.update(platforms[args.platform]["project_config"])
