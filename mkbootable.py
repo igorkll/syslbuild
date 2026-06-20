@@ -258,11 +258,9 @@ platforms = {
 def generate_project_config():
     user_packages = [
         # libs
-        "libpulse0",
         "libnspr4",
         "libnss3",
         "libxss1",
-        "libasound2",
         "libatk1.0-0",
         "libatk-bridge2.0-0",
         "libxcomposite1",

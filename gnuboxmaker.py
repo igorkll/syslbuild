@@ -411,6 +411,8 @@ def setup_build_distro(builditems):
             include.append("wireplumber")
             include.append("libspa-0.2-modules")
             include.append("alsa-utils")
+            include.append("libasound2")
+            include.append("libpulse0")
 
         if current_project.integrate_network:
             include.append("network-manager")
