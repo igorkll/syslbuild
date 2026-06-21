@@ -48,8 +48,8 @@ you have to pass one of them. but not more than one
 * --mode - auto/graphic/console select one of the launch modes for your application. By default, the mode is automatically defined as graphical for binary files and text for shell scripts. but it's better to specify it explicitly.
 * --boot-logo - you can set a custom boot logo .png
 * --chroot - you can specify a chroot script to modify the system during the image build stage.
-* --wifi-name - the name of the wifi network for automatic connection
-* --wifi-password - the password of the wifi network for automatic connection
+* --wifi-name - the name of the wifi network for automatic connection (NOT IMPLEMENTED AT THE MOMENT)
+* --wifi-password - the password of the wifi network for automatic connection (NOT IMPLEMENTED AT THE MOMENT)
 * --output - output path to the boot image
 
 ## flags
