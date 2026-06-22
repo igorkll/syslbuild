@@ -368,6 +368,7 @@ def setup_chroot_script():
         f.write(gen_default_last_chroot_script())
 
     scripts.append([f"linux-embedded-setup-scripts/disable_shutdown_reboot_cmd_wall_messages.sh", False, False])
+    scripts.append([f"files/cleanup_after_firstboot.sh", False, False])
 
     for f in sorted(Path(chroot_project_directory).iterdir(), key=lambda p: p.name):
         if f.is_file():
@@ -834,6 +835,7 @@ Storage=none""")
     shutil.copy("gnuboxmaker/run_session_x11.sh", os.path.join(path_temp_syslbuild, "files", "run_session_x11.sh"))
     shutil.copy("gnuboxmaker/system_preinit.sh", os.path.join(path_temp_syslbuild, "files", "system_preinit.sh"))
     shutil.copy("gnuboxmaker/system_init_hook.sh", os.path.join(path_temp_syslbuild, "files", "system_init_hook.sh"))
+    shutil.copy("gnuboxmaker/cleanup_after_firstboot.sh", os.path.join(path_temp_syslbuild, "files", "cleanup_after_firstboot.sh"))
 
     if current_project.allow_updatescript and current_project.separate_data_partition:
         shutil.copy("gnuboxmaker/self_update.sh", os.path.join(path_temp_syslbuild, "files", "self_update.sh"))
