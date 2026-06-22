@@ -1075,7 +1075,7 @@ def setup_build_base(builditems):
         })
 
         builditems.append({
-            "architecture": ["amd64"],
+            "architectures": ["amd64"],
 
             "type": "from-directory",
             "name": "super-kiosk-browser-target",
@@ -1086,7 +1086,7 @@ def setup_build_base(builditems):
         })
 
         builditems.append({
-            "architecture": ["arm64"],
+            "architectures": ["arm64"],
 
             "type": "from-directory",
             "name": "super-kiosk-browser-target",
