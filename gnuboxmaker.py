@@ -368,7 +368,6 @@ def setup_chroot_script():
         f.write(gen_default_last_chroot_script())
 
     scripts.append([f"linux-embedded-setup-scripts/disable_shutdown_reboot_cmd_wall_messages.sh", False, False])
-    scripts.append([f"files/cleanup_after_firstboot.sh", False, False])
 
     for f in sorted(Path(chroot_project_directory).iterdir(), key=lambda p: p.name):
         if f.is_file():
@@ -377,6 +376,8 @@ def setup_chroot_script():
                 os.path.join(chroot_project_directory, f.name),
                 os.path.join(chroot_scripts_directory, f.name)
             )
+
+    scripts.append([f"files/cleanup_after_firstboot.sh", False, False])
 
     return scripts
 
