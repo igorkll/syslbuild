@@ -62,6 +62,7 @@ alternatively, you can fork gnubox maker and then offer a pull request
 * linux-embedded-patchs: https://github.com/igorkll/linux-embedded-patchs
 * embedded-plymouth: https://github.com/igorkll/embedded-plymouth
 * custom-debian-initramfs-init: https://github.com/igorkll/custom-debian-initramfs-init
+* linux-embedded-setup-scripts: https://github.com/igorkll/linux-embedded-setup-scripts
 
 ## what was disabled
 * ESC button in plymouth (plymouth source code patch)

@@ -32,7 +32,7 @@ there may be nuances in the support of some platforms. read about it here: https
 * orange_pi_zero3
 
 ## supported application types
-* flatpak - the flatpak format package (not currently supported)
+* flatpak - the flatpak format package (NOT IMPLEMENTED AT THE MOMENT)
 * AppImage - the AppImage application type
 * binary - just a linux executable file
 * sh - just a shell script. it will be launched in a text tty, but without control flow and other kernel terminal hotkeys
@@ -61,3 +61,10 @@ you have to pass one of them. but not more than one
 
 ## warnings
 * firefox is currently being used for the web kiosk. it is problematic because it does not disable all hotkeys and shows its interface for about 100 milliseconds at startup.
+
+## screenshots
+![preview](https://raw.githubusercontent.com/igorkll/syslbuild/refs/heads/main/screenshots/mkbootable/1.png)  
+![preview](https://raw.githubusercontent.com/igorkll/syslbuild/refs/heads/main/screenshots/mkbootable/2.png)  
+![preview](https://raw.githubusercontent.com/igorkll/syslbuild/refs/heads/main/screenshots/mkbootable/3.png)  
+![preview](https://raw.githubusercontent.com/igorkll/syslbuild/refs/heads/main/screenshots/mkbootable/4.png)  
+![preview](https://raw.githubusercontent.com/igorkll/syslbuild/refs/heads/main/screenshots/mkbootable/5.png)  
