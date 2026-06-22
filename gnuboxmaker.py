@@ -29,6 +29,10 @@ default_devicetree_overlays = {
 
 RIGHTS_644_755 = [[0, 0, "0644"], [0, 0, "0755"]]
 
+default_debian_suite = "trixie"
+default_debian_snapshot = "http://snapshot.debian.org/archive/debian/20260217T143331Z"
+default_value = "<default>"
+
 @dataclass
 class Project:
     gnubox_version: list[int] = field(default_factory=lambda: [0, 0, 0])
@@ -38,8 +42,8 @@ class Project:
     exclude_packages: list[str] = field(default_factory=list)
     
     debian_variant: str = "minbase"
-    debian_suite: str = "trixie"
-    debian_snapshot: str = "http://snapshot.debian.org/archive/debian/20260217T143331Z"
+    debian_suite: str = default_value
+    debian_snapshot: str = default_value
 
     screen_idle_time: int = 0
     HandlePowerKey: str = "poweroff"
@@ -402,6 +406,15 @@ def setup_build_debian(builditems):
         "jq"
     ]
 
+    debian_suite = current_project.debian_suite
+    debian_snapshot = current_project.debian_snapshot
+
+    if debian_suite == default_value:
+        debian_suite = default_debian_suite
+
+    if debian_snapshot == default_value:
+        debian_snapshot = default_debian_snapshot
+
     if current_project.sudo_privileges:
         include.append("sudo")
 
@@ -415,7 +428,7 @@ def setup_build_debian(builditems):
         include.append("libpulse0")
         include.append("rtkit")
 
-        if current_project.debian_suite == "sid":
+        if debian_suite == "sid":
             include.append("libasound2t64")
         else:
             include.append("libasound2")
@@ -446,7 +459,7 @@ def setup_build_debian(builditems):
         include.append("libgbm1")
         include.append("libdrm2")
 
-        if current_project.debian_suite == "trixie" or current_project.debian_suite == "sid":
+        if debian_suite == "trixie" or debian_suite == "sid":
             include.append("libegl1")
         else:
             include.append("libegl1-mesa")
@@ -482,8 +495,8 @@ def setup_build_debian(builditems):
         "include": include,
 
         "variant": current_project.debian_variant,
-        "suite": current_project.debian_suite,
-        "url": current_project.debian_snapshot
+        "suite": debian_suite,
+        "url": debian_snapshot
     })
 
 def setup_build_distro(builditems):
