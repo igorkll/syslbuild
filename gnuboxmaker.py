@@ -1036,6 +1036,7 @@ def setup_build_base(builditems):
     setup_build_distro(builditems)
     setup_write_files()
 
+    directories = []
     items = [
         ["rootfs directory x1", "."],
 
@@ -1093,12 +1094,11 @@ def setup_build_base(builditems):
             "export": False,
 
             "source": "super-kiosk-browser-unpacked",
-            "path": "/super_kiosk_browser-linux-arm64"
+            "path": "/super_kiosk_browser_build/super_kiosk_browser-linux-arm64"
         })
         
+        directories.append(["/super_kiosk_browser", [0, 0, "0755"]])
         items.append(["super-kiosk-browser-target", "/super_kiosk_browser", [0, 0, "0755"]])
-
-    directories = []
 
     if current_project.session_mode == "wayland":
         items.append(["files/run_session_wayland.sh", "/run_session.sh", [0, 0, "0755"]])
@@ -1106,6 +1106,10 @@ def setup_build_base(builditems):
         items.append(["files/run_session_x11.sh", "/run_session.sh", [0, 0, "0755"]])
     elif current_project.session_mode == "tty":
         directories.append(["/.session_mode_tty", [0, 0, "0000"]])
+
+    if current_project.boot_splash:
+        directories.append(["/usr/share/plymouth/themes/bootlogo", [0, 0, "0755"]])
+        items.append(["files/bootlogo", "/usr/share/plymouth/themes/bootlogo", [0, 0, "0644"]])
 
     builditem = {
         "type": "directory",
@@ -1117,11 +1121,9 @@ def setup_build_base(builditems):
         "delete": []
     }
 
-    if current_project.boot_splash:
-        builditem["directories"].append(["/usr/share/plymouth/themes/bootlogo", [0, 0, "0755"]])
-        builditem["items"].append(["files/bootlogo", "/usr/share/plymouth/themes/bootlogo", [0, 0, "0644"]])
-
     builditems.append(builditem)
+
+    # ----------------------------- 
 
     setup_write_bins(builditems)
 
@@ -1135,6 +1137,8 @@ def setup_build_base(builditems):
         "source": "rootfs directory x3",
         "scripts": setup_chroot_script()
     })
+
+    # ----------------------------- 
 
     setup_export_initramfs(builditems)
 
@@ -1173,6 +1177,8 @@ def setup_build_base(builditems):
 
         "directories": directories
     })
+
+    # ----------------------------- 
 
     builditems.append({
         "type": "filesystem",
