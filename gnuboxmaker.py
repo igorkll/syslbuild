@@ -535,7 +535,7 @@ def setup_download(builditems):
         addDownload("liamounts", "2.1")
 
     if current_project.integrate_super_kiosk_browser:
-        addDownloadRelease("super-kiosk-browser", "1.0", "super-kiosk-browser.zip")
+        addDownloadRelease("super-kiosk-browser", "1.0", "super_kiosk_browser_build.zip")
 
 def setup_autologin():
     systemd_config = os.path.join(path_temp_syslbuild, "files", "systemd_config")
@@ -1071,7 +1071,7 @@ def setup_build_base(builditems):
             "name": "super-kiosk-browser-unpacked",
             "export": False,
 
-            "archive": "super-kiosk-browser.zip"
+            "archive": "super_kiosk_browser_build.zip"
         })
 
         builditems.append({
