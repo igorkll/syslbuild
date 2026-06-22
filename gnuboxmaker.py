@@ -382,106 +382,113 @@ def setup_chroot_script():
 
     return scripts
 
+def setup_build_debian(builditems):
+    include = [
+        "initramfs-tools",
+        "systemd",
+        "systemd-sysv",
+        "systemd-resolved",
+        "dbus",
+        "dbus-user-session",
+
+        "cloud-guest-utils",
+        "e2fsprogs",
+        "gdisk",
+        "uuid-runtime",
+        "sed",
+        "mawk",
+        "kexec-tools",
+        "alsa-utils",
+        "jq"
+    ]
+
+    if current_project.sudo_privileges:
+        include.append("sudo")
+
+    if current_project.integrate_audio:
+        include.append("pipewire")
+        include.append("pipewire-pulse")
+        include.append("pipewire-alsa")
+        include.append("wireplumber")
+        include.append("libspa-0.2-modules")
+        include.append("alsa-utils")
+        include.append("libpulse0")
+        include.append("rtkit")
+
+        if current_project.debian_suite == "sid":
+            include.append("libasound2t64")
+        else:
+            include.append("libasound2")
+
+    if current_project.integrate_firmwares:
+        include.append("firmware-linux")
+
+    if current_project.integrate_network:
+        include.append("network-manager")
+        include.append("systemd-timesyncd")
+        include.append("iproute2")
+        include.append("ca-certificates")
+
+        if current_project.integrate_network_wifi:
+            include.append("rfkill")
+            include.append("wpasupplicant")
+            include.append("wireless-regdb")
+            include.append("firmware-realtek")
+            include.append("firmware-brcm80211")
+
+    if current_project.boot_splash:
+        include.append("plymouth") # install basic plymouth files. The part will later be replaced by embedded plymouth.
+        include.append("plymouth-themes")
+
+    if current_project.session_mode == "wayland" or current_project.session_mode == "x11":
+        include.append("mesa-utils")
+        include.append("libgl1-mesa-dri")
+        include.append("libgbm1")
+        include.append("libdrm2")
+
+        if current_project.debian_suite == "trixie" or current_project.debian_suite == "sid":
+            include.append("libegl1")
+        else:
+            include.append("libegl1-mesa")
+
+    if current_project.session_mode == "wayland":
+        include.append("weston")
+        if current_project.integrate_xwayland:
+            include.append("xwayland")
+    elif current_project.session_mode == "x11":
+        include.append("xserver-xorg")
+        include.append("xinit")
+        include.append("x11-xserver-utils")
+        include.append("matchbox-window-manager")
+
+    if current_project.integrate_liamounts:
+        include.append("at")
+        include.append("bindfs")
+
+    include += current_project.user_packages
+    include = exclude_array(include, current_project.exclude_packages)
+
+    builditems.append({
+        "type": "debian",
+        "name": "rootfs directory x1",
+        "export": False,
+
+        "components": [
+            "main",
+            "contrib",
+            "non-free",
+            "non-free-firmware"
+        ],
+        "include": include,
+
+        "variant": current_project.debian_variant,
+        "suite": current_project.debian_suite,
+        "url": current_project.debian_snapshot
+    })
+
 def setup_build_distro(builditems):
     if current_project.distro == "debian":
-        include = [
-            "initramfs-tools",
-            "systemd",
-            "systemd-sysv",
-            "systemd-resolved",
-            "dbus",
-            "dbus-user-session",
-
-            "cloud-guest-utils",
-            "e2fsprogs",
-            "gdisk",
-            "uuid-runtime",
-            "sed",
-            "mawk",
-            "kexec-tools",
-            "alsa-utils",
-            "jq"
-        ]
-
-        if current_project.sudo_privileges:
-            include.append("sudo")
-
-        if current_project.integrate_audio:
-            include.append("pipewire")
-            include.append("pipewire-pulse")
-            include.append("pipewire-alsa")
-            include.append("wireplumber")
-            include.append("libspa-0.2-modules")
-            include.append("alsa-utils")
-            include.append("libasound2")
-            include.append("libpulse0")
-            include.append("rtkit")
-
-        if current_project.integrate_firmwares:
-            include.append("firmware-linux")
-
-        if current_project.integrate_network:
-            include.append("network-manager")
-            include.append("systemd-timesyncd")
-            include.append("iproute2")
-            include.append("ca-certificates")
-
-            if current_project.integrate_network_wifi:
-                include.append("rfkill")
-                include.append("wpasupplicant")
-                include.append("wireless-regdb")
-                include.append("firmware-realtek")
-                include.append("firmware-brcm80211")
-
-        if current_project.boot_splash:
-            include.append("plymouth") # install basic plymouth files. The part will later be replaced by embedded plymouth.
-            include.append("plymouth-themes")
-
-        if current_project.session_mode == "wayland" or current_project.session_mode == "x11":
-            include.append("mesa-utils")
-            include.append("libgl1-mesa-dri")
-            include.append("libgbm1")
-            include.append("libdrm2")
-
-            if current_project.debian_suite == "trixie":
-                include.append("libegl1")
-            else:
-                include.append("libegl1-mesa")
-
-        if current_project.session_mode == "wayland":
-            include.append("weston")
-            if current_project.integrate_xwayland:
-                include.append("xwayland")
-        elif current_project.session_mode == "x11":
-            include.append("xserver-xorg")
-            include.append("xinit")
-            include.append("x11-xserver-utils")
-            include.append("matchbox-window-manager")
-
-        if current_project.integrate_liamounts:
-            include.append("at")
-            include.append("bindfs")
-
-        include += current_project.user_packages
-        include = exclude_array(include, current_project.exclude_packages)
-
-        builditems.append({
-            "type": "debian",
-            "name": "rootfs directory x1",
-            "export": False,
-
-            "components": [
-                "main",
-                "contrib",
-                "non-free",
-                "non-free-firmware"
-            ],
-            "include": include,
-
-            "variant": current_project.debian_variant,
-            "suite": current_project.debian_suite,
-            "url": current_project.debian_snapshot
-        })
+        setup_build_debian(builditems)
     else:
         stop_error(f"unknown distro \"{current_project.distro}\"")
 
