@@ -48,6 +48,7 @@ recommended OS: Ubuntu 24.04 LTS (Noble Numbat)
 * startup sound doesn't work
 * wifi is not working on orange pi zero 3
 * gpu is not working on orange pi zero 3
+* on raspberry pi 64, any mouse movement crashes the wayland session
 
 ## supported platforms
 * x86_64 (BIOS, UEFI)
