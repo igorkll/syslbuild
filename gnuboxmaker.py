@@ -32,6 +32,7 @@ RIGHTS_644_755 = [[0, 0, "0644"], [0, 0, "0755"]]
 default_debian_suite = "trixie"
 default_debian_snapshot = "http://snapshot.debian.org/archive/debian/20260217T143331Z"
 default_value = "<default>"
+github_user = "igorkll"
 
 @dataclass
 class Project:
@@ -100,6 +101,8 @@ class Project:
     sudo_privileges: bool = False
 
     integrate_liamounts: bool = False
+    integrate_super_kiosk_browser: bool = False
+
     integrate_xwayland: bool = True
     integrate_firmwares: bool = True
     integrate_network: bool = True
@@ -512,8 +515,17 @@ def setup_download(builditems):
             "name": name,
             "export": False,
 
-            "git_url": f"https://github.com/igorkll/{name}",
+            "git_url": f"https://github.com/{github_user}/{name}",
             "git_checkout": version
+        })
+
+    def addDownloadRelease(reponame, version, filename):
+        builditems.append({
+            "type": "download",
+            "name": filename,
+            "export": False,
+
+            "url": f"https://github.com/{github_user}/{reponame}/releases/download/{version}/{filename}",
         })
 
     addDownload("custom-debian-initramfs-init", "1.5.10")
@@ -521,6 +533,9 @@ def setup_download(builditems):
 
     if current_project.integrate_liamounts:
         addDownload("liamounts", "2.1")
+
+    if current_project.integrate_super_kiosk_browser:
+        addDownloadRelease("super-kiosk-browser", "1.0", "super-kiosk-browser.zip")
 
 def setup_autologin():
     systemd_config = os.path.join(path_temp_syslbuild, "files", "systemd_config")
@@ -1049,6 +1064,39 @@ def setup_build_base(builditems):
 
     if current_project.integrate_liamounts:
         items.append(["liamounts", "/liamounts", [0, 0, "0755"]])
+
+    if current_project.integrate_super_kiosk_browser:
+        builditems.append({
+            "type": "unpack-archive",
+            "name": "super-kiosk-browser-unpacked",
+            "export": False,
+
+            "archive": "super-kiosk-browser.zip"
+        })
+
+        builditems.append({
+            "architecture": ["amd64"],
+
+            "type": "from-directory",
+            "name": "super-kiosk-browser-target",
+            "export": False,
+
+            "source": "super-kiosk-browser-unpacked",
+            "path": "/super_kiosk_browser-linux-x64"
+        })
+
+        builditems.append({
+            "architecture": ["arm64"],
+
+            "type": "from-directory",
+            "name": "super-kiosk-browser-target",
+            "export": False,
+
+            "source": "super-kiosk-browser-unpacked",
+            "path": "/super_kiosk_browser-linux-arm64"
+        })
+        
+        items.append(["super-kiosk-browser-target", "/super_kiosk_browser", [0, 0, "0755"]])
 
     directories = []
 

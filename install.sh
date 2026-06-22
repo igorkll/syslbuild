@@ -29,6 +29,7 @@ apt install -y u-boot-tools
 apt install -y arch-install-scripts
 apt install -y grub-efi-ia32-bin grub-common
 apt install -y device-tree-compiler
+apt install -y 7zip 7zip-rar
 
 echo "INSTALLER: install python packages"
 pip install json5 --break-system-packages

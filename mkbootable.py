@@ -87,12 +87,23 @@ args = argsparser.parse_args()
 
 # ---------------------------------------
 
+"""
 def get_browser(url):
     # у firefox какой то хуевый киоск. при загрузке на ~100 милисекунд моргает ui и не все хоткеи отключены. это позваляет выйти из киоска при наличии клавиатуры. что недопустимо
     return {
         "packages": ["firefox-esr"],
         "command": f"firefox --kiosk {url}\nwhile true; do sleep 1; done"
-    } 
+    }
+"""
+
+def get_browser(url):
+    return {
+        "packages": [],
+        "command": f"/super_kiosk_browser/super_kiosk_browser {url}",
+        "project_config": {
+            "integrate_super_kiosk_browser": True
+        }
+    }
 
 # --------------------------------------- get application info
 
@@ -328,6 +339,9 @@ def generate_project_config():
     }
 
     project_config.update(platforms[args.platform]["project_config"])
+
+    if "project_config" in run_features:
+        project_config.update(run_features["project_config"])
 
     return project_config
 

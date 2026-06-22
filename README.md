@@ -121,6 +121,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * reset
 * device-tree-compiler
 * bash
+* 7z
 
 ## python dependencies
 * json5
@@ -151,6 +152,9 @@ sudo apt install -y \
 sudo apt install -y u-boot-tools
 sudo apt install -y arch-install-scripts
 sudo apt install -y grub-efi-ia32-bin grub-common
+sudo apt install -y device-tree-compiler
+sudo apt install -y 7zip 7zip-rar
+
 sudo pip install json5 --break-system-packages
 sudo pip install asteval --break-system-packages
 ```
@@ -180,6 +184,7 @@ sudo pip install asteval --break-system-packages
 * singleboard - a specially created builditem for creating images for single-board computers like the orange pi. its use is optional. you can completely replicate the "singleboard" builditem by combining other builditems to get a more complex behavior.
 * gitclone - clones the repository from git. it allows you to specify a branch and checkout
 * execute-commands - if there is no "source", it simply executes commands from the project directory. if there is a "source", it clones it and executes commands in it.
+* unpack-archive - unpacks the archive. use 7z
 
 ## build items features
 * debian supports the "_min" variant, which is essentially a "custom" but with a minimal set package required for assembly
@@ -319,6 +324,15 @@ these changes to the kernel config are applied automatically when building the k
                 "any shell command 2"
             ],
         },
+
+        // ----------------
+
+        {
+            "type": "unpack-archive",
+            "name": "unpacked",
+
+            "archive": "/path/to/archive.zip"
+        }
 
         // ---------------- building custom executable
         {

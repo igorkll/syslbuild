@@ -1822,6 +1822,9 @@ def executeCommands(item):
     else:
         doCommands(".", commands)
 
+def unpackArchive(item):
+    buildExecute(["7z", "x", findItem(item["archive"]), f"-o{getItemFolder(item)}"])
+
 buildActions = {
     "debian": buildDebian,
     "download": buildDownload,
@@ -1842,7 +1845,8 @@ buildActions = {
     "smart-chroot": smartChroot,
     "singleboard": singleboardBuild,
     "gitclone": gitcloneBuild,
-    "execute-commands": executeCommands
+    "execute-commands": executeCommands,
+    "unpack-archive": unpackArchive
 }
 
 def get_file_checksum(file_path, hash_algo="sha256"):
@@ -1976,6 +1980,9 @@ def getDependenciesSingleboard(item):
 def getDependenciesExecuteCommands(item):
     return rawGetDependencies(item, ["source"], [])
 
+def getDependenciesUnpackArchive(item):
+    return rawGetDependencies(item, ["archive"], [])
+
 getDependencies = {
     "debian": getDependenciesDebian,
     "directory": getDependenciesDirectory,
@@ -1993,6 +2000,7 @@ getDependencies = {
     "smart-chroot": getDependenciesSmartChroot,
     "singleboard": getDependenciesSingleboard,
     "execute-commands": getDependenciesExecuteCommands,
+    "unpack-archive": getDependenciesUnpackArchive
 }
 
 def filter_underscored(d):
