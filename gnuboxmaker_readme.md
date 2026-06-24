@@ -48,7 +48,7 @@ recommended OS: Ubuntu 24.04 LTS (Noble Numbat)
 * startup sound doesn't work
 * wifi is not working on orange pi zero 3
 * gpu is not working on orange pi zero 3
-* on raspberry pi 64, any mouse movement crashes the wayland session
+* on raspberry pi 64, any mouse movement crashes the wayland session (In theory, it should be fixed if upgrade weston to version 15 or enable pixman mode). at the moment, I've just turned on pixman for this platform. I will solve this problem later.
 
 ## supported platforms
 * x86_64 (BIOS, UEFI)
