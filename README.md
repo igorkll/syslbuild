@@ -164,7 +164,7 @@ sudo pip install asteval --break-system-packages
 
 ## build items types
 * debian - debian build via mmdebstrap
-* arch-linux - arch linux build via pacstrap (It's not working right now)
+* arch-linux - arch linux build via pacstrap
 * arch-package - download arch linux package via pacman (It's not working right now)
 * download - downloads the file
 * directory - allows you to assemble many items into one (for example, to pack them into a file system later) allows you to set file owners and their rights

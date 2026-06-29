@@ -1,0 +1,117 @@
+{
+    "architectures": [
+        "amd64"
+    ],
+
+    "builditems": [
+        // ----------------------------------- arch rootfs
+        {
+            "type": "arch-linux",
+            "name": "arch",
+            "export": false,
+
+            "pacman_conf": {
+                "options": {
+                    "SigLevel": "Never"
+                },
+                "_auto": {
+                    "Server": "https://archive.archlinux.org/repos/2024/05/15/$repo/os/$arch"
+                }
+            },
+
+            "include": [
+                "base",
+                "linux",
+                "linux-firmware",
+                "mkinitcpio",
+
+                "nano",
+                "wget",
+                "sudo"
+            ]
+        },
+
+        {
+            "type": "directory",
+            "name": "arch_with_overlay",
+            "export": false,
+
+            "items": [
+                ["arch", "/"],
+                ["overlay", "/", [0, 0, "0755"]]
+            ]
+        },
+        
+        {
+            "type": "smart-chroot",
+            "name": "arch_with_chroot",
+            "export": false,
+
+            "source": "arch_with_overlay",
+            "scripts": [
+                "chroot.sh"
+            ]
+        },
+
+        {
+            "type": "filesystem",
+            "name": "rootfs.img",
+            "export": false,
+
+            "source": "arch_with_chroot",
+
+            "fs_type": "ext4",
+            "size": "(auto * 1.2) + (100 * 1024 * 1024)",
+            "minsize": "64MB",
+            "label": "rootfs"
+        },
+
+        // ----------------------------------- bootable image
+        {
+            "type": "filesystem",
+            "name": "bios boot.img",
+            "export": false,
+
+            "size": "1M"
+        },
+        {
+            "type": "filesystem",
+            "name": "efi boot.img",
+            "export": false,
+
+            "fs_arg": "-F32",
+            "fs_type": "fat",
+            "size": "64M",
+            "label": "EFI"
+        },
+        {
+            "type": "full-disk-image",
+            "name": "arch (EFI+BIOS).img",
+            "export": true,
+
+            "size": "auto + (10 * 1024 * 1024)",
+
+            "partitionTable": "gpt",
+            "partitions": [
+                ["bios boot.img", "bios"],
+                ["efi boot.img", "efi"],
+                ["rootfs.img", "linux"]
+            ],
+
+            "bootloader": {
+                "type": "grub",
+                "config": "grub_fastboot.cfg",
+                "esp": 1,
+                "boot": 2,
+                "efiAndBios": true,
+                "modules": [
+                    "normal",
+                    "part_msdos",
+                    "part_gpt",
+                    "ext2",
+                    "configfile"
+                ]
+            }
+        }
+    ]
+}
