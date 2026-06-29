@@ -1,4 +1,4 @@
-# syslbuild + gnubox maker + mkbootable 1.5.2
+# syslbuild + gnubox maker + mkbootable 1.5.3
 an build system for creating Linux distributions. it is focused on embedded distributions  
 DOWNLOAD THE RELEASE, NOT THE REPOSITORY!  
 WARNING!!! if you read this text from GITHUB page please, download a release and read description there. on github this text is DEV syslbuild version (not released yet)  
@@ -185,6 +185,7 @@ sudo pip install asteval --break-system-packages
 * gitclone - clones the repository from git. it allows you to specify a branch and checkout
 * execute-commands - if there is no "source", it simply executes commands from the project directory. if there is a "source", it clones it and executes commands in it.
 * unpack-archive - unpacks the archive. use 7z
+* unpack-tar-gz - unpacks the tar.gz archive. use tar
 
 ## build items features
 * debian supports the "_min" variant, which is essentially a "custom" but with a minimal set package required for assembly
@@ -333,6 +334,12 @@ these changes to the kernel config are applied automatically when building the k
 
             "archive": "/path/to/archive.zip"
         }
+        {
+            "type": "unpack-tar-gz",
+            "name": "unpacked",
+
+            "archive": "/path/to/archive.tar.gz"
+        }
 
         // ---------------- building custom executable
         {
@@ -365,7 +372,7 @@ these changes to the kernel config are applied automatically when building the k
         // you can create forks, and even multiple forks from a single forkbase. This can be used, for example, for cross-assembly, to set up the assembly of some complex element once and then reuse it with minor differences for different architectures or platforms.
         // note that during the creation of the fork, all elements (including arrays) replace the forkbase elements, however, the dictionary does not replace but "complements" as if mixing two objects and replacing only matching keys.
         // forks are also processed before filtering architectures, which allows, for example, to make a forkbase for a certain architecture and a fork for another, and for example, to replace the repository for downloading packages with a repository for another architecture.
-        // if forkArraysCombine flag is set in builditem when creating a fork (not in forkbase!!!) When creating a fork, arrays do not overwrite but complement each other
+        // if "forkArraysCombine" flag is set in builditem when creating a fork (not in forkbase!!!) When creating a fork, arrays do not overwrite but complement each other
         {
             "fork": true,
             "name": "custom-executable-alt1",

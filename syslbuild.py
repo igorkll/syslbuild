@@ -71,7 +71,7 @@ SIZE_UNITS = {
 
 DD_BS = "4M"
 
-VERSION = [1, 5, 2]
+VERSION = [1, 5, 3]
 
 def formatVersion(version):
     return '.'.join(str(n) for n in version)
@@ -1121,6 +1121,8 @@ def collect_sources(item):
         return any(name == ex or path.endswith(ex) for ex in exclude)
 
     for d in dirs:
+        d = findItem(d)
+
         if recursive:
             for root, _, files in os.walk(d):
                 for f in files:
@@ -1825,6 +1827,9 @@ def executeCommands(item):
 def unpackArchive(item):
     buildExecute(["7z", "x", findItem(item["archive"]), f"-o{getItemFolder(item)}"])
 
+def unpackTarGz(item):
+    buildExecute(["tar", "-xzf", findItem(item["archive"]), "-C", getItemFolder(item)])
+
 buildActions = {
     "debian": buildDebian,
     "download": buildDownload,
@@ -1846,7 +1851,8 @@ buildActions = {
     "singleboard": singleboardBuild,
     "gitclone": gitcloneBuild,
     "execute-commands": executeCommands,
-    "unpack-archive": unpackArchive
+    "unpack-archive": unpackArchive,
+    "unpack-tar-gz": unpackTarGz
 }
 
 def get_file_checksum(file_path, hash_algo="sha256"):
@@ -1951,7 +1957,7 @@ def getDependenciesFromDirectory(item):
     return rawGetDependencies(item, ["source"], [])
 
 def getDependenciesGccBuild(item):
-    return rawGetDependencies(item, [], ["sources-dirs"])
+    return rawGetDependencies(item, ["sources-dirs"], [])
 
 def getDependenciesInitramfs(item):
     return rawGetDependencies(item, ["source"], [])
@@ -1983,6 +1989,9 @@ def getDependenciesExecuteCommands(item):
 def getDependenciesUnpackArchive(item):
     return rawGetDependencies(item, ["archive"], [])
 
+def getDependenciesUnpackTarGz(item):
+    return rawGetDependencies(item, ["archive"], [])
+
 getDependencies = {
     "debian": getDependenciesDebian,
     "directory": getDependenciesDirectory,
@@ -2000,7 +2009,8 @@ getDependencies = {
     "smart-chroot": getDependenciesSmartChroot,
     "singleboard": getDependenciesSingleboard,
     "execute-commands": getDependenciesExecuteCommands,
-    "unpack-archive": getDependenciesUnpackArchive
+    "unpack-archive": getDependenciesUnpackArchive,
+    "unpack-tar-gz": getDependenciesUnpackTarGz
 }
 
 def filter_underscored(d):
