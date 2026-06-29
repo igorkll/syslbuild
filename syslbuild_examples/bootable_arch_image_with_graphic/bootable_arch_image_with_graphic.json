@@ -55,6 +55,9 @@
             "name": "arch_with_chroot",
             "export": false,
 
+            "use_systemd_container": true,
+            "manual_validation": true,
+
             "source": "arch_with_overlay",
             "scripts": [
                 "chroot.sh"

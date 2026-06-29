@@ -9,4 +9,8 @@ chmod 440 /etc/sudoers.d/user-nopasswd
 chown -R user:user /home/user
 chmod 700 /home/user
 
+systemctl enable lightdm.service
+
 echo test > /home/user/test.txt
+
+touch /.chrootend
