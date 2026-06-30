@@ -863,8 +863,41 @@ def rawItemsProcess(items, itemsDirectory):
         else:
             copyItemFiles(itemPath, outputPath, changeRights)
 
+def handlelink(topdir, filep, subdir):
+    link = os.readlink(filep)
+    if link[0] != "/":
+        return
+    if link.startswith(topdir):
+        return
+
+    relative_path = os.path.relpath(topdir+link, subdir)
+    
+    buildLog("Replacing %s with %s for %s" % (link, relative_path, filep))
+    
+    os.unlink(filep)
+    os.symlink(relative_path, filep)
+
+def make_relative_symlinks(topdir):
+    buildLog(f"make_relative_symlinks: {topdir}")
+    for subdir, dirs, files in os.walk(topdir):
+        for f in dirs:
+            filep = os.path.join(subdir, f)
+            if os.path.islink(filep):
+                handlelink(topdir, filep, subdir)
+
+        for f in files:
+            filep = os.path.join(subdir, f)
+            if os.path.islink(filep):
+                handlelink(topdir, filep, subdir)
+
 def buildDirectory(item):
     buildDirectoryPath = getItemFolder(item)
+
+    if "symlinks" in item:
+        for symlink in item["symlinks"]:
+            buildExecute(["ln", "-sfn", symlink[0], pathConcat(buildDirectoryPath, symlink[1])])
+
+    make_relative_symlinks(os.path.abspath(buildDirectoryPath))
 
     if "deleteBeforeAdd" in item:
         for deletePath in item["deleteBeforeAdd"]:
@@ -1885,6 +1918,7 @@ def buildConfigureMake(item):
     env["RANLIB"] = gcc_cross + "-ranlib"
     env["CFLAGS"] = " ".join(item.get("CFLAGS", []))
     env["LDFLAGS"] = " ".join(item.get("LDFLAGS", []))
+    env["PKG_CONFIG"] = ""
 
     if sysroot_gcc_direct_cmd:
         additional_args = f" --sysroot=\"{findItem(item["sysroot"])}\""
