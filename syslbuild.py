@@ -1860,7 +1860,11 @@ def unpackArchive(item):
     buildExecute(["7z", "x", findItem(item["archive"]), f"-o{getItemFolder(item)}"])
 
 def unpackTarGz(item):
-    buildExecute(["tar", "-xzf", findItem(item["archive"]), "-C", getItemFolder(item)])
+    cmd = ["tar", "-xzf", findItem(item["archive"]), "-C", getItemFolder(item)]
+    strip_components = item.get("strip_components", 0)
+    if strip_components > 0:
+        cmd.append(f"--strip-components={strip_components}")
+    buildExecute(cmd)
 
 def buildConfigureMake(item):
     path = findItem(item["source"])

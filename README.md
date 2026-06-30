@@ -339,6 +339,9 @@ these changes to the kernel config are applied automatically when building the k
             "type": "unpack-tar-gz",
             "name": "unpacked",
 
+            // optional
+            "strip_components": 0,
+
             "archive": "/path/to/archive.tar.gz"
         }
 
