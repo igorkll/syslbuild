@@ -1,4 +1,4 @@
-# syslbuild + gnubox maker + mkbootable 1.5.3
+# syslbuild + gnubox maker + mkbootable 1.5.4
 an build system for creating Linux distributions. it is focused on embedded distributions  
 DOWNLOAD THE RELEASE, NOT THE REPOSITORY!  
 WARNING!!! if you read this text from GITHUB page please, download a release and read description there. on github this text is DEV syslbuild version (not released yet)  
@@ -493,6 +493,9 @@ these changes to the kernel config are applied automatically when building the k
 
             // default: false
             "sysroot_set_env_PKG_CONFIG_SYSROOT_DIR": false,
+
+            // default: false
+            "sysroot_set_env_PKG_CONFIG_LIBDIR": false,
 
             "env_change": {
 

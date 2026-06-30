@@ -71,7 +71,7 @@ SIZE_UNITS = {
 
 DD_BS = "4M"
 
-VERSION = [1, 5, 3]
+VERSION = [1, 5, 4]
 
 def formatVersion(version):
     return '.'.join(str(n) for n in version)
@@ -1978,6 +1978,13 @@ def buildConfigureMake(item):
 
         if item.get("sysroot_set_env_PKG_CONFIG_SYSROOT_DIR", False):
             env["PKG_CONFIG_SYSROOT_DIR"] = sysroot_path
+
+        sysroot_set_env_PKG_CONFIG_LIBDIR = item.get("sysroot_set_env_PKG_CONFIG_LIBDIR", False)
+        if sysroot_set_env_PKG_CONFIG_LIBDIR:
+            if sysroot_set_env_PKG_CONFIG_LIBDIR == True:
+                sysroot_set_env_PKG_CONFIG_LIBDIR = "/usr/lib/pkgconfig"
+            
+            env["PKG_CONFIG_LIBDIR"] = sysroot_path + sysroot_set_env_PKG_CONFIG_LIBDIR
 
         if sysroot_gcc_direct:
             sysroot = f" --sysroot=\"{sysroot_path}\""
