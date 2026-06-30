@@ -1339,21 +1339,26 @@ def parse_kernel_config(config_file):
     return []
 
 def kernel_config_embed_all_modules(kernel_config_path):
+    buildLog(f"kernel_config_embed_all_modules: {kernel_config_path}")
+
     with open(kernel_config_path, "r") as f:
         lines = f.readlines()
 
     new_lines = []
     for line in lines:
+        line = line.strip()
         if not line.startswith(f"#") and line.endswith(f"=m"):
-            new_lines.append(line.split("=", 1)[0] + "=y")
+            new_lines.append(line.split("=", 1)[0] + "=y" + "\n")
+            print("change", line.split("=", 1)[0] + "=y")
         else:
-            new_lines.append(line)
+            new_lines.append(line + "\n")
 
     with open(kernel_config_path, "w") as f:
         f.writelines(new_lines)
 
 def modifyKernelConfig(item, kernel_sources, ARCH_STR, CROSS_COMPILE_STR):
     kernel_config_path = pathConcat(kernel_sources, ".config")
+    buildLog(f"modifyKernelConfig: {kernel_sources}")
 
     if "kernel_config_changes_files" in item:
         for changes_file in item["kernel_config_changes_files"]:
@@ -1370,10 +1375,10 @@ def modifyKernelConfig(item, kernel_sources, ARCH_STR, CROSS_COMPILE_STR):
 
         set_kernel_config_parameter(kernel_config_path, "CONFIG_RD_GZIP", "y")
 
+    update_kernel_config(kernel_sources, ARCH_STR, CROSS_COMPILE_STR)
+
     if item.get("kernel_config_embed_all_modules", False):
         kernel_config_embed_all_modules(kernel_config_path)
-    
-    update_kernel_config(kernel_sources, ARCH_STR, CROSS_COMPILE_STR)
 
 def additionalExportProcess(export_from, additional_export_list):
     for additional_export_item in additional_export_list:
