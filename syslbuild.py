@@ -1870,7 +1870,7 @@ def buildConfigureMake(item):
     cmd = f"make -j$(nproc)"
     buildRawExecute(cmd, True, path, env)
 
-    cmd = f"make install DESTDIR=\"{output}\""
+    cmd = f"make install DESTDIR=\"{os.path.abspath(output)}\"  "
     buildRawExecute(cmd, True, path, env)
 
 buildActions = {
