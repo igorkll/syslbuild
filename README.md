@@ -482,6 +482,13 @@ these changes to the kernel config are applied automatically when building the k
             "sysroot_gcc_direct_cmd": false,
 
             // default: false
+            "sysroot_gcc_env": false,
+
+            // default: false
+            // can be used with: sysroot_gcc_direct, sysroot_gcc_direct_cmd, sysroot_gcc_env
+            "sysroot_gcc_disable_default": false,
+
+            // default: false
             "sysroot_auto_libs": false,
 
             // default: false

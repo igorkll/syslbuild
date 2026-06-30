@@ -1958,6 +1958,8 @@ def buildConfigureMake(item):
     gcc_native = gccNames[host_architecture]
     sysroot_gcc_direct = item.get("sysroot_gcc_direct", False)
     sysroot_gcc_direct_cmd = item.get("sysroot_gcc_direct_cmd", False)
+    sysroot_gcc_disable_default = item.get("sysroot_gcc_disable_default", False)
+    sysroot_gcc_env = item.get("sysroot_gcc_env", False)
 
     env = {}
     env["CC"] = gcc_cross + "-gcc"
@@ -1969,26 +1971,30 @@ def buildConfigureMake(item):
     env["CXXFLAGS"] = " ".join(item.get("CXXFLAGS", []))
     env["CPPFLAGS"] = " ".join(item.get("CPPFLAGS", []))
 
-    if sysroot_gcc_direct_cmd:
-        additional_args = f" --sysroot=\"{findItem(item["sysroot"])}\""
-        env["CC"] += additional_args
-        env["CXX"] += additional_args
-
     default_flags = f"--build={gcc_native} --host={gcc_cross}"
 
     if "sysroot" in item:
-        if item.get("sysroot_set_env_PKG_CONFIG_SYSROOT_DIR", False):
-            env["PKG_CONFIG_SYSROOT_DIR"] = item["sysroot"]
-
         sysroot_path = findItem(item["sysroot"])
+
+        if item.get("sysroot_set_env_PKG_CONFIG_SYSROOT_DIR", False):
+            env["PKG_CONFIG_SYSROOT_DIR"] = sysroot_path
 
         if sysroot_gcc_direct:
             sysroot = f" --sysroot=\"{sysroot_path}\""
             env["CFLAGS"] += sysroot
             env["CPPFLAGS"] += sysroot
             env["LDFLAGS"] += sysroot
-        elif not sysroot_gcc_direct_cmd:
+
+        if sysroot_gcc_direct_cmd:
+            additional_args = f" --sysroot=\"{sysroot_path}\""
+            env["CC"] += additional_args
+            env["CXX"] += additional_args
+        
+        if not sysroot_gcc_disable_default:
             default_flags += f" --{item.get("sysroot_field_name", "sysroot")}=\"{sysroot_path}\""
+
+        if sysroot_gcc_env:
+            env["SYSROOT"] = sysroot_path
 
         if item.get("sysroot_auto_libs", False):
             sysroot_path_abs = os.path.abspath(sysroot_path)
