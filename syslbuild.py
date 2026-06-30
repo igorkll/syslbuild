@@ -1977,7 +1977,8 @@ def buildConfigureMake(item):
     default_flags = f"--build={gcc_native} --host={gcc_cross}"
 
     if "sysroot" in item:
-        env["PKG_CONFIG_SYSROOT_DIR"] = item["sysroot"]
+        if item.get("sysroot_set_env_PKG_CONFIG_SYSROOT_DIR", False):
+            env["PKG_CONFIG_SYSROOT_DIR"] = item["sysroot"]
 
         sysroot_path = findItem(item["sysroot"])
 

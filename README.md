@@ -484,6 +484,9 @@ these changes to the kernel config are applied automatically when building the k
             // default: false
             "sysroot_auto_libs": false,
 
+            // default: false
+            "sysroot_set_env_PKG_CONFIG_SYSROOT_DIR": false,
+
             "env_change": {
 
             },
