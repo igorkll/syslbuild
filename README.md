@@ -185,7 +185,8 @@ sudo pip install asteval --break-system-packages
 * gitclone - clones the repository from git. it allows you to specify a branch and checkout
 * execute-commands - if there is no "source", it simply executes commands from the project directory. if there is a "source", it clones it and executes commands in it.
 * unpack-archive - unpacks the archive. use 7z
-* unpack-tar-gz - unpacks the tar.gz archive. use tar
+* unpack-tar-gz - unpacks the tar.gz archive. use tar util
+* unpack-tar-auto - unpacks the tar.* archive. use tar util
 * build-configure-make - builds something from source if configure and make are used for the build.
 
 ## build items features
@@ -334,7 +335,7 @@ these changes to the kernel config are applied automatically when building the k
             "name": "unpacked",
 
             "archive": "/path/to/archive.zip"
-        }
+        },
         {
             "type": "unpack-tar-gz",
             "name": "unpacked",
@@ -343,7 +344,16 @@ these changes to the kernel config are applied automatically when building the k
             "strip_components": 0,
 
             "archive": "/path/to/archive.tar.gz"
-        }
+        },
+        {
+            "type": "unpack-tar-auto",
+            "name": "unpacked",
+
+            // optional
+            "strip_components": 0,
+
+            "archive": "/path/to/archive.tar.xz"
+        },
 
         // ---------------- building custom executable
         {
@@ -470,6 +480,13 @@ these changes to the kernel config are applied automatically when building the k
             // default: false
             // if set to true, sysroot will be passed directly to gcc
             "sysroot_gcc_direct_cmd": false,
+
+            // default: false
+            "sysroot_auto_libs": false,
+
+            "env_change": {
+
+            },
 
             "CFLAGS": [],
             "LDFLAGS": [],

@@ -1935,6 +1935,18 @@ def unpackTarGz(item):
         cmd.append(f"--strip-components={strip_components}")
     buildExecute(cmd)
 
+def unpackTarAuto(item):
+    cmd = ["tar", "-xaf", findItem(item["archive"]), "-C", getItemFolder(item)]
+    strip_components = item.get("strip_components", 0)
+    if strip_components > 0:
+        cmd.append(f"--strip-components={strip_components}")
+    buildExecute(cmd)
+
+def deleteAllNones(tbl):
+    for key, value in list(tbl.items()):
+        if value is None:
+            del tbl[key]
+
 def buildConfigureMake(item):
     path = findItem(item["source"])
     output = getItemFolder(item)
@@ -1953,8 +1965,8 @@ def buildConfigureMake(item):
     env["AR"] = gcc_cross + "-ar"
     env["RANLIB"] = gcc_cross + "-ranlib"
     env["CFLAGS"] = " ".join(item.get("CFLAGS", []))
+    env["CFLAGS"] = " ".join(item.get("CFLAGS", []))
     env["LDFLAGS"] = " ".join(item.get("LDFLAGS", []))
-    env["PKG_CONFIG"] = ""
 
     if sysroot_gcc_direct_cmd:
         additional_args = f" --sysroot=\"{findItem(item["sysroot"])}\""
@@ -1964,13 +1976,26 @@ def buildConfigureMake(item):
     default_flags = f"--build={gcc_native} --host={gcc_cross}"
 
     if "sysroot" in item:
+        env["PKG_CONFIG_SYSROOT_DIR"] = item["sysroot"]
+
         sysroot_path = findItem(item["sysroot"])
+
         if sysroot_gcc_direct:
             sysroot = f"--sysroot=\"{sysroot_path}\""
             env["CFLAGS"] += sysroot
             env["LDFLAGS"] += sysroot
         elif not sysroot_gcc_direct_cmd:
             default_flags += f" --{item.get("sysroot_field_name", "sysroot")}=\"{sysroot_path}\""
+
+        if item.get("sysroot_auto_libs", False):
+            sysroot_path_abs = os.path.abspath(sysroot_path)
+            buildLog(f"sysroot_auto_libs: {sysroot_path_abs}")
+
+            env["CFLAGS"] += f"-I{sysroot_path_abs}/usr/include"
+            env["LDFLAGS"] += f"-L{sysroot_path_abs}/usr/lib"
+
+    env.update(item.get("env_change", []))
+    deleteAllNones(env)
 
     if "prefix" in item:
         default_flags += " --prefix=\"" + item["prefix"] + "\""
@@ -2007,6 +2032,7 @@ buildActions = {
     "execute-commands": executeCommands,
     "unpack-archive": unpackArchive,
     "unpack-tar-gz": unpackTarGz,
+    "unpack-tar-auto": unpackTarAuto,
     "build-configure-make": buildConfigureMake
 }
 
@@ -2150,6 +2176,7 @@ getDependencies = {
     "execute-commands": getDependencies_source_item,
     "unpack-archive": getDependencies_archive_item,
     "unpack-tar-gz": getDependencies_archive_item,
+    "unpack-tar-auto": getDependencies_archive_item,
     "build-configure-make": getDependencies_source_item
 }
 
@@ -2317,6 +2344,7 @@ def includeProcess(builditems, included=None):
                         sys.exit(1)
                     included.append(includeFilePath)
 
+                    buildLog(f"reading include: {includeFilePath}")
                     with open(includeFilePath, "r", encoding="utf-8") as f:
                         newLocalBuilditems = json5.load(f)
                         if not isinstance(newLocalBuilditems, list):
