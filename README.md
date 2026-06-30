@@ -490,7 +490,9 @@ these changes to the kernel config are applied automatically when building the k
 
             "CFLAGS": [],
             "LDFLAGS": [],
-            "FLAGS": []
+            "CPPFLAGS": [],
+            "CXXFLAGS": [],
+            "FLAGS": [],
         },
 
 

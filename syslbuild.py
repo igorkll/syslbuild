@@ -1965,8 +1965,9 @@ def buildConfigureMake(item):
     env["AR"] = gcc_cross + "-ar"
     env["RANLIB"] = gcc_cross + "-ranlib"
     env["CFLAGS"] = " ".join(item.get("CFLAGS", []))
-    env["CFLAGS"] = " ".join(item.get("CFLAGS", []))
     env["LDFLAGS"] = " ".join(item.get("LDFLAGS", []))
+    env["CXXFLAGS"] = " ".join(item.get("CXXFLAGS", []))
+    env["CPPFLAGS"] = " ".join(item.get("CPPFLAGS", []))
 
     if sysroot_gcc_direct_cmd:
         additional_args = f" --sysroot=\"{findItem(item["sysroot"])}\""
@@ -1981,8 +1982,9 @@ def buildConfigureMake(item):
         sysroot_path = findItem(item["sysroot"])
 
         if sysroot_gcc_direct:
-            sysroot = f"--sysroot=\"{sysroot_path}\""
+            sysroot = f" --sysroot=\"{sysroot_path}\""
             env["CFLAGS"] += sysroot
+            env["CPPFLAGS"] += sysroot
             env["LDFLAGS"] += sysroot
         elif not sysroot_gcc_direct_cmd:
             default_flags += f" --{item.get("sysroot_field_name", "sysroot")}=\"{sysroot_path}\""
@@ -1991,8 +1993,11 @@ def buildConfigureMake(item):
             sysroot_path_abs = os.path.abspath(sysroot_path)
             buildLog(f"sysroot_auto_libs: {sysroot_path_abs}")
 
-            env["CFLAGS"] += f"-I{sysroot_path_abs}/usr/include"
-            env["LDFLAGS"] += f"-L{sysroot_path_abs}/usr/lib"
+            include_arg = f" -I{sysroot_path_abs}/usr/include"
+
+            env["CFLAGS"] += include_arg
+            env["CPPFLAGS"] += include_arg
+            env["LDFLAGS"] += f" -L{sysroot_path_abs}/usr/lib"
 
     env.update(item.get("env_change", []))
     deleteAllNones(env)
