@@ -455,6 +455,10 @@ these changes to the kernel config are applied automatically when building the k
             // optional. allows you to use the directory as a sysroot for gcc
             "sysroot": "any builditem directory",
 
+            // default: sysroot
+            // with-sysroot for glibc
+            "sysroot_field_name": "sysroot",
+
             "CFLAGS": [],
             "LDFLAGS": [],
             "FLAGS": []

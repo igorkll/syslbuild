@@ -1865,6 +1865,7 @@ def unpackTarGz(item):
 def buildConfigureMake(item):
     path = findItem(item["source"])
     output = getItemFolder(item)
+    build_temp = getTempFolder("build-configure-make")
 
     host_architecture = get_host_arch()
 
@@ -1881,19 +1882,19 @@ def buildConfigureMake(item):
     
     default_flags = f"--build={gcc_native} --host={gcc_cross}"
     if "sysroot" in item:
-        default_flags += " --sysroot=" + findItem(item["sysroot"])
+        default_flags += f" --{item.get("sysroot_field_name", "sysroot")}=" + findItem(item["sysroot"])
 
     if "prefix" in item:
         default_flags += " --prefix=" + item["prefix"]
 
-    cmd = f"./configure {default_flags} {" ".join(item.get("FLAGS", []))}"
-    buildRawExecute(cmd, True, path, env)
+    cmd = f"{os.path.abspath(os.path.join(path, "configure"))} {default_flags} {" ".join(item.get("FLAGS", []))}"
+    buildRawExecute(cmd, True, build_temp, env)
 
     cmd = f"make -j$(nproc)"
-    buildRawExecute(cmd, True, path, env)
+    buildRawExecute(cmd, True, build_temp, env)
 
-    cmd = f"make install DESTDIR=\"{os.path.abspath(output)}\"  "
-    buildRawExecute(cmd, True, path, env)
+    cmd = f"make install DESTDIR=\"{os.path.abspath(output)}\""
+    buildRawExecute(cmd, True, build_temp, env)
 
 buildActions = {
     "debian": buildDebian,
@@ -2335,6 +2336,10 @@ def changeOutputRights(path):
                 if os.path.isfile(file_path):
                     os.chmod(file_path, 0o777)
 
+def has_cwd_non_ascii_or_spaces():
+    cwd = os.getcwd()
+    return any(ord(ch) > 127 or ch == ' ' for ch in cwd)
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="an assembly system for creating Linux distributions. it is focused on embedded distributions")
     parser.add_argument("--arch", choices=["ALL", "amd64", "i386", "arm64", "armhf", "armel"], type=str, required=True, help="the processor architecture for which the build will be made")
@@ -2380,6 +2385,9 @@ if __name__ == "__main__":
     buildLog(f"Syslbuild version: {formatVersion(VERSION)}")
     buildLog(f"Syslbuild working directory: {os.getcwd()}")
     buildLog(";")
+
+    if has_cwd_non_ascii_or_spaces():
+        buildLog(f"WARNING: there are non-ascii or spaces characters in the path to the working directory. THIS MAY CAUSE BUILD PROBLEMS!")
 
     with open(args.json_path, "r", encoding="utf-8") as f:
         projectData = json5.load(f)
