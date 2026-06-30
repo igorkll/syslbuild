@@ -290,14 +290,20 @@ def isUserItem(itemName):
 
     return False
 
-def buildExecute(cmd, checkValid=True, input_data=None, cwd=None):
-    if cwd != None:
+def buildExecute(cmd, checkValid=True, input_data=None, cwd=None, envmod=None):
+    if cwd is not None:
         buildLog(f"Execute command from directory ({cwd}): {cmd}")
     else:
         buildLog(f"Execute command: {cmd}")
+
+    env=None
+    if envmod:
+        env = os.environ.copy()
+        env.update(envmod)
     
     process = subprocess.Popen(
         cmd,
+        shell=False,
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
@@ -305,7 +311,8 @@ def buildExecute(cmd, checkValid=True, input_data=None, cwd=None):
         encoding="utf-8",
         errors="replace",
         bufsize=1,
-        cwd=cwd
+        cwd=cwd,
+        env=env
     )
 
     if process.stdin:
@@ -328,22 +335,28 @@ def buildExecute(cmd, checkValid=True, input_data=None, cwd=None):
 
     return "\n".join(output_lines)
 
-def buildRawExecute(cmd, checkValid=True, cwd=None):
-    if cwd != None:
+def buildRawExecute(cmd, checkValid=True, cwd=None, envmod=None):
+    if cwd is not None:
         buildLog(f"Execute raw command from directory ({cwd}): {cmd}")
     else:
         buildLog(f"Execute raw command: {cmd}")
+
+    env=None
+    if envmod:
+        env = os.environ.copy()
+        env.update(envmod)
     
     process = subprocess.Popen(
         cmd,
-        shell=True,             
+        shell=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         text=True,
         encoding="utf-8",
         errors="replace",
         bufsize=1,
-        cwd=cwd
+        cwd=cwd,
+        env=env
     )
 
     output_lines = []
@@ -969,7 +982,7 @@ def getGrubTarget(item, efi):
     else:
         target = defaultGrubTargets_bios.get(architecture)
 
-    if target == None:
+    if target is None:
         buildLog(f"ERROR: unknown grub target for {architecture} ({"efi" if efi else "bios"})")
         sys.exit(1)
 
@@ -1283,9 +1296,6 @@ kernelArchitectureConfigs = {
     "armhf": "multi_v7_defconfig",
     "armel": "multi_v5_defconfig"
 }
-
-import os
-import subprocess
 
 def set_kernel_config_parameter(config_path, param, value):
     with open(config_path, "r") as f:
@@ -1830,6 +1840,25 @@ def unpackArchive(item):
 def unpackTarGz(item):
     buildExecute(["tar", "-xzf", findItem(item["archive"]), "-C", getItemFolder(item)])
 
+def buildConfigureMake(item):
+    path = cloneBuildItem(item["source"], item)
+
+    host_architecture = get_host_arch()
+
+    gcc_cross = gccNames[architecture]
+    gcc_native = gccNames[host_architecture]
+
+    cmd = f"./configure --build={gcc_native} --host={gcc_cross}"
+
+    env = {}
+    env["CC"] = gcc_cross + "-gcc"
+    env["CXX"] = gcc_cross + "-g++"
+    env["AR"] = gcc_cross + "-ar"
+    env["RANLIB"] = gcc_cross + "-ranlib"
+    
+    buildRawExecute(cmd, True, path, env)
+
+
 buildActions = {
     "debian": buildDebian,
     "download": buildDownload,
@@ -1852,8 +1881,11 @@ buildActions = {
     "gitclone": gitcloneBuild,
     "execute-commands": executeCommands,
     "unpack-archive": unpackArchive,
-    "unpack-tar-gz": unpackTarGz
+    "unpack-tar-gz": unpackTarGz,
+    "build-configure-make": buildConfigureMake
 }
+
+# -------------------------------------------------- dependencies
 
 def get_file_checksum(file_path, hash_algo="sha256"):
     h = hashlib.new(hash_algo)
@@ -1941,26 +1973,14 @@ def getDependenciesDebian(item):
 def getDependenciesDirectory(item):
     return rawGetDependencies(item, ["items"], [])
 
-def getDependenciesTar(item):
-    return rawGetDependencies(item, ["source"], [])
-
-def getDependenciesFilesystem(item):
-    return rawGetDependencies(item, ["source"], [])
-
 def getDependenciesFullDiskImage(item):
     dependencies = rawGetDependencies(item, ["partitions"], [])
     if item.get("bootloader", {}).get("config", None):
         dependencies.append(getDependenciesFieldChecksum(item["bootloader"]["config"], False))
     return dependencies
 
-def getDependenciesFromDirectory(item):
-    return rawGetDependencies(item, ["source"], [])
-
 def getDependenciesGccBuild(item):
     return rawGetDependencies(item, ["sources-dirs"], [])
-
-def getDependenciesInitramfs(item):
-    return rawGetDependencies(item, ["source"], [])
 
 def getDependenciesGrubIsoImage(item):
     return rawGetDependencies(item, ["kernel", "initramfs", "config"], [])
@@ -1971,9 +1991,6 @@ def getDependenciesUnpackInitramfs(item):
 def getDependenciesKernel(item):
     return rawGetDependencies(item, ["patches", "kernel_config", "kernel_config_changes_files", "items"], [])
 
-def getDependenciesDebianUpdateInitramfs(item):
-    return rawGetDependencies(item, ["source"], [])
-
 def getDependenciesDebianExportInitramfs(item):
     return rawGetDependencies(item, ["kernel_config", "source"], [])
 
@@ -1983,35 +2000,35 @@ def getDependenciesSmartChroot(item):
 def getDependenciesSingleboard(item):
     return rawGetDependencies(item, ["bootloader", "initramfs", "kernel", "rootfs", "dtbList", "dtboList", "bootloaderDtb"], [])
 
-def getDependenciesExecuteCommands(item):
+def getDependencies_source_item(item):
     return rawGetDependencies(item, ["source"], [])
 
-def getDependenciesUnpackArchive(item):
-    return rawGetDependencies(item, ["archive"], [])
-
-def getDependenciesUnpackTarGz(item):
+def getDependencies_archive_item(item):
     return rawGetDependencies(item, ["archive"], [])
 
 getDependencies = {
     "debian": getDependenciesDebian,
     "directory": getDependenciesDirectory,
-    "tar": getDependenciesTar,
-    "filesystem": getDependenciesFilesystem,
+    "tar": getDependencies_source_item,
+    "filesystem": getDependencies_source_item,
     "full-disk-image": getDependenciesFullDiskImage,
-    "from-directory": getDependenciesFromDirectory,
+    "from-directory": getDependencies_source_item,
     "gcc-build": getDependenciesGccBuild,
-    "initramfs": getDependenciesInitramfs,
+    "initramfs": getDependencies_source_item,
     "grub-iso-image": getDependenciesGrubIsoImage,
     "unpack-initramfs": getDependenciesUnpackInitramfs,
     "kernel": getDependenciesKernel,
-    "debian-update-initramfs": getDependenciesDebianUpdateInitramfs,
+    "debian-update-initramfs": getDependencies_source_item,
     "debian-export-initramfs": getDependenciesDebianExportInitramfs,
     "smart-chroot": getDependenciesSmartChroot,
     "singleboard": getDependenciesSingleboard,
-    "execute-commands": getDependenciesExecuteCommands,
-    "unpack-archive": getDependenciesUnpackArchive,
-    "unpack-tar-gz": getDependenciesUnpackTarGz
+    "execute-commands": getDependencies_source_item,
+    "unpack-archive": getDependencies_archive_item,
+    "unpack-tar-gz": getDependencies_archive_item,
+    "build-configure-make": getDependencies_source_item
 }
+
+# --------------------------------------------------
 
 def filter_underscored(d):
     if not isinstance(d, dict):
@@ -2194,7 +2211,7 @@ def prepairBuildItems(builditems):
     forkbase=None
     for builditem in builditems:
         if builditem.get("fork", False):
-            if forkbase == None:
+            if forkbase is None:
                 buildLog(f"ERROR: an attempt to fork without a single forkbase before that")
                 sys.exit(1)
             

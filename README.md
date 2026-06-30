@@ -186,6 +186,7 @@ sudo pip install asteval --break-system-packages
 * execute-commands - if there is no "source", it simply executes commands from the project directory. if there is a "source", it clones it and executes commands in it.
 * unpack-archive - unpacks the archive. use 7z
 * unpack-tar-gz - unpacks the tar.gz archive. use tar
+* build-configure-make - builds something from source if configure and make are used for the build.
 
 ## build items features
 * debian supports the "_min" variant, which is essentially a "custom" but with a minimal set package required for assembly
