@@ -1841,23 +1841,30 @@ def unpackTarGz(item):
     buildExecute(["tar", "-xzf", findItem(item["archive"]), "-C", getItemFolder(item)])
 
 def buildConfigureMake(item):
-    path = cloneBuildItem(item["source"], item)
+    path = findItem(item["source"])
+    output = getItemFolder(item)
 
     host_architecture = get_host_arch()
 
     gcc_cross = gccNames[architecture]
     gcc_native = gccNames[host_architecture]
 
-    cmd = f"./configure --build={gcc_native} --host={gcc_cross}"
-
     env = {}
     env["CC"] = gcc_cross + "-gcc"
     env["CXX"] = gcc_cross + "-g++"
     env["AR"] = gcc_cross + "-ar"
     env["RANLIB"] = gcc_cross + "-ranlib"
+    env["CFLAGS"] = " ".join(item.get("CFLAGS", []))
+    env["LDFLAGS"] = " ".join(item.get("LDFLAGS", []))
     
+    cmd = f"./configure --build={gcc_native} --host={gcc_cross} {" ".join(item.get("FLAGS", []))}"
     buildRawExecute(cmd, True, path, env)
 
+    cmd = f"make -j$(nproc)"
+    buildRawExecute(cmd, True, path, env)
+
+    cmd = f"make install DESTDIR=\"{output}\""
+    buildRawExecute(cmd, True, path, env)
 
 buildActions = {
     "debian": buildDebian,
