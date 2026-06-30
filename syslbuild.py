@@ -877,6 +877,9 @@ def handlelink(topdir, filep, subdir):
     os.unlink(filep)
     os.symlink(relative_path, filep)
 
+    new_link = os.readlink(filep)
+    buildLog("NEW LINK: %s" % new_link)
+
 def make_relative_symlinks(topdir):
     buildLog(f"make_relative_symlinks: {topdir}")
     for subdir, dirs, files in os.walk(topdir):
