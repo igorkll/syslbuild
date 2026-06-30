@@ -443,6 +443,25 @@ these changes to the kernel config are applied automatically when building the k
         },
 
         {
+            "type": "build-configure-make",
+            "name": "export",
+            "export": false,
+
+            "source": "builditem with source code",
+
+            // specify the prefix. where will the program be installed as a result of the export
+            "prefix": "/usr",
+
+            // optional. allows you to use the directory as a sysroot for gcc
+            "sysroot": "any builditem directory",
+
+            "CFLAGS": [],
+            "LDFLAGS": [],
+            "FLAGS": []
+        },
+
+
+        {
             "type": "directory",
             "name": "custom initramfs directory",
             "export": false,

@@ -1857,7 +1857,14 @@ def buildConfigureMake(item):
     env["CFLAGS"] = " ".join(item.get("CFLAGS", []))
     env["LDFLAGS"] = " ".join(item.get("LDFLAGS", []))
     
-    cmd = f"./configure --build={gcc_native} --host={gcc_cross} {" ".join(item.get("FLAGS", []))}"
+    default_flags = f"--build={gcc_native} --host={gcc_cross}"
+    if "sysroot" in item:
+        default_flags += " --sysroot=" + findItem(item["sysroot"])
+
+    if "prefix" in item:
+        default_flags += " --prefix=" + item["prefix"]
+
+    cmd = f"./configure {default_flags} {" ".join(item.get("FLAGS", []))}"
     buildRawExecute(cmd, True, path, env)
 
     cmd = f"make -j$(nproc)"
