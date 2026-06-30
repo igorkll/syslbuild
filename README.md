@@ -1028,6 +1028,10 @@ these changes to the kernel config are applied automatically when building the k
             // This list can be found above.
             "kernel_config_disable_default_changes": false,
 
+            // if set to true, then before building the kernel, all =m in the config will be replaced with =y to get a self-sufficient kernel with embedded drivers.
+            // default: False
+            "kernel_config_embed_all_modules": false,
+
             // It allows you to copy files to the kernel directory before building. it may be necessary in some cases.
             // for example, sometimes when building a core for single-board devices, additional files are required for wifi to work
             // The ubuntu kernel may also require *.pem files to verify digital signatures.

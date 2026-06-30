@@ -1323,8 +1323,8 @@ def set_kernel_config_parameter(config_path, param, value):
 def update_kernel_config(kernel_sources, ARCH_STR, CROSS_COMPILE_STR):
     buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "olddefconfig"], True, None, kernel_sources)
 
-def parse_kernel_config_changes(changes_file):
-    with open(changes_file, "r") as f:
+def parse_kernel_config(config_file):
+    with open(config_file, "r") as f:
         changes = []
         lines = f.readlines()
         for line in lines:
@@ -1338,12 +1338,26 @@ def parse_kernel_config_changes(changes_file):
         return changes
     return []
 
+def kernel_config_embed_all_modules(kernel_config_path):
+    with open(kernel_config_path, "r") as f:
+        lines = f.readlines()
+
+    new_lines = []
+    for line in lines:
+        if not line.startswith(f"#") and line.endswith(f"=m"):
+            new_lines.append(line.split("=", 1)[0] + "=y")
+        else:
+            new_lines.append(line)
+
+    with open(kernel_config_path, "w") as f:
+        f.writelines(new_lines)
+
 def modifyKernelConfig(item, kernel_sources, ARCH_STR, CROSS_COMPILE_STR):
     kernel_config_path = pathConcat(kernel_sources, ".config")
 
     if "kernel_config_changes_files" in item:
         for changes_file in item["kernel_config_changes_files"]:
-            for change in parse_kernel_config_changes(findItem(changes_file)):
+            for change in parse_kernel_config(findItem(changes_file)):
                 set_kernel_config_parameter(kernel_config_path, change[0], change[1])
 
     if "kernel_config_changes" in item:
@@ -1355,6 +1369,9 @@ def modifyKernelConfig(item, kernel_sources, ARCH_STR, CROSS_COMPILE_STR):
         set_kernel_config_parameter(kernel_config_path, "CONFIG_WERROR", "n")
 
         set_kernel_config_parameter(kernel_config_path, "CONFIG_RD_GZIP", "y")
+
+    if item.get("kernel_config_embed_all_modules", False):
+        kernel_config_embed_all_modules(kernel_config_path)
     
     update_kernel_config(kernel_sources, ARCH_STR, CROSS_COMPILE_STR)
 
