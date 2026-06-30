@@ -699,18 +699,29 @@ def changeAccessRights(path, changeRights):
 def recursionDeleleSymlinks(directoryPath):
     buildRawExecute("find . -type l -exec rm -f {} +", True, directoryPath)
 
-def copyItemFiles(fromPath, toPath, changeRights=None):
+def copyItemFiles(fromPath, toPath, changeRights=None, allowSymlinks=True):
     if os.path.isdir(fromPath):
         makedirsChangeRights(toPath)
-        if changeRights:
-            tempFolder = getTempFolder("changeRights")
-            buildExecute(["cp", "-a", fromPath + "/.", tempFolder])
-            changeAccessRights(tempFolder, changeRights)
-            buildExecute(["chmod", "--reference=" + toPath, tempFolder])
-            buildExecute(["chown", "--reference=" + toPath, tempFolder])
-            buildExecute(["cp", "-a", tempFolder + "/.", toPath])
+        if allowSymlinks:
+            if changeRights:
+                tempFolder = getTempFolder("changeRights")
+                buildExecute(["cp", "-a", fromPath + "/.", tempFolder])
+                changeAccessRights(tempFolder, changeRights)
+                buildExecute(["chmod", "--reference=" + toPath, tempFolder])
+                buildExecute(["chown", "--reference=" + toPath, tempFolder])
+                buildExecute(["rsync", "-a", "--keep-dirlinks", tempFolder + "/.", toPath])
+            else:
+                buildExecute(["rsync", "-a", "--keep-dirlinks", fromPath + "/.", toPath])
         else:
-            buildExecute(["cp", "-a", fromPath + "/.", toPath])
+            if changeRights:
+                tempFolder = getTempFolder("changeRights")
+                buildExecute(["cp", "-a", fromPath + "/.", tempFolder])
+                changeAccessRights(tempFolder, changeRights)
+                buildExecute(["chmod", "--reference=" + toPath, tempFolder])
+                buildExecute(["chown", "--reference=" + toPath, tempFolder])
+                buildExecute(["cp", "-a", tempFolder + "/.", toPath])
+            else:
+                buildExecute(["cp", "-a", fromPath + "/.", toPath])
     else:
         # this is necessary to correctly overwrite the symlink that links to a working file in the host system.
         deleteAny(toPath)
