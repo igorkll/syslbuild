@@ -1871,6 +1871,8 @@ def buildConfigureMake(item):
 
     gcc_cross = gccNames[architecture]
     gcc_native = gccNames[host_architecture]
+    sysroot_gcc_direct = item.get("sysroot_gcc_direct", False)
+    sysroot_gcc_direct_cmd = item.get("sysroot_gcc_direct_cmd", False)
 
     env = {}
     env["CC"] = gcc_cross + "-gcc"
@@ -1879,13 +1881,25 @@ def buildConfigureMake(item):
     env["RANLIB"] = gcc_cross + "-ranlib"
     env["CFLAGS"] = " ".join(item.get("CFLAGS", []))
     env["LDFLAGS"] = " ".join(item.get("LDFLAGS", []))
-    
+
+    if sysroot_gcc_direct_cmd:
+        additional_args = f" --sysroot=\"{findItem(item["sysroot"])}\""
+        env["CC"] += additional_args
+        env["CXX"] += additional_args
+
     default_flags = f"--build={gcc_native} --host={gcc_cross}"
+
     if "sysroot" in item:
-        default_flags += f" --{item.get("sysroot_field_name", "sysroot")}=" + findItem(item["sysroot"])
+        sysroot_path = findItem(item["sysroot"])
+        if sysroot_gcc_direct:
+            sysroot = f"--sysroot=\"{sysroot_path}\""
+            env["CFLAGS"] += sysroot
+            env["LDFLAGS"] += sysroot
+        elif not sysroot_gcc_direct_cmd:
+            default_flags += f" --{item.get("sysroot_field_name", "sysroot")}=\"{sysroot_path}\""
 
     if "prefix" in item:
-        default_flags += " --prefix=" + item["prefix"]
+        default_flags += " --prefix=\"" + item["prefix"] + "\""
 
     cmd = f"{os.path.abspath(os.path.join(path, "configure"))} {default_flags} {" ".join(item.get("FLAGS", []))}"
     buildRawExecute(cmd, True, build_temp, env)

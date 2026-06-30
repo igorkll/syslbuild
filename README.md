@@ -459,6 +459,15 @@ these changes to the kernel config are applied automatically when building the k
             // with-sysroot for glibc
             "sysroot_field_name": "sysroot",
 
+            // default: false
+            // if set to true, sysroot will be passed directly to CFLAGS and LDFLAGS
+            // needed to build util-linux
+            "sysroot_gcc_direct": false,
+
+            // default: false
+            // if set to true, sysroot will be passed directly to gcc
+            "sysroot_gcc_direct_cmd": false,
+
             "CFLAGS": [],
             "LDFLAGS": [],
             "FLAGS": []
