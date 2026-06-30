@@ -539,6 +539,10 @@ these changes to the kernel config are applied automatically when building the k
             "name": "rootfs directory",
             "export": false,
 
+            "move": [
+                ["/bin", "/usr/bin"],
+            ],
+
             "symlinks": [
                 ["/usr/bin", "/bin"],
             ],
@@ -570,6 +574,14 @@ these changes to the kernel config are applied automatically when building the k
                 ["downloaded file", "/home/test.mp3", [0, 0, "0755"]],
                 ["userfile.txt", "/home/userfile.txt", [0, 0, "0755"]], //file from the project folder
                 ["other directory with non-executable files", ".", [[0, 0, "0644"], [0, 0, "0755"]]] //you can specify permissions first for files and then for directories.
+            ],
+
+            "move_after_items": [
+                ["/bin", "/usr/bin"],
+            ],
+
+            "symlinks_after_items": [
+                ["/usr/bin", "/bin"],
             ],
 
             "chmod": [

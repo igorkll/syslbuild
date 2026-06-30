@@ -892,6 +892,7 @@ def handlelink(topdir, filep, subdir):
     buildLog("NEW LINK: %s" % new_link)
 
 def make_relative_symlinks(topdir):
+    topdir = os.path.abspath(topdir)
     buildLog(f"make_relative_symlinks: {topdir}")
     for subdir, dirs, files in os.walk(topdir):
         for f in dirs:
@@ -904,14 +905,25 @@ def make_relative_symlinks(topdir):
             if os.path.islink(filep):
                 handlelink(topdir, filep, subdir)
 
+def buildMove(buildDirectoryPath, fromPath, toPath):
+    fromPath = pathConcat(buildDirectoryPath, fromPath)
+    toPath = pathConcat(buildDirectoryPath, toPath)
+
+    buildExecute(["rsync", "-aK", "--remove-source-files", fromPath + "/", toPath + "/"])
+    buildExecute(["rm", "-rf", fromPath])
+
 def buildDirectory(item):
     buildDirectoryPath = getItemFolder(item)
+
+    if "move" in item:
+        for move in item["move"]:
+            buildMove(buildDirectoryPath, move[0], move[1])
 
     if "symlinks" in item:
         for symlink in item["symlinks"]:
             buildExecute(["ln", "-sfn", symlink[0], pathConcat(buildDirectoryPath, symlink[1])])
 
-    make_relative_symlinks(os.path.abspath(buildDirectoryPath))
+    make_relative_symlinks(buildDirectoryPath)
 
     if "deleteBeforeAdd" in item:
         for deletePath in item["deleteBeforeAdd"]:
@@ -927,6 +939,16 @@ def buildDirectory(item):
 
     if "items" in item:
         rawItemsProcess(item["items"], buildDirectoryPath)
+
+    if "move_after_items" in item:
+        for move in item["move_after_items"]:
+            buildMove(buildDirectoryPath, move[0], move[1])
+
+    if "symlinks_after_items" in item:
+        for symlink in item["symlinks_after_items"]:
+            buildExecute(["ln", "-sfn", symlink[0], pathConcat(buildDirectoryPath, symlink[1])])
+
+        make_relative_symlinks(buildDirectoryPath)
 
     if "chmod" in item:
         makeChmod(buildDirectoryPath, item["chmod"])
