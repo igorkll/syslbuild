@@ -51,6 +51,7 @@ you have to pass one of them. but not more than one
 * --wifi-name - the name of the wifi network for automatic connection (NOT IMPLEMENTED AT THE MOMENT)
 * --wifi-password - the password of the wifi network for automatic connection (NOT IMPLEMENTED AT THE MOMENT)
 * --output - output path to the boot image
+* --syslbuild - the path to the syslbuild directory. it will be detected automatically if your syslbuild is installed using the standard path in /opt/syslbuild
 
 ## flags
 * --root-privileges - the application in the image will have root privileges
@@ -59,8 +60,9 @@ you have to pass one of them. but not more than one
 * --debug - enable the kernel log and root shell at UART0 115200
 * --clear-cache - cleans up the cache before building
 
-## warnings
-* firefox is currently being used for the web kiosk. it is problematic because it does not disable all hotkeys and shows its interface for about 100 milliseconds at startup.
+## used projects
+* super-kiosk-browser: https://github.com/igorkll/super-kiosk-browser
+* syslbuild: https://github.com/igorkll/syslbuild
 
 ## screenshots
 ![preview](https://raw.githubusercontent.com/igorkll/syslbuild/refs/heads/main/screenshots/mkbootable/1.png)  

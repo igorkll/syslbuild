@@ -44,8 +44,6 @@ if os.path.isdir(syslbuild_install_path):
 else:
     syslbuild_path = "."
 
-build_log(f"syslbuild path: {syslbuild_path}")
-
 # --------------------------------------- parsing cli arguments
 
 argsparser = argparse.ArgumentParser(
@@ -82,6 +80,7 @@ argsparser.add_argument("--wifi-name", default=None, help="the name of the wifi 
 argsparser.add_argument("--wifi-password", default=None, help="the password of the wifi network for automatic connection")
 
 argsparser.add_argument("-o", "--output", default=None, help="output path to the boot image")
+argsparser.add_argument("--syslbuild", default=None, help="the path to the syslbuild directory. it will be detected automatically if your syslbuild is installed using the standard path in /opt/syslbuild")
 
 args = argsparser.parse_args()
 
@@ -187,19 +186,23 @@ if args.application:
     run_features = get_application_run_features()
 
     if args.output is None:
-        args.output = Path(args.application).stem + ".img"
+        args.output = pathlib.Path(args.application).stem + ".img"
 
     build_log(f"application path: {application_path}")
     build_log(f"application dir: {application_dir}")
     build_log(f"application name: {application_name}")
 elif args.web:
     if args.output is None:
-        args.output = Path(args.web).stem + ".img"
+        args.output = pathlib.Path(args.web).stem + ".img"
     
     session_type = "wayland"
     default_logo = get_web_logo()
     run_features = get_web_run_features()
 
+if args.syslbuild:
+    syslbuild_path = args.syslbuild
+
+build_log(f"syslbuild path: {syslbuild_path}")
 build_log(f"session type: {session_type}")
 build_log(f"default logo: {default_logo}")
 build_log(f"run features: {run_features}")
