@@ -61,8 +61,11 @@ you have to pass one of them. but not more than one
 * --clear-cache - cleans up the cache before building
 
 ## used projects
-* super-kiosk-browser: https://github.com/igorkll/super-kiosk-browser
-* syslbuild: https://github.com/igorkll/syslbuild
+* super-kiosk-browser: https://github.com/igorkll/super-kiosk-browser - the browser used in the web kiosk mode
+* syslbuild: https://github.com/igorkll/syslbuild - the program for building the images
+* linux-embedded-patchs: https://github.com/igorkll/linux-embedded-patchs - a set of patches for using the linux kernel on embedded locked-down devices
+* custom-debian-initramfs-init: https://github.com/igorkll/custom-debian-initramfs-init - custom /init script for debian initramfs
+* embedded-plymouth: https://github.com/igorkll/embedded-plymouth - plymouth with a patch to disable ESC key processing (so that the console cannot be displayed during boot)
 
 ## screenshots
 ![preview](https://raw.githubusercontent.com/igorkll/syslbuild/refs/heads/main/screenshots/mkbootable/1.png)  
