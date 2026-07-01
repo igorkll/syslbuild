@@ -1970,6 +1970,7 @@ def buildConfigureMake(item):
     env["LDFLAGS"] = " ".join(item.get("LDFLAGS", []))
     env["CXXFLAGS"] = " ".join(item.get("CXXFLAGS", []))
     env["CPPFLAGS"] = " ".join(item.get("CPPFLAGS", []))
+    env["LIBS"] = " ".join(item.get("LIBS", []))
 
     default_flags = f"--build={gcc_native} --host={gcc_cross}"
 
@@ -1989,7 +1990,6 @@ def buildConfigureMake(item):
         if sysroot_gcc_direct:
             sysroot = f" --sysroot=\"{sysroot_path}\""
             env["CFLAGS"] += sysroot
-            env["CPPFLAGS"] += sysroot
             env["LDFLAGS"] += sysroot
 
         if sysroot_gcc_direct_cmd:
@@ -2007,11 +2007,11 @@ def buildConfigureMake(item):
             sysroot_path_abs = os.path.abspath(sysroot_path)
             buildLog(f"sysroot_auto_libs: {sysroot_path_abs}")
 
-            include_arg = f" -I{sysroot_path_abs}/usr/include"
+            include_arg = f" -I{sysroot_path_abs}/usr/include -I{sysroot_path_abs}/include"
 
             env["CFLAGS"] += include_arg
             env["CPPFLAGS"] += include_arg
-            env["LDFLAGS"] += f" -L{sysroot_path_abs}/usr/lib"
+            env["LDFLAGS"] += f" -L{sysroot_path_abs}/usr/lib -L{sysroot_path_abs}/lib"
 
     env.update(item.get("env_change", []))
     deleteAllNones(env)

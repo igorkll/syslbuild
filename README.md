@@ -506,6 +506,7 @@ these changes to the kernel config are applied automatically when building the k
             "CPPFLAGS": [],
             "CXXFLAGS": [],
             "FLAGS": [],
+            "LIBS": []
         },
 
 
