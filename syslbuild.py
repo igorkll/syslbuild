@@ -210,7 +210,12 @@ def getItemPath(item, nameName="name", exportName="export"):
     else:
         os.makedirs(path_build, exist_ok=True)
         path = pathConcat(path_build, item[nameName])
-    
+
+    if item.get("input", False):
+        parent_item = findItem(item["input"])
+        os.makedirs(path, exist_ok=True)
+        copyItemFiles(parent_item, path)
+
     return path
 
 def getCustomItemPath(nameValue, exportValue):
@@ -224,8 +229,9 @@ def getCustomItemPath(nameValue, exportValue):
 
 def getItemFolder(item, nameName="name", exportName="export"):
     path = getItemPath(item, nameName, exportName)
-    deleteDirectory(path)
-    os.makedirs(path, exist_ok=True)
+    if not item.get("input", False):
+        deleteDirectory(path)
+        os.makedirs(path, exist_ok=True)
     return path
 
 def getItemChecksumPathFromName(itemName):
@@ -259,7 +265,18 @@ def getTempFolder(subdirectory):
     os.makedirs(path, exist_ok=True)
     return path
 
+def resolveItemName(itemName):
+    if itemName == "@previous":
+        if previous_builditem:
+            return previous_builditem["name"]
+        else:
+            buildLog(f"ERROR: you can't use @previous in the first builditem.")
+            sys.exit(1)
+
+    return itemName
+
 def findItem(itemName):
+    itemName = resolveItemName(itemName)
     path = pathConcat(path_build, itemName)
     if os.path.exists(path):
         return path
@@ -276,6 +293,7 @@ def findItem(itemName):
     sys.exit(1)
 
 def isUserItem(itemName):
+    itemName = resolveItemName(itemName)
     path = pathConcat(path_build, itemName)
     if os.path.exists(path):
         return False
@@ -2255,6 +2273,12 @@ def writeOtherChecksums(item, checksum):
             writeCacheChecksumForName(additional_export_item[1], checksum)
 
 def buildItems(builditems):
+    global previous_builditem
+    global current_builditem
+
+    previous_builditem = None
+    current_builditem = None
+
     exported = []
         
     for item in builditems:
@@ -2263,11 +2287,15 @@ def buildItems(builditems):
         if isCacheValid(item, checksum) and not args.n:
             buildItemLog(item, None, " (cache)")
         else:
+            current_builditem = item
+
             deleteAny(itemPath)
             buildItemLog(item)
             buildActions.get(item["type"], buildUnknown)(item)
             writeCacheChecksum(item, checksum)
             writeOtherChecksums(item, checksum)
+
+            previous_builditem = item
         
         if readBool(item, "export"):
             exported.append(item)
@@ -2427,6 +2455,9 @@ def buildProject(json_path):
             sys.exit(1)
         elif "type" not in item:
             buildLog(f"ERROR: builditem without a type")
+            sys.exit(1)
+        elif item["name"].startswith("@"):
+            buildLog(f"ERROR: the builditem name cannot start with the @ character, as this is reserved for virtual builditems")
             sys.exit(1)
         elif item["name"] not in namesExists:
             buildItemLog(item)
