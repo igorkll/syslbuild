@@ -2290,13 +2290,14 @@ def buildItems(builditems):
     exported = []
         
     for item in builditems:
-        itemPath = getItemPath(item)
         checksum = getItemChecksum(item)
         if isCacheValid(item, checksum) and not args.n:
             buildItemLog(item, None, " (cache)")
         else:
             current_builditem = item
 
+            itemPath = getItemPath(item)
+            
             deleteAny(itemPath)
             buildItemLog(item)
             buildActions.get(item["type"], buildUnknown)(item)
