@@ -532,6 +532,13 @@ these changes to the kernel config are applied automatically when building the k
 
             // default: false
             "disable_cross_compile": false,
+
+            "make_args": [],
+            "make_install_args": [],
+
+            "env_change": {
+
+            }
         },
 
 

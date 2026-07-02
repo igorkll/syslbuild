@@ -754,7 +754,11 @@ def copyItemFiles(fromPath, toPath, changeRights=None, allowSymlinks=True):
         if not os.path.isdir(file_dir):
             makedirsChangeRights(file_dir)
 
-        shutil.copy2(fromPath, toPath)
+        if allowSymlinks:
+            buildExecute(["rsync", "-a", "--keep-dirlinks", fromPath, toPath])
+        else:
+            shutil.copy2(fromPath, toPath)
+
         if changeRights:
             changeAccessRights(toPath, changeRights)
 
@@ -880,8 +884,18 @@ def rawItemsProcess(items, itemsDirectory):
             rawItem = itemObj[0]
             buildLog(f"Write item: {rawItem} > {outputPath}")
         else:
+            parts = itemObj[0].split('/', 1)
+            if len(parts) == 2:
+                itemObj[0], inItemPath = parts
+            else:
+                inItemPath = None
+
             itemPath = findItem(itemObj[0])
-            buildLog(f"Copy item: {itemPath} > {outputPath}")
+            if inItemPath:
+                buildLog(f"Copy item with path: {{{itemPath}}}/{{{inItemPath}}} > {outputPath}")
+                itemPath += "/" + inItemPath
+            else:
+                buildLog(f"Copy item: {itemPath} > {outputPath}")
             
         # так как папка с проектом может переносится через разные файловые системы
         # и системы контроля версий
@@ -2090,11 +2104,15 @@ def buildMake(item):
     args_str = " ".join(args)
     install_args_str = " ".join(install_args)
 
-    cmd = f"make -j$(nproc) {install_args_str} {args_str}"
-    buildRawExecute(cmd, True, path)
+    env = {}
+    env.update(item.get("env_change", []))
+    deleteAllNones(env)
 
-    cmd = f"make install {install_args_str}"
-    buildRawExecute(cmd, True, path)
+    cmd = f"make -j$(nproc) {install_args_str} {args_str} {" ".join(item.get("make_args", []))}"
+    buildRawExecute(cmd, True, path, env)
+
+    cmd = f"make install {install_args_str} {" ".join(item.get("make_install_args", []))}"
+    buildRawExecute(cmd, True, path, env)
 
 buildActions = {
     "debian": buildDebian,
