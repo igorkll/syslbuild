@@ -188,6 +188,7 @@ sudo pip install asteval --break-system-packages
 * unpack-tar-gz - unpacks the tar.gz archive. use tar util
 * unpack-tar-auto - unpacks the tar.* archive. use tar util
 * build-configure-make - builds something from source if configure and make are used for the build.
+* build-make - builds something from source if make are used for the build.
 
 ## build items features
 * debian supports the "_min" variant, which is essentially a "custom" but with a minimal set package required for assembly
@@ -517,6 +518,20 @@ these changes to the kernel config are applied automatically when building the k
             "CXXFLAGS": [],
             "FLAGS": [],
             "LIBS": []
+        },
+
+        {
+            "type": "build-make",
+            "name": "export",
+            "export": false,
+
+            "source": "builditem with source code",
+
+            "prefix": "/usr",
+            "sysroot": "any builditem directory",
+
+            // default: false
+            "disable_cross_compile": false,
         },
 
 

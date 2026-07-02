@@ -2060,6 +2060,42 @@ def buildConfigureMake(item):
     cmd = f"make install DESTDIR=\"{os.path.abspath(output)}\""
     buildRawExecute(cmd, True, build_temp, env)
 
+def buildMake(item):
+    path = findItem(item["source"])
+    output = getItemFolder(item)
+    build_temp = getTempFolder("build-make")
+    copyItemFiles(path, build_temp)
+
+    host_architecture = get_host_arch()
+    gcc_native = gccNames[host_architecture]
+    gcc_cross = gccNames[architecture]
+    if item.get("disable_cross_compile", False):
+        gcc_cross = gcc_native
+
+    args = []
+    args.append("CC=\"" + gcc_cross + "-gcc\"")
+    args.append("CXX=\"" + gcc_cross + "-g++\"")
+    args.append("LD\"=" + gcc_cross + "-ld\"")
+    args.append("AR=\"" + gcc_cross + "-ar\"")
+    args.append("RANLIB=\"" + gcc_cross + "-ranlib\"")
+    args.append("STRIP=\"" + gcc_cross + "-strip\"")
+
+    install_args = []
+
+    if "prefix" in item:
+        install_args.append("PREFIX=\"" + item["prefix"] + "\"")
+
+    install_args.append("DESTDIR=\"" + os.path.abspath(output) + "\"")
+
+    args_str = " ".join(args)
+    install_args_str = " ".join(install_args)
+
+    cmd = f"make -j$(nproc) {install_args_str} {args_str}"
+    buildRawExecute(cmd, True, path)
+
+    cmd = f"make install {install_args_str}"
+    buildRawExecute(cmd, True, path)
+
 buildActions = {
     "debian": buildDebian,
     "download": buildDownload,
@@ -2084,7 +2120,8 @@ buildActions = {
     "unpack-archive": unpackArchive,
     "unpack-tar-gz": unpackTarGz,
     "unpack-tar-auto": unpackTarAuto,
-    "build-configure-make": buildConfigureMake
+    "build-configure-make": buildConfigureMake,
+    "build-make": buildMake
 }
 
 # -------------------------------------------------- dependencies
@@ -2228,7 +2265,8 @@ getDependencies = {
     "unpack-archive": getDependencies_archive_item,
     "unpack-tar-gz": getDependencies_archive_item,
     "unpack-tar-auto": getDependencies_archive_item,
-    "build-configure-make": getDependencies_source_item
+    "build-configure-make": getDependencies_source_item,
+    "build-make": getDependencies_source_item
 }
 
 # --------------------------------------------------
