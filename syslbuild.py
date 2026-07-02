@@ -272,6 +272,12 @@ def resolveItemName(itemName):
         else:
             buildLog(f"ERROR: you can't use @previous in the first builditem.")
             sys.exit(1)
+    elif itemName == "@marker":
+        if marker_builditem:
+            return marker_builditem["name"]
+        else:
+            buildLog(f"ERROR: you can't use @marker before \"marker: true\" element")
+            sys.exit(1)
 
     return itemName
 
@@ -2274,9 +2280,11 @@ def writeOtherChecksums(item, checksum):
 
 def buildItems(builditems):
     global previous_builditem
+    global marker_builditem
     global current_builditem
 
     previous_builditem = None
+    marker_builditem = None
     current_builditem = None
 
     exported = []
@@ -2296,6 +2304,9 @@ def buildItems(builditems):
             writeOtherChecksums(item, checksum)
 
             previous_builditem = item
+
+            if item.get("marker", False):
+                marker_builditem = item
         
         if readBool(item, "export"):
             exported.append(item)

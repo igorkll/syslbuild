@@ -228,10 +228,12 @@ sudo pip install asteval --break-system-packages
 * build-if-not-one-filter-exists - array of filter names. the builditem will not be built if at least one specified filter is present.
 * build-if-no-filters-or-one-filter-exists - build an element if no filters are set or at least one matches
 * input - if your builditem exports a directory, and the previous builditem also exports a directory, you can specify "input" to use the previous builditem as the basis for the new one. it is convenient to use when building libraries that depend on each other by combining with @previous and sysroot
+* marker - if set to true, it updates the last "marker" element
 
 ## virtual builditems (start with @)
 you cannot name your builditems starting with the @ symbol, as this refers to the virtual builditems described here  
 * @previous - previous builditem
+* @marker - the last item of the build marked with a marker (the marker field is set to true)
 
 ## keys that are not inherited by fork
 * forkbase - these are the control keys of the fork itself, they are not inherited by the fork
