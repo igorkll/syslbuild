@@ -1981,7 +1981,7 @@ def buildConfigureMake(item):
     gcc_native = gccNames[host_architecture]
     gcc_cross = gccNames[architecture]
 
-    if not item.get("disable_cross_compile", False):
+    if item.get("disable_cross_compile", False):
         gcc_cross = gcc_native
     
     sysroot_gcc_direct = item.get("sysroot_gcc_direct", False)
@@ -2017,7 +2017,7 @@ def buildConfigureMake(item):
             env["PKG_CONFIG_SYSROOT_DIR"] = sysroot_path
 
         if item.get("sysroot_set_env_PKG_CONFIG_LIBDIR", False):
-            env["PKG_CONFIG_LIBDIR"] = f"{sysroot_path}/usr/lib/pkgconfig:{sysroot_path}/usr/share/pkgconfig:{sysroot_path}/usr/lib/$HOST/pkgconfig"
+            env["PKG_CONFIG_LIBDIR"] = f"{sysroot_path}/usr/lib/pkgconfig:{sysroot_path}/usr/share/pkgconfig:{sysroot_path}/lib/pkgconfig"
 
         if sysroot_gcc_direct:
             sysroot = f" --sysroot=\"{sysroot_path}\""
