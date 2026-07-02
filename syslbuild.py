@@ -1987,8 +1987,10 @@ def buildConfigureMake(item):
     sysroot_gcc_env = item.get("sysroot_gcc_env", False)
 
     env = {}
+    env["CROSS_COMPILE"] = gcc_cross + "-"
     env["CC"] = gcc_cross + "-gcc"
     env["CXX"] = gcc_cross + "-g++"
+    env["LD"] = gcc_cross + "-ld"
     env["AR"] = gcc_cross + "-ar"
     env["RANLIB"] = gcc_cross + "-ranlib"
     env["STRIP"] = gcc_cross + "-strip"
@@ -2022,6 +2024,7 @@ def buildConfigureMake(item):
             additional_args = f" --sysroot=\"{sysroot_path}\""
             env["CC"] += additional_args
             env["CXX"] += additional_args
+            env["LD"] += additional_args
         
         if not sysroot_gcc_disable_default:
             default_flags += f" --{item.get("sysroot_field_name", "sysroot")}=\"{sysroot_path}\""
