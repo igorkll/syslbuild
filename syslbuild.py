@@ -2183,7 +2183,10 @@ def getDependenciesFieldChecksum(fieldValue, filesOnly=False):
     def inlineFindItem(inputPath):
         if not filesOnly:
             if os.path.exists(pathConcat(path_build, inputPath)) or os.path.exists(pathConcat(path_output_target, inputPath)):
-                checksumPath = getItemChecksumPathFromName(inputPath)
+                # так как начиная с версии syslbuild 1.5.5 добавилась поддержка указания путей добавляемого обьекта прямо внутри имени builditem через /
+                # что уменьшает количество использований from-directory и сокрашает размер файлов конфигурации
+                # сдесь нужно сделать split, чтобы получить реальное имя builditem
+                checksumPath = getItemChecksumPathFromName(inputPath.split("/", 1)[0])
                 if os.path.exists(checksumPath):
                     with open(checksumPath, "r") as f:
                         return "@" + f.read()
