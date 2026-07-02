@@ -2300,23 +2300,22 @@ def buildItems(builditems):
         
     for item in builditems:
         checksum = getItemChecksum(item)
+        current_builditem = item
+
         if isCacheValid(item, checksum) and not args.n:
             buildItemLog(item, None, " (cache)")
         else:
-            current_builditem = item
-
-            itemPath = getItemPath(item)
-            
-            deleteAny(itemPath)
             buildItemLog(item)
+            itemPath = getItemPath(item)
+            deleteAny(itemPath)
             buildActions.get(item["type"], buildUnknown)(item)
             writeCacheChecksum(item, checksum)
             writeOtherChecksums(item, checksum)
 
-            previous_builditem = item
+        previous_builditem = item
 
-            if item.get("marker", False):
-                marker_builditem = item
+        if item.get("marker", False):
+            marker_builditem = item
         
         if readBool(item, "export"):
             exported.append(item)
