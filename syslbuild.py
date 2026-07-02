@@ -1980,6 +1980,9 @@ def buildConfigureMake(item):
 
     gcc_native = gccNames[host_architecture]
     gcc_cross = gccNames[architecture]
+
+    if not item.get("disable_cross_compile", False):
+        gcc_cross = gcc_native
     
     sysroot_gcc_direct = item.get("sysroot_gcc_direct", False)
     sysroot_gcc_direct_cmd = item.get("sysroot_gcc_direct_cmd", False)
@@ -2001,7 +2004,10 @@ def buildConfigureMake(item):
     env["CPPFLAGS"] = " ".join(item.get("CPPFLAGS", []))
     env["LIBS"] = " ".join(item.get("LIBS", []))
 
-    default_flags = f"--build={gcc_native} --host={gcc_cross}"
+    default_flags = ""
+
+    if not item.get("disable_cross_compile", False):
+        default_flags += f"--build={gcc_native} --host={gcc_cross}"
 
     if "sysroot" in item:
         sysroot_path = os.path.abspath(findItem(item["sysroot"]))

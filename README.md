@@ -504,6 +504,9 @@ these changes to the kernel config are applied automatically when building the k
             // default: false
             "sysroot_set_env_PKG_CONFIG_LIBDIR": false,
 
+            // default: false
+            "disable_cross_compile": false,
+
             "env_change": {
 
             },
