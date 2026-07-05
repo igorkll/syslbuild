@@ -966,7 +966,7 @@ def setup_write_bins(builditems):
         "directories": directories
     })
 
-def setup_export_initramfs(builditems):
+def setup_export_initramfs(builditems, forPlatform=None):
     if current_project.distro == "debian":
         builditems.append({
             "architectures": ["amd64"],
@@ -990,7 +990,7 @@ def setup_export_initramfs(builditems):
             "source": "rootfs directory x4"
         })
 
-        if current_project.export_img_opi_zero3:
+        if forPlatform == "opi_zero3":
             builditems.append({
                 "architectures": ["arm64"],
 
@@ -999,10 +999,10 @@ def setup_export_initramfs(builditems):
                 "export": False,
 
                 "kernel_config": "kernel_image/arm64/opi_zero3/kernel_config",
-                "source": "rootfs directory x4"
+                "source": "rootfs directory OPI ZERO 3"
             })
 
-        if current_project.export_img_rpi_64:
+        if forPlatform == "rpi_64":
             builditems.append({
                 "architectures": ["arm64"],
 
@@ -1012,7 +1012,7 @@ def setup_export_initramfs(builditems):
 
                 "kernel_version": "6.12.47-embedded-rpi-64+",
                 "kernel_config": "kernel_image/arm64/rpi_64/kernel_config",
-                "source": "rootfs directory x4"
+                "source": "rootfs directory RPI 64"
             })
 
             builditems.append({
@@ -1024,7 +1024,7 @@ def setup_export_initramfs(builditems):
 
                 "kernel_version": "6.12.47-embedded-rpi-5+",
                 "kernel_config": "kernel_image/arm64/rpi_5/kernel_config",
-                "source": "rootfs directory x4"
+                "source": "rootfs directory RPI 64"
             })
     else:
         stop_error(f"unknown distro \"{current_project.distro}\"")
@@ -1259,6 +1259,20 @@ avoid_warnings=1
         "git_checkout": "1.20250915"
     })
 
+    builditems.append({
+        "architectures": ["arm64"],
+
+        "type": "directory",
+        "name": "rootfs directory RPI 64",
+        "export": False,
+
+        "items": [
+            ["rootfs directory x4", "."]
+        ]
+    })
+
+    setup_export_initramfs(builditems, "rpi_64")
+
     items = [
         ["rpi_64_firmware/boot/COPYING.linux", "/COPYING.linux"],
         ["rpi_64_firmware/boot/LICENCE.broadcom", "/LICENCE.broadcom"],
@@ -1337,18 +1351,6 @@ avoid_warnings=1
     builditems.append({
         "architectures": ["arm64"],
 
-        "type": "directory",
-        "name": "rootfs directory RPI 64",
-        "export": False,
-
-        "items": [
-            ["rootfs directory x4", "."]
-        ]
-    })
-
-    builditems.append({
-        "architectures": ["arm64"],
-
         "type": "filesystem",
         "name": "rootfs_rpi_64.img",
         "export": False,
@@ -1416,6 +1418,8 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         "minsize": current_project.minsize_root_partition,
         "label": "rootfs"
     })
+
+    setup_export_initramfs(builditems, "opi_zero3")
 
     builditems.append({
         "architectures": ["arm64"],
