@@ -1036,7 +1036,10 @@ def setup_build_base(builditems):
     setup_build_distro(builditems)
     setup_write_files()
 
-    directories = []
+    directories = [
+        ["/bootmnt", [0, 0, "0755"]]
+    ]
+
     items = [
         ["rootfs directory x1", "."],
 
@@ -1111,6 +1114,9 @@ def setup_build_base(builditems):
         directories.append(["/usr/share/plymouth/themes/bootlogo", [0, 0, "0755"]])
         items.append(["files/bootlogo", "/usr/share/plymouth/themes/bootlogo", [0, 0, "0644"]])
 
+    if current_project.separate_data_partition:
+        directories.append(["/data", [0, 0, "0755"]])
+
     builditem = {
         "type": "directory",
         "name": "rootfs directory x2",
@@ -1142,13 +1148,6 @@ def setup_build_base(builditems):
 
     setup_export_initramfs(builditems)
 
-    directories = [
-        ["/bootmnt", [0, 0, "0755"]]
-    ]
-
-    if current_project.separate_data_partition:
-        directories.append(["/data", [0, 0, "0755"]])
-
     builditems.append({
         "architectures": ["amd64", "i386"],
 
@@ -1159,28 +1158,12 @@ def setup_build_base(builditems):
         "items": [
             ["rootfs directory x4", "."],
             ["initramfs.img", "/initramfs.img", [0, 0, "0644"]]
-        ],
-
-        "directories": directories
+        ]
     })
 
     builditems.append({
-        "architectures": ["arm64"],
+        "architectures": ["amd64", "i386"],
 
-        "type": "directory",
-        "name": "rootfs directory x5",
-        "export": False,
-
-        "items": [
-            ["rootfs directory x4", "."]
-        ],
-
-        "directories": directories
-    })
-
-    # ----------------------------- 
-
-    builditems.append({
         "type": "filesystem",
         "name": "rootfs.img",
         "export": False,
@@ -1349,6 +1332,33 @@ avoid_warnings=1
     builditems.append({
         "architectures": ["arm64"],
 
+        "type": "directory",
+        "name": "rootfs directory RPI 64",
+        "export": False,
+
+        "items": [
+            ["rootfs directory x4", "."]
+        ]
+    })
+
+    builditems.append({
+        "architectures": ["arm64"],
+
+        "type": "filesystem",
+        "name": "rootfs_rpi_64.img",
+        "export": False,
+
+        "source": "rootfs directory RPI 64",
+
+        "fs_type": "ext4",
+        "size": current_project.size_root_partition, 
+        "minsize": current_project.minsize_root_partition,
+        "label": "rootfs"
+    })
+
+    builditems.append({
+        "architectures": ["arm64"],
+
         "type": "full-disk-image",
         "name": f"{current_project_name} RPI 64.img",
         "export": True,
@@ -1358,7 +1368,7 @@ avoid_warnings=1
         "partitionTable": "dos",
         "partitions": [
             ["boot_rpi_64.img", "c"],
-            ["rootfs.img", "linux"]
+            ["rootfs_rpi_64.img", "linux"]
         ] + appendPartitions
     })
 
@@ -1372,6 +1382,33 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         devicetree = devicetree + ".dtb"
     else:
         devicetree = "sun50i-h618-orangepi-zero3.dtb"
+
+    builditems.append({
+        "architectures": ["arm64"],
+
+        "type": "directory",
+        "name": "rootfs directory OPI ZERO 3",
+        "export": False,
+
+        "items": [
+            ["rootfs directory x4", "."]
+        ]
+    })
+
+    builditems.append({
+        "architectures": ["arm64"],
+
+        "type": "filesystem",
+        "name": "rootfs_opi_zero3.img",
+        "export": False,
+
+        "source": "rootfs directory OPI ZERO 3",
+
+        "fs_type": "ext4",
+        "size": current_project.size_root_partition, 
+        "minsize": current_project.minsize_root_partition,
+        "label": "rootfs"
+    })
 
     builditems.append({
         "architectures": ["arm64"],
@@ -1395,7 +1432,7 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
 
         "kernel": "kernel_image/arm64/opi_zero3/kernel.img",
         "initramfs": "initramfs_opi_zero3.img",
-        "rootfs": "rootfs.img",
+        "rootfs": "rootfs_opi_zero3.img",
         "appendPartitions": appendPartitions,
 
         "boot_partition_size": current_project.size_boot_partition,
