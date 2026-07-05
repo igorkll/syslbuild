@@ -105,6 +105,7 @@ class Project:
 
     integrate_xwayland: bool = True
     integrate_firmwares: bool = True
+    integrate_bluetooth: bool = True
     integrate_network: bool = True
     integrate_network_wifi: bool = True
     integrate_audio: bool = True
@@ -435,6 +436,13 @@ def setup_build_debian(builditems):
             include.append("libasound2t64")
         else:
             include.append("libasound2")
+
+    if current_project.integrate_bluetooth:
+        include.append("bluez")
+        include.append("bluez-utils")
+        include.append("bluetooth")
+        if current_project.integrate_audio:
+            include.append("pulseaudio-module-bluetooth")
 
     if current_project.integrate_firmwares:
         include.append("firmware-linux")
