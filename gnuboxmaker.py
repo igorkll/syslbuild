@@ -25,6 +25,8 @@ boot_sound_variants = ["none", "init", "logo"]
 
 default_devicetree_overlays = {
 #    "opi_zero3": "gnuboxmaker/kernel_build/output/arm64/opi_zero3/overlays"
+    "rpi_64": "gnuboxmaker/blobs2/rpi_universal_dtbo",
+    "rpi_32": "gnuboxmaker/blobs2/rpi_universal_dtbo"
 }
 
 RIGHTS_644_755 = [[0, 0, "0644"], [0, 0, "0755"]]
