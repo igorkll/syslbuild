@@ -1249,7 +1249,7 @@ def export_rpi_32(builditems, cmdline, appendPartitions):
         ["kernel_image/arm64/rpi_64/kernel_config", "/kernel8_config"],
         ["initramfs_rpi_64.img", "/initramfs8"],
 
-        ["kernel_image/arm64/rpi_5/boot", "/"], # тут некоторые dtb лежат
+        ["kernel_image/arm64/rpi_5/boot", "/"], # тут некоторые dtb лежат. по этому добавляю все равно даже в 32 битный образ
         ["kernel_image/arm64/rpi_kernel/boot", "/"],
         ["kernel_image/arm64/rpi_kernel7/boot", "/"],
 
