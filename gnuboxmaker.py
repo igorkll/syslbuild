@@ -448,6 +448,9 @@ def setup_build_debian(builditems):
 
     if current_project.integrate_firmwares:
         include.append("firmware-linux")
+        if (current_project.integrate_network and current_project.integrate_network_wifi) or current_project.integrate_bluetooth:
+            include.append("firmware-realtek")
+            include.append("firmware-brcm80211")
 
     if current_project.integrate_network:
         include.append("network-manager")
@@ -459,8 +462,6 @@ def setup_build_debian(builditems):
             include.append("rfkill")
             include.append("wpasupplicant")
             include.append("wireless-regdb")
-            include.append("firmware-realtek")
-            include.append("firmware-brcm80211")
 
     if current_project.boot_splash:
         include.append("plymouth") # install basic plymouth files. The part will later be replaced by embedded plymouth.
