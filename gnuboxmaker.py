@@ -780,6 +780,13 @@ def read_gnubox_file(name):
     
     return []
 
+def read_project_file(name):
+    path = os.path.join(current_project_directory, name)
+    with open(path, 'r', encoding='utf-8') as f:
+        return f.read()
+    
+    return []
+
 def devicetree_get_files(platform, extension):
     files = []
 
@@ -1192,7 +1199,7 @@ def any_rpi(builditems):
     })
 
 def export_rpi_32(builditems, cmdline, appendPartitions):
-    config_txt = read_gnubox_file("rpi_32_config.txt")
+    config_txt = read_gnubox_file("rpi_32_config.txt") + "\n" + read_project_file("resources/rpi_32_config_extension.txt")
 
     override = get_devicetree_override("rpi_32")
     if override:
@@ -1244,14 +1251,22 @@ def export_rpi_32(builditems, cmdline, appendPartitions):
         ["rpi_firmware/boot/start_x.elf", "/start_x.elf"],
         ["rpi_firmware/boot/bootcode.bin", "/bootcode.bin"],
 
+        ["kernel_image/arm64/rpi_5/boot", "/"], # тут некоторые dtb лежат. по этому добавляю все равно даже в 32 битный образ
+
         ["kernel_image/arm64/rpi_64/boot", "/"],
         ["kernel_image/arm64/rpi_64/kernel.img", "/kernel8.img"],
         ["kernel_image/arm64/rpi_64/kernel_config", "/kernel8_config"],
         ["initramfs_rpi_64.img", "/initramfs8"],
-
-        ["kernel_image/arm64/rpi_5/boot", "/"], # тут некоторые dtb лежат. по этому добавляю все равно даже в 32 битный образ
+        
         ["kernel_image/arm64/rpi_kernel/boot", "/"],
+        ["kernel_image/arm64/rpi_kernel/kernel.img", "/kernel.img"],
+        ["kernel_image/arm64/rpi_kernel/kernel_config", "/kernel_config"],
+        ["initramfs_rpi_kernel.img", "/initramfs"],
+
         ["kernel_image/arm64/rpi_kernel7/boot", "/"],
+        ["kernel_image/arm64/rpi_kernel7/kernel7.img", "/kernel7.img"],
+        ["kernel_image/arm64/rpi_kernel7/kernel7_config", "/kernel7_config"],
+        ["initramfs_rpi_kernel7.img", "/initramfs7"],
 
         ["files/cmdline_rpi_32.txt", "/cmdline.txt"],
         ["files/config_rpi_32.txt", "/config.txt"]
@@ -1326,7 +1341,7 @@ def export_rpi_32(builditems, cmdline, appendPartitions):
     })
 
 def export_rpi_64(builditems, cmdline, appendPartitions):
-    config_txt = read_gnubox_file("rpi_64_config.txt")
+    config_txt = read_gnubox_file("rpi_64_config.txt") + "\n" + read_project_file("resources/rpi_64_config_extension.txt")
 
     override = get_devicetree_override("rpi_64")
     if override:
@@ -1894,6 +1909,12 @@ def init_devicetree(name):
         with open(devicetree_overlays, "w", encoding="utf-8") as f:
             pass
 
+def create_empty_file(name):
+    path = os.path.join(path_resources, name)
+    if not os.path.isfile(path):
+        with open(path, "w", encoding="utf-8") as f:
+            pass
+
 def update_project_structure():
     os.makedirs(path_resources, exist_ok=True)
     os.makedirs(path_temp, exist_ok=True)
@@ -1923,6 +1944,9 @@ def update_project_structure():
     startup_sound = os.path.join(path_resources, "startup.wav")
     if not os.path.isfile(startup_sound):
         copyFile(startup_sound, "gnuboxmaker/startup.wav")
+
+    create_empty_file("rpi_32_config_extension.txt")
+    create_empty_file("rpi_64_config_extension.txt")
 
     gitignore_path = os.path.join(current_project_directory, ".gitignore")
     if not os.path.isfile(gitignore_path):
