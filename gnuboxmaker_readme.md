@@ -76,7 +76,7 @@ alternatively, you can fork gnubox maker and then offer a pull request
 
 ## platforms support rate (from 0 to 10)
 * x86 - 9/10
-* raspberry pi 64 - 8/10
+* raspberry pi 64 - 9/10
 * orange pi zero 3 - 4/10
 
 ## used kernel patches (from https://github.com/igorkll/linux-embedded-patchs)
