@@ -895,16 +895,8 @@ def setup_write_bins(builditems):
     copy_bins("kernel_build/output", "kernel_image")
     copy_bins("blobs")
 
-    directories = []
-
-    if current_project.boot_splash:
-        directories.append(["/var/lib/plymouth", [0, 0, "0755"]])
-        directories.append(["/var/spool/plymouth", [0, 0, "0755"]])
-        directories.append(["/run/plymouth", [0, 0, "0755"]])
-
     # ---------------------- x86_64
     items = [
-        ["rootfs directory x2", "."],
         ["kernel_image/amd64/kernel_modules", "/usr", RIGHTS_644_755],
         ["kernel_image/amd64/kernel.img", "/kernel.img", [0, 0, "0644"]]
     ]
@@ -916,16 +908,14 @@ def setup_write_bins(builditems):
         "architectures": ["amd64"],
 
         "type": "directory",
-        "name": "rootfs directory x3",
+        "name": "rootfs directory overlay",
         "export": False,
 
-        "items": items,
-        "directories": directories
+        "items": items
     })
 
     # ---------------------- x86
     items = [
-        ["rootfs directory x2", "."],
         ["kernel_image/i386/kernel_modules", "/usr", RIGHTS_644_755],
         ["kernel_image/i386/kernel.img", "/kernel.img", [0, 0, "0644"]]
     ]
@@ -937,17 +927,14 @@ def setup_write_bins(builditems):
         "architectures": ["i386"],
 
         "type": "directory",
-        "name": "rootfs directory x3",
+        "name": "rootfs directory overlay",
         "export": False,
 
-        "items": items,
-        "directories": directories
+        "items": items
     })
 
     # ---------------------- arm64
-    items = [
-        ["rootfs directory x2", "."]
-    ]
+    items = []
 
     if current_project.boot_splash:
         items.append(["blobs/embedded-plymouth/arm64", "/", [0, 0, "0755"]])
@@ -956,15 +943,49 @@ def setup_write_bins(builditems):
         "architectures": ["arm64"],
 
         "type": "directory",
-        "name": "rootfs directory x3",
+        "name": "rootfs directory overlay",
         "export": False,
 
-        "items": items,
-        "directories": directories
+        "items": items
     })
 
-def setup_export_initramfs(builditems, forPlatform=None):
-    if current_project.distro == "debian":
+def setup_export_debian_initramfs(builditems, forPlatform):
+    if forPlatform == "opi_zero3":
+        builditems.append({
+            "architectures": ["arm64"],
+
+            "type": "debian-export-initramfs",
+            "name": "initramfs_opi_zero3.img",
+            "export": False,
+
+            "kernel_config": "kernel_image/arm64/opi_zero3/kernel_config",
+            "source": "rootfs directory OPI ZERO 3"
+        })
+    elif forPlatform == "rpi_64":
+        builditems.append({
+            "architectures": ["arm64"],
+
+            "type": "debian-export-initramfs",
+            "name": "initramfs_rpi_64.img",
+            "export": False,
+
+            "kernel_version": "6.12.47-embedded-rpi-64+",
+            "kernel_config": "kernel_image/arm64/rpi_64/kernel_config",
+            "source": "rootfs directory RPI 64"
+        })
+
+        builditems.append({
+            "architectures": ["arm64"],
+
+            "type": "debian-export-initramfs",
+            "name": "initramfs_rpi_5.img",
+            "export": False,
+
+            "kernel_version": "6.12.47-embedded-rpi-5+",
+            "kernel_config": "kernel_image/arm64/rpi_5/kernel_config",
+            "source": "rootfs directory RPI 64"
+        })
+    else:
         builditems.append({
             "architectures": ["amd64"],
             
@@ -987,42 +1008,9 @@ def setup_export_initramfs(builditems, forPlatform=None):
             "source": "rootfs directory x4"
         })
 
-        if forPlatform == "opi_zero3":
-            builditems.append({
-                "architectures": ["arm64"],
-
-                "type": "debian-export-initramfs",
-                "name": "initramfs_opi_zero3.img",
-                "export": False,
-
-                "kernel_config": "kernel_image/arm64/opi_zero3/kernel_config",
-                "source": "rootfs directory OPI ZERO 3"
-            })
-
-        if forPlatform == "rpi_64":
-            builditems.append({
-                "architectures": ["arm64"],
-
-                "type": "debian-export-initramfs",
-                "name": "initramfs_rpi_64.img",
-                "export": False,
-
-                "kernel_version": "6.12.47-embedded-rpi-64+",
-                "kernel_config": "kernel_image/arm64/rpi_64/kernel_config",
-                "source": "rootfs directory RPI 64"
-            })
-
-            builditems.append({
-                "architectures": ["arm64"],
-
-                "type": "debian-export-initramfs",
-                "name": "initramfs_rpi_5.img",
-                "export": False,
-
-                "kernel_version": "6.12.47-embedded-rpi-5+",
-                "kernel_config": "kernel_image/arm64/rpi_5/kernel_config",
-                "source": "rootfs directory RPI 64"
-            })
+def setup_export_initramfs(builditems, forPlatform=None):
+    if current_project.distro == "debian":
+        setup_export_debian_initramfs(builditems, forPlatform)
     else:
         stop_error(f"unknown distro \"{current_project.distro}\"")
 
@@ -1042,8 +1030,6 @@ def setup_build_base(builditems):
 
     items = [
         ["rootfs directory x1", "."],
-
-        ["sprdwl_ng", "/etc/modules-load.d/sprdwl_ng.conf", [0, 0, "0644"], True],
 
         ["files/etc_config", "/etc", RIGHTS_644_755],
         ["files/systemd_config", "/etc/systemd", RIGHTS_644_755],
@@ -1112,10 +1098,16 @@ def setup_build_base(builditems):
 
     if current_project.boot_splash:
         directories.append(["/usr/share/plymouth/themes/bootlogo", [0, 0, "0755"]])
+        directories.append(["/var/lib/plymouth", [0, 0, "0755"]])
+        directories.append(["/var/spool/plymouth", [0, 0, "0755"]])
+        directories.append(["/run/plymouth", [0, 0, "0755"]])
         items.append(["files/bootlogo", "/usr/share/plymouth/themes/bootlogo", [0, 0, "0644"]])
 
     if current_project.separate_data_partition:
         directories.append(["/data", [0, 0, "0755"]])
+
+    setup_write_bins(builditems)
+    items.append(["rootfs directory overlay", "/"])
 
     builditem = {
         "type": "directory",
@@ -1129,10 +1121,7 @@ def setup_build_base(builditems):
 
     builditems.append(builditem)
 
-    # ----------------------------- 
-
-    setup_write_bins(builditems)
-
+    # im removed rootfs directory x3
     builditems.append({
         "type": "smart-chroot",
         "name": "rootfs directory x4",
@@ -1140,19 +1129,20 @@ def setup_build_base(builditems):
 
         "manual_validation": True,
         "use_systemd_container": True,
-        "source": "rootfs directory x3",
+        "source": "rootfs directory x2",
         "scripts": setup_chroot_script()
     })
 
-    # ----------------------------- 
+    export_x86(builditems)
 
+def export_x86(builditems):
     setup_export_initramfs(builditems)
 
     builditems.append({
         "architectures": ["amd64", "i386"],
 
         "type": "directory",
-        "name": "rootfs directory x5",
+        "name": "rootfs directory x86",
         "export": False,
 
         "items": [
@@ -1168,7 +1158,7 @@ def setup_build_base(builditems):
         "name": "rootfs.img",
         "export": False,
 
-        "source": "rootfs directory x5",
+        "source": "rootfs directory x86",
 
         "fs_type": "ext4",
         "size": current_project.size_root_partition, 
@@ -1396,6 +1386,9 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
 
         "items": [
             ["rootfs directory x4", "."],
+
+            ["sprdwl_ng", "/etc/modules-load.d/sprdwl_ng.conf", [0, 0, "0644"], True],
+
             ["kernel_image/arm64/opi_zero3/kernel_modules", "/usr", RIGHTS_644_755],
             ["kernel_image/arm64/opi_zero3/firmware", "/usr/lib/firmware", RIGHTS_644_755]
         ]
