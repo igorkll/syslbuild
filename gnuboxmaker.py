@@ -301,16 +301,17 @@ systemctl mask console-getty.service
 
 # ------------
 
-if [ -d "/lib/firmware/brcm/" ]; then
-    cd /lib/firmware/brcm/
-
-    ln -sf ../cypress/cyfmac43455-sdio.bin brcmfmac43455-sdio.raspberrypi,4-model-b.bin
-    ln -sf ../cypress/cyfmac43455-sdio.bin brcmfmac43455-sdio.raspberrypi,5-model-b.bin
-    ln -sf ../cypress/cyfmac43430-sdio.bin brcmfmac43430-sdio.raspberrypi,3-model-b.bin
-    ln -sf ../cypress/cyfmac43455-sdio.bin brcmfmac43455-sdio.raspberrypi,3-model-b-plus.bin
-
-    cd /
-fi
+# ---- legacy
+# if [ -d "/lib/firmware/brcm/" ]; then
+#    cd /lib/firmware/brcm/
+#
+#    ln -sf ../cypress/cyfmac43455-sdio.bin brcmfmac43455-sdio.raspberrypi,4-model-b.bin
+#    ln -sf ../cypress/cyfmac43455-sdio.bin brcmfmac43455-sdio.raspberrypi,5-model-b.bin
+#    ln -sf ../cypress/cyfmac43430-sdio.bin brcmfmac43430-sdio.raspberrypi,3-model-b.bin
+#    ln -sf ../cypress/cyfmac43455-sdio.bin brcmfmac43455-sdio.raspberrypi,3-model-b-plus.bin
+#
+#    cd /
+# fi
 
 # ------------
 
@@ -1223,6 +1224,18 @@ def any_rpi(builditems):
         "git_checkout": "1.20250915"
     })
 
+    builditems.append({
+        "architectures": ["arm64", "armhf"],
+
+        "type": "gitclone",
+        "name": "rpi_wireless_firmware",
+        "export": False,
+
+        "git_url": "https://github.com/RPi-Distro/firmware-nonfree",
+        "git_branch": "trixie",
+        "git_checkout": "9794282eb9f4a2de1f23b41a738926740e975d83"
+    })
+
 def export_rpi_32(builditems, cmdline, appendPartitions):
     config_txt = read_gnubox_file("rpi_32_config.txt") + "\n" + read_project_file("resources/rpi_32_config_extension.txt")
 
@@ -1248,7 +1261,9 @@ def export_rpi_32(builditems, cmdline, appendPartitions):
             ["rootfs directory x4", "."],
             ["kernel_image/arm64/rpi_64/kernel_modules", "/usr", RIGHTS_644_755],
             ["kernel_image/arm64/rpi_kernel/kernel_modules", "/usr", RIGHTS_644_755],
-            ["kernel_image/arm64/rpi_kernel7/kernel_modules", "/usr", RIGHTS_644_755]
+            ["kernel_image/arm64/rpi_kernel7/kernel_modules", "/usr", RIGHTS_644_755],
+            ["rpi_wireless_firmware/debian/config/brcm80211/brcm", "/lib/firmware/brcm", RIGHTS_644_755],
+            ["rpi_wireless_firmware/debian/config/brcm80211/cypress", "/lib/firmware/cypress", RIGHTS_644_755]
         ]
     })
 

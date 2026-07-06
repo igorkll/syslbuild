@@ -143,6 +143,7 @@ please note that the partition sizes CANNOT be increased during the update. ther
 * if you use boot splash, single-board computers will wait for framebuffer to appear when turned on and will not continue booting without a connected monitor.
 * DO NOT USE "boot_splash" on devices without a screen. Since on some platforms the initialization script will wait for the framebuffer to appear so that the user sees the logo, as a result, the device will not start at all. You can use startup sound in init mode, for example, to inform the user that the device's power is on.
 * during the build, a lot is downloaded from the Internet. The assembly will not work without a network connection
+* in the system image built through gnubox maker, it is STRONGLY RECOMMENDED NOT to use the apt and dpkg package manager, much less update the system using them. There is a /self_update.sh mechanism for updating and to install applications on a ready-made embedded device, I recommend implementing flatpak
 
 ## notes
 * please note that by default, the first time you turn on the created root image, the partition will be enlarged to the maximum possible size for the current media. this is done because I cannot know what size of drive the *.img image will be written to
