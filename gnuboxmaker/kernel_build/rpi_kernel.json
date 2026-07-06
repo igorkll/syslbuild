@@ -43,14 +43,14 @@
         "defconfig": "bcmrpi_defconfig",
 
         "additional_export": [
-            ["arch/arm64/boot/dts/broadcom/bcm2708-rpi-b.dtb", "bcm2708-rpi-b.dtb", false],
-            ["arch/arm64/boot/dts/broadcom/bcm2708-rpi-b-plus.dtb", "bcm2708-rpi-b-plus.dtb", false],
-            ["arch/arm64/boot/dts/broadcom/bcm2708-rpi-b-rev1.dtb", "bcm2708-rpi-b-rev1.dtb", false],
-            ["arch/arm64/boot/dts/broadcom/bcm2708-rpi-cm.dtb", "bcm2708-rpi-cm.dtb", false],
-            ["arch/arm64/boot/dts/broadcom/bcm2708-rpi-zero.dtb", "bcm2708-rpi-zero.dtb", false],
-            ["arch/arm64/boot/dts/broadcom/bcm2708-rpi-zero-w.dtb", "bcm2708-rpi-zero-w.dtb", false],
-            ["arch/arm64/boot/dts/broadcom/bcm2709-rpi-2-b.dtb", "bcm2709-rpi-2-b.dtb", false],
-            ["arch/arm64/boot/dts/broadcom/bcm2709-rpi-cm2.dtb", "bcm2709-rpi-cm2.dtb", false]
+            ["arch/arm/boot/dts/broadcom/bcm2708-rpi-b.dtb", "bcm2708-rpi-b.dtb", false],
+            ["arch/arm/boot/dts/broadcom/bcm2708-rpi-b-plus.dtb", "bcm2708-rpi-b-plus.dtb", false],
+            ["arch/arm/boot/dts/broadcom/bcm2708-rpi-b-rev1.dtb", "bcm2708-rpi-b-rev1.dtb", false],
+            ["arch/arm/boot/dts/broadcom/bcm2708-rpi-cm.dtb", "bcm2708-rpi-cm.dtb", false],
+            ["arch/arm/boot/dts/broadcom/bcm2708-rpi-zero.dtb", "bcm2708-rpi-zero.dtb", false],
+            ["arch/arm/boot/dts/broadcom/bcm2708-rpi-zero-w.dtb", "bcm2708-rpi-zero-w.dtb", false],
+            ["arch/arm/boot/dts/broadcom/bcm2709-rpi-2-b.dtb", "bcm2709-rpi-2-b.dtb", false],
+            ["arch/arm/boot/dts/broadcom/bcm2709-rpi-cm2.dtb", "bcm2709-rpi-cm2.dtb", false]
         ]
     },
     {
