@@ -113,6 +113,7 @@ class Project:
     export_x86_64: bool = True
     export_x86: bool = False
     export_arm64: bool = False
+    export_arm: bool = False
 
     export_img_bios_mbr: bool = False
     export_img_bios_gpt: bool = False
@@ -120,6 +121,7 @@ class Project:
     export_img_bios_and_uefi_gpt: bool = True
 
     export_img_opi_zero3: bool = False
+    export_img_rpi_32: bool = False
     export_img_rpi_64: bool = False
 
 def raw_load_project(path):
@@ -261,6 +263,9 @@ def setup_build_architectures(architectures):
 
     if current_project.export_arm64:
         architectures.append("arm64")
+
+    if current_project.export_arm:
+        architectures.append("armhf")
 
 def gen_default_first_chroot_script():
     if current_project.session_mode == "wayland" or current_project.session_mode == "x11":
@@ -768,6 +773,13 @@ def get_devicetree_overlays(platform):
     
     return []
 
+def read_gnubox_file(name):
+    path = os.path.join("gnuboxmaker", name)
+    with open(path, 'r', encoding='utf-8') as f:
+        return f.read()
+    
+    return []
+
 def devicetree_get_files(platform, extension):
     files = []
 
@@ -1166,62 +1178,24 @@ def export_x86(builditems):
         "label": "rootfs"
     })
 
+def any_rpi(builditems):
+    builditems.append({
+        "architectures": ["arm64"],
+
+        "type": "gitclone",
+        "name": "rpi_firmware",
+        "export": False,
+
+        "git_url": "https://github.com/raspberrypi/firmware",
+        "git_branch": "master",
+        "git_checkout": "1.20250915"
+    })
+
+def export_rpi_32(builditems, cmdline, appendPartitions):
+    config_txt = read_gnubox_file("rpi_32_config.txt")
+
 def export_rpi_64(builditems, cmdline, appendPartitions):
-    config_txt = f"""# For more options and information see
-# http://rptl.io/configtxt
-# Some settings may impact device functionality. See link above for details
-
-# Uncomment some or all of these to enable the optional hardware interfaces
-#dtparam=i2c_arm=on
-#dtparam=i2s=on
-#dtparam=spi=on
-
-# Enable audio (loads snd_bcm2835)
-dtparam=audio=on
-
-# Additional overlays and parameters are documented
-# /boot/firmware/overlays/README
-
-# Automatically load overlays for detected cameras
-camera_auto_detect=1
-
-# Automatically load overlays for detected DSI displays
-display_auto_detect=1
-
-# Automatically load initramfs files, if found
-auto_initramfs=1
-
-# Enable DRM VC4 V3D driver
-dtoverlay=vc4-kms-v3d
-max_framebuffers=2
-
-# Don't have the firmware create an initial video= setting in cmdline.txt.
-# Use the kernel's default instead.
-disable_fw_kms_setup=1
-
-# Run in 64-bit mode
-arm_64bit=1
-
-# Disable compensation for displays with overscan
-disable_overscan=1
-
-# Run as fast as firmware / board allows
-arm_boost=1
-
-[cm4]
-# Enable host mode on the 2711 built-in XHCI USB controller.
-# This line should be removed if the legacy DWC2 controller is required
-# (e.g. for USB device mode) or if USB support is not required.
-otg_mode=1
-
-[cm5]
-dtoverlay=dwc2,dr_mode=host
-
-[all]
-disable_splash=1
-boot_delay=0
-avoid_warnings=1
-"""
+    config_txt = read_gnubox_file("rpi_64_config.txt")
 
     override = get_devicetree_override("rpi_64")
     if override:
@@ -1233,18 +1207,6 @@ avoid_warnings=1
 
     writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_64.txt"), exclude_string("root=/dev/mmcblk0p2 " + cmdline + f" {getWaitFbStr(True)}\n", current_project.exclude_cmdline))
     writeText(os.path.join(path_temp_syslbuild, "files", "config_rpi_64.txt"), config_txt)
-
-    builditems.append({
-        "architectures": ["arm64"],
-
-        "type": "gitclone",
-        "name": "rpi_64_firmware",
-        "export": False,
-
-        "git_url": "https://github.com/raspberrypi/firmware",
-        "git_branch": "master",
-        "git_checkout": "1.20250915"
-    })
 
     builditems.append({
         "architectures": ["arm64"],
@@ -1263,26 +1225,26 @@ avoid_warnings=1
     setup_export_initramfs(builditems, "rpi_64")
 
     items = [
-        ["rpi_64_firmware/boot/COPYING.linux", "/COPYING.linux"],
-        ["rpi_64_firmware/boot/LICENCE.broadcom", "/LICENCE.broadcom"],
-        ["rpi_64_firmware/boot/overlays", "/overlays"],
-        ["rpi_64_firmware/boot/fixup.dat", "/fixup.dat"],
-        ["rpi_64_firmware/boot/fixup4.dat", "/fixup4.dat"],
-        ["rpi_64_firmware/boot/fixup4cd.dat", "/fixup4cd.dat"],
-        ["rpi_64_firmware/boot/fixup4db.dat", "/fixup4db.dat"],
-        ["rpi_64_firmware/boot/fixup4x.dat", "/fixup4x.dat"],
-        ["rpi_64_firmware/boot/fixup_cd.dat", "/fixup_cd.dat"],
-        ["rpi_64_firmware/boot/fixup_db.dat", "/fixup_db.dat"],
-        ["rpi_64_firmware/boot/fixup_x.dat", "/fixup_x.dat"],
-        ["rpi_64_firmware/boot/start.elf", "/start.elf"],
-        ["rpi_64_firmware/boot/start4.elf", "/start4.elf"],
-        ["rpi_64_firmware/boot/start4cd.elf", "/start4cd.elf"],
-        ["rpi_64_firmware/boot/start4db.elf", "/start4db.elf"],
-        ["rpi_64_firmware/boot/start4x.elf", "/start4x.elf"],
-        ["rpi_64_firmware/boot/start_cd.elf", "/start_cd.elf"],
-        ["rpi_64_firmware/boot/start_db.elf", "/start_db.elf"],
-        ["rpi_64_firmware/boot/start_x.elf", "/start_x.elf"],
-        ["rpi_64_firmware/boot/bootcode.bin", "/bootcode.bin"],
+        ["rpi_firmware/boot/COPYING.linux", "/COPYING.linux"],
+        ["rpi_firmware/boot/LICENCE.broadcom", "/LICENCE.broadcom"],
+        ["rpi_firmware/boot/overlays", "/overlays"],
+        ["rpi_firmware/boot/fixup.dat", "/fixup.dat"],
+        ["rpi_firmware/boot/fixup4.dat", "/fixup4.dat"],
+        ["rpi_firmware/boot/fixup4cd.dat", "/fixup4cd.dat"],
+        ["rpi_firmware/boot/fixup4db.dat", "/fixup4db.dat"],
+        ["rpi_firmware/boot/fixup4x.dat", "/fixup4x.dat"],
+        ["rpi_firmware/boot/fixup_cd.dat", "/fixup_cd.dat"],
+        ["rpi_firmware/boot/fixup_db.dat", "/fixup_db.dat"],
+        ["rpi_firmware/boot/fixup_x.dat", "/fixup_x.dat"],
+        ["rpi_firmware/boot/start.elf", "/start.elf"],
+        ["rpi_firmware/boot/start4.elf", "/start4.elf"],
+        ["rpi_firmware/boot/start4cd.elf", "/start4cd.elf"],
+        ["rpi_firmware/boot/start4db.elf", "/start4db.elf"],
+        ["rpi_firmware/boot/start4x.elf", "/start4x.elf"],
+        ["rpi_firmware/boot/start_cd.elf", "/start_cd.elf"],
+        ["rpi_firmware/boot/start_db.elf", "/start_db.elf"],
+        ["rpi_firmware/boot/start_x.elf", "/start_x.elf"],
+        ["rpi_firmware/boot/bootcode.bin", "/bootcode.bin"],
 
         ["kernel_image/arm64/rpi_64/boot", "/"],
         ["kernel_image/arm64/rpi_64/kernel.img", "/kernel8.img"],
@@ -1621,6 +1583,12 @@ def setup_build_targets(builditems, cmdline):
     if current_project.export_img_opi_zero3:
         export_opi_zero3(builditems, cmdline, appendPartitions)
 
+    if current_project.export_img_rpi_32 or current_project.export_img_rpi_64:
+        any_rpi(builditems)
+
+    if current_project.export_img_rpi_32:
+        export_rpi_32(builditems, cmdline, appendPartitions)
+
     if current_project.export_img_rpi_64:
         export_rpi_64(builditems, cmdline, appendPartitions)
 
@@ -1834,6 +1802,7 @@ def update_project_structure():
 
     init_devicetree("opi_zero3")
     init_devicetree("rpi_64")
+    init_devicetree("rpi_32")
 
 def load_project(path):
     global current_project
