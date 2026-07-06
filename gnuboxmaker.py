@@ -1264,7 +1264,9 @@ avoid_warnings=1
         "export": False,
 
         "items": [
-            ["rootfs directory x4", "."]
+            ["rootfs directory x4", "."],
+            ["kernel_image/arm64/rpi_64/kernel_modules", "/usr", RIGHTS_644_755],
+            ["kernel_image/arm64/rpi_5/kernel_modules", "/usr", RIGHTS_644_755]
         ]
     })
 
@@ -1324,9 +1326,7 @@ avoid_warnings=1
         "items": items,
 
         "directories": [
-            ["/rpi_64", [0, 0, "0000"]],
-            ["kernel_image/arm64/rpi_64/kernel_modules", "/usr", RIGHTS_644_755],
-            ["kernel_image/arm64/rpi_5/kernel_modules", "/usr", RIGHTS_644_755]
+            ["/rpi_64", [0, 0, "0000"]]
         ]
     })
 
