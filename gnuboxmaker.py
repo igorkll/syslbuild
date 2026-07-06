@@ -1214,7 +1214,9 @@ def export_rpi_32(builditems, cmdline, appendPartitions):
 
         "items": [
             ["rootfs directory x4", "."],
-            ["kernel_image/arm64/rpi_64/kernel_modules", "/usr", RIGHTS_644_755]
+            ["kernel_image/arm64/rpi_64/kernel_modules", "/usr", RIGHTS_644_755],
+            ["kernel_image/arm64/rpi_kernel/kernel_modules", "/usr", RIGHTS_644_755],
+            ["kernel_image/arm64/rpi_kernel7/kernel_modules", "/usr", RIGHTS_644_755]
         ]
     })
 
@@ -1247,7 +1249,9 @@ def export_rpi_32(builditems, cmdline, appendPartitions):
         ["kernel_image/arm64/rpi_64/kernel_config", "/kernel8_config"],
         ["initramfs_rpi_64.img", "/initramfs8"],
 
-        ["kernel_image/arm64/rpi_5/boot", "/"],
+        ["kernel_image/arm64/rpi_5/boot", "/"], # тут некоторые dtb лежат
+        ["kernel_image/arm64/rpi_kernel/boot", "/"],
+        ["kernel_image/arm64/rpi_kernel7/boot", "/"],
 
         ["files/cmdline_rpi_32.txt", "/cmdline.txt"],
         ["files/config_rpi_32.txt", "/config.txt"]
