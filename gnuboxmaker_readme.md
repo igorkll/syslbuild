@@ -96,7 +96,9 @@ alternatively, you can fork gnubox maker and then offer a pull request
 * resources/chroot - scripts executed inside a chroot in the system during the build process (not just a chroot, but a systemd-nspawn container) please note that at the end of each file you need to create an empty file or directory with the path "/.chrootend" otherwise the build will fail
 * resources/runshell.sh - the shell startup file. you can write a script directly in it if you use tty mode and you will just get console output, or you can run your application from it if you use wayland/x11
 * resources/preinit.sh - this script runs before the initialization system in the initramfs environment. at this point, the switch_root has not yet occurred and the real root is mounted in "/root"
-* resources/logo.png - the logo that will be used when uploading with splash enabled
+* resources/logo.png - the logo that will be used when bootloading with splash enabled
+* resources/logo_updating.png - the logo that will be used when updating with splash enabled
+* resources/startup.wav - the sound that will be used during the download. requires configuration with a special parameter in the project. turned off by default
 * output - the finished result of the build
 * .temp - temporary files used during the build process
 
