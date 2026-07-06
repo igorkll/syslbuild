@@ -56,6 +56,7 @@ recommended OS: Ubuntu 24.04 LTS (Noble Numbat)
 * raspberry pi 5/4/3 (i tested this on raspberry pi 5, but in theory the image created via raspberry pi 64 should work on 5/4/3)
 if the platform you need is not available in gnubox maker, you can use syslbuild (a lower-level tool for creating embedded linux builds) where you can customize the build for any hardware you are interested in and do anything with the system  
 alternatively, you can fork gnubox maker and then offer a pull request  
+* 32 bit arm and rpi_32 NOT SUPPORTED IN THE MOMENT
 
 ## projects used
 * syslbuild: https://github.com/igorkll/syslbuild
