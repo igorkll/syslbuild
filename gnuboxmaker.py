@@ -440,8 +440,6 @@ def setup_build_debian(builditems):
     if current_project.integrate_bluetooth:
         include.append("bluez")
         include.append("bluetooth")
-        if current_project.integrate_audio:
-            include.append("pulseaudio-module-bluetooth")
 
     if current_project.integrate_firmwares:
         include.append("firmware-linux")
