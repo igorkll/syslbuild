@@ -1404,7 +1404,9 @@ def export_rpi_64(builditems, cmdline, appendPartitions):
         "items": [
             ["rootfs directory x4", "."],
             ["kernel_image/arm64/rpi_64/kernel_modules", "/usr", RIGHTS_644_755],
-            ["kernel_image/arm64/rpi_5/kernel_modules", "/usr", RIGHTS_644_755]
+            ["kernel_image/arm64/rpi_5/kernel_modules", "/usr", RIGHTS_644_755],
+            ["rpi_wireless_firmware/debian/config/brcm80211/brcm", "/lib/firmware/brcm", RIGHTS_644_755],
+            ["rpi_wireless_firmware/debian/config/brcm80211/cypress", "/lib/firmware/cypress", RIGHTS_644_755]
         ]
     })
 

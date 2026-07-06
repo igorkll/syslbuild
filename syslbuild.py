@@ -977,6 +977,7 @@ def buildDirectory(item):
 
     if "items" in item:
         rawItemsProcess(item["items"], buildDirectoryPath)
+        make_relative_symlinks(buildDirectoryPath)
 
     if "move_after_items" in item:
         for move in item["move_after_items"]:
