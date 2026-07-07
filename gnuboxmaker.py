@@ -254,8 +254,21 @@ path_resources = None
 path_temp_syslbuild = None
 path_temp_syslbuild_file = None
 
+def get_kernel_path(architecture, filtername):
+    if architecture == "amd64" or architecture == "i386":
+        return f"gnuboxmaker/kernel_build/{architecture}"
+    
+    return f"gnuboxmaker/kernel_build/{architecture}/{filtername}"
+
 def request_kernel(builditems, architecture, filtername):
-    cmd = f"cd {path_temp_syslbuild!r} && {sys.executable!r} {os.path.abspath('syslbuild.py')!r} --filters {filtername} --arch {architecture} {path_temp_syslbuild_file!r}"
+    working_dir = os.path.dirname(os.path.abspath(__file__))
+
+    if os.path.isdir(os.path.join(working_dir, get_kernel_path(architecture, filtername))):
+        return
+
+    kernel_build_dir = "gnuboxmaker/kernel_build"
+    
+    cmd = f"cd {kernel_build_dir!r} && {sys.executable!r} {os.path.abspath('syslbuild.py')!r} --filters {filtername} --arch {architecture} kernel_build.json"
 
     builditems.insert(0, {
         "type": "execute-commands",
@@ -278,19 +291,18 @@ def setup_build_architectures(builditems, architectures):
     if current_project.export_arm64:
         architectures.append("arm64")
         
-        if current_project.opi_zero3:
+        if current_project.export_img_opi_zero3:
             request_kernel(builditems, "arm64", "opi_zero3")
 
-        if current_project.rpi_64:
+        if current_project.export_img_rpi_64:
             request_kernel(builditems, "arm64", "rpi_64")
+            request_kernel(builditems, "arm64", "rpi_5")
 
     if current_project.export_arm:
         architectures.append("armhf")
 
-        if current_project.rpi_32:
+        if current_project.export_img_rpi_32:
             request_kernel(builditems, "armhf", "rpi_kernel")
-
-        if current_project.rpi_32:
             request_kernel(builditems, "armhf", "rpi_kernel7")
 
 def gen_default_first_chroot_script():
