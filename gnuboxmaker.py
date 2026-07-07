@@ -192,7 +192,9 @@ def show_error(err):
         messagebox.showwarning("Error", err)
 
 def deleteAny(path):
-    if os.path.isdir(path):
+    if os.path.islink(path):
+        os.remove(path)
+    elif os.path.isdir(path):
         shutil.rmtree(path)
     elif os.path.exists(path):
         os.remove(path)
@@ -273,6 +275,8 @@ def request_kernel(builditems, architecture, filtername):
     builditems.insert(0, {
         "type": "execute-commands",
         "name": f"request_kernel_{filtername}",
+
+        "working_dir": working_dir,
 
         "commands": [
             cmd
@@ -950,9 +954,18 @@ def copy_bins(name, output_name=None):
     deleteAny(output_path)
     buildExecute(["cp", "-a", os.path.join("gnuboxmaker", name) + "/.", output_path])
 
+def symlink_bins(name, output_name=None):
+    if output_name is None:
+        output_name = name
+    output_path = os.path.join(path_temp_syslbuild, output_name)
+    deleteAny(output_path)
+
+    source_path = os.path.abspath(os.path.join("gnuboxmaker", name))
+    os.symlink(source_path, output_path)
+
 def setup_write_bins(builditems):
-    copy_bins("kernel_build/output", "kernel_image")
-    copy_bins("blobs")
+    symlink_bins("kernel_build/output", "kernel_image")
+    symlink_bins("blobs")
 
     # ---------------------- x86_64
     items = [

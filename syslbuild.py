@@ -1963,7 +1963,9 @@ def gitcloneBuild(item):
 
 def executeCommands(item):
     commands = item.get("commands", [])
-    if "source" in item:
+    if "working_dir" in item:
+        doCommands(item["working_dir"], commands)
+    elif "source" in item:
         doCommands(cloneBuildItem(item["source"], item), commands)
     else:
         doCommands(".", commands)

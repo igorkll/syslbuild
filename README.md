@@ -347,6 +347,20 @@ these changes to the kernel config are applied automatically when building the k
             ],
         },
 
+        // use custom pwd
+        {
+            "type": "execute-commands",
+            "name": "any unique name",
+
+            "working_dir": "any path",
+
+            "commands": [
+                "any shell command",
+                "any shell command 2"
+            ],
+        },
+
+
         // ----------------
 
         {
