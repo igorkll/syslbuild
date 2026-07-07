@@ -71,7 +71,7 @@ SIZE_UNITS = {
 
 DD_BS = "4M"
 
-VERSION = [1, 6, 3]
+VERSION = [1, 6, 4]
 
 def formatVersion(version):
     return '.'.join(str(n) for n in version)
