@@ -1491,7 +1491,7 @@ def modifyKernelConfig(item, kernel_sources, ARCH_STR, CROSS_COMPILE_STR):
 def additionalExportProcess(export_from, additional_export_list):
     for additional_export_item in additional_export_list:
         object_path = pathConcat(export_from, additional_export_item[0])
-        copyItemFiles(object_path, getCustomItemPath(additional_export_item[1], additional_export_item[2]))
+        copyItemFiles(object_path, getCustomItemPath(additional_export_item[1], additional_export_item[2]), None, False)
 
 def buildKernel(item):
     if "kernel_source_url" in item:
@@ -1542,7 +1542,7 @@ def buildKernel(item):
     if "result_config_name" in item:
         buildLog(f"exporting result kernel config...")
         export_path = getItemPath(item, "result_config_name", "result_config_export")
-        copyItemFiles(kernel_config_path, export_path)
+        copyItemFiles(kernel_config_path, export_path, None, False)
 
     additional_make_str = ""
     if "additional_make_str" in item:
@@ -1553,11 +1553,11 @@ def buildKernel(item):
     kernel_output_filename = item.get("kernel_output_file", "bzImage")
     kernel_output_file = pathConcat(kernel_sources, "arch", kernelArchitectures[architecture], "boot", kernel_output_filename)
     if os.path.isfile(kernel_output_file):
-        copyItemFiles(kernel_output_file, getItemPath(item))
+        copyItemFiles(kernel_output_file, getItemPath(item), None, False)
     else:
         kernel_output_file = pathConcat(kernel_sources, kernel_output_filename)
         if os.path.isfile(kernel_output_file):
-            copyItemFiles(kernel_output_file, getItemPath(item))
+            copyItemFiles(kernel_output_file, getItemPath(item), None, False)
         else:
             buildLog(f"ERROR: failed to find \"{kernel_output_filename}\" kernel output file")
             sys.exit(1)
@@ -1754,7 +1754,7 @@ def debianExportInitramfs(item):
     exportInitramfsPath = getItemPath(item)
     for initramfsPath in initramfsPaths:
         if os.path.isfile(initramfsPath):
-            copyItemFiles(initramfsPath, exportInitramfsPath, DEFAULT_RIGHTS_0755)
+            copyItemFiles(initramfsPath, exportInitramfsPath, DEFAULT_RIGHTS_0755, False)
             break
 
 def cloneBuildItem(fromItem, newItem):
