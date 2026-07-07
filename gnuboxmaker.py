@@ -254,18 +254,44 @@ path_resources = None
 path_temp_syslbuild = None
 path_temp_syslbuild_file = None
 
-def setup_build_architectures(architectures):
+def request_kernel(builditems, architecture, filtername):
+    cmd = f"cd {path_temp_syslbuild!r} && {sys.executable!r} {os.path.abspath('syslbuild.py')!r} --filters {filtername} --arch {architecture} {path_temp_syslbuild_file!r}"
+
+    builditems.insert(0, {
+        "type": "execute-commands",
+        "name": f"request_kernel_{filtername}",
+
+        "commands": [
+            cmd
+        ]
+    })
+
+def setup_build_architectures(builditems, architectures):
     if current_project.export_x86_64:
         architectures.append("amd64")
+        request_kernel(builditems, "amd64", "x86")
 
     if current_project.export_x86:
         architectures.append("i386")
+        request_kernel(builditems, "i386", "x86")
 
     if current_project.export_arm64:
         architectures.append("arm64")
+        
+        if current_project.opi_zero3:
+            request_kernel(builditems, "arm64", "opi_zero3")
+
+        if current_project.rpi_64:
+            request_kernel(builditems, "arm64", "rpi_64")
 
     if current_project.export_arm:
         architectures.append("armhf")
+
+        if current_project.rpi_32:
+            request_kernel(builditems, "armhf", "rpi_kernel")
+
+        if current_project.rpi_32:
+            request_kernel(builditems, "armhf", "rpi_kernel7")
 
 def gen_default_first_chroot_script():
     if current_project.session_mode == "wayland" or current_project.session_mode == "x11":
@@ -911,18 +937,6 @@ def copy_bins(name, output_name=None):
     output_path = os.path.join(path_temp_syslbuild, output_name)
     deleteAny(output_path)
     buildExecute(["cp", "-a", os.path.join("gnuboxmaker", name) + "/.", output_path])
-
-def request_kernel(builditems, filtername):
-    cmd = f"cd {path_temp_syslbuild!r} && {sys.executable!r} {os.path.abspath('syslbuild.py')!r} --filters {filtername!r} --arch ALL {path_temp_syslbuild_file!r}"
-
-    builditems.insert(0, {
-        "type": "execute-commands",
-        "name": f"request_kernel_{filtername}",
-
-        "commands": [
-            cmd
-        ]
-    })
 
 def setup_write_bins(builditems):
     copy_bins("kernel_build/output", "kernel_image")
@@ -1873,7 +1887,7 @@ def generate_syslbuild_project():
     deleteAny(os.path.join(path_temp_syslbuild, "kernel_image"))
     deleteAny(os.path.join(path_temp_syslbuild, "blobs"))
     
-    setup_build_architectures(architectures)
+    setup_build_architectures(builditems, architectures)
     setup_download(builditems)
     setup_build_base(builditems)
     setup_build_targets(builditems, cmdline)
