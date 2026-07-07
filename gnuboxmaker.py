@@ -912,6 +912,18 @@ def copy_bins(name, output_name=None):
     deleteAny(output_path)
     buildExecute(["cp", "-a", os.path.join("gnuboxmaker", name) + "/.", output_path])
 
+def request_kernel(builditems, filtername):
+    cmd = f"cd {path_temp_syslbuild!r} && {sys.executable!r} {os.path.abspath('syslbuild.py')!r} --filters {filtername!r} --arch ALL {path_temp_syslbuild_file!r}"
+
+    builditems.insert(0, {
+        "type": "execute-commands",
+        "name": f"request_kernel_{filtername}",
+
+        "commands": [
+            cmd
+        ]
+    })
+
 def setup_write_bins(builditems):
     copy_bins("kernel_build/output", "kernel_image")
     copy_bins("blobs")
