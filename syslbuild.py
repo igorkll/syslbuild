@@ -397,10 +397,39 @@ def buildRawExecute(cmd, checkValid=True, cwd=None, envmod=None):
 
     return "\n".join(output_lines)
 
+def buildRawExecuteLiveOutput(cmd, checkValid=True, cwd=None, envmod=None):
+    if cwd is not None:
+        buildLog(f"Execute raw command from directory ({cwd}): {cmd}")
+    else:
+        buildLog(f"Execute raw command: {cmd}")
+
+    env = None
+    if envmod:
+        env = os.environ.copy()
+        env.update(envmod)
+
+    process = subprocess.Popen(
+        cmd,
+        shell=True,
+        stdout=None,
+        stderr=None,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        cwd=cwd,
+        env=env
+    )
+
+    returncode = process.wait()
+
+    if returncode != 0 and checkValid:
+        buildLog("ERROR: failed to build")
+        sys.exit(1)
+
 def doCommands(cwd, commands=None):
     if commands:
         for command in commands:
-            buildRawExecute(command, True, cwd)
+            buildRawExecuteLiveOutput(command, True, cwd)
 
 def buildItemLog(item, comment=None, comment2=None, hideExport=False):
     if comment is None:
