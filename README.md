@@ -122,6 +122,11 @@ also, assembling a bootable img with an already installed system is also a separ
 * device-tree-compiler
 * bash
 * 7z
+* patch
+* rsync
+* cpio
+* initramfs-tools
+* diffutils
 
 ## python dependencies
 * json5
@@ -154,9 +159,15 @@ sudo apt install -y arch-install-scripts
 sudo apt install -y grub-efi-ia32-bin grub-common
 sudo apt install -y device-tree-compiler
 sudo apt install -y 7zip 7zip-rar
+sudo apt install -y patch
+sudo apt install -y bc bison flex libssl-dev libelf-dev
+sudo apt install -y rsync cpio initramfs-tools diffutils
 
 sudo pip install json5 --break-system-packages
 sudo pip install asteval --break-system-packages
+sudo pip install favicon --break-system-packages
+sudo pip install requests --break-system-packages
+sudo pip install Pillow --break-system-packages
 ```
 
 ## docs

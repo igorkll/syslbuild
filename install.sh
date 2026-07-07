@@ -30,6 +30,9 @@ apt install -y arch-install-scripts
 apt install -y grub-efi-ia32-bin grub-common
 apt install -y device-tree-compiler
 apt install -y 7zip 7zip-rar
+apt install -y patch
+apt install -y bc bison flex libssl-dev libelf-dev
+apt install -y rsync cpio initramfs-tools diffutils
 
 echo "INSTALLER: install python packages"
 pip install json5 --break-system-packages
