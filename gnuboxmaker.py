@@ -569,8 +569,10 @@ def setup_download(builditems):
             "name": name,
             "export": False,
 
-            "git_url": f"https://github.com/{github_user}/{name}",
-            "git_checkout": version
+            "a": 3,
+
+            "git_url": f"https://github.com/{github_user}/{name}"# ,
+            # "git_checkout": version
         })
 
     def addDownloadRelease(reponame, version, filename):
@@ -854,11 +856,13 @@ def setup_write_files():
     systemd_config = os.path.join(path_temp_syslbuild, "files", "systemd_config")
     user_files = os.path.join(path_temp_syslbuild, "files", "user_files")
     devicetree = os.path.join(path_temp_syslbuild, "files", "devicetree")
+    user_initramfs = os.path.join(path_temp_syslbuild, "files", "user_initramfs")
 
     os.makedirs(etc_config, exist_ok=True)
     os.makedirs(systemd_config, exist_ok=True)
     os.makedirs(user_files, exist_ok=True)
     os.makedirs(devicetree, exist_ok=True)
+    os.makedirs(user_initramfs, exist_ok=True)
 
     writeText(os.path.join(systemd_config, "logind.conf"), f"""[Login]
 NAutoVTs=0
@@ -927,6 +931,7 @@ Storage=none""")
 
     copy_files(os.path.join(path_resources, "files"), user_files)
     copy_files(os.path.join(path_resources, "devicetree"), devicetree)
+    copy_files(os.path.join(path_resources, "initramfs"), user_initramfs)
 
     for platform, path in default_devicetree_overlays.items():
         copy_files(path, os.path.join(devicetree, platform))
@@ -1121,7 +1126,8 @@ def setup_build_base(builditems):
 
     directories = [
         ["/bootmnt", [0, 0, "0755"]],
-        ["/usr/lib/firmware", [0, 0, "0755"]]
+        ["/usr/lib/firmware", [0, 0, "0755"]],
+        ["/user_initramfs", [0, 0, "0755"]]
     ]
 
     items = [
@@ -1139,6 +1145,7 @@ def setup_build_base(builditems):
         ["files/system_init_hook.sh", "/etc/initramfs-tools/hooks/system_init_hook.sh", [0, 0, "0755"]],
 
         ["files/user_files", "/", [0, 0, "0755"]],
+        ["files/user_initramfs", "/user_initramfs", [0, 0, "0755"]],
     ]
 
     if current_project.allow_updatescript and current_project.separate_data_partition:
@@ -2015,6 +2022,7 @@ def update_project_structure():
 
     os.makedirs(os.path.join(path_resources, "chroot"), exist_ok=True)
     os.makedirs(os.path.join(path_resources, "files"), exist_ok=True)
+    os.makedirs(os.path.join(path_resources, "initramfs"), exist_ok=True)
 
     runshell_path = os.path.join(path_resources, "runshell.sh")
     if not os.path.isfile(runshell_path):
