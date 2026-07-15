@@ -81,7 +81,7 @@
   "integrate_network_timesync": true,
   "integrate_network_wifi": true,
   "integrate_audio": true,
-  "export_x86_64": true,
+  "export_x86_64": false,
   "export_x86": false,
   "export_arm64": true,
   "export_arm": false,
