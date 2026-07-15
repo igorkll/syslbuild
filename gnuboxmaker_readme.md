@@ -45,9 +45,9 @@ recommended OS: Ubuntu 24.04 LTS (Noble Numbat)
 * HDMI audio does not work on orange pi zero 3 (it works on raspberry pi 64)
 * "screen idle time" does not work on wayland
 * x11 mode does not work on Raspberry pi 64
-* startup sound doesn't work
 * wifi is not working on orange pi zero 3
 * gpu is not working on orange pi zero 3
+* 32 bit arm and rpi_32 NOT SUPPORTED IN THE MOMENT
 
 ## supported platforms
 * x86_64 (BIOS, UEFI)
