@@ -2,7 +2,7 @@
   "gnubox_version": [
     1,
     6,
-    4
+    5
   ],
   "distro": "debian",
   "user_packages": [
@@ -50,6 +50,8 @@
   "splash_mode": "contain",
   "splash_scale": 0.7,
   "use_separate_splash_for_update": true,
+  "timezone": "UTC",
+  "rtc_mode": "UTC",
   "root_expand": true,
   "root_readonly": false,
   "allow_updatescript": false,
