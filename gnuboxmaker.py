@@ -426,6 +426,8 @@ dns=systemd-resolved
 EOF
 """
 
+    last_setup += "\n\ntouch /.chrootend"
+
     return last_setup
 
 def setup_chroot_script():
@@ -455,7 +457,7 @@ def setup_chroot_script():
 
     scripts.append([f"files/fix.sh", False, False])
 
-    scripts.append(f"chroot/last_setup.sh")
+    scripts.append([f"chroot/last_setup.sh", False, False])
     with open(os.path.join(chroot_scripts_directory, "last_setup.sh"), "w") as f:
         f.write(gen_last_non_systemd_script())
 
