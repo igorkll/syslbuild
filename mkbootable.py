@@ -337,7 +337,7 @@ def generate_project_config():
         "session_user": "root" if args.root_privileges else "user",
         "session_mode": session_type,
         "minlogotime": 10,
-        "cmdline": "clear noCursorBlink vt.global_cursor_default=0",
+        "cmdline": "clear noCursorBlink vt.global_cursor_default=0 systemd.show_status=false",
         "sudo_privileges": args.sudo_privileges
     }
 
