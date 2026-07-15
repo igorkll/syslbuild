@@ -593,7 +593,7 @@ def setup_download(builditems):
             "url": f"https://github.com/{github_user}/{reponame}/releases/download/{version}/{filename}",
         })
 
-    addDownload("custom-debian-initramfs-init", "1.6.2")
+    addDownload("custom-debian-initramfs-init", "1.6.3")
     addDownload("linux-embedded-setup-scripts", "0.2")
 
     if current_project.integrate_liamounts:
