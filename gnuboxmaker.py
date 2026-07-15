@@ -107,6 +107,7 @@ class Project:
     integrate_firmwares: bool = True
     integrate_bluetooth: bool = True
     integrate_network: bool = True
+    integrate_network_resolved: bool = True
     integrate_network_timesync: bool = True
     integrate_network_wifi: bool = True
     integrate_audio: bool = True
@@ -393,6 +394,16 @@ rm -rf /liamounts"""
         aaa_setup += "\n" + f"""echo "user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/user-nopasswd
 chmod 440 /etc/sudoers.d/user-nopasswd"""
 
+    if current_project.integrate_network_resolved:
+        aaa_setup += "\n" + f"""rm -f /etc/resolv.conf
+ln -s /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+
+cat > /etc/NetworkManager/conf.d/90-dns-systemd-resolved.conf <<'EOF'
+[main]
+dns=systemd-resolved
+EOF
+"""
+
     aaa_setup += "\n\ntouch /.chrootend"
     return aaa_setup
 
@@ -444,7 +455,7 @@ def setup_build_debian(builditems):
         "initramfs-tools",
         "systemd",
         "systemd-sysv",
-        "systemd-resolved",
+
         "dbus",
         "dbus-user-session",
 
@@ -500,6 +511,9 @@ def setup_build_debian(builditems):
         include.append("network-manager")
         include.append("iproute2")
         include.append("ca-certificates")
+
+        if current_project.integrate_network_resolved:
+            include.append("systemd-resolved")
 
         if current_project.integrate_network_timesync:
             include.append("systemd-timesyncd")

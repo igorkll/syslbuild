@@ -13,6 +13,7 @@ import re
 import hashlib
 import urllib.parse
 import platform
+import time
 
 path_output = "output"
 path_temp = ".temp"
@@ -1710,8 +1711,8 @@ def rawCrossChroot(chrootDirectory, chrootCommand, useSystemd=False, manualValid
         fix_systemd_container_host_files_copy = item.get("fix_systemd_container_host_files_copy", False)
         if fix_systemd_container_host_files_copy:
             for localpath in fix_systemd_container_host_files_copy_list:
-                old_path = os.path.join(chrootDirectory, localpath)
-                new_path = os.path.join(chrootDirectory, localpath + "_")
+                old_path = pathConcat(chrootDirectory, localpath)
+                new_path = pathConcat(chrootDirectory, localpath + "_")
                 buildLog(f"fix_systemd_container_host_files_copy (start): {old_path} > {new_path}")
                 copyItemFiles(old_path, new_path)
 
@@ -1736,12 +1737,14 @@ wait $CONTAINER_PID""", checkValid)
 
         if fix_systemd_container_host_files_copy:
             for localpath in fix_systemd_container_host_files_copy_list:
-                old_path = os.path.join(chrootDirectory, localpath + "_")
-                new_path = os.path.join(chrootDirectory, localpath)
+                old_path = pathConcat(chrootDirectory, localpath + "_")
+                new_path = pathConcat(chrootDirectory, localpath)
                 buildLog(f"fix_systemd_container_host_files_copy (end): {old_path} > {new_path}")
                 deleteAny(new_path)
                 copyItemFiles(old_path, new_path)
                 deleteAny(old_path)
+
+        time.sleep(60)
     else:
         buildExecute(["chroot", chrootDirectory] + chrootCommand, checkValid)
 
