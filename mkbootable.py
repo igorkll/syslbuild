@@ -198,6 +198,9 @@ elif args.web:
     session_type = "wayland"
     default_logo = get_web_logo()
     run_features = get_web_run_features()
+else:
+    build_log("specify the required application parameter")
+    sys.exit(0)
 
 if args.syslbuild:
     syslbuild_path = args.syslbuild
