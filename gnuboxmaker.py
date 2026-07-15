@@ -107,6 +107,7 @@ class Project:
     integrate_firmwares: bool = True
     integrate_bluetooth: bool = True
     integrate_network: bool = True
+    integrate_network_timesync: bool = True
     integrate_network_wifi: bool = True
     integrate_audio: bool = True
 
@@ -485,26 +486,36 @@ def setup_build_debian(builditems):
         else:
             include.append("libasound2")
 
+    wifiless_packages = False
+
     if current_project.integrate_bluetooth:
+        wifiless_packages = True
         include.append("bluez")
         include.append("bluetooth")
 
     if current_project.integrate_firmwares:
         include.append("firmware-linux")
-        if (current_project.integrate_network and current_project.integrate_network_wifi) or current_project.integrate_bluetooth:
-            include.append("firmware-realtek")
-            include.append("firmware-brcm80211")
 
     if current_project.integrate_network:
         include.append("network-manager")
-        include.append("systemd-timesyncd")
         include.append("iproute2")
         include.append("ca-certificates")
 
+        if current_project.integrate_network_timesync:
+            include.append("systemd-timesyncd")
+
         if current_project.integrate_network_wifi:
-            include.append("rfkill")
+            wifiless_packages = True
             include.append("wpasupplicant")
-            include.append("wireless-regdb")
+
+    if wifiless_packages:
+        if current_project.integrate_firmwares:
+            include.append("firmware-realtek")
+            include.append("firmware-brcm80211")
+        
+        include.append("rfkill")
+        include.append("wireless-regdb")
+        include.append("iw")
 
     if current_project.boot_splash:
         include.append("plymouth") # install basic plymouth files. The part will later be replaced by embedded plymouth.
@@ -569,10 +580,8 @@ def setup_download(builditems):
             "name": name,
             "export": False,
 
-            "a": 3,
-
-            "git_url": f"https://github.com/{github_user}/{name}"# ,
-            # "git_checkout": version
+            "git_url": f"https://github.com/{github_user}/{name}",
+            "git_checkout": version
         })
 
     def addDownloadRelease(reponame, version, filename):
@@ -584,7 +593,7 @@ def setup_download(builditems):
             "url": f"https://github.com/{github_user}/{reponame}/releases/download/{version}/{filename}",
         })
 
-    addDownload("custom-debian-initramfs-init", "1.5.10")
+    addDownload("custom-debian-initramfs-init", "1.6.1")
     addDownload("linux-embedded-setup-scripts", "0.2")
 
     if current_project.integrate_liamounts:
@@ -1865,7 +1874,7 @@ def generate_syslbuild_project():
     cmdline = f"{"ro" if current_project.root_readonly else "rw"} rootwait=60 systemd.getty_auto=0 selinux=0 plymouth.ignore-serial-consoles mount_bootmnt {cmdline_console} preinit=/root/system_preinit.sh {current_project.cmdline}"
 
     if current_project.boot_sound == "init":
-        cmdline += " startupsound_afterMountRoot=/startup.wav"
+        cmdline += " startupsound_afterModulesLoading=/startup.wav"
     
     if current_project.boot_sound == "logo" and current_project.boot_splash:
         cmdline += " startupsound_afterLogoShow=/startup.wav"
