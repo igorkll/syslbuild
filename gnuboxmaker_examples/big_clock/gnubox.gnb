@@ -72,7 +72,7 @@
   "cmdline": "",
   "exclude_cmdline": [],
   "sudo_privileges": true,
-  "integrate_liamounts": false,
+  "integrate_liamounts": true,
   "integrate_super_kiosk_browser": false,
   "integrate_xwayland": true,
   "integrate_firmwares": true,
