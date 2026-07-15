@@ -78,6 +78,7 @@
   "integrate_firmwares": true,
   "integrate_bluetooth": true,
   "integrate_network": true,
+  "integrate_network_resolved": true,
   "integrate_network_timesync": true,
   "integrate_network_wifi": true,
   "integrate_audio": true,
