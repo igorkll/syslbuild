@@ -8,8 +8,8 @@
     <div class="clock-container">
         <div class="clock" id="time"></div>
         <div class="button-container">
-            <button onclick="execSync('shutdown --no-wall -r now')">reboot device</button>
-            <button onclick="execSync('shutdown --no-wall now')">shutdown device</button>
+            <button onclick="execSync('sudo shutdown --no-wall -r now')">reboot device</button>
+            <button onclick="execSync('sudo shutdown --no-wall now')">shutdown device</button>
             <button onclick="exec('weston-terminal')">open terminal</button>
             <button onclick="ipcRenderer.send('quit-app');">close application</button>
         </div>

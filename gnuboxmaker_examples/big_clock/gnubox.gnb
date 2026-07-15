@@ -2,7 +2,7 @@
   "gnubox_version": [
     1,
     6,
-    4
+    5
   ],
   "distro": "debian",
   "user_packages": [
@@ -78,9 +78,10 @@
   "integrate_firmwares": true,
   "integrate_bluetooth": true,
   "integrate_network": true,
+  "integrate_network_timesync": true,
   "integrate_network_wifi": true,
   "integrate_audio": true,
-  "export_x86_64": false,
+  "export_x86_64": true,
   "export_x86": false,
   "export_arm64": true,
   "export_arm": false,
