@@ -73,6 +73,9 @@ class Project:
     splash_scale: float = 0.7
     use_separate_splash_for_update: bool = True
 
+    timezone: str = "UTC" # example: Europe/Moscow
+    rtc_mode: str = "UTC" # UTC / LOCAL
+
     root_expand: bool = True
     root_readonly: bool = False
     allow_updatescript: bool = False
@@ -321,12 +324,12 @@ def gen_default_first_chroot_script():
 
 # ------------
 
-ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+ln -sf /usr/share/zoneinfo/{current_project.timezone} /etc/localtime
 
 cat > /etc/adjtime <<'EOF'
 0.0 0 0.0
 0
-UTC
+{current_project.rtc_mode}
 EOF
 
 # ------------
@@ -394,7 +397,7 @@ rm -rf /liamounts"""
         aaa_setup += "\n" + f"""echo "user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/user-nopasswd
 chmod 440 /etc/sudoers.d/user-nopasswd"""
 
-    if current_project.integrate_network_resolved:
+    if current_project.integrate_network and current_project.integrate_network_resolved:
         aaa_setup += "\n" + f"""rm -f /etc/resolv.conf
 ln -s /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 
