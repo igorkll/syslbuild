@@ -397,16 +397,6 @@ rm -rf /liamounts"""
         aaa_setup += "\n" + f"""echo "user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/user-nopasswd
 chmod 440 /etc/sudoers.d/user-nopasswd"""
 
-    if current_project.integrate_network and current_project.integrate_network_resolved:
-        aaa_setup += "\n" + f"""rm -f /etc/resolv.conf
-ln -s /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
-
-cat > /etc/NetworkManager/conf.d/90-dns-systemd-resolved.conf <<'EOF'
-[main]
-dns=systemd-resolved
-EOF
-"""
-
     aaa_setup += "\n\ntouch /.chrootend"
     return aaa_setup
 
@@ -422,6 +412,21 @@ def gen_default_last_chroot_script():
     zzz_setup += "\n\ntouch /.chrootend"
 
     return zzz_setup
+
+def gen_last_non_systemd_script():
+    last_setup = "#!/bin/bash\n"
+
+    if current_project.integrate_network and current_project.integrate_network_resolved:
+        last_setup += "\n" + f"""rm -f /etc/resolv.conf
+ln -s /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+
+cat > /etc/NetworkManager/conf.d/90-dns-systemd-resolved.conf <<'EOF'
+[main]
+dns=systemd-resolved
+EOF
+"""
+
+    return last_setup
 
 def setup_chroot_script():
     chroot_project_directory = os.path.join(path_resources, "chroot")
@@ -449,6 +454,11 @@ def setup_chroot_script():
             )
 
     scripts.append([f"files/fix.sh", False, False])
+
+    scripts.append(f"chroot/last_setup.sh")
+    with open(os.path.join(chroot_scripts_directory, "last_setup.sh"), "w") as f:
+        f.write(gen_last_non_systemd_script())
+
     scripts.append([f"files/cleanup_after_firstboot.sh", False, False])
 
     return scripts
