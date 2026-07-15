@@ -1738,7 +1738,13 @@ wait $CONTAINER_PID""", checkValid)
     return True
 
 def rawUpdateInitramfs(path, kernel_version):
+    kernel_version_path = os.path.join(path, ".kernel_version")
+    with open(kernel_version_path, "w") as f:
+        f.write(kernel_version)
+    
     rawCrossChroot(path, ["update-initramfs", "-c", "-k", kernel_version])
+
+    os.remove(kernel_version_path)
 
 def getKernelVersion(item, rootfsPath):
     if "kernel_version" in item:
