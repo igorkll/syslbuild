@@ -1312,6 +1312,7 @@ these changes to the kernel config are applied automatically when building the k
             "export": false,
 
             "use_systemd_container": true,
+            "fix_systemd_container_host_files_copy": true,
 
             // default: false
             // I highly recommend enabling this for "use_systemd_container" because if your script fails, the build will continue as if there were no errors.

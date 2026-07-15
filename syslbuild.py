@@ -250,7 +250,9 @@ def deleteFile(path):
         os.remove(path)
 
 def deleteAny(path):
-    if os.path.isdir(path):
+    if os.path.islink(path):
+        os.remove(path)
+    elif os.path.isdir(path):
         shutil.rmtree(path)
     elif os.path.exists(path):
         os.remove(path)
@@ -1655,7 +1657,10 @@ def checkQemuStaticNeed():
     buildLog(f"the host architecture ({hostArchitecture}) is NOT compatible with the target architecture ({architecture}), we use qemu-static")
     return True
 
-def rawCrossChroot(chrootDirectory, chrootCommand, useSystemd=False, manualValidation=False):
+def rawCrossChroot(chrootDirectory, chrootCommand, useSystemd=False, manualValidation=False, item=None):
+    if item is None:
+        item = {}
+    
     if useSystemd:
         bindList = []
     else:
@@ -1695,8 +1700,20 @@ def rawCrossChroot(chrootDirectory, chrootCommand, useSystemd=False, manualValid
         else:
             buildLog(f"qemu-static should have been copied, but the file with that name is already in the chroot directory. i'm skipping it ({qemuStaticName})")
 
+    fix_systemd_container_host_files_copy_list = [
+        "/etc/localtime",
+        "/etc/resolv.conf"
+    ]
+
     checkValid = not manualValidation
     if useSystemd:
+        fix_systemd_container_host_files_copy = item.get("fix_systemd_container_host_files_copy", False)
+        if fix_systemd_container_host_files_copy:
+            for localpath in fix_systemd_container_host_files_copy_list:
+                old_path = os.path.join(chrootDirectory, localpath)
+                new_path = os.path.join(chrootDirectory, "_" + localpath + "_")
+                copyItemFiles(old_path, new_path)
+
         machineName = "smartchroot"
         buildRawExecute(f"""machinectl terminate {machineName}
 systemd-machine-id-setup --root="{chrootDirectory}"
@@ -1715,6 +1732,14 @@ sleep 2
 machinectl terminate {machineName}
 sleep 2
 wait $CONTAINER_PID""", checkValid)
+
+        if fix_systemd_container_host_files_copy:
+            for localpath in fix_systemd_container_host_files_copy_list:
+                old_path = os.path.join(chrootDirectory, "_" + localpath + "_")
+                new_path = os.path.join(chrootDirectory, localpath)
+                deleteAny(new_path)
+                copyItemFiles(old_path, new_path)
+                deleteAny(old_path)
     else:
         buildExecute(["chroot", chrootDirectory] + chrootCommand, checkValid)
 
@@ -1817,7 +1842,7 @@ def smartChroot(item):
 
         chroot_script_path = pathConcat(itemPath, ".syslbuild-smart-chroot.sh")
         copyItemFiles(findItem(scriptPath), chroot_script_path, DEFAULT_RIGHTS_0755)
-        if rawCrossChroot(itemPath, ["/.syslbuild-smart-chroot.sh"], use_systemd_container, manual_validation):
+        if rawCrossChroot(itemPath, ["/.syslbuild-smart-chroot.sh"], use_systemd_container, manual_validation, item):
             buildExecute("reset")
         else:
             buildLog(f"ERROR: with \"manual_validation\" enabled, the chroot script \"{scriptPath}\" did not create a file or directory on the path \"/.chrootend\"")

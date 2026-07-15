@@ -325,7 +325,7 @@ ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 cat > /etc/adjtime <<'EOF'
 0.0 0 0.0
 0
-LOCAL
+UTC
 EOF
 
 # ------------
@@ -1241,6 +1241,8 @@ def setup_build_base(builditems):
 
         "manual_validation": True,
         "use_systemd_container": True,
+        "fix_systemd_container_host_files_copy": True,
+        
         "source": "rootfs directory x2",
         "scripts": setup_chroot_script()
     })
