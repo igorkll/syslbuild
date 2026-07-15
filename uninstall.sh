@@ -4,6 +4,8 @@ if [ "$EUID" -ne 0 ]; then
   exec sudo "$0" "$@"
 fi
 
+cd ..
+
 echo "INSTALLER: delete syslbuild"
 rm -rf "/opt/syslbuild"
 
