@@ -41,7 +41,7 @@ fi
 echo "active chroot: $CHROOT_PATH"
 
 mkdir -p "$CHROOT_PATH/opt/syslbuild"
-mkdir -p "$CHROOT_PATH/opt/home"
+mkdir -p "$CHROOT_PATH/home"
 mount --bind /opt/syslbuild "$CHROOT_PATH/opt/syslbuild"
 mount --bind /home "$CHROOT_PATH/home"
 
