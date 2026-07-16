@@ -19,8 +19,6 @@ mmdebstrap --variant=minbase \
   "$CHROOT_PATH" \
   https://snapshot.debian.org/archive/debian/20260716T082409Z/
 
-
-
 ./active_chroot.sh
-chroot "$CHROOT_PATH" --chdir=/opt/syslbuild /opt/install_dependencies.sh
+chroot "$CHROOT_PATH" /opt/install_dependencies.sh
 ./deactive_chroot.sh
