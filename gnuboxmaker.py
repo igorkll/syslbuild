@@ -426,8 +426,6 @@ dns=systemd-resolved
 EOF
 """
 
-    last_setup += "\n\ntouch /.chrootend"
-
     return last_setup
 
 def setup_chroot_script():
