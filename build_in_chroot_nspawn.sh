@@ -35,7 +35,7 @@ machineName="buildchroot"
 machinectl terminate $machineName
 systemd-machine-id-setup --root="$CHROOT_PATH"
 
-systemd-nspawn --boot --capability=all --machine=$machineName --directory="$CHROOT_PATH" &
+systemd-nspawn --boot --property='DeviceAllow=char-* rwm' --property='DeviceAllow=block-* rwm' --capability=all --machine=$machineName --directory="$CHROOT_PATH" &
 CONTAINER_PID=$!
 
 sleep 20
