@@ -317,51 +317,6 @@ def isUserItem(itemName):
 
     return False
 
-def buildExecuteSimplePrint(cmd, checkValid=True, input_data=None, cwd=None, envmod=None):
-    if cwd is not None:
-        print(f"Execute command from directory ({cwd}): {cmd}")
-    else:
-        print(f"Execute command: {cmd}")
-
-    env=None
-    if envmod:
-        env = os.environ.copy()
-        env.update(envmod)
-    
-    process = subprocess.Popen(
-        cmd,
-        shell=False,
-        stdin=subprocess.PIPE,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        encoding="utf-8",
-        errors="replace",
-        bufsize=1,
-        cwd=cwd,
-        env=env
-    )
-
-    if process.stdin:
-        if input_data:
-            print(f"With input: {input_data}")
-            process.stdin.write(input_data)
-        process.stdin.close()
-
-    output_lines = []
-    for line in process.stdout:
-        print(line.rstrip(), True)
-        output_lines.append(line)
-
-    process.stdout.close()
-    returncode = process.wait()
-
-    if returncode != 0 and checkValid:
-        print("ERROR: failed to build")
-        sys.exit(1)
-
-    return "\n".join(output_lines)
-
 def buildExecute(cmd, checkValid=True, input_data=None, cwd=None, envmod=None):
     if cwd is not None:
         buildLog(f"Execute command from directory ({cwd}): {cmd}")
@@ -2701,7 +2656,16 @@ def start_build_in_chroot(json_path, all_args):
     chroot_directory = "/opt/syslbuild_chroot"
     if os.path.isfile(build_in_chroot_script_path) and os.path.isdir(chroot_directory):
         print(f"RUN BUILD IN CHROOT: {chroot_directory}")
-        buildExecuteSimplePrint([build_in_chroot_script_path, os.path.abspath(json_path)] + all_args)
+        print(f"ARGS: {all_args}")
+
+        cmdstr = f"{build_in_chroot_script_path} \"{os.path.abspath(json_path)}\" "
+
+        for arg in all_args:
+            cmdstr += f" \"{arg}\""
+
+        print(f"CMD: {cmdstr}")
+
+        # subprocess.run(cmdstr, shell=True)
 
         exit(0)
 
