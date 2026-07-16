@@ -22,12 +22,13 @@ done
 cat > "$CHROOT_PATH/build.sh" <<EOF
 #!/bin/bash
 
-cd project
+cd /project
 /opt/syslbuild/syslbuild.py "$PROJECT_NAME" --disable-chroot ${args[*]}
 
 EOF
 
 ./active_chroot.sh "$CHROOT_PATH"
+chmod +x "$CHROOT_PATH/build.sh"
 chroot "$CHROOT_PATH" /build.sh
 ./deactive_chroot.sh "$CHROOT_PATH"
 
