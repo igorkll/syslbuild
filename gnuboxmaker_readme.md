@@ -31,6 +31,7 @@ If you don't have enough gnubox maker features or you need a minimum image size,
 * the unpacked files can now be deleted
 ### supported host systems
 recommended OS: Ubuntu 24.04 LTS (Noble Numbat)  
+tested on OS: linux mint
 * debian
 * ubuntu
 * linux mint
