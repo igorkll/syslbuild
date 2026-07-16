@@ -40,6 +40,7 @@ systemd-nspawn --boot \
   --property='DeviceAllow=block-* rwm' \
   --property='DeviceAllow=/dev/loop-control rwm' \
   --property='DeviceAllow=/dev/loop* rwm' \
+  --property='DevicePolicy=auto' \
   --capability=all --machine=$machineName --directory="$CHROOT_PATH" &
 CONTAINER_PID=$!
 
