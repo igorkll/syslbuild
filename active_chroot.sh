@@ -6,6 +6,8 @@ fi
 
 CHROOT_PATH="/opt/syslbuild_chroot"
 
+echo "active chroot: $CHROOT_PATH"
+
 mkdir -p "$CHROOT_PATH/opt/syslbuild"
 
 mount --bind /opt/syslbuild "$CHROOT_PATH/opt/syslbuild"

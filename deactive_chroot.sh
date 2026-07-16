@@ -6,6 +6,8 @@ fi
 
 CHROOT_PATH="/opt/syslbuild_chroot"
 
+echo "deactive chroot: $CHROOT_PATH"
+
 umount "$CHROOT_PATH/opt/syslbuild"
 umount "$CHROOT_PATH/proc"
 umount "$CHROOT_PATH/dev"
