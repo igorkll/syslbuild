@@ -1747,7 +1747,7 @@ wait $CONTAINER_PID""", checkValid)
         deleteAny(qemuStaticPath)
 
     for bindPath in bindList:
-        buildRawExecute(f"umount \"{pathConcat(chrootDirectory, bindPath)}\"")
+        buildRawExecute(f"umount \"{pathConcat(chrootDirectory, bindPath)}\"", False)
 
     for makedDirectoryBindPath in makedDirectories:
         buildRawExecute(f"rm -rf \"{makedDirectoryBindPath}\"")
