@@ -27,7 +27,7 @@ cd /project
 
 EOF
 
-/opt/syslbuild/active_chroot.sh "$CHROOT_PATH"
+/opt/syslbuild/active_chroot.sh "$CHROOT_PATH" --disable-automounts
 chmod +x "$CHROOT_PATH/build.sh"
 
 machineName="buildchroot"
