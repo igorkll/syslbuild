@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [ "$EUID" -ne 0 ]; then
+  exec sudo "$0" "$@"
+fi
+
+CHROOT_PATH="/opt/syslbuild_chroot"
+
+echo "INSTALLER: make chroot env: $CHROOT_PATH"
+
+mkdir -p "$CHROOT_PATH"
+
+mmdebstrap --variant=minbase \
+  --aptopt=Acquire::Check-Valid-Until false \
+  --aptopt=Acquire::AllowInsecureRepositories true \
+  --aptopt=APT::Get::AllowUnauthenticated true \
+  bookworm \
+  "$CHROOT_PATH" \
+  https://snapshot.debian.org/archive/debian/20260716T082409Z/
+
+

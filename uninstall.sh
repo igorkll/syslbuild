@@ -4,7 +4,10 @@ if [ "$EUID" -ne 0 ]; then
   exec sudo "$0" "$@"
 fi
 
-cd ..
+if [ "$PWD" = "/opt/syslbuild" ]; then
+  cd ..
+  echo "INSTALLER: cd $(pwd)"
+fi
 
 echo "INSTALLER: delete syslbuild"
 rm -rf "/opt/syslbuild"
@@ -20,3 +23,5 @@ rm -f "/usr/share/applications/mkbootable.desktop"
 
 echo "INSTALLER: update-desktop-database"
 update-desktop-database
+
+./uninstall_chroot.sh
