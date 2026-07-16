@@ -441,7 +441,7 @@ def buildItemLog(item, comment=None, comment2=None, hideExport=False):
     if comment2 is None:
         comment2 = ""
     
-    buildLog(f"{comment}{item["__item_index"]}/{item["__items_count"]} {item["type"]} ({item["name"]}){" (export)" if (readBool(item, "export") and not hideExport) else ""}{comment2}")
+    buildLog(f"{comment}{item['__item_index']}/{item['__items_count']} {item['type']} ({item['name']}){' (export)' if (readBool(item, 'export') and not hideExport) else ''}{comment2}")
 
 def makeChmod(path, chmodList):
     for chmodAction in chmodList:
@@ -543,7 +543,7 @@ def buildDebian(item):
     cmd.append(f"--customize-hook=rm \"$1\"/etc/resolv.conf")
     if "hook-directory" in item:
         makeAllFilesExecutable(item["hook-directory"])
-        cmd.append(f"--hook-directory={item["hook-directory"]}")
+        cmd.append(f"--hook-directory={item['hook-directory']}")
     buildExecute(cmd)
 
     hostsFile = """127.0.0.1 localhost
@@ -682,7 +682,7 @@ def unpackInitramfs(item):
     initramfs = os.path.abspath(findItem(item["initramfs"]))
     folder = getItemFolder(item)
 
-    buildRawExecute(f"{item.get("decompressor", "cat")} \"{initramfs}\" | cpio -idmv", True, folder)
+    buildRawExecute(f"{item.get('decompressor', 'cat')} \"{initramfs}\" | cpio -idmv", True, folder)
 
 
 
@@ -1127,7 +1127,7 @@ def getGrubTarget(item, efi):
         target = defaultGrubTargets_bios.get(architecture)
 
     if target is None:
-        buildLog(f"ERROR: unknown grub target for {architecture} ({"efi" if efi else "bios"})")
+        buildLog(f"ERROR: unknown grub target for {architecture} ({'efi' if efi else 'bios'})")
         sys.exit(1)
 
     return target
@@ -1210,10 +1210,10 @@ def buildFullDiskImage(item):
     allocateFile(path, calcSize(item['size'], partitionsPaths))
 
     # make paritition table
-    partitionTable = f"label: {item["partitionTable"]}"
+    partitionTable = f"label: {item['partitionTable']}"
 
     if "partitionsStartSector" in item:
-        partitionTable += f"\nfirst-lba: {item["partitionsStartSector"]}"
+        partitionTable += f"\nfirst-lba: {item['partitionsStartSector']}"
 
     for i, partition in enumerate(item["partitions"]):
         partitionTable += f"\nsize={math.ceil(partitionsSizes[i] / 1024 / 1024)}MiB, type={getParititionType(item, partition[1])}"
@@ -1246,7 +1246,7 @@ def buildFullDiskImage(item):
         installBootloader(item, path, partitionsOffsets, resultSectorsize)
 
 def buildUnknown(item):
-    buildLog(f"ERROR: unknown build item type: {item["type"]}")
+    buildLog(f"ERROR: unknown build item type: {item['type']}")
     sys.exit(1)
 
 def buildFromDirectory(item):
@@ -1331,7 +1331,7 @@ def buildInitramfs(item):
     buildRawExecute(f"find . -print0 | cpio --null -ov --format=newc > \"{outputPath}\"", True, source)
 
     if "compressor" in item:
-        buildRawExecute(f"{item["compressor"]} < \"{outputPath}\" > \"{realOutputPath}\"", True)
+        buildRawExecute(f"{item['compressor']} < \"{outputPath}\" > \"{realOutputPath}\"", True)
 
 def get_file_extension(url):
     path = urllib.parse.urlparse(url).path
@@ -1909,7 +1909,7 @@ def singleboardBuild(item):
             f.write("LABEL linux\n")
             f.write(f"KERNEL /{kernelFileName}\n")
             if "bootloaderDtb" in item:
-                f.write(f"FDT /dtbs/{item["bootloaderDtb"]}\n")
+                f.write(f"FDT /dtbs/{item['bootloaderDtb']}\n")
             
             kernel_args = item.get("kernel_args", "")
             
@@ -1933,7 +1933,7 @@ def singleboardBuild(item):
                     active_overlays.append(f"/dtbs/overlay/{active_overlay}")
 
                 if len(active_overlays) > 0:
-                    f.write(f"FDTOVERLAYS {" ".join(active_overlays)}\n")
+                    f.write(f"FDTOVERLAYS {' '.join(active_overlays)}\n")
 
         # boot partition
         buildFilesystem({
@@ -2119,7 +2119,7 @@ def buildConfigureMake(item):
             env["LD"] += additional_args
         
         if not sysroot_gcc_disable_default:
-            default_flags += f" --{item.get("sysroot_field_name", "sysroot")}=\"{sysroot_path}\""
+            default_flags += f" --{item.get('sysroot_field_name', 'sysroot')}=\"{sysroot_path}\""
 
         if sysroot_gcc_env:
             env["SYSROOT"] = sysroot_path
@@ -2137,7 +2137,7 @@ def buildConfigureMake(item):
     if "prefix" in item:
         default_flags += " --prefix=\"" + item["prefix"] + "\""
 
-    cmd = f"{os.path.abspath(os.path.join(path, "configure"))} {default_flags} {" ".join(item.get("FLAGS", []))}"
+    cmd = f"{os.path.abspath(os.path.join(path, 'configure'))} {default_flags} {' '.join(item.get('FLAGS', []))}"
     buildRawExecute(cmd, True, build_temp, env)
 
     cmd = f"make -j$(nproc)"
@@ -2180,10 +2180,10 @@ def buildMake(item):
     env.update(item.get("env_change", []))
     deleteAllNones(env)
 
-    cmd = f"make -j$(nproc) {install_args_str} {args_str} {" ".join(item.get("make_args", []))}"
+    cmd = f"make -j$(nproc) {install_args_str} {args_str} {' '.join(item.get('make_args', []))}"
     buildRawExecute(cmd, True, path, env)
 
-    cmd = f"make install {install_args_str} {" ".join(item.get("make_install_args", []))}"
+    cmd = f"make install {install_args_str} {' '.join(item.get('make_install_args', []))}"
     buildRawExecute(cmd, True, path, env)
 
 buildActions = {
@@ -2457,7 +2457,7 @@ def showProjectInfo(projectData):
     buildLog(f"Project info:")
 
     if "min-syslbuild-version" in projectData:
-        buildLog(f"Minimal syslbuild: {formatVersion(projectData["min-syslbuild-version"])}")
+        buildLog(f"Minimal syslbuild: {formatVersion(projectData['min-syslbuild-version'])}")
     
     buildLog(";")
 
@@ -2614,7 +2614,7 @@ def buildProject(json_path):
             buildItemLog(item)
             namesExists.append(item["name"])
         else:
-            buildLog(f"ERROR: more than one builditem named {item["name"]}")
+            buildLog(f"ERROR: more than one builditem named {item['name']}")
             sys.exit(1)
     buildLog(";")
     
@@ -2710,7 +2710,7 @@ if __name__ == "__main__":
         projectData = json5.load(f)
         showProjectInfo(projectData)
         if not checkVersion(projectData):
-            buildLog(f"ERROR: the project requires at least the syslbuild {formatVersion(projectData["min-syslbuild-version"])} version. you have {formatVersion(VERSION)} installed")
+            buildLog(f"ERROR: the project requires at least the syslbuild {formatVersion(projectData['min-syslbuild-version'])} version. you have {formatVersion(VERSION)} installed")
             sys.exit(1)
 
         if architecture == "ALL":
