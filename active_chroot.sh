@@ -41,7 +41,9 @@ fi
 echo "active chroot: $CHROOT_PATH"
 
 mkdir -p "$CHROOT_PATH/opt/syslbuild"
+mkdir -p "$CHROOT_PATH/opt/home"
 mount --bind /opt/syslbuild "$CHROOT_PATH/opt/syslbuild"
+mount --bind /opt/home "$CHROOT_PATH/home"
 
 if [ "$DISABLE_AUTOMOUNTS" -eq 0 ]; then
     mount --bind /dev "$CHROOT_PATH/dev"
