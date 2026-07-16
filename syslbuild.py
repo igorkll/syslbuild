@@ -2688,7 +2688,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     requireRoot()
-    if not args.disable_chroot:
+    if not args.disable_chroot and False:
         all_args = sys.argv[1:]
         json_path = args.json_path
         all_args.pop(all_args.index(json_path))
