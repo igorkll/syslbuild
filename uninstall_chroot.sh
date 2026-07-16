@@ -6,8 +6,6 @@ fi
 
 CHROOT_PATH="/opt/syslbuild_chroot"
 
-umount "$CHROOT_PATH/sys"
-umount "$CHROOT_PATH/proc"
-umount "$CHROOT_PATH/dev"
+./deactive_chroot.sh
 
 rm -rf "$CHROOT_PATH"
