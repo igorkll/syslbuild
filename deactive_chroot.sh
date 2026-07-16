@@ -19,7 +19,10 @@ fi
 
 echo "deactive chroot: $CHROOT_PATH"
 
-umount -l "$CHROOT_PATH/opt/syslbuild"
-umount "$CHROOT_PATH/proc"
-umount "$CHROOT_PATH/dev"
+umount "$CHROOT_PATH/sys/fs/cgroup"
+umount "$CHROOT_PATH/sys/fs/cgroup"
 umount "$CHROOT_PATH/sys"
+umount "$CHROOT_PATH/proc"
+umount "$CHROOT_PATH/run"
+umount "$CHROOT_PATH/dev"
+umount -l "$CHROOT_PATH/opt/syslbuild"

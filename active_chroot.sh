@@ -24,8 +24,13 @@ echo "active chroot: $CHROOT_PATH"
 mkdir -p "$CHROOT_PATH/opt/syslbuild"
 
 mount --bind /opt/syslbuild "$CHROOT_PATH/opt/syslbuild"
-mount -t proc /proc "$CHROOT_PATH/proc"
+
 mount --bind /dev "$CHROOT_PATH/dev"
-mount --bind /sys "$CHROOT_PATH/sys"
+mount --bind /run "$CHROOT_PATH/run"
+
+mount -t proc /proc "$CHROOT_PATH/proc"
+mount -t sysfs sys "$CHROOT_PATH/sys"
+mount -t tmpfs tmpfs "$CHROOT_PATH/sys/fs/cgroup"
+mount -t cgroup2 cgroup2 "$CHROOT_PATH/sys/fs/cgroup"
 
 
