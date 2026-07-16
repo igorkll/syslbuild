@@ -6,6 +6,5 @@ fi
 
 CHROOT_PATH="/opt/syslbuild_chroot"
 
-./deactive_chroot.sh
-
+./deactive_chroot.sh "$CHROOT_PATH"
 rm -rf "$CHROOT_PATH"
