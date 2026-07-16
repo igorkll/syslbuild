@@ -985,6 +985,7 @@ Storage=none""")
     shutil.copy("gnuboxmaker/system_init_hook.sh", os.path.join(path_temp_syslbuild, "files", "system_init_hook.sh"))
     shutil.copy("gnuboxmaker/fix.sh", os.path.join(path_temp_syslbuild, "files", "fix.sh"))
     shutil.copy("gnuboxmaker/cleanup_after_firstboot.sh", os.path.join(path_temp_syslbuild, "files", "cleanup_after_firstboot.sh"))
+    shutil.copy("gnuboxmaker/fix-rpi-x11.conf", os.path.join(path_temp_syslbuild, "files", "fix-rpi-x11.conf"))
 
     if current_project.allow_updatescript and current_project.separate_data_partition:
         shutil.copy("gnuboxmaker/self_update.sh", os.path.join(path_temp_syslbuild, "files", "self_update.sh"))
@@ -1335,6 +1336,10 @@ def any_rpi(builditems):
         "git_checkout": "9794282eb9f4a2de1f23b41a738926740e975d83"
     })
 
+def any_rpi_rootfs_tweaks(rootfs_tbl):
+    if current_project.session_mode == "x11":
+        rootfs_tbl["items"].append(["files/fix-rpi-x11.conf", "/etc/X11/xorg.conf.d/fix-rpi-x11.conf", RIGHTS_644_755])
+
 def export_rpi_32(builditems, cmdline, appendPartitions):
     config_txt = read_gnubox_file("rpi_32_config.txt") + "\n" + read_project_file("resources/rpi_32_config_extension.txt")
 
@@ -1349,7 +1354,7 @@ def export_rpi_32(builditems, cmdline, appendPartitions):
     writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_32.txt"), exclude_string("root=/dev/mmcblk0p2 " + cmdline + f" {getWaitFbStr(True)}\n", current_project.exclude_cmdline))
     writeText(os.path.join(path_temp_syslbuild, "files", "config_rpi_32.txt"), config_txt)
 
-    builditems.append({
+    builditems.append(any_rpi_rootfs_tweaks({
         "architectures": ["armhf"],
 
         "type": "directory",
@@ -1364,7 +1369,7 @@ def export_rpi_32(builditems, cmdline, appendPartitions):
             ["rpi_wireless_firmware/debian/config/brcm80211/brcm", "/lib/firmware/brcm", RIGHTS_644_755],
             ["rpi_wireless_firmware/debian/config/brcm80211/cypress", "/lib/firmware/cypress", RIGHTS_644_755]
         ]
-    })
+    }))
 
     setup_export_initramfs(builditems, "rpi_32")
 
@@ -1493,7 +1498,7 @@ def export_rpi_64(builditems, cmdline, appendPartitions):
     writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_64.txt"), exclude_string("root=/dev/mmcblk0p2 " + cmdline + f" {getWaitFbStr(True)}\n", current_project.exclude_cmdline))
     writeText(os.path.join(path_temp_syslbuild, "files", "config_rpi_64.txt"), config_txt)
 
-    builditems.append({
+    builditems.append(any_rpi_rootfs_tweaks({
         "architectures": ["arm64"],
 
         "type": "directory",
@@ -1507,7 +1512,7 @@ def export_rpi_64(builditems, cmdline, appendPartitions):
             ["rpi_wireless_firmware/debian/config/brcm80211/brcm", "/lib/firmware/brcm", RIGHTS_644_755],
             ["rpi_wireless_firmware/debian/config/brcm80211/cypress", "/lib/firmware/cypress", RIGHTS_644_755]
         ]
-    })
+    }))
 
     setup_export_initramfs(builditems, "rpi_64")
 

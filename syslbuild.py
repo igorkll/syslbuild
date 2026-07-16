@@ -766,8 +766,8 @@ def copyItemFiles(fromPath, toPath, changeRights=None, allowSymlinks=True, copyS
             if changeRights:
                 tempFolder = getTempFolder("changeRights")
                 buildExecute(["cp", "-a", fromPath + "/.", tempFolder])
-                changeAccessRights(tempFolder, changeRights)
-                buildExecute(["chmod", "--reference=" + toPath, tempFolder])
+                changeAccessRights(tempFolder, changeRights) # рекурсивно устанавливаем права доступа для всего внутри каталога
+                buildExecute(["chmod", "--reference=" + toPath, tempFolder]) # не меняем права доступа на сам каталог, для этого переносим оригинальные на него
                 buildExecute(["chown", "--reference=" + toPath, tempFolder])
                 buildExecute(["rsync", rsync_arg, "--keep-dirlinks", tempFolder + "/.", toPath])
             else:
