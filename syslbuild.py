@@ -317,6 +317,51 @@ def isUserItem(itemName):
 
     return False
 
+def buildExecuteSimplePrint(cmd, checkValid=True, input_data=None, cwd=None, envmod=None):
+    if cwd is not None:
+        print(f"Execute command from directory ({cwd}): {cmd}")
+    else:
+        print(f"Execute command: {cmd}")
+
+    env=None
+    if envmod:
+        env = os.environ.copy()
+        env.update(envmod)
+    
+    process = subprocess.Popen(
+        cmd,
+        shell=False,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        bufsize=1,
+        cwd=cwd,
+        env=env
+    )
+
+    if process.stdin:
+        if input_data:
+            print(f"With input: {input_data}")
+            process.stdin.write(input_data)
+        process.stdin.close()
+
+    output_lines = []
+    for line in process.stdout:
+        print(line.rstrip(), True)
+        output_lines.append(line)
+
+    process.stdout.close()
+    returncode = process.wait()
+
+    if returncode != 0 and checkValid:
+        print("ERROR: failed to build")
+        sys.exit(1)
+
+    return "\n".join(output_lines)
+
 def buildExecute(cmd, checkValid=True, input_data=None, cwd=None, envmod=None):
     if cwd is not None:
         buildLog(f"Execute command from directory ({cwd}): {cmd}")
@@ -2651,6 +2696,15 @@ def has_cwd_non_ascii_or_spaces():
     cwd = os.getcwd()
     return any(ord(ch) > 127 or ch == ' ' for ch in cwd)
 
+def start_build_in_chroot(json_path, all_args):
+    build_in_chroot_script_path = "/opt/syslbuild/build_in_chroot.sh"
+    chroot_directory = "/opt/syslbuild_chroot"
+    if os.path.isfile(build_in_chroot_script_path) and os.path.isdir(chroot_directory):
+        print(f"RUN BUILD IN CHROOT: {chroot_directory}")
+        buildExecuteSimplePrint([build_in_chroot_script_path, os.path.abspath(json_path)] + all_args)
+
+        exit(0)
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="an assembly system for creating Linux distributions. it is focused on embedded distributions")
     parser.add_argument("--arch", choices=["ALL", "amd64", "i386", "arm64", "armhf", "armel"], type=str, required=True, help="the processor architecture for which the build will be made")
@@ -2667,6 +2721,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     requireRoot()
+    if not args.disable_chroot:
+        all_args = sys.argv[1:]
+        json_path = args.json_path
+        all_args.pop(all_args.index(json_path))
+        start_build_in_chroot(json_path, all_args)
 
     if args.temp:
         path_temp = args.temp

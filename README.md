@@ -91,7 +91,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * armel
 
 ## dependencies
-* python3
+* python3 / pip
 * mmdebstrap - to build debian based systems
 * pacman/pacstrap - to build arch linux based systems
 * mkfs.* - you need support for the file systems that you intend to use in your projects
@@ -164,6 +164,7 @@ sudo apt install -y patch
 sudo apt install -y bc bison flex libssl-dev libelf-dev
 sudo apt install -y rsync cpio initramfs-tools diffutils
 sudo apt install -y pip
+sudo apt install -y fdisk
 
 sudo pip install json5 --break-system-packages
 sudo pip install asteval --break-system-packages
