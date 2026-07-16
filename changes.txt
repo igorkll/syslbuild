@@ -1,0 +1,4 @@
+1.7.0:
+fixed the setting of access rights for specifying files and directories separately
+embedded-plymouth is now downloaded from a separate repository
+added a built-in chroot container that is now used for default builds
