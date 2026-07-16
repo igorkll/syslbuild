@@ -2661,7 +2661,7 @@ def start_build_in_chroot(json_path, all_args):
         cmdstr = f"{build_in_chroot_script_path} \"{os.path.abspath(json_path)}\" "
 
         for arg in all_args:
-            cmdstr += f" \"{arg}\""
+            cmdstr += f" {arg}"
 
         print(f"CMD: {cmdstr}")
 
