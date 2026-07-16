@@ -269,8 +269,13 @@ def get_kernel_path(architecture, filtername):
 
 def request_kernel(builditems, architecture, filtername):
     working_dir = os.path.dirname(os.path.abspath(__file__))
+    kernel_dir = os.path.join(working_dir, get_kernel_path(architecture, filtername))
 
-    if os.path.isdir(os.path.join(working_dir, get_kernel_path(architecture, filtername))):
+    buildLog(f"request kernel: {architecture} {filtername}")
+    buildLog(f"working dir: {working_dir}")
+    buildLog(f"kernel dir: {kernel_dir}")
+
+    if os.path.isdir(kernel_dir):
         return
 
     kernel_build_dir = "gnuboxmaker/kernel_build"
