@@ -1340,6 +1340,8 @@ def any_rpi_rootfs_tweaks(rootfs_tbl):
     if current_project.session_mode == "x11":
         rootfs_tbl["items"].append(["files/fix-rpi-x11.conf", "/etc/X11/xorg.conf.d/fix-rpi-x11.conf", RIGHTS_644_755])
 
+    return rootfs_tbl
+
 def export_rpi_32(builditems, cmdline, appendPartitions):
     config_txt = read_gnubox_file("rpi_32_config.txt") + "\n" + read_project_file("resources/rpi_32_config_extension.txt")
 
