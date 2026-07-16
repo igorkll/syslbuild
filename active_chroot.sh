@@ -17,6 +17,8 @@ if [ ! -d "$CHROOT_PATH" ]; then
     exit 1
 fi
 
+/opt/syslbuild/deactive_chroot.sh "$CHROOT_PATH"
+
 echo "active chroot: $CHROOT_PATH"
 
 mkdir -p "$CHROOT_PATH/opt/syslbuild"
