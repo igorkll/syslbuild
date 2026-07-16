@@ -2651,8 +2651,12 @@ def has_cwd_non_ascii_or_spaces():
     cwd = os.getcwd()
     return any(ord(ch) > 127 or ch == ' ' for ch in cwd)
 
-def start_build_in_chroot(json_path, all_args):
-    build_in_chroot_script_path = "/opt/syslbuild/build_in_chroot.sh"
+def start_build_in_chroot(json_path, all_args, nspawn_mode=False):
+    if nspawn_mode:
+        build_in_chroot_script_path = "/opt/syslbuild/build_in_chroot_nspawn.sh"
+    else:
+        build_in_chroot_script_path = "/opt/syslbuild/build_in_chroot.sh"
+
     chroot_directory = "/opt/syslbuild_chroot"
     if os.path.isfile(build_in_chroot_script_path) and os.path.isdir(chroot_directory):
         print(f"RUN BUILD IN CHROOT: {chroot_directory}")
@@ -2688,7 +2692,7 @@ if __name__ == "__main__":
         all_args = sys.argv[1:]
         json_path = args.json_path
         all_args.pop(all_args.index(json_path))
-        start_build_in_chroot(json_path, all_args)
+        start_build_in_chroot(json_path, all_args, True)
 
     if args.temp:
         path_temp = args.temp

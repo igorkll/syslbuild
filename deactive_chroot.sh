@@ -19,8 +19,6 @@ fi
 
 echo "deactive chroot: $CHROOT_PATH"
 
-umount "$CHROOT_PATH/sys/fs/cgroup"
-umount "$CHROOT_PATH/sys/fs/cgroup"
 umount "$CHROOT_PATH/sys"
 umount "$CHROOT_PATH/proc"
 umount "$CHROOT_PATH/run"
