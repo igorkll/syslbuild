@@ -263,9 +263,9 @@ path_temp_syslbuild_file = None
 
 def get_kernel_path(architecture, filtername):
     if architecture == "amd64" or architecture == "i386":
-        return f"gnuboxmaker/kernel_build/{architecture}"
+        return f"gnuboxmaker/kernel_build/output/{architecture}"
     
-    return f"gnuboxmaker/kernel_build/{architecture}/{filtername}"
+    return f"gnuboxmaker/kernel_build/output/{architecture}/{filtername}"
 
 def request_kernel(builditems, architecture, filtername):
     working_dir = os.path.dirname(os.path.abspath(__file__))
