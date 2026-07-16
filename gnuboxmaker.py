@@ -630,6 +630,9 @@ def setup_download(builditems):
     if current_project.integrate_super_kiosk_browser:
         addDownloadRelease("super-kiosk-browser", "1.1", "super_kiosk_browser_build.zip")
 
+    if current_project.boot_splash:
+        addDownload("embedded-plymouth", "1.2")
+    
 def setup_autologin():
     systemd_config = os.path.join(path_temp_syslbuild, "files", "systemd_config")
 
@@ -1010,6 +1013,8 @@ def setup_write_bins(builditems):
     symlink_bins("kernel_build/output", "kernel_image")
     symlink_bins("blobs")
 
+    embedded_plymouth_base_path = "embedded-plymouth/release-binary/debian-bookworm-plymouth-22.02.122-patched"
+
     # ---------------------- x86_64
     items = [
         ["kernel_image/amd64/kernel_modules", "/usr", RIGHTS_644_755],
@@ -1017,7 +1022,7 @@ def setup_write_bins(builditems):
     ]
 
     if current_project.boot_splash:
-        items.append(["blobs/embedded-plymouth/x86_64", "/", [0, 0, "0755"]])
+        items.append([f"{embedded_plymouth_base_path}/x86_64", "/", [0, 0, "0755"]])
 
     builditems.append({
         "architectures": ["amd64"],
@@ -1036,7 +1041,7 @@ def setup_write_bins(builditems):
     ]
 
     if current_project.boot_splash:
-        items.append(["blobs/embedded-plymouth/x86", "/", [0, 0, "0755"]])
+        items.append([f"{embedded_plymouth_base_path}/x86", "/", [0, 0, "0755"]])
 
     builditems.append({
         "architectures": ["i386"],
@@ -1052,10 +1057,42 @@ def setup_write_bins(builditems):
     items = []
 
     if current_project.boot_splash:
-        items.append(["blobs/embedded-plymouth/arm64", "/", [0, 0, "0755"]])
+        items.append([f"{embedded_plymouth_base_path}/arm64", "/", [0, 0, "0755"]])
 
     builditems.append({
         "architectures": ["arm64"],
+
+        "type": "directory",
+        "name": "rootfs directory overlay",
+        "export": False,
+
+        "items": items
+    })
+
+    # ---------------------- armhf
+    items = []
+
+    if current_project.boot_splash:
+        items.append([f"{embedded_plymouth_base_path}/armhf", "/", [0, 0, "0755"]])
+
+    builditems.append({
+        "architectures": ["armhf"],
+
+        "type": "directory",
+        "name": "rootfs directory overlay",
+        "export": False,
+
+        "items": items
+    })
+
+    # ---------------------- armel
+    items = []
+
+    if current_project.boot_splash:
+        items.append([f"{embedded_plymouth_base_path}/armel", "/", [0, 0, "0755"]])
+
+    builditems.append({
+        "architectures": ["armel"],
 
         "type": "directory",
         "name": "rootfs directory overlay",
