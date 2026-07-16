@@ -2658,15 +2658,14 @@ def start_build_in_chroot(json_path, all_args):
         print(f"RUN BUILD IN CHROOT: {chroot_directory}")
         print(f"ARGS: {all_args}")
 
-        cmdstr = f"{build_in_chroot_script_path} \"{os.path.abspath(json_path)}\" "
+        cmdstr = f"{build_in_chroot_script_path} \"{os.path.abspath(json_path)}\""
 
         for arg in all_args:
             cmdstr += f" {arg}"
 
         print(f"CMD: {cmdstr}")
 
-        # subprocess.run(cmdstr, shell=True)
-
+        subprocess.run(cmdstr, shell=True)
         exit(0)
 
 if __name__ == "__main__":
