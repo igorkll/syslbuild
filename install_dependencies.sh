@@ -33,6 +33,7 @@ apt install -y 7zip 7zip-rar
 apt install -y patch
 apt install -y bc bison flex libssl-dev libelf-dev
 apt install -y rsync cpio initramfs-tools diffutils
+apt install -y pip
 
 echo "INSTALLER: install python packages"
 pip install json5 --break-system-packages

@@ -162,6 +162,7 @@ sudo apt install -y 7zip 7zip-rar
 sudo apt install -y patch
 sudo apt install -y bc bison flex libssl-dev libelf-dev
 sudo apt install -y rsync cpio initramfs-tools diffutils
+sudo apt install -y pip
 
 sudo pip install json5 --break-system-packages
 sudo pip install asteval --break-system-packages

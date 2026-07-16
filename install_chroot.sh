@@ -12,6 +12,7 @@ rm -rf "$CHROOT_PATH"
 mkdir -p "$CHROOT_PATH"
 
 mmdebstrap --variant=minbase \
+  --include=apt,ca-certificates,wget \
   --aptopt='Acquire::Check-Valid-Until "false";' \
   --aptopt='Acquire::AllowInsecureRepositories "true";' \
   --aptopt='APT::Get::AllowUnauthenticated "true";' \
