@@ -1,3 +1,9 @@
+1.7.2:
+added "patches" builditem to syslbuild
+
+1.7.1:
+fixes
+
 1.7.0:
 fixed the setting of access rights for specifying files and directories separately
 embedded-plymouth is now downloaded from a separate repository
