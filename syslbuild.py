@@ -1622,10 +1622,11 @@ def buildKernel(item):
         additionalExportProcess(kernel_sources, item["additional_export"])
 
 def buildPatches(item):
-    
-    doCommands(kernel_sources, item.get("pre_patches_commands", None))
-    applyPatches(kernel_sources, item)
-    doCommands(kernel_sources, item.get("post_patches_commands", None))
+    itemPath = cloneBuildItem(item["source"], item)
+
+    doCommands(itemPath, item.get("pre_patches_commands", None))
+    applyPatches(itemPath, item)
+    doCommands(itemPath, item.get("post_patches_commands", None))
 
 def get_host_arch():
     m = platform.machine().lower()
