@@ -61,6 +61,8 @@ you have to pass one of them. but not more than one
 * --debug - enable the kernel log and root shell at UART0 115200
 * --clear-cache - cleans up the cache before building
 * --x11-session - enables x11 graphics session mode
+* --fullscreen-logo - makes the bootlogo fullscreen
+* --white-logo - makes the background of the bootlogo white
 
 ## examples
 * desktop, google, web kiosk: mkbootable --web https://google.com --output kiosk_google.img

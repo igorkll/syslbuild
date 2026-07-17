@@ -76,6 +76,8 @@ argsparser.add_argument("--multi-file", action='store_true', default=False, help
 argsparser.add_argument("--debug", action='store_true', default=False, help="enable the kernel log and root shell at UART0 115200")
 argsparser.add_argument("--clear-cache", action='store_true', default=False, help="cleans up the cache before building")
 argsparser.add_argument("--x11-session", action='store_true', default=False, help="enables x11 graphics session mode")
+argsparser.add_argument("--fullscreen-logo", action='store_true', default=False, help="makes the bootlogo fullscreen")
+argsparser.add_argument("--white-logo", action='store_true', default=False, help="makes the background of the bootlogo white")
 
 argsparser.add_argument("--wifi-name", default=None, help="the name of the wifi network for automatic connection")
 argsparser.add_argument("--wifi-password", default=None, help="the password of the wifi network for automatic connection")
@@ -346,10 +348,6 @@ def generate_project_config():
         "exclude_tty1_from_consoles": True,
         "exclude_tty1_from_consoles_in_quiet": True,
         "make_tty1_primary_console": False,
-        "splash_bg": "0, 0, 0",
-        "splash_updating_bg": "0, 0, 0",
-        "splash_mode": "contain",
-        "splash_scale": 0.5,
         "use_separate_splash_for_update": False,
         "root_expand": False,
         "root_readonly": False,
@@ -365,6 +363,20 @@ def generate_project_config():
         "cmdline": "clear noCursorBlink vt.global_cursor_default=0 systemd.show_status=false",
         "sudo_privileges": args.sudo_privileges
     }
+
+    if args.white_logo:
+        project_config["splash_bg"] = "231, 231, 231"
+        project_config["splash_updating_bg"] = "231, 231, 231"
+    else:
+        project_config["splash_bg"] = "0, 0, 0"
+        project_config["splash_updating_bg"] = "0, 0, 0"
+
+    if args.fullscreen_logo:
+        project_config["splash_mode"] = "fill"
+        project_config["splash_scale"] = 1
+    else:
+        project_config["splash_mode"] = "contain"
+        project_config["splash_scale"] = 0.5
 
     project_config.update(platforms[args.platform]["project_config"])
 
