@@ -148,7 +148,7 @@ def get_application_run_features():
     suffix = pathlib.Path(application_path).suffix
     
     if suffix == ".html":
-        return get_browser(application_name) # под вопросом. уверен ли я что путь будет найден? может стоит передать полный путь к html
+        return get_browser(application_path)
     elif suffix == ".flatpak":
         pass
     elif suffix == ".sh" and not is_shebang(application_path):
