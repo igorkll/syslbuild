@@ -203,6 +203,7 @@ sudo pip install Pillow --break-system-packages
 * unpack-tar-auto - unpacks the tar.* archive. use tar util
 * build-configure-make - builds something from source if configure and make are used for the build.
 * build-make - builds something from source if make are used for the build.
+* patches - It allows you to patch your source files
 
 ## build items features
 * debian supports the "_min" variant, which is essentially a "custom" but with a minimal set package required for assembly
@@ -1259,6 +1260,42 @@ these changes to the kernel config are applied automatically when building the k
                 // "disable_printk.patch"
             ]
         },
+
+        // ---------------- 
+        {
+            "type": "patches",
+            "name": "after_patches",
+            "export": false,
+
+            "source": "before_patches",
+
+            "patches": [
+                "disable_vt_swithing_from_keyboard.patch",
+                "disable_sysrq.patch",
+                "disable_cad.patch",
+                "disable_printk.patch"
+            ],
+
+            // optional
+            // execute commands from the directory
+            "pre_patches_commands": [
+                "any shell command",
+                "any shell command 2"
+            ],
+
+            "post_patches_commands": [
+                "any shell command",
+                "any shell command 2"
+            ],
+
+            // optional
+            // default: false
+            "patches_ignore_errors": true,
+
+            // optional
+            // additional arguments for the patch program
+            "patches_additional_args": "--fuzz=3",
+        }
 
         // ---------------- template example
 

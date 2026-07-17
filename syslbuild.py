@@ -1621,6 +1621,12 @@ def buildKernel(item):
     if "additional_export" in item:
         additionalExportProcess(kernel_sources, item["additional_export"])
 
+def buildPatches(item):
+    
+    doCommands(kernel_sources, item.get("pre_patches_commands", None))
+    applyPatches(kernel_sources, item)
+    doCommands(kernel_sources, item.get("post_patches_commands", None))
+
 def get_host_arch():
     m = platform.machine().lower()
 
@@ -2203,6 +2209,7 @@ buildActions = {
     "grub-iso-image": grubIsoImage,
     "unpack-initramfs": unpackInitramfs,
     "kernel": buildKernel,
+    "patches": buildPatches,
     "debian-update-initramfs": debianUpdateInitramfs,
     "debian-export-initramfs": debianExportInitramfs,
     "smart-chroot": smartChroot,
@@ -2325,6 +2332,9 @@ def getDependenciesUnpackInitramfs(item):
 def getDependenciesKernel(item):
     return rawGetDependencies(item, ["patches", "kernel_config", "kernel_config_changes_files", "items"], [])
 
+def getDependenciesPatches(item):
+    return rawGetDependencies(item, ["source", "patches"], [])
+
 def getDependenciesDebianExportInitramfs(item):
     return rawGetDependencies(item, ["kernel_config", "source"], [])
 
@@ -2352,6 +2362,7 @@ getDependencies = {
     "grub-iso-image": getDependenciesGrubIsoImage,
     "unpack-initramfs": getDependenciesUnpackInitramfs,
     "kernel": getDependenciesKernel,
+    "patches": getDependenciesPatches,
     "debian-update-initramfs": getDependencies_source_item,
     "debian-export-initramfs": getDependenciesDebianExportInitramfs,
     "smart-chroot": getDependenciesSmartChroot,
