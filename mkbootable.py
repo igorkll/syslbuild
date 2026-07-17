@@ -56,7 +56,7 @@ argsparser.add_argument("--web", default=None, help="the link to the web page to
 
 argsparser.add_argument(
     "--platform",
-    choices=["desktop_64", "desktop_32", "raspberry_pi_64", "orange_pi_zero3"],
+    choices=["desktop_64", "desktop_32", "raspberry_pi_64", "raspberry_pi_32", "orange_pi_zero3"],
     default="desktop_64",
     help="Target platform (default: desktop_64)"
 )
@@ -261,6 +261,22 @@ platforms = {
             "export_img_rpi_64": True
         },
         "image_path": "output/arm64/@ RPI 64.img"
+    },
+    "raspberry_pi_32": {
+        "project_config": {
+            "export_x86_64": False,
+            "export_x86": False,
+            "export_arm": True,
+            "export_arm64": False,
+            "export_img_bios_mbr": False,
+            "export_img_bios_gpt": False,
+            "export_img_uefi_gpt": False,
+            "export_img_bios_and_uefi_gpt": False,
+            "export_img_opi_zero3": False,
+            "export_img_rpi_64": False,
+            "export_img_rpi_32": True
+        },
+        "image_path": "output/arm64/@ RPI 32.img"
     },
     "orange_pi_zero3": {
         "project_config": {

@@ -29,6 +29,7 @@ there may be nuances in the support of some platforms. read about it here: https
 * desktop_64 (default)
 * desktop_32
 * raspberry_pi_64
+* raspberry_pi_32 (temporarily unavailable)
 * orange_pi_zero3
 
 ## supported application types
@@ -60,6 +61,10 @@ you have to pass one of them. but not more than one
 * --debug - enable the kernel log and root shell at UART0 115200
 * --clear-cache - cleans up the cache before building
 * --x11-session - enables x11 graphics session mode
+
+## examples
+* desktop, google, web kiosk: mkbootable --web https://google.com --output kiosk_google.img
+* raspberry pi 64, google, web kiosk: mkbootable --platform raspberry_pi_64 --web https://google.com --output kiosk_google.img
 
 ## used projects
 * super-kiosk-browser: https://github.com/igorkll/super-kiosk-browser - the browser used in the web kiosk mode
