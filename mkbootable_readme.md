@@ -59,6 +59,7 @@ you have to pass one of them. but not more than one
 * --multi-file - then not only the application file will be added to the image, but also all files from its directory. use carefully so as not to add unnecessary files to the image
 * --debug - enable the kernel log and root shell at UART0 115200
 * --clear-cache - cleans up the cache before building
+* --x11-session - enables x11 graphics session mode
 
 ## used projects
 * super-kiosk-browser: https://github.com/igorkll/super-kiosk-browser - the browser used in the web kiosk mode

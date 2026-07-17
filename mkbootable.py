@@ -75,6 +75,7 @@ argsparser.add_argument("--sudo-privileges", action='store_true', default=False,
 argsparser.add_argument("--multi-file", action='store_true', default=False, help="then not only the application file will be added to the image, but also all files from its directory. use carefully so as not to add unnecessary files to the image")
 argsparser.add_argument("--debug", action='store_true', default=False, help="enable the kernel log and root shell at UART0 115200")
 argsparser.add_argument("--clear-cache", action='store_true', default=False, help="cleans up the cache before building")
+argsparser.add_argument("--x11-session", action='store_true', default=False, help="enables x11 graphics session mode")
 
 argsparser.add_argument("--wifi-name", default=None, help="the name of the wifi network for automatic connection")
 argsparser.add_argument("--wifi-password", default=None, help="the password of the wifi network for automatic connection")
@@ -83,6 +84,11 @@ argsparser.add_argument("-o", "--output", default=None, help="output path to the
 argsparser.add_argument("--syslbuild", default=None, help="the path to the syslbuild directory. it will be detected automatically if your syslbuild is installed using the standard path in /opt/syslbuild")
 
 args = argsparser.parse_args()
+
+if args.x11_session:
+    graphic_session_type = "x11"
+else:
+    graphic_session_type = "wayland"
 
 # ---------------------------------------
 
@@ -122,7 +128,7 @@ def get_application_path():
 
 def get_application_session_type():
     if args.mode == "graphic":
-        return "wayland"
+        return graphic_session_type
     elif args.mode == "console":
         return "tty"
 
@@ -131,7 +137,7 @@ def get_application_session_type():
     if suffix == ".sh" or is_shebang(application_path):
         return "tty"
     
-    return "wayland"
+    return graphic_session_type
 
 def get_application_logo():
     return None
@@ -181,23 +187,23 @@ if args.application:
     application_path = get_application_path()
     application_dir = os.path.dirname(application_path)
     application_name = os.path.basename(application_path)
+    build_log(f"application path: {application_path}")
+    build_log(f"application dir: {application_dir}")
+    build_log(f"application name: {application_name}")
+    
     session_type = get_application_session_type()
     default_logo = get_application_logo()
     run_features = get_application_run_features()
 
     if args.output is None:
         args.output = pathlib.Path(args.application).stem + ".img"
-
-    build_log(f"application path: {application_path}")
-    build_log(f"application dir: {application_dir}")
-    build_log(f"application name: {application_name}")
 elif args.web:
-    if args.output is None:
-        args.output = pathlib.Path(args.web).stem + ".img"
-    
-    session_type = "wayland"
+    session_type = graphic_session_type
     default_logo = get_web_logo()
     run_features = get_web_run_features()
+
+    if args.output is None:
+        args.output = pathlib.Path(args.web).stem + ".img"
 else:
     build_log("specify the required application parameter")
     sys.exit(0)
