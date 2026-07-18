@@ -79,6 +79,7 @@ argsparser.add_argument("--x11-session", action='store_true', default=False, hel
 argsparser.add_argument("--fullscreen-logo", action='store_true', default=False, help="makes the bootlogo fullscreen")
 argsparser.add_argument("--white-logo", action='store_true', default=False, help="makes the background of the bootlogo white")
 
+argsparser.add_argument("--packages", default=None, help="add additional packages to the system. separation by \",\"")
 argsparser.add_argument("--wifi-name", default=None, help="the name of the wifi network for automatic connection")
 argsparser.add_argument("--wifi-password", default=None, help="the password of the wifi network for automatic connection")
 
@@ -148,7 +149,7 @@ def get_application_run_features():
     suffix = pathlib.Path(application_path).suffix
     
     if suffix == ".html":
-        return get_browser(application_path)
+        return get_browser("file:///application/" + application_name)
     elif suffix == ".flatpak":
         pass
     elif suffix == ".sh" and not is_shebang(application_path):
@@ -323,6 +324,9 @@ def generate_project_config():
     ]
 
     user_packages += run_features["packages"]
+
+    if args.packages:
+        user_packages += args.packages.split(",")
 
     project_config = {
         "distro": "debian",
