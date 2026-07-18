@@ -82,6 +82,7 @@ argsparser.add_argument("--white-logo", action='store_true', default=False, help
 argsparser.add_argument("--packages", default=None, help="add additional packages to the system. separation by \",\"")
 argsparser.add_argument("--wifi-name", default=None, help="the name of the wifi network for automatic connection")
 argsparser.add_argument("--wifi-password", default=None, help="the password of the wifi network for automatic connection")
+argsparser.add_argument("--wifi-security", default=None, help="the security of the wifi network for automatic connection")
 
 argsparser.add_argument("-o", "--output", default=None, help="output path to the boot image")
 argsparser.add_argument("--syslbuild", default=None, help="the path to the syslbuild directory. it will be detected automatically if your syslbuild is installed using the standard path in /opt/syslbuild")
@@ -149,7 +150,7 @@ def get_application_run_features():
     suffix = pathlib.Path(application_path).suffix
     
     if suffix == ".html":
-        return get_browser("file:///application/" + application_name)
+        return get_browser("/application/" + application_name)
     elif suffix == ".flatpak":
         pass
     elif suffix == ".sh" and not is_shebang(application_path):
@@ -381,6 +382,15 @@ def generate_project_config():
     else:
         project_config["splash_mode"] = "contain"
         project_config["splash_scale"] = 0.5
+
+    if args.wifi_name:
+        project_config["wifi_autoconnect_name"] = args.wifi_name
+
+    if args.wifi_password:
+        project_config["wifi_autoconnect_password"] = args.wifi_password
+
+    if args.wifi_security:
+        project_config["wifi_autoconnect_security"] = args.wifi_security
 
     project_config.update(platforms[args.platform]["project_config"])
 

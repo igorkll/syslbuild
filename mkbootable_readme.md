@@ -50,8 +50,9 @@ you have to pass one of them. but not more than one
 * --boot-logo - you can set a custom boot logo .png
 * --chroot - you can specify a chroot script to modify the system during the image build stage.
 * --packages - add additional packages to the system. separation by ","
-* --wifi-name - the name of the wifi network for automatic connection (NOT IMPLEMENTED AT THE MOMENT)
-* --wifi-password - the password of the wifi network for automatic connection (NOT IMPLEMENTED AT THE MOMENT)
+* --wifi-name - the name of the wifi network for automatic connection
+* --wifi-password - the password of the wifi network for automatic connection
+* --wifi-security - the security of the wifi network for automatic connection
 * --output - output path to the boot image
 * --syslbuild - the path to the syslbuild directory. it will be detected automatically if your syslbuild is installed using the standard path in /opt/syslbuild
 

@@ -437,8 +437,8 @@ EOF
 
     if current_project.integrate_network and current_project.integrate_network_wifi and current_project.wifi_autoconnect_name:
         name = current_project.wifi_autoconnect_name
-        security = current_project.wifi_autoconnect_security
         password = current_project.wifi_autoconnect_password
+        security = current_project.wifi_autoconnect_security
 
         nmcli_cmd = f"nmcli --offline connection add type wifi con-name \"{name}\" ifname wlan0 ssid \"{name}\""
 
