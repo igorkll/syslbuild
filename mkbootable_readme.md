@@ -56,6 +56,14 @@ you have to pass one of them. but not more than one
 * --output - output path to the boot image
 * --syslbuild - the path to the syslbuild directory. it will be detected automatically if your syslbuild is installed using the standard path in /opt/syslbuild
 
+## wifi-security variants
+please note that this field must correspond to the actual type of encryption of your network  
+if you have selected an encryption mode that requires a password (for example, default) and the password is not specified, an attempt will be made to connect without encryption  
+* wpa-psk (default)
+* sae
+* owe - password-free encryption
+* none - without encryption
+
 ## flags
 * --root-privileges - the application in the image will have root privileges
 * --sudo-privileges - it is a more "soft" version of "root-privileges". the application will not be launched from root. but it will be able to get root by executing sudo. no password is required and the user will see sudo execution on the screen
