@@ -143,7 +143,7 @@ systemMenu_names=(
     "reboot"
 )
 systemMenu_commands=(
-  "shutdown"
+  "poweroff"
   "reboot"
 )
 
