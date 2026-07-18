@@ -52,7 +52,7 @@ you have to pass one of them. but not more than one
 * --packages - add additional packages to the system. separation by ","
 * --wifi-name - the name of the wifi network for automatic connection
 * --wifi-password - the password of the wifi network for automatic connection
-* --wifi-security - the security of the wifi network for automatic connection
+* --wifi-security - the security of the wifi network for automatic connection. there is usually no need to change this.
 * --output - output path to the boot image
 * --syslbuild - the path to the syslbuild directory. it will be detected automatically if your syslbuild is installed using the standard path in /opt/syslbuild
 

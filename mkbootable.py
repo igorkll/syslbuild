@@ -82,7 +82,7 @@ argsparser.add_argument("--white-logo", action='store_true', default=False, help
 argsparser.add_argument("--packages", default=None, help="add additional packages to the system. separation by \",\"")
 argsparser.add_argument("--wifi-name", default=None, help="the name of the wifi network for automatic connection")
 argsparser.add_argument("--wifi-password", default=None, help="the password of the wifi network for automatic connection")
-argsparser.add_argument("--wifi-security", default=None, help="the security of the wifi network for automatic connection")
+argsparser.add_argument("--wifi-security", default=None, help="the security of the wifi network for automatic connection. there is usually no need to change this.")
 
 argsparser.add_argument("-o", "--output", default=None, help="output path to the boot image")
 argsparser.add_argument("--syslbuild", default=None, help="the path to the syslbuild directory. it will be detected automatically if your syslbuild is installed using the standard path in /opt/syslbuild")
