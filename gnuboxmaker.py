@@ -115,6 +115,10 @@ class Project:
     integrate_network_wifi: bool = True
     integrate_audio: bool = True
 
+    wifi_autoconnect_name: str = ""
+    wifi_autoconnect_password: str = ""
+    wifi_autoconnect_security: str = "wpa-psk"
+
     export_x86_64: bool = True
     export_x86: bool = False
     export_arm64: bool = False
@@ -430,6 +434,24 @@ cat > /etc/NetworkManager/conf.d/90-dns-systemd-resolved.conf <<'EOF'
 dns=systemd-resolved
 EOF
 """
+
+    if current_project.integrate_network and current_project.integrate_network_wifi and current_project.wifi_autoconnect_name:
+        name = current_project.wifi_autoconnect_name
+        security = current_project.wifi_autoconnect_security
+        password = current_project.wifi_autoconnect_password
+
+        nmcli_cmd = f"nmcli --offline connection add type wifi con-name \"{name}\" ifname wlan0 ssid \"{name}\""
+
+        if security == 'wpa-psk' and password:
+            nmcli_cmd += f' wifi-sec.key-mgmt wpa-psk wifi-sec.psk "{password}"'
+        elif security == 'sae' and password:
+            nmcli_cmd += f' wifi-sec.key-mgmt sae wifi-sec.psk "{password}"'
+        elif security == 'owe':
+            nmcli_cmd += ' wifi-sec.key-mgmt owe'
+        else:
+            nmcli_cmd += ' wifi-sec.key-mgmt none'
+        
+        last_setup += "\n" + nmcli_cmd
 
     return last_setup
 
