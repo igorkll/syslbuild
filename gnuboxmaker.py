@@ -451,7 +451,10 @@ EOF
         else:
             nmcli_cmd += ' wifi-sec.key-mgmt none'
         
-        last_setup += "\n" + nmcli_cmd
+        connection_file = f"/etc/NetworkManager/system-connections/{name}.nmconnection"
+        last_setup += f"\n{nmcli_cmd} > {connection_file}"
+        last_setup += f"\nchmod 600 {connection_file}"
+        last_setup += f"\nchown root:root {connection_file}"
 
     return last_setup
 
