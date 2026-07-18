@@ -143,8 +143,8 @@ systemMenu_names=(
     "reboot"
 )
 systemMenu_commands=(
-  "echo o > /proc/sysrq-trigger"
-  "echo b > /proc/sysrq-trigger"
+  "shutdown"
+  "reboot"
 )
 
 draw_menu() {
