@@ -1,6 +1,7 @@
 1.7.2:
 added "patches" builditem to syslbuild
 added support for auto-connecting to wifi in gnubox maker and mkbootable
+added examples for mkbootable
 
 1.7.1:
 fixes
