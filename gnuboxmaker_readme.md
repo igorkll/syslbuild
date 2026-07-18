@@ -171,6 +171,7 @@ please note that the partition sizes CANNOT be increased during the update. ther
 * restart your computer and try again
 * delete the directories .temp and output (clear the temporary project files) and try again
 * try to build a project from the examples of gnubox maker, and if it is going to, then the problem is in your project. If not, it's possible that there are some dependencies missing or your host system is not supported
+* try to build the project on a virtual machine with Ubuntu 24.04 LTS
 
 ## how do I rebuild kernels in the gnubox maker program?
 * local kernel rebuild for the project is not supported yet.
