@@ -822,8 +822,13 @@ these changes to the kernel config are applied automatically when building the k
                     "ext2",
                     "configfile"
                 ]
+
                 // you can force any grub target you are interested in
                 // "target": "i386-efi"
+
+                // if none of this is specified, the system grub will be installed (this is bad)
+                // the path to the directory with grub builds. there should be grub builds inside for all the platforms that you need in the subdirectories.
+                // "build": "path/to/you/grub/builds"
             }
 
             // do you want to use your grub target and still keep the project cross-compiled?
