@@ -638,8 +638,8 @@ def setup_download(builditems):
             "name": name,
             "export": False,
 
-            "git_url": f"https://github.com/{github_user}/{name}",
-            "git_checkout": version
+            "git_url": f"https://github.com/{github_user}/{name}" #, ВРЕМЕНО ОТКЛЮЧИЛ ВЕРСИИ
+            # "git_checkout": version
         })
 
     def addDownloadRelease(reponame, version, filename):
