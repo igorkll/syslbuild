@@ -633,6 +633,8 @@ these changes to the kernel config are applied automatically when building the k
             "name": "rootfs directory",
             "export": false,
 
+            // please note that although intermediate directories are created automatically, they will be created with access rights 0700 and not with the keys of the item/directory being created
+
             "move": [
                 ["/bin", "/usr/bin"],
             ],

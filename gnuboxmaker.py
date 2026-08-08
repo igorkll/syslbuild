@@ -1046,6 +1046,10 @@ def setup_write_bins(builditems):
     embedded_plymouth_base_path = "embedded-plymouth/release-binary/debian-bookworm-plymouth-22.02.122-patched"
 
     # ---------------------- x86_64
+    directory = [
+        ["/usr", [0, 0, "0755"]]
+    ]
+
     items = [
         ["kernel_image/amd64/kernel_modules", "/usr", RIGHTS_644_755],
         ["kernel_image/amd64/kernel.img", "/kernel.img", [0, 0, "0644"]]
@@ -1061,7 +1065,8 @@ def setup_write_bins(builditems):
         "name": "rootfs directory overlay",
         "export": False,
 
-        "items": items
+        "items": items,
+        "directory": directory
     })
 
     # ---------------------- x86
@@ -1080,7 +1085,8 @@ def setup_write_bins(builditems):
         "name": "rootfs directory overlay",
         "export": False,
 
-        "items": items
+        "items": items,
+        "directory": directory
     })
 
     # ---------------------- arm64
@@ -1096,7 +1102,8 @@ def setup_write_bins(builditems):
         "name": "rootfs directory overlay",
         "export": False,
 
-        "items": items
+        "items": items,
+        "directory": directory
     })
 
     # ---------------------- armhf
@@ -1112,7 +1119,8 @@ def setup_write_bins(builditems):
         "name": "rootfs directory overlay",
         "export": False,
 
-        "items": items
+        "items": items,
+        "directory": directory
     })
 
     # ---------------------- armel
@@ -1128,7 +1136,8 @@ def setup_write_bins(builditems):
         "name": "rootfs directory overlay",
         "export": False,
 
-        "items": items
+        "items": items,
+        "directory": directory
     })
 
 def setup_export_debian_initramfs(builditems, forPlatform):
