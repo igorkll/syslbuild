@@ -1231,8 +1231,11 @@ def setup_build_base(builditems):
 
     directories = [
         ["/bootmnt", [0, 0, "0755"]],
-        ["/usr/lib/firmware", [0, 0, "0755"]],
-        ["/user_initramfs", [0, 0, "0755"]]
+        ["/user_initramfs", [0, 0, "0755"]],
+
+        ["/usr", [0, 0, "0755"]],
+        ["/usr/lib", [0, 0, "0755"]],
+        ["/usr/lib/firmware", [0, 0, "0755"]]
     ]
 
     items = [

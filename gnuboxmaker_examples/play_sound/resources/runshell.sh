@@ -1,6 +1,6 @@
 #!/bin/bash
 
-wpctl set-volume @DEFAULT_SINK@ 1
+amixer sset Master 100%
 
 while true; do
     aplay /output.wav
