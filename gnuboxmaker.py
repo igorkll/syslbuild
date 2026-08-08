@@ -1045,10 +1045,11 @@ def setup_write_bins(builditems):
 
     embedded_plymouth_base_path = "embedded-plymouth/release-binary/debian-bookworm-plymouth-22.02.122-patched"
 
-    # ---------------------- x86_64
-    directory = [
+    directories = [
         ["/usr", [0, 0, "0755"]]
     ]
+
+    # ---------------------- x86_64
 
     items = [
         ["kernel_image/amd64/kernel_modules", "/usr", RIGHTS_644_755],
@@ -1066,7 +1067,7 @@ def setup_write_bins(builditems):
         "export": False,
 
         "items": items,
-        "directory": directory
+        "directories": directories
     })
 
     # ---------------------- x86
@@ -1086,7 +1087,7 @@ def setup_write_bins(builditems):
         "export": False,
 
         "items": items,
-        "directory": directory
+        "directories": directories
     })
 
     # ---------------------- arm64
@@ -1103,7 +1104,7 @@ def setup_write_bins(builditems):
         "export": False,
 
         "items": items,
-        "directory": directory
+        "directories": directories
     })
 
     # ---------------------- armhf
@@ -1120,7 +1121,7 @@ def setup_write_bins(builditems):
         "export": False,
 
         "items": items,
-        "directory": directory
+        "directories": directories
     })
 
     # ---------------------- armel
@@ -1137,7 +1138,7 @@ def setup_write_bins(builditems):
         "export": False,
 
         "items": items,
-        "directory": directory
+        "directories": directories
     })
 
 def setup_export_debian_initramfs(builditems, forPlatform):
