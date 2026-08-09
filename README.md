@@ -1000,6 +1000,8 @@ these changes to the kernel config are applied automatically when building the k
                 "sun50i-h616-disable-leds.dtbo" //example
             ],
 
+            "boot_part_items": [],
+
             "bootloaderDtb": "sun50i-h618-orangepi-zero3.dtb", //default dtb
 
             "kernel": "kernel.img",
@@ -1188,7 +1190,9 @@ these changes to the kernel config are applied automatically when building the k
             "additional_export": [
                 ["arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts", "sun50i-a64-pine64.dts", false],
                 ["arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero3.dtb", "sun50i-h618-orangepi-zero3.dtb", false]
-            ]
+            ],
+
+            "out_of_tree": false
         },
         {
             "type": "kernel",

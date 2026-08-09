@@ -554,7 +554,7 @@
         ],
 
         "additional_export": [
-            ["arch/arm64/boot/dts/allwinner", "sunxi_devicetree", false]
+            ["arch/arm64/boot/dts/allwinner", "sunxi_dtbs", false]
         ],
 
         "additional_make_str": "KCFLAGS=\"-Wno-error=incompatible-pointer-types\"",
@@ -567,7 +567,7 @@
         "export": true,
 
         "directories": [
-            ["/overlays", [0, 0, "0755"]]
+            ["/sunxi_dtbs", [0, 0, "0755"]]
         ],
 
         "items": [
@@ -577,7 +577,7 @@
             ["kernel_config_sunxi", "/kernel_config"],
             ["Module_symvers_sunxi", "/Module.symvers"],
 
-            ["sunxi_devicetree", "/sunxi_devicetree", [[0, 0, "0644"], [0, 0, "0755"]]]
+            ["sunxi_dtbs", "/dtbs", [[0, 0, "0644"], [0, 0, "0755"]]]
         ]
     }
 ]

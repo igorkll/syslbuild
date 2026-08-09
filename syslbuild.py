@@ -1945,6 +1945,10 @@ def singleboardBuild(item):
         if initramfsFileName is not None:
             buildDirectoryBuilditem["items"].append([item["initramfs"], initramfsFileName, [0, 0, "0644"]])
         
+        if "boot_part_items" in item:
+            for item in item["boot_part_items"]:
+                buildDirectoryBuilditem["items"].append(item)
+
         if "dtbList" in item:
             for dtb in item["dtbList"]:
                 buildDirectoryBuilditem["items"].append([dtb, pathConcat("/dtbs", os.path.basename(dtb)), [0, 0, "0644"]])

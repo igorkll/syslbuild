@@ -665,6 +665,15 @@ def setup_download(builditems):
             "archive": archive
         })
 
+    builditems.append({
+        "type": "gitclone",
+        "name": "armbian_firmware",
+        "export": False,
+
+        "git_url": "https://github.com/armbian/firmware",
+        "git_checkout": "d9846710f54da5e4383e2d67311819659ac2cf5c"
+    })
+
     addDownload("custom-debian-initramfs-init", "1.6.3")
     addDownload("linux-embedded-setup-scripts", "0.2")
     addDownloadRelease("linux-bootloaders", "1.2", "linux-bootloaders.tar.gz")
@@ -1739,8 +1748,8 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
 
             ["sprdwl_ng", "/etc/modules-load.d/sprdwl_ng.conf", [0, 0, "0644"], True],
 
-            ["kernel_image/arm64/opi_zero3/kernel_modules", "/usr", RIGHTS_644_755],
-            ["kernel_image/arm64/opi_zero3/firmware", "/usr/lib/firmware", RIGHTS_644_755]
+            ["kernel_image/arm64/sunxi/kernel_modules", "/usr", RIGHTS_644_755],
+            ["armbian_firmware", "/usr/lib/firmware", RIGHTS_644_755]
         ]
     })
 
@@ -1773,15 +1782,17 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         "bootloader": "blobs/u-boot-sunxi-with-spl.bin",
         "bootloader_offset": 16,
         "bootloaderDtb": devicetree,
-        "dtbList": [
-            "kernel_image/arm64/opi_zero3/sun50i-h618-orangepi-zero3.dtb"
-        ] + devicetree_get_files("opi_zero3", "dtb"),
+        "dtbList": devicetree_get_files("opi_zero3", "dtb"),
         "dtboList": devicetree_get_files("opi_zero3", "dtbo"),
         "dtboList_active": dtboList_active,
 
+        "boot_part_items": [
+            ["kernel_image/arm64/sunxi/dtbs", "/dtbs"]
+        ],
+
         "trigger_boot_flag": "opi_zero3",
 
-        "kernel": "kernel_image/arm64/opi_zero3/kernel.img",
+        "kernel": "kernel_image/arm64/sunxi/kernel.img",
         "initramfs": "initramfs_opi_zero3.img",
         "rootfs": "rootfs_opi_zero3.img",
         "appendPartitions": appendPartitions,
