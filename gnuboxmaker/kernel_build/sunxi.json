@@ -557,7 +557,9 @@
             ["arch/arm64/boot/dts/allwinner", "sunxi_devicetree", false]
         ],
 
-        "additional_make_str": "KCFLAGS=\"-Wno-error=incompatible-pointer-types\""
+        "additional_make_str": "KCFLAGS=\"-Wno-error=incompatible-pointer-types\"",
+
+        "out_of_tree": true
     },
     {
         "type": "directory",
