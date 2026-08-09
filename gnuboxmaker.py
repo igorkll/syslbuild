@@ -667,7 +667,7 @@ def setup_download(builditems):
 
     addDownload("custom-debian-initramfs-init", "1.6.3")
     addDownload("linux-embedded-setup-scripts", "0.2")
-    addDownloadRelease("linux-bootloaders", "1.0", "linux-bootloaders.tar.gz")
+    addDownloadRelease("linux-bootloaders", "1.1", "linux-bootloaders.tar.gz")
     unpackRelease("linux-bootloaders.tar.gz")
 
     if current_project.integrate_liamounts:
