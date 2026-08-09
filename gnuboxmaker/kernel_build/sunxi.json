@@ -526,8 +526,8 @@
         "defconfig": "defconfig",
 
         "items": [
-            ["armbian/patch/kernel/archive/sunxi-7.0/dt_32", "arch/arm/boot/dts/allwinner"],
-            ["armbian/patch/kernel/archive/sunxi-7.0/dt_64", "arch/arm64/boot/dts/allwinner"],
+            //["armbian/patch/kernel/archive/sunxi-7.0/dt_32", "arch/arm/boot/dts/allwinner"],
+            //["armbian/patch/kernel/archive/sunxi-7.0/dt_64", "arch/arm64/boot/dts/allwinner"],
 
             ["armbian/patch/kernel/archive/sunxi-7.0/overlay_32", "arch/arm/boot/dts/allwinner/overlay"],
             ["armbian/patch/kernel/archive/sunxi-7.0/overlay_64", "arch/arm64/boot/dts/allwinner/overlay"],

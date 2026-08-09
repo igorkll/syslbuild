@@ -1479,8 +1479,11 @@ def set_kernel_config_parameter(config_path, param, value):
     with open(config_path, "w") as f:
         f.writelines(new_lines)
 
-def update_kernel_config(kernel_sources, ARCH_STR, CROSS_COMPILE_STR):
-    buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "olddefconfig"], True, None, kernel_sources)
+def update_kernel_config(kernel_sources, ARCH_STR, CROSS_COMPILE_STR, build_output_dir):
+    arr = ["make", ARCH_STR, CROSS_COMPILE_STR, "olddefconfig"]
+    if build_output_dir is not None:
+        arr.insert(1, f"O={build_output_dir}")
+    buildExecute(arr, True, None, kernel_sources)
 
 def parse_kernel_config(config_file):
     with open(config_file, "r") as f:
@@ -1515,9 +1518,9 @@ def kernel_config_embed_all_modules(kernel_config_path):
     with open(kernel_config_path, "w") as f:
         f.writelines(new_lines)
 
-def modifyKernelConfig(item, kernel_sources, ARCH_STR, CROSS_COMPILE_STR):
-    kernel_config_path = pathConcat(kernel_sources, ".config")
-    buildLog(f"modifyKernelConfig: {kernel_sources}")
+def modifyKernelConfig(item, kernel_sources, ARCH_STR, CROSS_COMPILE_STR, build_output_dir):
+    kernel_config_path = pathConcat(build_output_dir if build_output_dir else kernel_sources, ".config")
+    buildLog(f"modifyKernelConfig: {kernel_sources} {build_output_dir}")
 
     if "kernel_config_changes_files" in item:
         for changes_file in item["kernel_config_changes_files"]:
@@ -1534,7 +1537,7 @@ def modifyKernelConfig(item, kernel_sources, ARCH_STR, CROSS_COMPILE_STR):
 
         set_kernel_config_parameter(kernel_config_path, "CONFIG_RD_GZIP", "y")
 
-    update_kernel_config(kernel_sources, ARCH_STR, CROSS_COMPILE_STR)
+    update_kernel_config(kernel_sources, ARCH_STR, CROSS_COMPILE_STR, build_output_dir)
 
     if item.get("kernel_config_embed_all_modules", False):
         kernel_config_embed_all_modules(kernel_config_path)
@@ -1563,6 +1566,7 @@ def buildKernel(item):
         build_output_dir = out_of_tree_dir
 
     if build_output_dir:
+        build_output_dir = os.path.abspath(build_output_dir)
         os.makedirs(build_output_dir, exist_ok=True)
         buildLog(f"Out‑of‑tree build enabled, output directory: {build_output_dir}")
 
@@ -1612,9 +1616,10 @@ def buildKernel(item):
     kernel_config_path = pathConcat(build_output_dir_or_sources, ".config")
 
     if "kernel_config" in item:
+        buildLog(f"Copy kernel config to: {kernel_config_path}")
         copyItemFiles(findItem(item["kernel_config"]), kernel_config_path)
 
-    modifyKernelConfig(item, kernel_sources, ARCH_STR, CROSS_COMPILE_STR)
+    modifyKernelConfig(item, kernel_sources, ARCH_STR, CROSS_COMPILE_STR, build_output_dir)
     buildExecute(make_cmd([ARCH_STR, CROSS_COMPILE_STR, "modules_prepare"]), True, None, kernel_sources)
 
     if "result_config_name" in item:

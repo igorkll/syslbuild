@@ -315,7 +315,7 @@ def setup_build_architectures(builditems, architectures):
         architectures.append("arm64")
         
         if current_project.export_img_opi_zero3:
-            request_kernel(builditems, "arm64", "opi_zero3")
+            request_kernel(builditems, "arm64", "sunxi")
 
         if current_project.export_img_rpi_64:
             request_kernel(builditems, "arm64", "rpi_64")
