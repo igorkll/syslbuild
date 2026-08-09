@@ -463,7 +463,7 @@
             "armbian/patch/kernel/archive/sunxi-7.0/patches.armbian/drv-asoc-sunxi-sun8i-codec-analog-enable-sound.patch",
             "armbian/patch/kernel/archive/sunxi-7.0/patches.armbian/drv-bluetooth-hci-sprd-broken-park-link-quirk-v6.16-plus.patch",
             "armbian/patch/kernel/archive/sunxi-7.0/patches.armbian/drv-char-add-dump-reg-sysinfo-drivers.patch",
-            "armbian/patch/kernel/archive/sunxi-7.0/patches.armbian/drv-clk-gate-add-regmap-gate-support.patch",
+            //"armbian/patch/kernel/archive/sunxi-7.0/patches.armbian/drv-clk-gate-add-regmap-gate-support.patch",
             "armbian/patch/kernel/archive/sunxi-7.0/patches.armbian/drv-clk-sunxi-ng-fix-clock-handling-for-ccu-sun55i-a523.patch",
             "armbian/patch/kernel/archive/sunxi-7.0/patches.armbian/drv-clocksource-timer-fix-a64-timejump.patch",
             "armbian/patch/kernel/archive/sunxi-7.0/patches.armbian/drv-devfreq-sun8i-a33-mbus-disable-autorefresh.patch",

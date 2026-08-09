@@ -29,7 +29,6 @@ splash_mode_variants = ["center", "fill", "contain", "cover"]
 boot_sound_variants = ["none", "init", "logo"]
 
 default_devicetree_overlays = {
-#    "opi_zero3": "gnuboxmaker/kernel_build/output/arm64/opi_zero3/overlays"
 }
 
 RIGHTS_644_755 = [[0, 0, "0644"], [0, 0, "0755"]]
@@ -1175,7 +1174,7 @@ def setup_export_debian_initramfs(builditems, forPlatform):
             "name": "initramfs_opi_zero3.img",
             "export": False,
 
-            "kernel_config": "kernel_image/arm64/opi_zero3/kernel_config",
+            "kernel_config": "kernel_image/arm64/sunxi/kernel_config",
             "source": "rootfs directory OPI ZERO 3"
         })
     elif forPlatform == "rpi_64":
