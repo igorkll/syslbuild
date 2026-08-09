@@ -546,9 +546,7 @@
         "defconfig": "defconfig",
 
         "additional_export": [
-            ["arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero3.dtb", "sun50i-h618-orangepi-zero3.dtb", false],
-            ["arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero2w.dtb", "sun50i-h618-orangepi-zero2w.dtb", false],
-            ["arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero2.dtb", "sun50i-h618-orangepi-zero2.dtb", false]
+            ["arch/arm64/boot/dts/allwinner", "sunxi_devicetree", false]
         ],
 
         "additional_make_str": "KCFLAGS=\"-Wno-error=incompatible-pointer-types\""
@@ -559,19 +557,17 @@
         "export": true,
 
         "directories": [
-            ["/firmware", [0, 0, "0755"]],
             ["/overlays", [0, 0, "0755"]]
         ],
 
         "items": [
-            ["sun50i-h618-orangepi-zero3.dtb", "/sun50i-h618-orangepi-zero3.dtb"],
             ["kernel_headers_sunxi", "/kernel_headers"],
             ["kernel_modules_sunxi", "/kernel_modules"],
             ["kernel_sunxi.img", "/kernel.img"],
             ["kernel_config_sunxi", "/kernel_config"],
             ["Module_symvers_sunxi", "/Module.symvers"],
 
-            ["sunxi_armbian/patch/kernel/archive/sunxi-6.18/overlay_64", "/overlays", [[0, 0, "0644"], [0, 0, "0755"]]]
+            ["sunxi_devicetree", "/sunxi_devicetree", [[0, 0, "0644"], [0, 0, "0755"]]]
         ]
     }
 ]
