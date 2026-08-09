@@ -1129,8 +1129,12 @@ def getGrubTarget(item, efi):
 
 def getGrubInstallCmd(item, grub_target, arr):
     arr.insert(0, f"--target={grub_target}")
+
     if item.get("build") is not None:
-        arr.insert(0, f"--directory={item.get("build")}/{grub_target}")
+        arr.insert(0, f"--directory={findItem(item.get("build"))}/{grub_target}")
+    elif item.get("builddir") is not None:
+        arr.insert(0, f"--directory={findItem(item.get("builddir"))}")
+    
     arr.insert(0, "grub-install")
     return arr
 
@@ -1153,8 +1157,12 @@ def installBootloader(item, path, partitionsOffsets, sectorsize):
         if "modules" in bootloaderInfo:
             modulesString = " ".join(bootloaderInfo["modules"])
 
+        extra_args = []
+        if "install_extra_args" in bootloaderInfo:
+            install_extra_args = bootloaderInfo["install_extra_args"]
+
         if efi:
-            buildExecute(getGrubInstallCmd(item, getGrubTarget(item, True), [f"--modules={modulesString}", f"--boot-directory={bootDirectory}", f"--efi-directory={path_mount2}", "--removable", path]))
+            buildExecute(getGrubInstallCmd(item, getGrubTarget(item, True), install_extra_args + [f"--modules={modulesString}", f"--boot-directory={bootDirectory}", f"--efi-directory={path_mount2}", "--removable", path]))
 
             # in EFI mode, grub-install writes grub files to the /efi/boot directory, while grub itself searches for them simply by following the /boot/grub path
             # Thanks to the grub developers
@@ -1163,9 +1171,9 @@ def installBootloader(item, path, partitionsOffsets, sectorsize):
             buildExecute(["cp", "-a", os.path.join(path_mount2, "efi", "boot") + "/.", grubdir])
 
             if readBool(bootloaderInfo, "efiAndBios"):
-                buildExecute(getGrubInstallCmd(item, getGrubTarget(item, False), [f"--modules={modulesString}", f"--boot-directory={bootDirectory}", path]))
+                buildExecute(getGrubInstallCmd(item, getGrubTarget(item, False), install_extra_args + [f"--modules={modulesString}", f"--boot-directory={bootDirectory}", path]))
         else:
-            buildExecute(getGrubInstallCmd(item, getGrubTarget(item, False), [f"--modules={modulesString}", f"--boot-directory={bootDirectory}", path]))
+            buildExecute(getGrubInstallCmd(item, getGrubTarget(item, False), install_extra_args + [f"--modules={modulesString}", f"--boot-directory={bootDirectory}", path]))
 
         if "config" in bootloaderInfo:
             makedirsChangeRights(pathConcat(bootDirectory, "grub"))

@@ -128,6 +128,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * cpio
 * initramfs-tools
 * diffutils
+* binutils-arm-linux-gnueabi / binutils-aarch64-linux-gnu
 
 ## python dependencies
 * json5
@@ -165,6 +166,7 @@ sudo apt install -y bc bison flex libssl-dev libelf-dev
 sudo apt install -y rsync cpio initramfs-tools diffutils
 sudo apt install -y pip
 sudo apt install -y fdisk
+sudo apt install -y binutils-arm-linux-gnueabi binutils-aarch64-linux-gnu
 
 sudo pip install json5 --break-system-packages
 sudo pip install asteval --break-system-packages
@@ -823,7 +825,10 @@ these changes to the kernel config are applied automatically when building the k
                     "part_gpt",
                     "ext2",
                     "configfile"
-                ]
+                ],
+
+                // optional. you can pass additional arguments to grub-install
+                // "install_extra_args": ["--disable-cli"]
 
                 // you can force any grub target you are interested in
                 // "target": "i386-efi"
@@ -831,6 +836,8 @@ these changes to the kernel config are applied automatically when building the k
                 // if none of this is specified, the system grub will be installed (this is bad)
                 // the path to the directory with grub builds. there should be grub builds inside for all the platforms that you need in the subdirectories.
                 // "build": "path/to/you/grub/builds"
+                // points to the directory of a specific assembly
+                // "builddir": "path/to/you/grub/builds/i386-efi"
             }
 
             // do you want to use your grub target and still keep the project cross-compiled?

@@ -35,6 +35,7 @@ apt install -y bc bison flex libssl-dev libelf-dev
 apt install -y rsync cpio initramfs-tools diffutils
 apt install -y pip
 apt install -y fdisk
+apt install -y binutils-arm-linux-gnueabi binutils-aarch64-linux-gnu
 
 echo "INSTALLER: install python packages"
 pip install json5 --break-system-packages
