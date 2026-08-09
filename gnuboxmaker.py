@@ -667,8 +667,8 @@ def setup_download(builditems):
 
     addDownload("custom-debian-initramfs-init", "1.6.3")
     addDownload("linux-embedded-setup-scripts", "0.2")
-    addDownloadRelease("linux-bootloaders", "1.0", "super_kiosk_browser_build.tar.gz")
-    unpackRelease("super_kiosk_browser_build.tar.gz")
+    addDownloadRelease("linux-bootloaders", "1.0", "linux-bootloaders.tar.gz")
+    unpackRelease("linux-bootloaders.tar.gz")
 
     if current_project.integrate_liamounts:
         addDownload("liamounts", "2.1")
@@ -1808,7 +1808,7 @@ def setup_build_targets(builditems, cmdline):
             "ext2",
             "configfile"
         ],
-        "build": "linux-bootloaders/grub/build/official-2.14"
+        "build": "linux-bootloaders/grub/build/no-welcome-2.14"
     }
 
     if current_project.separate_data_partition:
