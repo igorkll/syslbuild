@@ -1667,7 +1667,7 @@ def buildKernel(item):
 
     if "symvers_name" in item:
         buildLog(f"exporting symvers...")
-        additionalExportProcess(kernel_sources, [
+        additionalExportProcess(build_output_dir_or_sources, [
             ["Module.symvers", item["symvers_name"], item.get("symvers_export", False)],
         ])
 
