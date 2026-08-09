@@ -14,6 +14,11 @@ import sys
 import time
 import syslbuild
 
+module_dir = os.path.join(os.path.dirname(__file__), "gnuboxmaker/pyimport")
+sys.path.insert(0, module_dir)
+
+import internal_utils
+
 # ---------------------------------------- data
 
 HandleKey_varians = ["ignore", "poweroff", "reboot", "suspend", "hibernate", "lock"] # halt, kexec
@@ -651,8 +656,19 @@ def setup_download(builditems):
             "url": f"https://github.com/{github_user}/{reponame}/releases/download/{version}/{filename}",
         })
 
+    def unpackRelease(archive):
+        builditems.append({
+            "type": "unpack-tar-auto",
+            "name": internal_utils.get_name_without_all_extensions(archive),
+            "export": False,
+
+            "archive": archive
+        })
+
     addDownload("custom-debian-initramfs-init", "1.6.3")
     addDownload("linux-embedded-setup-scripts", "0.2")
+    addDownloadRelease("linux-bootloaders", "1.0", "super_kiosk_browser_build.tar.gz")
+    unpackRelease("super_kiosk_browser_build.tar.gz")
 
     if current_project.integrate_liamounts:
         addDownload("liamounts", "2.1")
@@ -1782,6 +1798,19 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
 def setup_build_targets(builditems, cmdline):
     appendPartitions = []
 
+    grub_info = {
+        "type": "grub",
+        "config": "grub.cfg",
+        "modules": [
+            "normal",
+            "part_msdos",
+            "part_gpt",
+            "ext2",
+            "configfile"
+        ],
+        "build": "linux-bootloaders/grub/build/official-2.14"
+    }
+
     if current_project.separate_data_partition:
         builditems.append({
             "type": "filesystem",
@@ -1817,17 +1846,8 @@ def setup_build_targets(builditems, cmdline):
                 ["rootfs.img", "linux"]
             ] + appendPartitions,
 
-            "bootloader": {
-                "type": "grub",
-                "config": "grub.cfg",
-                "boot": 0,
-                "modules": [
-                    "normal",
-                    "part_msdos",
-                    "part_gpt",
-                    "ext2",
-                    "configfile"
-                ]
+            "bootloader": grub_info | {
+                "boot": 0
             }
         })
 
@@ -1858,17 +1878,8 @@ def setup_build_targets(builditems, cmdline):
                 ["rootfs.img", "linux"]
             ] + appendPartitions,
 
-            "bootloader": {
-                "type": "grub",
-                "config": "grub.cfg",
-                "boot": 1,
-                "modules": [
-                    "normal",
-                    "part_msdos",
-                    "part_gpt",
-                    "ext2",
-                    "configfile"
-                ]
+            "bootloader": grub_info | {
+                "boot": 1
             }
         })
 
@@ -1904,18 +1915,9 @@ def setup_build_targets(builditems, cmdline):
                 ["rootfs.img", "linux"]
             ] + appendPartitions,
 
-            "bootloader": {
-                "type": "grub",
-                "config": "grub.cfg",
+            "bootloader": grub_info | {
                 "esp": 0,
-                "boot": 1,
-                "modules": [
-                    "normal",
-                    "part_msdos",
-                    "part_gpt",
-                    "ext2",
-                    "configfile"
-                ]
+                "boot": 1
             }
         })
 
@@ -1936,19 +1938,10 @@ def setup_build_targets(builditems, cmdline):
                 ["rootfs.img", "linux"]
             ] + appendPartitions,
 
-            "bootloader": {
-                "type": "grub",
-                "config": "grub.cfg",
+            "bootloader": grub_info | {
                 "esp": 0,
                 "boot": 2,
-                "efiAndBios": True,
-                "modules": [
-                    "normal",
-                    "part_msdos",
-                    "part_gpt",
-                    "ext2",
-                    "configfile"
-                ]
+                "efiAndBios": True
             }
         })
 
