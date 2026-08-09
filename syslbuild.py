@@ -1413,18 +1413,23 @@ def copyKernel(item, kernel_sources):
     patches_checksum = dictChecksum(patches_checksum)
 
     copied_kernel_files = pathConcat(path_temp_kernel_build, hashlib.md5((kernel_sources + ":" + patches_checksum).encode("utf-8")).hexdigest())
+    out_of_tree_dir = copied_kernel_files + "_build"
     copied_kernel_files_flag = pathConcat(copied_kernel_files, ".copied")
     patched_kernel_files_flag = pathConcat(copied_kernel_files, ".patched")
 
     if not os.path.isdir(copied_kernel_files) or not os.path.isfile(copied_kernel_files_flag) or not os.path.isfile(patched_kernel_files_flag):
         deleteDirectory(copied_kernel_files)
         os.makedirs(copied_kernel_files, exist_ok=True)
+
+        deleteDirectory(out_of_tree_dir)
+        os.makedirs(out_of_tree_dir, exist_ok=True)
+
         copyItemFiles(kernel_sources, copied_kernel_files)
         with open(copied_kernel_files_flag, "w") as f:
             pass
-        return copied_kernel_files, True
+        return copied_kernel_files, out_of_tree_dir, True
 
-    return copied_kernel_files, False
+    return copied_kernel_files, out_of_tree_dir, False
 
 def applyPatches(sources, item):
     if "patches" in item:
@@ -1551,7 +1556,19 @@ def buildKernel(item):
         buildLog("ERROR: it is impossible to build a kernel without specifying the source code download source")
         sys.exit(1)
 
-    kernel_sources, realCopied = copyKernel(item, downloaded_kernel_sources)
+    kernel_sources, out_of_tree_dir, realCopied = copyKernel(item, downloaded_kernel_sources)
+
+    build_output_dir = None
+    if item.get("out_of_tree", False):
+        build_output_dir = out_of_tree_dir
+
+    if build_output_dir:
+        os.makedirs(build_output_dir, exist_ok=True)
+        buildLog(f"Out‑of‑tree build enabled, output directory: {build_output_dir}")
+
+    build_output_dir_or_sources = build_output_dir if build_output_dir else kernel_sources
+    
+    # ------------------------------------------------
 
     if "items" in item:
         rawItemsProcess(item["items"], kernel_sources)
@@ -1575,15 +1592,30 @@ def buildKernel(item):
     ARCH_STR = f"ARCH={ARCH}"
     CROSS_COMPILE_STR = f"CROSS_COMPILE={CROSS_COMPILE}-"
     DEFCONFIG_NAME = item.get("defconfig", kernelArchitectureConfigs.get(architecture, "defconfig"))
-    buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, DEFCONFIG_NAME], True, None, kernel_sources)
 
-    kernel_config_path = pathConcat(kernel_sources, ".config")
+    def make_cmd(base_cmd):
+        cmd = ["make"]
+        if build_output_dir:
+            cmd.append(f"O={build_output_dir}")
+        cmd.extend(base_cmd)
+        return cmd
+
+    def make_raw_cmd(cmd_str):
+        if build_output_dir:
+            return f"make O={build_output_dir} {cmd_str}"
+        return f"make {cmd_str}"
+    
+    # --------------------------------------------------------------
+
+    buildExecute(make_cmd([ARCH_STR, CROSS_COMPILE_STR, DEFCONFIG_NAME]), True, None, kernel_sources)
+
+    kernel_config_path = pathConcat(build_output_dir_or_sources, ".config")
 
     if "kernel_config" in item:
         copyItemFiles(findItem(item["kernel_config"]), kernel_config_path)
 
     modifyKernelConfig(item, kernel_sources, ARCH_STR, CROSS_COMPILE_STR)
-    buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "modules_prepare"], True, None, kernel_sources)
+    buildExecute(make_cmd([ARCH_STR, CROSS_COMPILE_STR, "modules_prepare"]), True, None, kernel_sources)
 
     if "result_config_name" in item:
         buildLog(f"exporting result kernel config...")
@@ -1594,30 +1626,38 @@ def buildKernel(item):
     if "additional_make_str" in item:
         additional_make_str = item["additional_make_str"] + " "
 
-    buildRawExecute(f"make {additional_make_str}{ARCH_STR} {CROSS_COMPILE_STR} -j$(nproc)", True, kernel_sources)
+    buildRawExecute(make_raw_cmd(f"{additional_make_str}{ARCH_STR} {CROSS_COMPILE_STR} -j$(nproc)"), True, kernel_sources)
 
     kernel_output_filename = item.get("kernel_output_file", "bzImage")
-    kernel_output_file = pathConcat(kernel_sources, "arch", kernelArchitectures[architecture], "boot", kernel_output_filename)
-    if os.path.isfile(kernel_output_file):
-        copyItemFiles(kernel_output_file, getItemPath(item), None, True, True)
-    else:
-        kernel_output_file = pathConcat(kernel_sources, kernel_output_filename)
-        if os.path.isfile(kernel_output_file):
-            copyItemFiles(kernel_output_file, getItemPath(item), None, True, True)
+    kernel_output_file = pathConcat(build_output_dir_or_sources, "arch", kernelArchitectures[architecture], "boot", kernel_output_filename)
+
+    if not os.path.isfile(kernel_output_file):
+        # запасной вариант: корень сборки / исходников
+        fallback = pathConcat(build_output_dir_or_sources, kernel_output_filename)
+        if os.path.isfile(fallback):
+            kernel_output_file = fallback
         else:
             buildLog(f"ERROR: failed to find \"{kernel_output_filename}\" kernel output file")
             sys.exit(1)
+    
+    # -------------------------------------------------------------
+
+    if os.path.isfile(kernel_output_file):
+        copyItemFiles(kernel_output_file, getItemPath(item), None, True, True)
+    else:
+        buildLog(f"ERROR: failed to find \"{kernel_output_filename}\" kernel output file")
+        sys.exit(1)
 
     if "modules_name" in item:
         buildLog(f"exporting modules...")
         export_path = getItemFolder(item, "modules_name", "modules_export")
-        buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "modules_install", f"INSTALL_MOD_PATH={os.path.abspath(export_path)}"], True, None, kernel_sources)
+        buildExecute(make_cmd([ARCH_STR, CROSS_COMPILE_STR, "modules_install", f"INSTALL_MOD_PATH={os.path.abspath(export_path)}"]), True, None, kernel_sources)
         recursionDeleleSymlinks(export_path)
 
     if "headers_name" in item:
         buildLog(f"exporting headers...")
         export_path = getItemFolder(item, "headers_name", "headers_export")
-        buildExecute(["make", ARCH_STR, CROSS_COMPILE_STR, "headers_install", f"INSTALL_HDR_PATH={os.path.abspath(export_path)}"], True, None, kernel_sources)
+        buildExecute(make_cmd([ARCH_STR, CROSS_COMPILE_STR, "headers_install", f"INSTALL_HDR_PATH={os.path.abspath(export_path)}"]), True, None, kernel_sources)
         recursionDeleleSymlinks(export_path)
 
     if "symvers_name" in item:
@@ -1627,7 +1667,7 @@ def buildKernel(item):
         ])
 
     if "additional_export" in item:
-        additionalExportProcess(kernel_sources, item["additional_export"])
+        additionalExportProcess(build_output_dir_or_sources, item["additional_export"])
 
 def buildPatches(item):
     itemPath = cloneBuildItem(item["source"], item)
