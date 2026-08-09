@@ -23,14 +23,15 @@
             "file": "x86.json"
         },
         {
-            "build-if-no-filters-or-one-filter-exists": ["opi_zero3"],
+            "build-if-no-filters-or-one-filter-exists": ["sunxi"],
 
             "architectures": [
-                "arm64"
+                "arm64",
+                "armhf"
             ],
 
             "type": "include",
-            "file": "opi_zero3.json"
+            "file": "sunxi.json"
         },
         {
             "build-if-no-filters-or-one-filter-exists": ["rpi_64"],

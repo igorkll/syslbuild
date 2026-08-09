@@ -9,28 +9,18 @@
     },
     {
         "type": "gitclone",
-        "name": "custom-debian-initramfs-init",
-        "export": false,
+        "name": "armbian_firmware",
+        "export": true,
 
-        "git_url": "https://github.com/igorkll/custom-debian-initramfs-init",
-        "git_checkout": "1.5.2"
-    },
-
-    // extract "custom-debian-initramfs-init"
-    {
-        "type": "from-directory",
-        "name": "custom_init.sh",
-        "export": false,
-    
-        "source": "custom-debian-initramfs-init",
-        "path": "/custom_init.sh"
+        "git_url": "https://github.com/armbian/firmware",
+        "git_checkout": "d9846710f54da5e4383e2d67311819659ac2cf5c" //d9846710f54da5e4383e2d67311819659ac2cf5c / 1d1d4ac234c23ea7d7dc85a001492f7e0e765f80 / 4050e02da2dce2b74c97101f7964ecfb962f5aec
     },
     {
-        "type": "from-directory",
-        "name": "custom_init_hook.sh",
+        "type": "gitclone",
+        "name": "armbian",
         "export": false,
 
-        "source": "custom-debian-initramfs-init",
-        "path": "/custom_init_hook.sh"
+        "git_url": "https://github.com/armbian/build",
+        "git_checkout": "v26.8.0-trunk.10" //v26.8.0-trunk.10 / v26.8.0-trunk.121
     }
 ]
