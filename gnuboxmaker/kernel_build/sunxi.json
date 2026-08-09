@@ -549,7 +549,7 @@
         "export": true,
 
         "directories": [
-            ["/sunxi_dtbs", [0, 0, "0755"]]
+            ["/dtbs", [0, 0, "0755"]]
         ],
 
         "items": [
