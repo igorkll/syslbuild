@@ -1777,6 +1777,7 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
 
         "singleboardType": "uboot-offset",
 
+        "extlinux_path": "start.conf",
         "uboot_script": "&" + os.path.join(os.getcwd(), "gnuboxmaker", "uboot_bootscript.cmd"),
 
         "bootloader": "blobs/u-boot-sunxi-with-spl.bin",
