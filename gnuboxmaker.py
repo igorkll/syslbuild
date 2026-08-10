@@ -1166,18 +1166,7 @@ def setup_write_bins(builditems):
     })
 
 def setup_export_debian_initramfs(builditems, forPlatform):
-    if forPlatform == "opi_zero3":
-        builditems.append({
-            "architectures": ["arm64"],
-
-            "type": "debian-export-initramfs",
-            "name": "initramfs_opi_zero3.img",
-            "export": False,
-
-            "kernel_config": "kernel_image/arm64/sunxi/kernel_config",
-            "source": "rootfs directory OPI ZERO 3"
-        })
-    elif forPlatform == "rpi_64":
+    if forPlatform == "rpi_64":
         builditems.append({
             "architectures": ["arm64"],
 
@@ -1767,7 +1756,16 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         "label": "rootfs"
     })
 
-    setup_export_initramfs(builditems, "opi_zero3")
+    builditems.append({
+        "architectures": ["arm64"],
+
+        "type": "debian-export-initramfs",
+        "name": "initramfs_opi_zero3.img",
+        "export": False,
+
+        "kernel_config": "kernel_image/arm64/sunxi/kernel_config",
+        "source": "rootfs directory OPI ZERO 3"
+    })
 
     builditems.append({
         "architectures": ["arm64"],
