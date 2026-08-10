@@ -40,7 +40,6 @@ tested on OS: linux mint
 * gui with system settings and choice of platforms for export
 * add support for creating 64-bit images for 32-bit UEFI (yes, for those very old intel atom tablets)
 * add support for custom kernels
-* increase the display time of the logo so that the user does not have to look at a black screen
 
 ## bugs
 * HDMI audio does not work on orange pi zero 3 (it works on raspberry pi 64)
@@ -57,6 +56,7 @@ tested on OS: linux mint
 * 32 bit arm and rpi_32 NOT SUPPORTED IN THE MOMENT
 if the platform you need is not available in gnubox maker, you can use syslbuild (a lower-level tool for creating embedded linux builds) where you can customize the build for any hardware you are interested in and do anything with the system  
 alternatively, you can fork gnubox maker and then offer a pull request  
+* in the build for some platforms such as "orange pi zero 3" there are many additional dtb files that can be enabled with a file in the boot partition (or specify an alternative dtb in the file "override.txt" in the "resources/devicetree/PLATFORM" directory), so you can achieve work on similar platforms (for example, orange pi zero 2 or 2w)
 
 ## projects used
 * syslbuild: https://github.com/igorkll/syslbuild
@@ -109,7 +109,7 @@ alternatively, you can fork gnubox maker and then offer a pull request
 * .temp - temporary files used during the build process
 
 ## devicetree
-you can create a custom devicetree to connect the perepherals
+you can create a custom devicetree to connect the perepherals  
 * devicetree/PLATFORM_NAME/override.txt - you can specify overrides for .dtb/.dts here, specify a name without an extension
 * devicetree/PLATFORM_NAME/overlays.txt - here you can specify a list of overlays .dtbo/.dtso specify names without extension by separating the names with a line break
 * devicetree/PLATFORM_NAME - here you can add your .dtb and .dtbo files to the image. you can also add it here.dts and .dtso files and they will end up in the image as already compiled .dtb and .dtbo
