@@ -214,6 +214,7 @@ def getItemPath(item, nameName="name", exportName="export"):
 
     if item.get("input", False):
         parent_item = findItem(item["input"])
+        # deleteDirectory(path) - тут наверное так надо было сделать. я как то странно тут сделал
         os.makedirs(path, exist_ok=True)
         copyItemFiles(parent_item, path)
 
