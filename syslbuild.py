@@ -921,7 +921,8 @@ def rawItemsProcess(items, itemsDirectory):
             buildLog(f"Write item: {rawItem} > {outputPath}")
         elif itemObj[0].startswith("&"):
             itemObj[0] = itemObj[0][1:]
-            buildLog(f"Copy global path item: {itemObj[0]} > {outputPath}")
+            itemPath = itemObj[0]
+            buildLog(f"Copy global path item: {itemPath} > {outputPath}")
         else:
             parts = itemObj[0].split('/', 1)
             if len(parts) == 2:
@@ -940,7 +941,7 @@ def rawItemsProcess(items, itemsDirectory):
         # и системы контроля версий
         # права доступа на файлы из проекта должны быть указаны в конфиге проекта
         # а не в самих файлов проекта
-        if not changeRights and isUserItem(itemObj[0]):
+        if not changeRights and (writeRaw or isUserItem(itemObj[0])):
             changeRights = DEFAULT_RIGHTS_0700
         
         if changeRights:
