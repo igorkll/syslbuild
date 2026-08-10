@@ -287,6 +287,9 @@ def resolveItemName(itemName):
     return itemName
 
 def findItem(itemName):
+    if itemName.startswith("&"):
+        return itemName[1:]
+    
     itemName = resolveItemName(itemName)
     path = pathConcat(path_build, itemName)
     if os.path.exists(path):
@@ -916,7 +919,7 @@ def rawItemsProcess(items, itemsDirectory):
         if writeRaw:
             rawItem = itemObj[0]
             buildLog(f"Write item: {rawItem} > {outputPath}")
-        elif itemObj[0].startswith("@"):
+        elif itemObj[0].startswith("&"):
             itemObj[0] = itemObj[0][1:]
             buildLog(f"Copy global path item: {itemObj[0]} > {outputPath}")
         else:
@@ -1965,11 +1968,11 @@ def singleboardBuild(item):
         if "uboot_script" in item:
             uboot_script = findItem(item["uboot_script"])
             if Path(uboot_script).suffix.lower() == ".scr":
-                buildDirectoryBuilditem["items"].append(["@" + uboot_script, "/boot.scr"])
+                buildDirectoryBuilditem["items"].append(["&" + uboot_script, "/boot.scr"])
             else:
                 boot_script_compilled = getTempPath("boot.scr")
                 buildExecute(["mkimage", "-C", "none", "-A", "arm", "-T", "script", "-d", uboot_script, boot_script_compilled])
-                buildDirectoryBuilditem["items"].append(["@" + boot_script_compilled, "/boot.scr"])
+                buildDirectoryBuilditem["items"].append(["&" + boot_script_compilled, "/boot.scr"])
         
         if "boot_part_items" in item:
             for addItem in item["boot_part_items"]:

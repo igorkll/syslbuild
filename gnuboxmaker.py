@@ -14,7 +14,8 @@ import sys
 import time
 import syslbuild
 
-module_dir = os.path.join(os.path.dirname(__file__), "gnuboxmaker/pyimport")
+# module_dir = os.path.join(os.path.dirname(__file__), "gnuboxmaker/pyimport")
+module_dir = os.path.join(os.getcwd(), "gnuboxmaker/pyimport")
 sys.path.insert(0, module_dir)
 
 import internal_utils
@@ -1776,9 +1777,12 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
 
         "singleboardType": "uboot-offset",
 
+        "uboot_script": "&" + os.path.join(os.getcwd(), "gnuboxmaker", "uboot_bootscript.cmd"),
+
         "bootloader": "blobs/u-boot-sunxi-with-spl.bin",
         "bootloader_offset": 16,
         "bootloaderDtb": devicetree,
+
         "dtbList": devicetree_get_files("opi_zero3", "dtb"),
         "dtboList": devicetree_get_files("opi_zero3", "dtbo"),
         "dtboList_active": dtboList_active,
