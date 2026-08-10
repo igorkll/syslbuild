@@ -1187,6 +1187,9 @@ these changes to the kernel config are applied automatically when building the k
             "items_before_patches": [],
             "items_after_patches": [],
 
+            // executes commands after "items_after_patches"
+            "patches_complete_commands": [],
+
             // additional export files
             // you can export any files from the kernel project after the build
             // this can be used to export *.dtb files for ARM platforms
@@ -1314,6 +1317,9 @@ these changes to the kernel config are applied automatically when building the k
 
             "items_before_patches": [],
             "items_after_patches": [],
+
+            // executes commands after "items_after_patches"
+            "patches_complete_commands": [],
 
             // optional
             // default: false

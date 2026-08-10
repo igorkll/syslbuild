@@ -1451,6 +1451,8 @@ def applyPatches(sources, item):
     if "items_after_patches" in item:
         rawItemsProcess(item["items_after_patches"], sources)
 
+    doCommands(sources, item.get("patches_complete_commands", None))
+
 kernelArchitectures = {
     "amd64": "x86_64",
     "i386": "x86",
