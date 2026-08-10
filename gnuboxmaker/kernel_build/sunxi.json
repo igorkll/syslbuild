@@ -578,10 +578,6 @@
             //"kernel_config_changes_sunxi.txt",
             //"kernel_config_changes_singleboards.txt",
             "armbian/config/kernel/linux-sunxi64-current.config"
-        ],
-
-        "kernel_config_changes": [
-            //["CONFIG_ARCH_MXC", "n"]
         ]
     },
     {
