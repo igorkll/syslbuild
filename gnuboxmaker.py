@@ -1728,7 +1728,7 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         "architectures": ["arm64"],
 
         "type": "directory",
-        "name": "rootfs directory OPI ZERO 3",
+        "name": "rootfs directory opi_zero3",
         "export": False,
 
         "items": [
@@ -1748,7 +1748,7 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         "name": "rootfs_opi_zero3.img",
         "export": False,
 
-        "source": "rootfs directory OPI ZERO 3",
+        "source": "rootfs directory opi_zero3",
 
         "fs_type": "ext4",
         "size": current_project.size_root_partition, 
@@ -1764,7 +1764,7 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         "export": False,
 
         "kernel_config": "kernel_image/arm64/sunxi/kernel_config",
-        "source": "rootfs directory OPI ZERO 3"
+        "source": "rootfs directory opi_zero3"
     })
 
     builditems.append({
