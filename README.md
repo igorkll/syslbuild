@@ -1184,8 +1184,8 @@ these changes to the kernel config are applied automatically when building the k
             ],
 
             // unlike the usual "items", this one is copied only once and not with each build. either before patches or after patches
-            "items_once_before_patches": [],
-            "items_once_after_patches": [],
+            "items_before_patches": [],
+            "items_after_patches": [],
 
             // additional export files
             // you can export any files from the kernel project after the build
@@ -1311,6 +1311,9 @@ these changes to the kernel config are applied automatically when building the k
                 "any shell command",
                 "any shell command 2"
             ],
+
+            "items_before_patches": [],
+            "items_after_patches": [],
 
             // optional
             // default: false

@@ -1432,6 +1432,11 @@ def copyKernel(item, kernel_sources):
     return copied_kernel_files, out_of_tree_dir, False
 
 def applyPatches(sources, item):
+    if "items_before_patches" in item:
+        rawItemsProcess(item["items_before_patches"], sources)
+
+    doCommands(sources, item.get("pre_patches_commands", None))
+
     if "patches" in item:
         patches = item["patches"]
         patches_ignore_errors = item.get("patches_ignore_errors", False)
@@ -1439,6 +1444,11 @@ def applyPatches(sources, item):
 
         for patchPath in patches:
             buildRawExecute(f"patch -p1 {patches_additional_args} < {os.path.abspath(findItem(patchPath))}", not patches_ignore_errors, sources)
+
+    doCommands(sources, item.get("post_patches_commands", None))
+
+    if "items_after_patches" in item:
+        rawItemsProcess(item["items_after_patches"], sources)
 
 kernelArchitectures = {
     "amd64": "x86_64",
@@ -1578,15 +1588,7 @@ def buildKernel(item):
         rawItemsProcess(item["items"], kernel_sources)
 
     if realCopied:
-        if "items_once_before_patches" in item:
-            rawItemsProcess(item["items"], kernel_sources)
-
-        doCommands(kernel_sources, item.get("pre_patches_commands", None))
         applyPatches(kernel_sources, item)
-        doCommands(kernel_sources, item.get("post_patches_commands", None))
-
-        if "items_once_after_patches" in item:
-            rawItemsProcess(item["items"], kernel_sources)
         
         # записываю .patched флаг даже если реальных патчей ядра не указано
         # это нужно чтобы при следующей сборки не копировать файлы ядра заного
@@ -1682,10 +1684,7 @@ def buildKernel(item):
 
 def buildPatches(item):
     itemPath = cloneBuildItem(item["source"], item)
-
-    doCommands(itemPath, item.get("pre_patches_commands", None))
     applyPatches(itemPath, item)
-    doCommands(itemPath, item.get("post_patches_commands", None))
 
 def get_host_arch():
     m = platform.machine().lower()

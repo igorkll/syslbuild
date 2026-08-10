@@ -19,6 +19,15 @@
         "kernel_source_url": "https://cdn.kernel.org/pub/linux/kernel/v7.x/linux-7.0.tar.xz",
         "kernel_output_file": "Image",
 
+        "items_before_patches": [
+            ["armbian_uwe5622", "drivers/net/wireless/uwe5622"]
+        ],
+
+        "pre_patches_commands": [
+            "echo \"obj-\\$(CONFIG_SPARD_WLAN_SUPPORT) += uwe5622/\" >> \"drivers/net/wireless/Makefile\"",
+            "sed -i '/source \"drivers\\/net\\/wireless\\/ti\\/Kconfig\"/a source \"drivers\\/net\\/wireless\\/uwe5622\\/Kconfig\"' \"drivers/net/wireless/Kconfig\""
+        ],
+
         "patches": [
             "linux-embedded-patchs/disable_vt_swithing_from_keyboard.patch",
             "linux-embedded-patchs/7.0/disable_vt_swithing_from_wayland.patch",
@@ -512,12 +521,23 @@
             "armbian/patch/kernel/archive/sunxi-7.0/patches.armbian/arm64-dts-sun50i-h616-bigtreetech-cb1-emac1-ac300.patch"
         ],
 
-        "post_patches_commands": [
-            "echo \"obj-\\$(CONFIG_SPARD_WLAN_SUPPORT) += uwe5622/\" >> \"drivers/net/wireless/Makefile\"",
-            "sed -i '/source \"drivers\\/net\\/wireless\\/ti\\/Kconfig\"/a source \"drivers\\/net\\/wireless\\/uwe5622\\/Kconfig\"' \"drivers/net/wireless/Kconfig\""//,
-            //"echo \"#include <linux/regmap.h>\" >> \"drivers/phy/allwinner/ac200-ephy-ctl.c\""
+        "items_after_patches": [
+            ["armbian/patch/kernel/archive/sunxi-7.0/dt_32", "arch/arm/boot/dts/allwinner"],
+            ["armbian/patch/kernel/archive/sunxi-7.0/dt_64", "arch/arm64/boot/dts/allwinner"],
+
+            ["armbian/patch/kernel/archive/sunxi-7.0/overlay_32", "arch/arm/boot/dts/allwinner/overlay"],
+            ["armbian/patch/kernel/archive/sunxi-7.0/overlay_64", "arch/arm64/boot/dts/allwinner/overlay"]
         ],
 
+        "additional_export": [
+            ["arch/arm64/boot/dts/allwinner", "sunxi_dtbs", false]
+        ],
+
+        "additional_make_str": "KCFLAGS=\"-Wno-error=incompatible-pointer-types\"",
+
+        "out_of_tree": true,
+
+        "defconfig": "defconfig",
         "kernel_config": "armbian/config/kernel/linux-sunxi64-edge.config",
 
         "kernel_config_changes_files": [
@@ -529,27 +549,7 @@
 
         "kernel_config_changes": [
             //["CONFIG_ARCH_MXC", "n"]
-        ],
-
-        "defconfig": "defconfig",
-
-        "items_once_after_patches": [
-            ["armbian/patch/kernel/archive/sunxi-7.0/dt_32", "arch/arm/boot/dts/allwinner"],
-            ["armbian/patch/kernel/archive/sunxi-7.0/dt_64", "arch/arm64/boot/dts/allwinner"],
-
-            ["armbian/patch/kernel/archive/sunxi-7.0/overlay_32", "arch/arm/boot/dts/allwinner/overlay"],
-            ["armbian/patch/kernel/archive/sunxi-7.0/overlay_64", "arch/arm64/boot/dts/allwinner/overlay"],
-
-            ["armbian_uwe5622", "drivers/net/wireless/uwe5622"]
-        ],
-
-        "additional_export": [
-            ["arch/arm64/boot/dts/allwinner", "sunxi_dtbs", false]
-        ],
-
-        "additional_make_str": "KCFLAGS=\"-Wno-error=incompatible-pointer-types\"",
-
-        "out_of_tree": true
+        ]
     },
     {
         "type": "directory",
