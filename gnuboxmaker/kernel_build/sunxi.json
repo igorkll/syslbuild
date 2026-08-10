@@ -514,21 +514,21 @@
 
         "post_patches_commands": [
             "echo \"obj-\\$(CONFIG_SPARD_WLAN_SUPPORT) += uwe5622/\" >> \"drivers/net/wireless/Makefile\"",
-            "sed -i '/source \"drivers\\/net\\/wireless\\/ti\\/Kconfig\"/a source \"drivers\\/net\\/wireless\\/uwe5622\\/Kconfig\"' \"drivers/net/wireless/Kconfig\"",
-            "echo \"#include <linux/regmap.h>\" >> \"drivers/phy/allwinner/ac200-ephy-ctl.c\""
+            "sed -i '/source \"drivers\\/net\\/wireless\\/ti\\/Kconfig\"/a source \"drivers\\/net\\/wireless\\/uwe5622\\/Kconfig\"' \"drivers/net/wireless/Kconfig\""//,
+            //"echo \"#include <linux/regmap.h>\" >> \"drivers/phy/allwinner/ac200-ephy-ctl.c\""
         ],
 
         "kernel_config": "armbian/config/kernel/linux-sunxi64-edge.config",
 
         "kernel_config_changes_files": [
-            "kernel_config_changes.txt",
-            "kernel_config_changes_sunxi.txt",
-            "kernel_config_changes_singleboards.txt",
+            //"kernel_config_changes.txt",
+            //"kernel_config_changes_sunxi.txt",
+            //"kernel_config_changes_singleboards.txt",
             "armbian/config/kernel/linux-sunxi64-edge.config"
         ],
 
         "kernel_config_changes": [
-            ["CONFIG_ARCH_MXC", "n"]
+            //["CONFIG_ARCH_MXC", "n"]
         ],
 
         "defconfig": "defconfig",

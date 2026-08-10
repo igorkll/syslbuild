@@ -72,7 +72,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * remember that if the result of building your OS is .img with an already installed system (via "full-disk-image" for PCs or "singleboard" for boards like orangepi), then your initramfs should expand the data partition or rootfs to the maximum when the device is turned on for the first time. this is necessary because otherwise the user will not be able to use all the available media space
 * I would also recommend that you change the UUID and PART-UUID of the rootfs partition when you turn on the device for the first time in order to avoid root substitution in the future if you use UUID/PART-UUID to mount rootfs.
 * and you must change the UUID from PART-UUID and partition expansion in a script executed from initramfs while rootfs is not yet mounted.
-* DO NOT DELETE ".temp" VIA rm -rf .temp! if there are symlinks, it may damage the host system.
+* in the paths in the target directory of the builditem "directory" in the "items" and "directories" fields, do not create multiple directories in one call. since even though the path will be set automatically, when automatically creating directories, access rights to them are automatically set as 0700. the same thing in "items", if one or more directories from the path did not exist, they will be created, but they will be created with access rights 0700, which can cause very difficult bugs to debug. the use of chains is allowed only for file systems that do not support access rights, or if access rights do not matter in your assembled system (for example, the application runs from root, although there may be problems in this case) or the file system will be mounted via bindfs
 
 ## arguments
 * -h - show help info
@@ -1000,6 +1000,8 @@ these changes to the kernel config are applied automatically when building the k
                 "sun50i-h616-disable-leds.dtbo" //example
             ],
 
+            // optional
+            // add the necessary items to the boot partition directly
             "boot_part_items": [],
 
             "bootloaderDtb": "sun50i-h618-orangepi-zero3.dtb", //default dtb
@@ -1180,6 +1182,10 @@ these changes to the kernel config are applied automatically when building the k
             "items": [
                 ["myproject/regulatory.db", "firmware/regulatory.db"]
             ],
+
+            // unlike the usual "items", this one is copied only once and not with each build. either before patches or after patches
+            "items_once_before_patches": [],
+            "items_once_after_patches": [],
 
             // additional export files
             // you can export any files from the kernel project after the build

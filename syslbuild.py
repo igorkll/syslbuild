@@ -1578,9 +1578,15 @@ def buildKernel(item):
         rawItemsProcess(item["items"], kernel_sources)
 
     if realCopied:
+        if "items_once_before_patches" in item:
+            rawItemsProcess(item["items"], kernel_sources)
+
         doCommands(kernel_sources, item.get("pre_patches_commands", None))
         applyPatches(kernel_sources, item)
         doCommands(kernel_sources, item.get("post_patches_commands", None))
+
+        if "items_once_after_patches" in item:
+            rawItemsProcess(item["items"], kernel_sources)
         
         # записываю .patched флаг даже если реальных патчей ядра не указано
         # это нужно чтобы при следующей сборки не копировать файлы ядра заного
@@ -2388,7 +2394,7 @@ def getDependenciesUnpackInitramfs(item):
     return rawGetDependencies(item, ["initramfs"], [])
 
 def getDependenciesKernel(item):
-    return rawGetDependencies(item, ["patches", "kernel_config", "kernel_config_changes_files", "items"], [])
+    return rawGetDependencies(item, ["patches", "kernel_config", "kernel_config_changes_files", "items", "items_once_before_patches", "items_once_after_patches"], [])
 
 def getDependenciesPatches(item):
     return rawGetDependencies(item, ["source", "patches"], [])
@@ -2400,7 +2406,7 @@ def getDependenciesSmartChroot(item):
     return rawGetDependencies(item, ["scripts", "source"], [])
 
 def getDependenciesSingleboard(item):
-    return rawGetDependencies(item, ["bootloader", "initramfs", "kernel", "rootfs", "dtbList", "dtboList", "bootloaderDtb"], [])
+    return rawGetDependencies(item, ["bootloader", "initramfs", "kernel", "rootfs", "dtbList", "dtboList", "bootloaderDtb", "boot_part_items", "prepandPartitions", "appendPartitions"], [])
 
 def getDependencies_source_item(item):
     return rawGetDependencies(item, ["source"], [])
