@@ -1009,6 +1009,9 @@ these changes to the kernel config are applied automatically when building the k
             // add the necessary items to the boot partition directly
             "boot_part_items": [],
 
+            // optional. default: extlinux/extlinux.conf
+            "extlinux_path": "other.conf",
+
             "bootloaderDtb": "sun50i-h618-orangepi-zero3.dtb", //default dtb
 
             "kernel": "kernel.img",

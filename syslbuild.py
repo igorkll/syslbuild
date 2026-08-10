@@ -1953,8 +1953,7 @@ def singleboardBuild(item):
             "export": False,
 
             "directories": [
-                ["/dtbs/overlay", [0, 0, "0755"]],
-                ["/extlinux", [0, 0, "0755"]]
+                ["/dtbs/overlay"]
             ],
 
             "items": [
@@ -1994,7 +1993,7 @@ def singleboardBuild(item):
 
         # boot config
         bootDirectory = findItem(bootdirName)
-        extlinuxPath = pathConcat(bootDirectory, "extlinux/extlinux.conf")
+        extlinuxPath = pathConcat(bootDirectory, item.get("extlinux_path", "extlinux/extlinux.conf"))
         
         with open(extlinuxPath, "w") as f:
             f.write("LABEL linux\n")
