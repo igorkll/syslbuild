@@ -14,6 +14,7 @@ import hashlib
 import urllib.parse
 import platform
 import time
+from pathlib import Path
 
 path_output = "output"
 path_temp = ".temp"
@@ -915,6 +916,9 @@ def rawItemsProcess(items, itemsDirectory):
         if writeRaw:
             rawItem = itemObj[0]
             buildLog(f"Write item: {rawItem} > {outputPath}")
+        elif itemObj[0].startswith("@"):
+            itemObj[0] = itemObj[0][1:]
+            buildLog(f"Copy global path item: {itemObj[0]} > {outputPath}")
         else:
             parts = itemObj[0].split('/', 1)
             if len(parts) == 2:
@@ -1957,6 +1961,15 @@ def singleboardBuild(item):
         
         if initramfsFileName is not None:
             buildDirectoryBuilditem["items"].append([item["initramfs"], initramfsFileName, [0, 0, "0644"]])
+
+        if "uboot_script" in item:
+            uboot_script = findItem(item["uboot_script"])
+            if Path(uboot_script).suffix.lower() == ".scr":
+                buildDirectoryBuilditem["items"].append(["@" + uboot_script, "/boot.scr"])
+            else:
+                boot_script_compilled = getTempPath("boot.scr")
+                buildExecute(["mkimage", "-C", "none", "-A", "arm", "-T", "script", "-d", uboot_script, boot_script_compilled])
+                buildDirectoryBuilditem["items"].append(["@" + boot_script_compilled, "/boot.scr"])
         
         if "boot_part_items" in item:
             for addItem in item["boot_part_items"]:
@@ -2408,7 +2421,7 @@ def getDependenciesSmartChroot(item):
     return rawGetDependencies(item, ["scripts", "source"], [])
 
 def getDependenciesSingleboard(item):
-    return rawGetDependencies(item, ["bootloader", "initramfs", "kernel", "rootfs", "dtbList", "dtboList", "bootloaderDtb", "boot_part_items", "prepandPartitions", "appendPartitions"], [])
+    return rawGetDependencies(item, ["bootloader", "initramfs", "kernel", "rootfs", "dtbList", "dtboList", "bootloaderDtb", "boot_part_items", "prepandPartitions", "appendPartitions", "uboot_script"], [])
 
 def getDependencies_source_item(item):
     return rawGetDependencies(item, ["source"], [])

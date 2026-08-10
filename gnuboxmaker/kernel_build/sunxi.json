@@ -574,7 +574,7 @@
         "kernel_config": "armbian/config/kernel/linux-sunxi64-current.config",
 
         "kernel_config_changes_files": [
-            "kernel_config_changes.txt",
+            //"kernel_config_changes.txt",
             "kernel_config_changes_base.txt",
             "kernel_config_changes_sunxi.txt",
             "kernel_config_changes_singleboards.txt",
