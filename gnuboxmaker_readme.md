@@ -176,5 +176,5 @@ please note that the partition sizes CANNOT be increased during the update. ther
 ## how do I rebuild kernels in the gnubox maker program?
 * local kernel rebuild for the project is not supported yet.
 * you need to change the source code of the program
-* open the gnuboxmaker/kernel_build directory and build kernel_build.json via syslbuild
-* delete all contents of gnuboxmaker/kernel_image and replace with gnuboxmaker/kernel_build/output
+* open the gnuboxmaker/kernel_build directory, make changes and build kernel_build.json via syslbuild
+* To do this, you will essentially have to create a local copy of gnubox maker and publish it with your project. At the moment, this is the only solution that allows you to make changes to the low-level parts of the system.
