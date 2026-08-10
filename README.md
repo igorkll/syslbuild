@@ -1000,6 +1000,11 @@ these changes to the kernel config are applied automatically when building the k
                 "sun50i-h616-disable-leds.dtbo" //example
             ],
 
+            // optional. 
+            // you can use the uboot script.
+            // you can transfer the already compiled .scr script or the source code .cmd and in this case it will be built automatically.
+            // "uboot_script": "",
+
             // optional
             // add the necessary items to the boot partition directly
             "boot_part_items": [],
