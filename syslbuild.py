@@ -1010,7 +1010,9 @@ def buildDirectory(item):
     if "directories" in item:
         for directoryData in item["directories"]:
             directoryPath = pathConcat(buildDirectoryPath, directoryData[0])
-            changeRights = directoryData[1] or DEFAULT_RIGHTS_0700
+            changeRights = DEFAULT_RIGHTS_0700
+            if len(directoryData) >= 2:
+                changeRights = directoryData[1]
 
             buildLog(f"Create empty directory: {directoryPath} {changeRights}")
             makedirsChangeRights(directoryPath, changeRights)
