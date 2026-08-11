@@ -30,6 +30,6 @@ if [ -e "/startup.wav" ]; then
     done
 fi
 
-if [ -d "/user_initramfs" ]; then
-    cp -a /user_initramfs/. "${DESTDIR}"
+if [ -d "/gnubox/user_initramfs" ]; then
+    cp -a /gnubox/user_initramfs/. "${DESTDIR}"
 fi

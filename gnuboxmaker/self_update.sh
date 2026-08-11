@@ -30,7 +30,7 @@ if [ "$file_dev" -eq "$data_dev" ]; then
 
     rm -rf /updatescript
     mkdir /updatescript
-    cp /updatescript.sh /updatescript/updatescript.sh
+    cp /gnubox/updatescript.sh /updatescript/updatescript.sh
     echo "$BOOTIMAGE" > /updatescript/path
 
     sync

@@ -25,8 +25,8 @@ for x in $(cat /root/proc/cmdline); do
     esac
 done
 
-if [ -x "/root/preinit.sh" ]; then
-    /root/preinit.sh
+if [ -x "/root/gnubox/preinit.sh" ]; then
+    /root/gnubox/preinit.sh
 fi
 
 sync

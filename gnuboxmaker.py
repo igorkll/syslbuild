@@ -1255,11 +1255,13 @@ def setup_build_base(builditems):
 
     directories = [
         ["/bootmnt", [0, 0, "0755"]],
-        ["/user_initramfs", [0, 0, "0755"]],
+        ["/gnubox", [0, 0, "0755"]],
+        ["/gnubox/user_initramfs", [0, 0, "0755"]],
 
         ["/usr", [0, 0, "0755"]],
         ["/usr/lib", [0, 0, "0755"]],
-        ["/usr/lib/firmware", [0, 0, "0755"]]
+        ["/usr/lib/firmware", [0, 0, "0755"]],
+        ["/usr/sbin", [0, 0, "0755"]]
     ]
 
     items = [
@@ -1269,20 +1271,20 @@ def setup_build_base(builditems):
         ["files/systemd_config", "/etc/systemd", RIGHTS_644_755],
         ["files/runshell.sh", "/runshell.sh", [0, 0, "0755"]],
         ["files/runshell_launcher.sh", "/runshell_launcher.sh", [0, 0, "0755"]],
-        ["files/preinit.sh", "/preinit.sh", [0, 0, "0755"]],
-        ["files/system_preinit.sh", "/system_preinit.sh", [0, 0, "0755"]],
+        ["files/preinit.sh", "/gnubox/preinit.sh", [0, 0, "0755"]],
+        ["files/system_preinit.sh", "/gnubox/system_preinit.sh", [0, 0, "0755"]],
 
         ["custom-debian-initramfs-init/custom_init.sh", "/usr/share/initramfs-tools/init", [0, 0, "0755"]],
         ["custom-debian-initramfs-init/custom_init_hook.sh", "/etc/initramfs-tools/hooks/custom_init_hook.sh", [0, 0, "0755"]],
         ["files/system_init_hook.sh", "/etc/initramfs-tools/hooks/system_init_hook.sh", [0, 0, "0755"]],
 
         ["files/user_files", "/", [0, 0, "0755"]],
-        ["files/user_initramfs", "/user_initramfs", [0, 0, "0755"]],
+        ["files/user_initramfs", "/gnubox/user_initramfs", [0, 0, "0755"]],
     ]
 
     if current_project.allow_updatescript and current_project.separate_data_partition:
-        items.append(["files/self_update.sh", "/self_update.sh", [0, 0, "0755"]])
-        items.append(["files/updatescript.sh", "/updatescript.sh", [0, 0, "0755"]])
+        items.append(["files/self_update.sh", "/usr/sbin/self_update", [0, 0, "0755"]])
+        items.append(["files/updatescript.sh", "/gnubox/updatescript.sh", [0, 0, "0755"]])
 
     if current_project.boot_sound == "init" or (current_project.boot_sound == "logo" and current_project.boot_splash):
         items.append(["files/startup.wav", "/startup.wav", [0, 0, "0644"]])
@@ -1994,7 +1996,7 @@ def generate_syslbuild_project():
         # I still found a working way to completely get rid of the logs using the built-in linux method. however, this requires enabling CONFIG_NULL_TTY in the kernel config.
         cmdline_console = "console=ttynull"
 
-    cmdline = f"{"ro" if current_project.root_readonly else "rw"} rootwait=60 systemd.getty_auto=0 selinux=0 plymouth.ignore-serial-consoles mount_bootmnt {cmdline_console} preinit=/root/system_preinit.sh {current_project.cmdline}"
+    cmdline = f"{"ro" if current_project.root_readonly else "rw"} rootwait=60 systemd.getty_auto=0 selinux=0 plymouth.ignore-serial-consoles mount_bootmnt {cmdline_console} preinit=/root/gnubox/system_preinit.sh {current_project.cmdline}"
 
     if current_project.boot_sound == "init":
         cmdline += " startupsound_afterModulesLoading=/startup.wav"
