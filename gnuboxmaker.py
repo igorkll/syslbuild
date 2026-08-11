@@ -2123,11 +2123,21 @@ def run_syslbuild():
     res = subprocess.run(cmd)
     return res.returncode == 0
 
-def updateProgress(value=0, text=None): # updateProgress stub
-    if text is None:
-        text = "Nothing"
-    
-    buildLog(f"{value} : {text}")
+def updateProgress(value=0, text=None):
+    if guiLoaded:
+        if text is None:
+            text = "Nothing"
+
+        buildLog(f"{value} : {text}")
+        
+        gui_editor.progress["value"] = value
+        gui_editor.progress_label["text"] = text
+        gui_container.master.update_idletasks()
+    else:
+        if text is None:
+            text = "Nothing"
+        
+        buildLog(f"{value} : {text}")
 
 def build_project():
     updateProgress(10, "Generating the syslbuild project...")
@@ -2286,6 +2296,7 @@ def gui_base():
 
 def main():
     global frame_editor
+    global gui_container
 
     console_build()
 

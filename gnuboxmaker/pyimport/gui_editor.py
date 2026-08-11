@@ -4,6 +4,9 @@ from tkinter import filedialog, messagebox
 from tkinter import ttk
 
 def create_frame(gui_container, build_project):
+    global progress
+    global progress_label
+
     frame_editor = tk.Frame(gui_container)
 
     bottom_frame = tk.Frame(frame_editor)
@@ -20,16 +23,6 @@ def create_frame(gui_container, build_project):
     build_btn.grid(row=1, column=1, padx=10)
 
     bottom_frame.grid_columnconfigure(0, weight=1)
-
-    def updateProgress(value=0, text=None):
-        if text is None:
-            text = "Nothing"
-
-        buildLog(f"{value} : {text}")
-        
-        progress["value"] = value
-        progress_label["text"] = text
-        gui_window.update_idletasks()
 
     frame_editor.place(relwidth=1, relheight=1)
     return frame_editor
