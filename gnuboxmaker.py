@@ -2343,8 +2343,11 @@ def open_project_frame():
     frame_openproject.grid_columnconfigure(1, weight=1)
 
     label1 = tk.Label(frame_openproject, image=img_openproject)
+    label1.image = img_openproject
     label1.grid(row=0, column=0, padx=10, pady=10)
+
     label2 = tk.Label(frame_openproject, image=img_newproject)
+    label2.image = img_newproject
     label2.grid(row=0, column=1, padx=10, pady=10)
 
     button1 = tk.Button(frame_openproject, text="Open Project", command=open_project)
@@ -2357,8 +2360,8 @@ def open_project_frame():
 def main():
     console_build()
     gui_base()
-    editor_frame()
     open_project_frame()
+    editor_frame()
 
     show_frame(frame_openproject)
     gui_window.mainloop()
