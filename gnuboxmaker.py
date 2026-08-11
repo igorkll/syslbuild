@@ -332,7 +332,7 @@ def gen_default_first_chroot_script():
     if current_project.session_mode == "wayland" or current_project.session_mode == "x11":
         user_shell = "/run_session.sh"
     else:
-        user_shell = "/runshell_launcher.sh"
+        user_shell = "/gnubox/runshell_launcher.sh"
         
     aaa_setup = f"""#!/bin/bash
 
@@ -761,7 +761,7 @@ vt-switching=false
 enable-tap=true
 
 [autolaunch]
-path=/runshell_launcher.sh
+path=/gnubox/runshell_launcher.sh
 watch=true""")
     
     elif current_project.session_mode == "x11":
@@ -778,7 +778,7 @@ xset +dpms"""
 xset -dpms"""
 
         xinitrc += "\nmatchbox-window-manager -use_titlebar no &"
-        xinitrc += "\n/runshell_launcher.sh"
+        xinitrc += "\n/gnubox/runshell_launcher.sh"
 
         writeText(os.path.join(etc_config, "X11", "xinit", "xinitrc"), xinitrc)
 
@@ -1255,6 +1255,7 @@ def setup_build_base(builditems):
 
     directories = [
         ["/bootmnt", [0, 0, "0755"]],
+
         ["/gnubox", [0, 0, "0755"]],
         ["/gnubox/user_initramfs", [0, 0, "0755"]],
 
@@ -1269,8 +1270,9 @@ def setup_build_base(builditems):
 
         ["files/etc_config", "/etc", RIGHTS_644_755],
         ["files/systemd_config", "/etc/systemd", RIGHTS_644_755],
-        ["files/runshell.sh", "/runshell.sh", [0, 0, "0755"]],
-        ["files/runshell_launcher.sh", "/runshell_launcher.sh", [0, 0, "0755"]],
+
+        ["files/runshell.sh", "/gnubox/runshell.sh", [0, 0, "0755"]],
+        ["files/runshell_launcher.sh", "/gnubox/runshell_launcher.sh", [0, 0, "0755"]],
         ["files/preinit.sh", "/gnubox/preinit.sh", [0, 0, "0755"]],
         ["files/system_preinit.sh", "/gnubox/system_preinit.sh", [0, 0, "0755"]],
 
@@ -1331,7 +1333,7 @@ def setup_build_base(builditems):
     elif current_project.session_mode == "x11":
         items.append(["files/run_session_x11.sh", "/run_session.sh", [0, 0, "0755"]])
     elif current_project.session_mode == "tty":
-        directories.append(["/.session_mode_tty", [0, 0, "0000"]])
+        directories.append(["/gnubox/.session_mode_tty", [0, 0, "0000"]])
 
     if current_project.boot_splash:
         directories.append(["/usr/share/plymouth/themes/bootlogo", [0, 0, "0755"]])
@@ -2039,7 +2041,7 @@ def generate_syslbuild_project():
         cmdline += boot_splash_substring
 
     if current_project.session_mode == "init":
-        cmdline += " init=/runshell.sh"
+        cmdline += " init=/gnubox/runshell.sh"
 
     session_mode = current_project.session_mode
     if session_mode != "x11" and session_mode != "wayland" and current_project.screen_idle_time > 0:
