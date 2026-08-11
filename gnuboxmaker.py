@@ -1463,6 +1463,17 @@ def export_rpi_32(builditems, cmdline, appendPartitions):
     writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_32.txt"), exclude_string("root=/dev/mmcblk0p2 " + cmdline + f" {getWaitFbStr(True)}\n", current_project.exclude_cmdline))
     writeText(os.path.join(path_temp_syslbuild, "files", "config_rpi_32.txt"), config_txt)
 
+    items = [
+        ["rootfs directory x4", "."],
+        ["kernel_image/arm64/rpi_64/kernel_modules", "/usr", RIGHTS_644_755],
+        ["kernel_image/arm64/rpi_kernel/kernel_modules", "/usr", RIGHTS_644_755],
+        ["kernel_image/arm64/rpi_kernel7/kernel_modules", "/usr", RIGHTS_644_755]
+    ]
+
+    if current_project.integrate_raspberry_firmwares_if_need:
+        items.append(["rpi_wireless_firmware/debian/config/brcm80211/brcm", "/lib/firmware/brcm", RIGHTS_644_755])
+        items.append(["rpi_wireless_firmware/debian/config/brcm80211/cypress", "/lib/firmware/cypress", RIGHTS_644_755])
+
     builditems.append(any_rpi_rootfs_tweaks({
         "architectures": ["armhf"],
 
@@ -1470,14 +1481,7 @@ def export_rpi_32(builditems, cmdline, appendPartitions):
         "name": "rootfs directory RPI 32",
         "export": False,
 
-        "items": [
-            ["rootfs directory x4", "."],
-            ["kernel_image/arm64/rpi_64/kernel_modules", "/usr", RIGHTS_644_755],
-            ["kernel_image/arm64/rpi_kernel/kernel_modules", "/usr", RIGHTS_644_755],
-            ["kernel_image/arm64/rpi_kernel7/kernel_modules", "/usr", RIGHTS_644_755],
-            ["rpi_wireless_firmware/debian/config/brcm80211/brcm", "/lib/firmware/brcm", RIGHTS_644_755],
-            ["rpi_wireless_firmware/debian/config/brcm80211/cypress", "/lib/firmware/cypress", RIGHTS_644_755]
-        ]
+        "items": items
     }))
 
     setup_export_initramfs(builditems, "rpi_32")
@@ -1607,6 +1611,16 @@ def export_rpi_64(builditems, cmdline, appendPartitions):
     writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_64.txt"), exclude_string("root=/dev/mmcblk0p2 " + cmdline + f" {getWaitFbStr(True)}\n", current_project.exclude_cmdline))
     writeText(os.path.join(path_temp_syslbuild, "files", "config_rpi_64.txt"), config_txt)
 
+    items = [
+        ["rootfs directory x4", "."],
+        ["kernel_image/arm64/rpi_64/kernel_modules", "/usr", RIGHTS_644_755],
+        ["kernel_image/arm64/rpi_5/kernel_modules", "/usr", RIGHTS_644_755]
+    ]
+
+    if current_project.integrate_raspberry_firmwares_if_need:
+        items.append(["rpi_wireless_firmware/debian/config/brcm80211/brcm", "/lib/firmware/brcm", RIGHTS_644_755])
+        items.append(["rpi_wireless_firmware/debian/config/brcm80211/cypress", "/lib/firmware/cypress", RIGHTS_644_755])
+
     builditems.append(any_rpi_rootfs_tweaks({
         "architectures": ["arm64"],
 
@@ -1614,13 +1628,7 @@ def export_rpi_64(builditems, cmdline, appendPartitions):
         "name": "rootfs directory RPI 64",
         "export": False,
 
-        "items": [
-            ["rootfs directory x4", "."],
-            ["kernel_image/arm64/rpi_64/kernel_modules", "/usr", RIGHTS_644_755],
-            ["kernel_image/arm64/rpi_5/kernel_modules", "/usr", RIGHTS_644_755],
-            ["rpi_wireless_firmware/debian/config/brcm80211/brcm", "/lib/firmware/brcm", RIGHTS_644_755],
-            ["rpi_wireless_firmware/debian/config/brcm80211/cypress", "/lib/firmware/cypress", RIGHTS_644_755]
-        ]
+        "items": items
     }))
 
     setup_export_initramfs(builditems, "rpi_64")
