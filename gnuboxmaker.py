@@ -118,6 +118,8 @@ class Project:
 
     integrate_xwayland: bool = True
     integrate_firmwares: bool = True
+    integrate_armbian_firmwares_if_need: bool = True
+    integrate_raspberry_firmwares_if_need: bool = True
     integrate_bluetooth: bool = True
     integrate_network: bool = True
     integrate_network_resolved: bool = True
@@ -1428,17 +1430,18 @@ def any_rpi(builditems):
         "git_checkout": "1.20250915"
     })
 
-    builditems.append({
-        "architectures": ["arm64", "armhf"],
+    if current_project.integrate_raspberry_firmwares_if_need:
+        builditems.append({
+            "architectures": ["arm64", "armhf"],
 
-        "type": "gitclone",
-        "name": "rpi_wireless_firmware",
-        "export": False,
+            "type": "gitclone",
+            "name": "rpi_wireless_firmware",
+            "export": False,
 
-        "git_url": "https://github.com/RPi-Distro/firmware-nonfree",
-        "git_branch": "trixie",
-        "git_checkout": "9794282eb9f4a2de1f23b41a738926740e975d83"
-    })
+            "git_url": "https://github.com/RPi-Distro/firmware-nonfree",
+            "git_branch": "trixie",
+            "git_checkout": "9794282eb9f4a2de1f23b41a738926740e975d83"
+        })
 
 def any_rpi_rootfs_tweaks(rootfs_tbl):
     if current_project.session_mode == "x11":
@@ -1742,9 +1745,11 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
 
         ["sprdwl_ng", "/etc/modules-load.d/sprdwl_ng.conf", [0, 0, "0644"], True],
 
-        ["kernel_image/arm64/sunxi/kernel_modules", "/usr", RIGHTS_644_755],
-        ["armbian_firmware", "/usr/lib/firmware", RIGHTS_644_755]
+        ["kernel_image/arm64/sunxi/kernel_modules", "/usr", RIGHTS_644_755]
     ]
+
+    if current_project.integrate_armbian_firmwares_if_need:
+        items.append(["armbian_firmware", "/usr/lib/firmware", RIGHTS_644_755])
 
     if current_project.platform_opi_zero3_hdmi_audio_high_priority:
         conf = "&" + os.path.join(gnuboxmaker_dir, "opi_zero3_hdmi_audio_high_priority.conf")
