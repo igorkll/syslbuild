@@ -42,9 +42,7 @@ tested on OS: linux mint
 * add support for custom kernels
 
 ## bugs
-* HDMI audio does not work on orange pi zero 3 (it works on raspberry pi 64)
 * "screen idle time" does not work on wayland
-* wifi is not working on orange pi zero 3
 * gpu is not working on orange pi zero 3
 * 32 bit arm and rpi_32 NOT SUPPORTED IN THE MOMENT
 
