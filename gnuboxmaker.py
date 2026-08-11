@@ -675,14 +675,17 @@ def setup_download(builditems):
             "archive": archive
         })
 
-    builditems.append({
-        "type": "gitclone",
-        "name": "armbian_firmware",
-        "export": False,
+    if current_project.integrate_armbian_firmwares_if_need:
+        builditems.append({
+            "architectures": ["arm64"],
 
-        "git_url": "https://github.com/armbian/firmware",
-        "git_checkout": "d9846710f54da5e4383e2d67311819659ac2cf5c"
-    })
+            "type": "gitclone",
+            "name": "armbian_firmware",
+            "export": False,
+
+            "git_url": "https://github.com/armbian/firmware",
+            "git_checkout": "d9846710f54da5e4383e2d67311819659ac2cf5c"
+        })
 
     addDownload("custom-debian-initramfs-init", "1.6.5")
     addDownload("linux-embedded-setup-scripts", "0.2")
