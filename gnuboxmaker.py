@@ -21,14 +21,6 @@ module_dir = os.path.join(gnuboxmaker_dir, "pyimport")
 
 sys.path.insert(0, module_dir)
 
-from internal_utils import *
-
-import gui_open_project
-import gui_editor
-
-import rpi_export
-import opi_zero3_export
-
 # ---------------------------------------- data
 
 HandleKey_varians = ["ignore", "poweroff", "reboot", "suspend", "hibernate", "lock"] # halt, kexec
@@ -1856,6 +1848,16 @@ def main():
 
     show_frame(frame_openproject)
     gui_window.mainloop()
+
+# ----------------------------------------
+
+from internal_utils import *
+
+import gui_open_project
+import gui_editor
+
+import rpi_export
+import opi_zero3_export
 
 if __name__ == "__main__":
     main()

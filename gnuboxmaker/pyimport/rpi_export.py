@@ -1,4 +1,5 @@
 from __main__ import *
+import __main__
 
 def any_rpi(builditems):
     builditems.append({
@@ -13,7 +14,7 @@ def any_rpi(builditems):
         "git_checkout": "1.20250915"
     })
 
-    if current_project.integrate_raspberry_firmwares_if_need:
+    if __main__.current_project.integrate_raspberry_firmwares_if_need:
         builditems.append({
             "architectures": ["arm64", "armhf"],
 
@@ -27,7 +28,7 @@ def any_rpi(builditems):
         })
 
 def any_rpi_rootfs_tweaks(rootfs_tbl):
-    if current_project.session_mode == "x11":
+    if __main__.current_project.session_mode == "x11":
         rootfs_tbl["items"].append(["files/fix-rpi-x11.conf", "/etc/X11/xorg.conf.d/fix-rpi-x11.conf", RIGHTS_644_755])
 
     return rootfs_tbl
@@ -43,7 +44,7 @@ def export_rpi_32(builditems, cmdline, appendPartitions):
     for overlay in overlays:
         config_txt += f"\ndtoverlay={overlay}"
 
-    writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_32.txt"), exclude_string("root=/dev/mmcblk0p2 " + cmdline + f" {getWaitFbStr(True)}\n", current_project.exclude_cmdline))
+    writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_32.txt"), exclude_string("root=/dev/mmcblk0p2 " + cmdline + f" {getWaitFbStr(True)}\n", __main__.current_project.exclude_cmdline))
     writeText(os.path.join(path_temp_syslbuild, "files", "config_rpi_32.txt"), config_txt)
 
     items = [
@@ -53,7 +54,7 @@ def export_rpi_32(builditems, cmdline, appendPartitions):
         ["kernel_image/arm64/rpi_kernel7/kernel_modules", "/usr", RIGHTS_644_755]
     ]
 
-    if current_project.integrate_raspberry_firmwares_if_need:
+    if __main__.current_project.integrate_raspberry_firmwares_if_need:
         items.append(["rpi_wireless_firmware/debian/config/brcm80211/brcm", "/lib/firmware/brcm", RIGHTS_644_755])
         items.append(["rpi_wireless_firmware/debian/config/brcm80211/cypress", "/lib/firmware/cypress", RIGHTS_644_755])
 
@@ -144,8 +145,8 @@ def export_rpi_32(builditems, cmdline, appendPartitions):
         "source": "boot_rpi_32",
 
         "fs_type": "fat32",
-        "size": current_project.size_boot_partition,
-        "minsize": current_project.minsize_boot_partition,
+        "size": __main__.current_project.size_boot_partition,
+        "minsize": __main__.current_project.minsize_boot_partition,
         "label": "BOOT"
     })
 
@@ -159,8 +160,8 @@ def export_rpi_32(builditems, cmdline, appendPartitions):
         "source": "rootfs directory RPI 32",
 
         "fs_type": "ext4",
-        "size": current_project.size_root_partition, 
-        "minsize": current_project.minsize_root_partition,
+        "size": __main__.current_project.size_root_partition, 
+        "minsize": __main__.current_project.minsize_root_partition,
         "label": "rootfs"
     })
 
@@ -168,7 +169,7 @@ def export_rpi_32(builditems, cmdline, appendPartitions):
         "architectures": ["armhf"],
 
         "type": "full-disk-image",
-        "name": f"{current_project_name} RPI 32.img",
+        "name": f"{__main__.current_project_name} RPI 32.img",
         "export": True,
 
         "size": "auto + (10 * 1024 * 1024)",
@@ -191,7 +192,7 @@ def export_rpi_64(builditems, cmdline, appendPartitions):
     for overlay in overlays:
         config_txt += f"\ndtoverlay={overlay}"
 
-    writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_64.txt"), exclude_string("root=/dev/mmcblk0p2 " + cmdline + f" {getWaitFbStr(True)}\n", current_project.exclude_cmdline))
+    writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_64.txt"), exclude_string("root=/dev/mmcblk0p2 " + cmdline + f" {getWaitFbStr(True)}\n", __main__.current_project.exclude_cmdline))
     writeText(os.path.join(path_temp_syslbuild, "files", "config_rpi_64.txt"), config_txt)
 
     items = [
@@ -200,7 +201,7 @@ def export_rpi_64(builditems, cmdline, appendPartitions):
         ["kernel_image/arm64/rpi_5/kernel_modules", "/usr", RIGHTS_644_755]
     ]
 
-    if current_project.integrate_raspberry_firmwares_if_need:
+    if __main__.current_project.integrate_raspberry_firmwares_if_need:
         items.append(["rpi_wireless_firmware/debian/config/brcm80211/brcm", "/lib/firmware/brcm", RIGHTS_644_755])
         items.append(["rpi_wireless_firmware/debian/config/brcm80211/cypress", "/lib/firmware/cypress", RIGHTS_644_755])
 
@@ -284,8 +285,8 @@ def export_rpi_64(builditems, cmdline, appendPartitions):
         "source": "boot_rpi_64",
 
         "fs_type": "fat32",
-        "size": current_project.size_boot_partition,
-        "minsize": current_project.minsize_boot_partition,
+        "size": __main__.current_project.size_boot_partition,
+        "minsize": __main__.current_project.minsize_boot_partition,
         "label": "BOOT"
     })
 
@@ -299,8 +300,8 @@ def export_rpi_64(builditems, cmdline, appendPartitions):
         "source": "rootfs directory RPI 64",
 
         "fs_type": "ext4",
-        "size": current_project.size_root_partition, 
-        "minsize": current_project.minsize_root_partition,
+        "size": __main__.current_project.size_root_partition, 
+        "minsize": __main__.current_project.minsize_root_partition,
         "label": "rootfs"
     })
 
@@ -308,7 +309,7 @@ def export_rpi_64(builditems, cmdline, appendPartitions):
         "architectures": ["arm64"],
 
         "type": "full-disk-image",
-        "name": f"{current_project_name} RPI 64.img",
+        "name": f"{__main__.current_project_name} RPI 64.img",
         "export": True,
 
         "size": "auto + (10 * 1024 * 1024)",

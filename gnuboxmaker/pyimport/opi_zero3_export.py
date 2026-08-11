@@ -1,4 +1,5 @@
 from __main__ import *
+import __main__
 
 def export_opi_zero3(builditems, cmdline, appendPartitions):
     dtboList_active = []
@@ -19,10 +20,10 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         ["kernel_image/arm64/sunxi/kernel_modules", "/usr", RIGHTS_644_755]
     ]
 
-    if current_project.integrate_armbian_firmwares_if_need:
+    if __main__.current_project.integrate_armbian_firmwares_if_need:
         items.append(["armbian_firmware", "/usr/lib/firmware", RIGHTS_644_755])
 
-    if current_project.platform_opi_zero3_hdmi_audio_high_priority:
+    if __main__.current_project.platform_opi_zero3_hdmi_audio_high_priority:
         conf = "&" + os.path.join(gnuboxmaker_dir, "opi_zero3_hdmi_audio_high_priority.conf")
         items.append([conf, "/etc/wireplumber/wireplumber.conf.d/hdmi-audio-priority.conf", [0, 0, "0644"]])
 
@@ -46,8 +47,8 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         "source": "rootfs directory opi_zero3",
 
         "fs_type": "ext4",
-        "size": current_project.size_root_partition, 
-        "minsize": current_project.minsize_root_partition,
+        "size": __main__.current_project.size_root_partition, 
+        "minsize": __main__.current_project.minsize_root_partition,
         "label": "rootfs"
     })
 
@@ -66,7 +67,7 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         "architectures": ["arm64"],
 
         "type": "singleboard",
-        "name": f"{current_project_name} OPI ZERO 3.img",
+        "name": f"{__main__.current_project_name} OPI ZERO 3.img",
         "export": True,
 
         "singleboardType": "uboot-offset",
@@ -93,11 +94,11 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         "rootfs": "rootfs_opi_zero3.img",
         "appendPartitions": appendPartitions,
 
-        "boot_partition_size": current_project.size_boot_partition,
-        "boot_partition_minsize": current_project.minsize_boot_partition,
+        "boot_partition_size": __main__.current_project.size_boot_partition,
+        "boot_partition_minsize": __main__.current_project.minsize_boot_partition,
         "boot_partition_name": "BOOT",
 
         "kernel_args_auto": True,
         "kernel_rootfs_auto": "manual",
-        "kernel_args": exclude_string(cmdline + f" cma={current_project.platform_opi_zero3_cma} {getWaitFbStr(False)}", current_project.exclude_cmdline) # why is "waitFbBeforeModules" here? because in this FUCKING Chinese board, half of the peripherals start with a fucking delay, and it should be initialized by the time plymouth is launched
+        "kernel_args": exclude_string(cmdline + f" cma={__main__.current_project.platform_opi_zero3_cma} {getWaitFbStr(False)}", __main__.current_project.exclude_cmdline) # why is "waitFbBeforeModules" here? because in this FUCKING Chinese board, half of the peripherals start with a fucking delay, and it should be initialized by the time plymouth is launched
     })
