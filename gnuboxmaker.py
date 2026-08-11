@@ -1748,7 +1748,7 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
 
     if current_project.platform_opi_zero3_hdmi_audio_high_priority:
         conf = "&" + os.path.join(gnuboxmaker_dir, "opi_zero3_hdmi_audio_high_priority.conf")
-        items.append([conf, "/etc/wireplumber/wireplumber.conf.d/hdmi-audio-priority.conf", [0, 0, "0644"], True])
+        items.append([conf, "/etc/wireplumber/wireplumber.conf.d/hdmi-audio-priority.conf", [0, 0, "0644"]])
 
     builditems.append({
         "architectures": ["arm64"],
