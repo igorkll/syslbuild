@@ -44,8 +44,8 @@ def export_rpi_32(builditems, cmdline, appendPartitions):
     for overlay in overlays:
         config_txt += f"\ndtoverlay={overlay}"
 
-    writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_32.txt"), exclude_string("root=/dev/mmcblk0p2 " + cmdline + f" {getWaitFbStr(True)}\n", __main__.current_project.exclude_cmdline))
-    writeText(os.path.join(path_temp_syslbuild, "files", "config_rpi_32.txt"), config_txt)
+    writeText(os.path.join(__main__.path_temp_syslbuild, "files", "cmdline_rpi_32.txt"), exclude_string("root=/dev/mmcblk0p2 " + cmdline + f" {getWaitFbStr(True)}\n", __main__.current_project.exclude_cmdline))
+    writeText(os.path.join(__main__.path_temp_syslbuild, "files", "config_rpi_32.txt"), config_txt)
 
     items = [
         ["rootfs directory x4", "."],
@@ -192,8 +192,8 @@ def export_rpi_64(builditems, cmdline, appendPartitions):
     for overlay in overlays:
         config_txt += f"\ndtoverlay={overlay}"
 
-    writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_64.txt"), exclude_string("root=/dev/mmcblk0p2 " + cmdline + f" {getWaitFbStr(True)}\n", __main__.current_project.exclude_cmdline))
-    writeText(os.path.join(path_temp_syslbuild, "files", "config_rpi_64.txt"), config_txt)
+    writeText(os.path.join(__main__.path_temp_syslbuild, "files", "cmdline_rpi_64.txt"), exclude_string("root=/dev/mmcblk0p2 " + cmdline + f" {getWaitFbStr(True)}\n", __main__.current_project.exclude_cmdline))
+    writeText(os.path.join(__main__.path_temp_syslbuild, "files", "config_rpi_64.txt"), config_txt)
 
     items = [
         ["rootfs directory x4", "."],
