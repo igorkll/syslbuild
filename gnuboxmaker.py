@@ -21,9 +21,13 @@ module_dir = os.path.join(gnuboxmaker_dir, "pyimport")
 
 sys.path.insert(0, module_dir)
 
-import internal_utils
+from internal_utils import *
+
 import gui_open_project
 import gui_editor
+
+import rpi_export
+import opi_zero3_export
 
 # ---------------------------------------- data
 
@@ -148,41 +152,10 @@ class Project:
     platform_opi_zero3_cma: str = "256M"
     platform_opi_zero3_hdmi_audio_high_priority: bool = True
 
-def raw_load_project(path):
-    with open(path, "r", encoding="utf-8") as f:
-        data = json5.load(f)
-        return Project(**data)
-
-def raw_save_project(path, proj):
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(asdict(proj), f, indent=2, ensure_ascii=False)
-
-# -1 - версия проекта ниже версии тула
-# 0 - версии совпадают
-# 1 - версия проекта выше чем версия тула (не катит)
-def checkVersion(project):
-    minVersion = syslbuild.VERSION
-
-    for index, vernum in enumerate(project.gnubox_version):
-        if vernum > minVersion[index]:
-            return 1
-        elif vernum < minVersion[index]:
-            return -1
-    
-    return 0
-
 # ---------------------------------------- functions
 
 class CancelGUI(Exception):
     pass
-
-def exclude_string(lstr, exclude_list):
-    parts = lstr.split()
-    filtered = [p for p in parts if p not in exclude_list]
-    return ' '.join(filtered)
-
-def exclude_array(arr, exclude_list):
-    return [item for item in arr if item not in exclude_list]
 
 def buildLog(logstr, quiet=False):
     if not quiet:
@@ -214,14 +187,6 @@ def show_error(err):
     buildLog(err)
     if guiLoaded:
         messagebox.showwarning("Error", err)
-
-def deleteAny(path):
-    if os.path.islink(path):
-        os.remove(path)
-    elif os.path.isdir(path):
-        shutil.rmtree(path)
-    elif os.path.exists(path):
-        os.remove(path)
 
 def buildExecute(cmd, checkValid=True, input_data=None, cwd=None):
     if cwd != None:
@@ -259,15 +224,6 @@ def buildExecute(cmd, checkValid=True, input_data=None, cwd=None):
         stop_error("Failed to build")
 
     return "\n".join(output_lines)
-
-def writeText(path, text):
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, "w") as f:
-        f.write(text)
-
-def copyFile(path, fromPath):
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    shutil.copy(fromPath, path)
 
 # ---------------------------------------- builder
 
@@ -669,7 +625,7 @@ def setup_download(builditems):
     def unpackRelease(archive):
         builditems.append({
             "type": "unpack-tar-auto",
-            "name": internal_utils.get_name_without_all_extensions(archive),
+            "name": get_name_without_all_extensions(archive),
             "export": False,
 
             "archive": archive
@@ -1420,428 +1376,6 @@ def export_x86(builditems):
         "label": "rootfs"
     })
 
-def any_rpi(builditems):
-    builditems.append({
-        "architectures": ["arm64", "armhf"],
-
-        "type": "gitclone",
-        "name": "rpi_firmware",
-        "export": False,
-
-        "git_url": "https://github.com/raspberrypi/firmware",
-        "git_branch": "master",
-        "git_checkout": "1.20250915"
-    })
-
-    if current_project.integrate_raspberry_firmwares_if_need:
-        builditems.append({
-            "architectures": ["arm64", "armhf"],
-
-            "type": "gitclone",
-            "name": "rpi_wireless_firmware",
-            "export": False,
-
-            "git_url": "https://github.com/RPi-Distro/firmware-nonfree",
-            "git_branch": "trixie",
-            "git_checkout": "9794282eb9f4a2de1f23b41a738926740e975d83"
-        })
-
-def any_rpi_rootfs_tweaks(rootfs_tbl):
-    if current_project.session_mode == "x11":
-        rootfs_tbl["items"].append(["files/fix-rpi-x11.conf", "/etc/X11/xorg.conf.d/fix-rpi-x11.conf", RIGHTS_644_755])
-
-    return rootfs_tbl
-
-def export_rpi_32(builditems, cmdline, appendPartitions):
-    config_txt = read_gnubox_file("rpi_32_config.txt") + "\n" + read_project_file("resources/rpi_32_config_extension.txt")
-
-    override = get_devicetree_override("rpi_32")
-    if override:
-        config_txt += f"\ndevice_tree={override}.dtb"
-
-    overlays = get_devicetree_overlays("rpi_32")
-    for overlay in overlays:
-        config_txt += f"\ndtoverlay={overlay}"
-
-    writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_32.txt"), exclude_string("root=/dev/mmcblk0p2 " + cmdline + f" {getWaitFbStr(True)}\n", current_project.exclude_cmdline))
-    writeText(os.path.join(path_temp_syslbuild, "files", "config_rpi_32.txt"), config_txt)
-
-    items = [
-        ["rootfs directory x4", "."],
-        ["kernel_image/arm64/rpi_64/kernel_modules", "/usr", RIGHTS_644_755],
-        ["kernel_image/arm64/rpi_kernel/kernel_modules", "/usr", RIGHTS_644_755],
-        ["kernel_image/arm64/rpi_kernel7/kernel_modules", "/usr", RIGHTS_644_755]
-    ]
-
-    if current_project.integrate_raspberry_firmwares_if_need:
-        items.append(["rpi_wireless_firmware/debian/config/brcm80211/brcm", "/lib/firmware/brcm", RIGHTS_644_755])
-        items.append(["rpi_wireless_firmware/debian/config/brcm80211/cypress", "/lib/firmware/cypress", RIGHTS_644_755])
-
-    builditems.append(any_rpi_rootfs_tweaks({
-        "architectures": ["armhf"],
-
-        "type": "directory",
-        "name": "rootfs directory RPI 32",
-        "export": False,
-
-        "items": items
-    }))
-
-    setup_export_initramfs(builditems, "rpi_32")
-
-    items = [
-        ["rpi_firmware/boot/COPYING.linux", "/COPYING.linux"],
-        ["rpi_firmware/boot/LICENCE.broadcom", "/LICENCE.broadcom"],
-        ["rpi_firmware/boot/overlays", "/overlays"],
-        ["rpi_firmware/boot/fixup.dat", "/fixup.dat"],
-        ["rpi_firmware/boot/fixup4.dat", "/fixup4.dat"],
-        ["rpi_firmware/boot/fixup4cd.dat", "/fixup4cd.dat"],
-        ["rpi_firmware/boot/fixup4db.dat", "/fixup4db.dat"],
-        ["rpi_firmware/boot/fixup4x.dat", "/fixup4x.dat"],
-        ["rpi_firmware/boot/fixup_cd.dat", "/fixup_cd.dat"],
-        ["rpi_firmware/boot/fixup_db.dat", "/fixup_db.dat"],
-        ["rpi_firmware/boot/fixup_x.dat", "/fixup_x.dat"],
-        ["rpi_firmware/boot/start.elf", "/start.elf"],
-        ["rpi_firmware/boot/start4.elf", "/start4.elf"],
-        ["rpi_firmware/boot/start4cd.elf", "/start4cd.elf"],
-        ["rpi_firmware/boot/start4db.elf", "/start4db.elf"],
-        ["rpi_firmware/boot/start4x.elf", "/start4x.elf"],
-        ["rpi_firmware/boot/start_cd.elf", "/start_cd.elf"],
-        ["rpi_firmware/boot/start_db.elf", "/start_db.elf"],
-        ["rpi_firmware/boot/start_x.elf", "/start_x.elf"],
-        ["rpi_firmware/boot/bootcode.bin", "/bootcode.bin"],
-
-        ["kernel_image/arm64/rpi_5/boot", "/"], # тут некоторые dtb лежат. по этому добавляю все равно даже в 32 битный образ
-
-        ["kernel_image/arm64/rpi_64/boot", "/"],
-        ["kernel_image/arm64/rpi_64/kernel.img", "/kernel8.img"],
-        ["kernel_image/arm64/rpi_64/kernel_config", "/kernel8_config"],
-        ["initramfs_rpi_64.img", "/initramfs8"],
-        
-        ["kernel_image/arm64/rpi_kernel/boot", "/"],
-        ["kernel_image/arm64/rpi_kernel/kernel.img", "/kernel.img"],
-        ["kernel_image/arm64/rpi_kernel/kernel_config", "/kernel_config"],
-        ["initramfs_rpi_kernel.img", "/initramfs"],
-
-        ["kernel_image/arm64/rpi_kernel7/boot", "/"],
-        ["kernel_image/arm64/rpi_kernel7/kernel7.img", "/kernel7.img"],
-        ["kernel_image/arm64/rpi_kernel7/kernel7_config", "/kernel7_config"],
-        ["initramfs_rpi_kernel7.img", "/initramfs7"],
-
-        ["files/cmdline_rpi_32.txt", "/cmdline.txt"],
-        ["files/config_rpi_32.txt", "/config.txt"]
-    ]
-
-    dtbList = devicetree_get_files("rpi_32", "dtb")
-    for dtb in dtbList:
-        items.append([dtb, f"/{os.path.basename(dtb)}"])
-
-    dtboList = devicetree_get_files("rpi_32", "dtbo")
-    for dtbo in dtboList:
-        items.append([dtbo, f"/overlays/{os.path.basename(dtbo)}"])
-
-    builditems.append({
-        "architectures": ["armhf"],
-
-        "type": "directory",
-        "name": "boot_rpi_32",
-        "export": False,
-
-        "items": items,
-
-        "directories": [
-            ["/rpi_32", [0, 0, "0000"]]
-        ]
-    })
-
-    builditems.append({
-        "architectures": ["armhf"],
-
-        "type": "filesystem",
-        "name": "boot_rpi_32.img",
-        "export": False,
-
-        "source": "boot_rpi_32",
-
-        "fs_type": "fat32",
-        "size": current_project.size_boot_partition,
-        "minsize": current_project.minsize_boot_partition,
-        "label": "BOOT"
-    })
-
-    builditems.append({
-        "architectures": ["armhf"],
-
-        "type": "filesystem",
-        "name": "rootfs_rpi_32.img",
-        "export": False,
-
-        "source": "rootfs directory RPI 32",
-
-        "fs_type": "ext4",
-        "size": current_project.size_root_partition, 
-        "minsize": current_project.minsize_root_partition,
-        "label": "rootfs"
-    })
-
-    builditems.append({
-        "architectures": ["armhf"],
-
-        "type": "full-disk-image",
-        "name": f"{current_project_name} RPI 32.img",
-        "export": True,
-
-        "size": "auto + (10 * 1024 * 1024)",
-
-        "partitionTable": "dos",
-        "partitions": [
-            ["boot_rpi_32.img", "c"],
-            ["rootfs_rpi_32.img", "linux"]
-        ] + appendPartitions
-    })
-
-def export_rpi_64(builditems, cmdline, appendPartitions):
-    config_txt = read_gnubox_file("rpi_64_config.txt") + "\n" + read_project_file("resources/rpi_64_config_extension.txt")
-
-    override = get_devicetree_override("rpi_64")
-    if override:
-        config_txt += f"\ndevice_tree={override}.dtb"
-
-    overlays = get_devicetree_overlays("rpi_64")
-    for overlay in overlays:
-        config_txt += f"\ndtoverlay={overlay}"
-
-    writeText(os.path.join(path_temp_syslbuild, "files", "cmdline_rpi_64.txt"), exclude_string("root=/dev/mmcblk0p2 " + cmdline + f" {getWaitFbStr(True)}\n", current_project.exclude_cmdline))
-    writeText(os.path.join(path_temp_syslbuild, "files", "config_rpi_64.txt"), config_txt)
-
-    items = [
-        ["rootfs directory x4", "."],
-        ["kernel_image/arm64/rpi_64/kernel_modules", "/usr", RIGHTS_644_755],
-        ["kernel_image/arm64/rpi_5/kernel_modules", "/usr", RIGHTS_644_755]
-    ]
-
-    if current_project.integrate_raspberry_firmwares_if_need:
-        items.append(["rpi_wireless_firmware/debian/config/brcm80211/brcm", "/lib/firmware/brcm", RIGHTS_644_755])
-        items.append(["rpi_wireless_firmware/debian/config/brcm80211/cypress", "/lib/firmware/cypress", RIGHTS_644_755])
-
-    builditems.append(any_rpi_rootfs_tweaks({
-        "architectures": ["arm64"],
-
-        "type": "directory",
-        "name": "rootfs directory RPI 64",
-        "export": False,
-
-        "items": items
-    }))
-
-    setup_export_initramfs(builditems, "rpi_64")
-
-    items = [
-        ["rpi_firmware/boot/COPYING.linux", "/COPYING.linux"],
-        ["rpi_firmware/boot/LICENCE.broadcom", "/LICENCE.broadcom"],
-        ["rpi_firmware/boot/overlays", "/overlays"],
-        ["rpi_firmware/boot/fixup.dat", "/fixup.dat"],
-        ["rpi_firmware/boot/fixup4.dat", "/fixup4.dat"],
-        ["rpi_firmware/boot/fixup4cd.dat", "/fixup4cd.dat"],
-        ["rpi_firmware/boot/fixup4db.dat", "/fixup4db.dat"],
-        ["rpi_firmware/boot/fixup4x.dat", "/fixup4x.dat"],
-        ["rpi_firmware/boot/fixup_cd.dat", "/fixup_cd.dat"],
-        ["rpi_firmware/boot/fixup_db.dat", "/fixup_db.dat"],
-        ["rpi_firmware/boot/fixup_x.dat", "/fixup_x.dat"],
-        ["rpi_firmware/boot/start.elf", "/start.elf"],
-        ["rpi_firmware/boot/start4.elf", "/start4.elf"],
-        ["rpi_firmware/boot/start4cd.elf", "/start4cd.elf"],
-        ["rpi_firmware/boot/start4db.elf", "/start4db.elf"],
-        ["rpi_firmware/boot/start4x.elf", "/start4x.elf"],
-        ["rpi_firmware/boot/start_cd.elf", "/start_cd.elf"],
-        ["rpi_firmware/boot/start_db.elf", "/start_db.elf"],
-        ["rpi_firmware/boot/start_x.elf", "/start_x.elf"],
-        ["rpi_firmware/boot/bootcode.bin", "/bootcode.bin"],
-
-        ["kernel_image/arm64/rpi_64/boot", "/"],
-        ["kernel_image/arm64/rpi_64/kernel.img", "/kernel8.img"],
-        ["kernel_image/arm64/rpi_64/kernel_config", "/kernel8_config"],
-        ["initramfs_rpi_64.img", "/initramfs8"],
-
-        ["kernel_image/arm64/rpi_5/boot", "/"],
-        ["kernel_image/arm64/rpi_5/kernel.img", "/kernel_2712.img"],
-        ["kernel_image/arm64/rpi_5/kernel_config", "/kernel2712_config"],
-        ["initramfs_rpi_5.img", "/initramfs_2712"],
-
-        ["files/cmdline_rpi_64.txt", "/cmdline.txt"],
-        ["files/config_rpi_64.txt", "/config.txt"]
-    ]
-
-    dtbList = devicetree_get_files("rpi_64", "dtb")
-    for dtb in dtbList:
-        items.append([dtb, f"/{os.path.basename(dtb)}"])
-
-    dtboList = devicetree_get_files("rpi_64", "dtbo")
-    for dtbo in dtboList:
-        items.append([dtbo, f"/overlays/{os.path.basename(dtbo)}"])
-
-    builditems.append({
-        "architectures": ["arm64"],
-
-        "type": "directory",
-        "name": "boot_rpi_64",
-        "export": False,
-
-        "items": items,
-
-        "directories": [
-            ["/rpi_64", [0, 0, "0000"]]
-        ]
-    })
-
-    builditems.append({
-        "architectures": ["arm64"],
-
-        "type": "filesystem",
-        "name": "boot_rpi_64.img",
-        "export": False,
-
-        "source": "boot_rpi_64",
-
-        "fs_type": "fat32",
-        "size": current_project.size_boot_partition,
-        "minsize": current_project.minsize_boot_partition,
-        "label": "BOOT"
-    })
-
-    builditems.append({
-        "architectures": ["arm64"],
-
-        "type": "filesystem",
-        "name": "rootfs_rpi_64.img",
-        "export": False,
-
-        "source": "rootfs directory RPI 64",
-
-        "fs_type": "ext4",
-        "size": current_project.size_root_partition, 
-        "minsize": current_project.minsize_root_partition,
-        "label": "rootfs"
-    })
-
-    builditems.append({
-        "architectures": ["arm64"],
-
-        "type": "full-disk-image",
-        "name": f"{current_project_name} RPI 64.img",
-        "export": True,
-
-        "size": "auto + (10 * 1024 * 1024)",
-
-        "partitionTable": "dos",
-        "partitions": [
-            ["boot_rpi_64.img", "c"],
-            ["rootfs_rpi_64.img", "linux"]
-        ] + appendPartitions
-    })
-
-def export_opi_zero3(builditems, cmdline, appendPartitions):
-    dtboList_active = []
-    for overlay in get_devicetree_overlays("opi_zero3"):
-        dtboList_active.append(overlay + ".dtbo")
-
-    devicetree = get_devicetree_override("opi_zero3")
-    if devicetree:
-        devicetree = devicetree + ".dtb"
-    else:
-        devicetree = "sun50i-h618-orangepi-zero3.dtb"
-
-    items = [
-        ["rootfs directory x4", "."],
-
-        ["sprdwl_ng", "/etc/modules-load.d/sprdwl_ng.conf", [0, 0, "0644"], True],
-
-        ["kernel_image/arm64/sunxi/kernel_modules", "/usr", RIGHTS_644_755]
-    ]
-
-    if current_project.integrate_armbian_firmwares_if_need:
-        items.append(["armbian_firmware", "/usr/lib/firmware", RIGHTS_644_755])
-
-    if current_project.platform_opi_zero3_hdmi_audio_high_priority:
-        conf = "&" + os.path.join(gnuboxmaker_dir, "opi_zero3_hdmi_audio_high_priority.conf")
-        items.append([conf, "/etc/wireplumber/wireplumber.conf.d/hdmi-audio-priority.conf", [0, 0, "0644"]])
-
-    builditems.append({
-        "architectures": ["arm64"],
-
-        "type": "directory",
-        "name": "rootfs directory opi_zero3",
-        "export": False,
-
-        "items": items
-    })
-
-    builditems.append({
-        "architectures": ["arm64"],
-
-        "type": "filesystem",
-        "name": "rootfs_opi_zero3.img",
-        "export": False,
-
-        "source": "rootfs directory opi_zero3",
-
-        "fs_type": "ext4",
-        "size": current_project.size_root_partition, 
-        "minsize": current_project.minsize_root_partition,
-        "label": "rootfs"
-    })
-
-    builditems.append({
-        "architectures": ["arm64"],
-
-        "type": "debian-export-initramfs",
-        "name": "initramfs_opi_zero3.img",
-        "export": False,
-
-        "kernel_config": "kernel_image/arm64/sunxi/kernel_config",
-        "source": "rootfs directory opi_zero3"
-    })
-
-    builditems.append({
-        "architectures": ["arm64"],
-
-        "type": "singleboard",
-        "name": f"{current_project_name} OPI ZERO 3.img",
-        "export": True,
-
-        "singleboardType": "uboot-offset",
-
-        "extlinux_path": "start.conf",
-        "uboot_script": "&" + os.path.join(gnuboxmaker_dir, "uboot_bootscript.cmd"),
-
-        "bootloader": "blobs/u-boot-sunxi-with-spl.bin",
-        "bootloader_offset": 16,
-        "bootloaderDtb": devicetree,
-
-        "dtbList": devicetree_get_files("opi_zero3", "dtb"),
-        "dtboList": devicetree_get_files("opi_zero3", "dtbo"),
-        "dtboList_active": dtboList_active,
-
-        "boot_part_items": [
-            ["kernel_image/arm64/sunxi/dtbs", "/dtbs"]
-        ],
-
-        "trigger_boot_flag": "opi_zero3",
-
-        "kernel": "kernel_image/arm64/sunxi/kernel.img",
-        "initramfs": "initramfs_opi_zero3.img",
-        "rootfs": "rootfs_opi_zero3.img",
-        "appendPartitions": appendPartitions,
-
-        "boot_partition_size": current_project.size_boot_partition,
-        "boot_partition_minsize": current_project.minsize_boot_partition,
-        "boot_partition_name": "BOOT",
-
-        "kernel_args_auto": True,
-        "kernel_rootfs_auto": "manual",
-        "kernel_args": exclude_string(cmdline + f" cma={current_project.platform_opi_zero3_cma} {getWaitFbStr(False)}", current_project.exclude_cmdline) # why is "waitFbBeforeModules" here? because in this FUCKING Chinese board, half of the peripherals start with a fucking delay, and it should be initialized by the time plymouth is launched
-    })
-
 def setup_build_targets(builditems, cmdline):
     appendPartitions = []
 
@@ -1993,16 +1527,16 @@ def setup_build_targets(builditems, cmdline):
         })
 
     if current_project.export_img_opi_zero3:
-        export_opi_zero3(builditems, cmdline, appendPartitions)
+        opi_zero3_export.export_opi_zero3(builditems, cmdline, appendPartitions)
 
     if current_project.export_img_rpi_32 or current_project.export_img_rpi_64:
-        any_rpi(builditems)
+        rpi_export.any_rpi(builditems)
 
     if current_project.export_img_rpi_32:
-        export_rpi_32(builditems, cmdline, appendPartitions)
+        rpi_export.export_rpi_32(builditems, cmdline, appendPartitions)
 
     if current_project.export_img_rpi_64:
-        export_rpi_64(builditems, cmdline, appendPartitions)
+        rpi_export.export_rpi_64(builditems, cmdline, appendPartitions)
 
 def generate_syslbuild_project():
     cmdline_console = ""
