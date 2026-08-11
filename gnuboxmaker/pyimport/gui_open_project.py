@@ -1,9 +1,8 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 from tkinter import filedialog, messagebox
-import __main__
 
-def create_frame(gui_container):
+def create_frame(gui_container, run_editor):
     frame_openproject = tk.Frame(gui_container)
 
     def open_project():
@@ -12,7 +11,7 @@ def create_frame(gui_container):
             filetypes=[("GNB files", "*.gnb")]
         )
         if file_path:
-            __main__.run_editor(file_path)
+            run_editor(file_path)
 
     def new_project():
         folder_path = filedialog.askdirectory(title="Select empty directory for new project")
@@ -20,7 +19,7 @@ def create_frame(gui_container):
             if os.listdir(folder_path):
                 messagebox.showwarning("Warning", "Directory is not empty!")
             else:
-                __main__.run_editor(os.path.join(folder_path, "gnubox.gnb"))
+                run_editor(os.path.join(folder_path, "gnubox.gnb"))
         
 
     img_openproject = ImageTk.PhotoImage(Image.open("gnuboxmaker/images/openproject.png").resize((400, 400)))
