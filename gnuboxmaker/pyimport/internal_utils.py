@@ -1,4 +1,5 @@
 from __main__ import *
+import __main__
 
 def get_name_without_all_extensions(filepath):
     p = Path(filepath)
@@ -71,7 +72,7 @@ def read_gnubox_file(name):
     return []
 
 def read_project_file(name):
-    path = os.path.join(current_project_directory, name)
+    path = os.path.join(__main__.current_project_directory, name)
     with open(path, 'r', encoding='utf-8') as f:
         return f.read()
     

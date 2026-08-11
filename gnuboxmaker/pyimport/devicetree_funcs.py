@@ -1,4 +1,5 @@
 from __main__ import *
+import __main__
 
 def compile_dts(source_path, output_path):
     """Компилирует .dts/.dtso файл в .dtb/.dtbo с символами (-@)."""
@@ -36,7 +37,7 @@ def prepair_devicetree(devicetree):
             compile_dts(full_path, out_full)
 
 def get_devicetree_override(platform):
-    dt_dir = os.path.join(path_temp_syslbuild, "files", "devicetree", platform)
+    dt_dir = os.path.join(__main__.path_temp_syslbuild, "files", "devicetree", platform)
     if os.path.isdir(dt_dir):
         override_path = os.path.join(dt_dir, 'override.txt')
         if os.path.isfile(override_path):
@@ -48,7 +49,7 @@ def get_devicetree_override(platform):
     return None
 
 def get_devicetree_overlays(platform):
-    dt_dir = os.path.join(path_temp_syslbuild, "files", "devicetree", platform)
+    dt_dir = os.path.join(__main__.path_temp_syslbuild, "files", "devicetree", platform)
     if os.path.isdir(dt_dir):
         overlays_path = os.path.join(dt_dir, 'overlays.txt')
         if os.path.isfile(overlays_path):
@@ -62,7 +63,7 @@ def get_devicetree_overlays(platform):
 def devicetree_get_files(platform, extension):
     files = []
 
-    dt_dir = os.path.join(path_temp_syslbuild, "files", "devicetree", platform)
+    dt_dir = os.path.join(__main__.path_temp_syslbuild, "files", "devicetree", platform)
     if os.path.isdir(dt_dir):
         for file in sorted(os.listdir(dt_dir)):
             full_path = os.path.join(dt_dir, file)
