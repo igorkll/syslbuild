@@ -22,6 +22,7 @@ module_dir = os.path.join(gnuboxmaker_dir, "pyimport")
 sys.path.insert(0, module_dir)
 
 import internal_utils
+import gui_open_project
 
 # ---------------------------------------- data
 
@@ -2264,7 +2265,6 @@ def console_build():
 
 def gui_base():
     global gui_window
-    global gui_container
     global guiLoaded
 
     guiLoaded = True
@@ -2281,9 +2281,9 @@ def gui_base():
 
     gui_container = tk.Frame(gui_window)
     gui_container.pack(fill="both", expand=True)
+    return gui_container
 
-def editor_frame():
-    global frame_editor
+def editor_frame(gui_container):
     frame_editor = tk.Frame(gui_container)
 
     bottom_frame = tk.Frame(frame_editor)
@@ -2312,56 +2312,16 @@ def editor_frame():
         gui_window.update_idletasks()
 
     frame_editor.place(relwidth=1, relheight=1)
-
-def open_project_frame():
-    global frame_openproject
-    frame_openproject = tk.Frame(gui_container)
-
-    def open_project():
-        file_path = filedialog.askopenfilename(
-            title="Open project (*.gnb)",
-            filetypes=[("GNB files", "*.gnb")]
-        )
-        if file_path:
-            run_editor(file_path)
-
-    def new_project():
-        folder_path = filedialog.askdirectory(title="Select empty directory for new project")
-        if folder_path:
-            if os.listdir(folder_path):
-                messagebox.showwarning("Warning", "Directory is not empty!")
-            else:
-                run_editor(os.path.join(folder_path, "gnubox.gnb"))
-        
-
-    img_openproject = ImageTk.PhotoImage(Image.open("gnuboxmaker/images/openproject.png").resize((400, 400)))
-    img_newproject = ImageTk.PhotoImage(Image.open("gnuboxmaker/images/newproject.png").resize((400, 400)))
-
-    frame_openproject.grid_rowconfigure(0, weight=1)
-    frame_openproject.grid_rowconfigure(1, weight=0)
-    frame_openproject.grid_columnconfigure(0, weight=1)
-    frame_openproject.grid_columnconfigure(1, weight=1)
-
-    label1 = tk.Label(frame_openproject, image=img_openproject)
-    label1.image = img_openproject
-    label1.grid(row=0, column=0, padx=10, pady=10)
-
-    label2 = tk.Label(frame_openproject, image=img_newproject)
-    label2.image = img_newproject
-    label2.grid(row=0, column=1, padx=10, pady=10)
-
-    button1 = tk.Button(frame_openproject, text="Open Project", command=open_project)
-    button1.grid(row=1, column=0, padx=10, pady=10)
-    button2 = tk.Button(frame_openproject, text="New Project", command=new_project)
-    button2.grid(row=1, column=1, padx=10, pady=10)
-
-    frame_openproject.place(relwidth=1, relheight=1)
+    return frame_editor
 
 def main():
+    global frame_editor
+    
     console_build()
-    gui_base()
-    open_project_frame()
-    editor_frame()
+
+    gui_container = gui_base()
+    frame_openproject = gui_open_project.create_frame(gui_container)
+    frame_editor = editor_frame(gui_container)
 
     show_frame(frame_openproject)
     gui_window.mainloop()
