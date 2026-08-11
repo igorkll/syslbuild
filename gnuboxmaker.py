@@ -15,7 +15,10 @@ import time
 import syslbuild
 
 # module_dir = os.path.join(os.path.dirname(__file__), "gnuboxmaker/pyimport")
-module_dir = os.path.join(os.getcwd(), "gnuboxmaker/pyimport")
+
+gnuboxmaker_dir = os.path.join(os.getcwd(), "gnuboxmaker")
+module_dir = os.path.join(gnuboxmaker_dir, "pyimport")
+
 sys.path.insert(0, module_dir)
 
 import internal_utils
@@ -137,6 +140,9 @@ class Project:
     export_img_opi_zero3: bool = False
     export_img_rpi_32: bool = False
     export_img_rpi_64: bool = False
+
+    platform_opi_zero3_cma: str = "256M"
+    platform_opi_zero3_hdmi_audio_high_priority: bool = True
 
 def raw_load_project(path):
     with open(path, "r", encoding="utf-8") as f:
@@ -1729,6 +1735,19 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
     else:
         devicetree = "sun50i-h618-orangepi-zero3.dtb"
 
+    items = [
+        ["rootfs directory x4", "."],
+
+        ["sprdwl_ng", "/etc/modules-load.d/sprdwl_ng.conf", [0, 0, "0644"], True],
+
+        ["kernel_image/arm64/sunxi/kernel_modules", "/usr", RIGHTS_644_755],
+        ["armbian_firmware", "/usr/lib/firmware", RIGHTS_644_755]
+    ]
+
+    if current_project.platform_opi_zero3_hdmi_audio_high_priority:
+        conf = "&" + os.path.join(gnuboxmaker_dir, "opi_zero3_hdmi_audio_high_priority.conf")
+        items.append([conf, "/etc/wireplumber/wireplumber.conf.d/hdmi-audio-priority.conf", [0, 0, "0644"], True])
+
     builditems.append({
         "architectures": ["arm64"],
 
@@ -1736,14 +1755,7 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         "name": "rootfs directory opi_zero3",
         "export": False,
 
-        "items": [
-            ["rootfs directory x4", "."],
-
-            ["sprdwl_ng", "/etc/modules-load.d/sprdwl_ng.conf", [0, 0, "0644"], True],
-
-            ["kernel_image/arm64/sunxi/kernel_modules", "/usr", RIGHTS_644_755],
-            ["armbian_firmware", "/usr/lib/firmware", RIGHTS_644_755]
-        ]
+        "items": items
     })
 
     builditems.append({
@@ -1782,7 +1794,7 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         "singleboardType": "uboot-offset",
 
         "extlinux_path": "start.conf",
-        "uboot_script": "&" + os.path.join(os.getcwd(), "gnuboxmaker", "uboot_bootscript.cmd"),
+        "uboot_script": "&" + os.path.join(gnuboxmaker_dir, "uboot_bootscript.cmd"),
 
         "bootloader": "blobs/u-boot-sunxi-with-spl.bin",
         "bootloader_offset": 16,
@@ -1809,7 +1821,7 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
 
         "kernel_args_auto": True,
         "kernel_rootfs_auto": "manual",
-        "kernel_args": exclude_string(cmdline + f" cma=256M {getWaitFbStr(False)}", current_project.exclude_cmdline) # why is "waitFbBeforeModules" here? because in this FUCKING Chinese board, half of the peripherals start with a fucking delay, and it should be initialized by the time plymouth is launched
+        "kernel_args": exclude_string(cmdline + f" cma={current_project.platform_opi_zero3_cma} {getWaitFbStr(False)}", current_project.exclude_cmdline) # why is "waitFbBeforeModules" here? because in this FUCKING Chinese board, half of the peripherals start with a fucking delay, and it should be initialized by the time plymouth is launched
     })
 
 def setup_build_targets(builditems, cmdline):
@@ -2232,108 +2244,124 @@ def load_project(path):
 
     return True
 
-# ---------------------------------------- console build
-
-guiLoaded = False
-if len(sys.argv) > 1:
-    if load_project(sys.argv[1]):
-        build_project()
-    sys.exit(0)
-
-# ---------------------------------------- gui base
-
-guiLoaded = True
-window = tk.Tk()
-window.title("Gnubox maker")
-window.geometry("1200x700")
-
-window.update_idletasks()
-width = window.winfo_width()
-height = window.winfo_height()
-x = (window.winfo_screenwidth() // 2) - (width // 2)
-y = (window.winfo_screenheight() // 2) - (height // 2)
-window.geometry(f'{width}x{height}+{x}+{y}')
-
-container = tk.Frame(window)
-container.pack(fill="both", expand=True)
-frame_openproject = tk.Frame(container)
-frame_editor = tk.Frame(container)
-
-for frame in (frame_openproject, frame_editor):
-    frame.place(relwidth=1, relheight=1)
-
-def show_frame(frame):
-    frame.tkraise()
-
-# ---------------------------------------- editor frame
-
-bottom_frame = tk.Frame(frame_editor)
-bottom_frame.pack(side="bottom", fill="x", padx=10, pady=10)
-
-progress_label = tk.Label(bottom_frame, text="Nothing")
-progress_label.grid(row=0, column=0, columnspan=2, sticky="w", pady=(0,5))
-
-progress = ttk.Progressbar(bottom_frame, orient="horizontal", mode="determinate")
-progress.grid(row=1, column=0, sticky="ew")
-progress["maximum"] = 100
-
-build_btn = tk.Button(bottom_frame, text="Build", command=build_project)
-build_btn.grid(row=1, column=1, padx=10)
-
-bottom_frame.grid_columnconfigure(0, weight=1)
-
-def updateProgress(value=0, text=None):
-    if text is None:
-        text = "Nothing"
-
-    buildLog(f"{value} : {text}")
-    
-    progress["value"] = value
-    progress_label["text"] = text
-    window.update_idletasks()
+# ----------------------------------------
 
 def run_editor(path):
     if load_project(path):
         show_frame(frame_editor)
 
-# ---------------------------------------- open project frame
+def show_frame(frame):
+    frame.tkraise()
 
-def open_project():
-    file_path = filedialog.askopenfilename(
-        title="Open project (*.gnb)",
-        filetypes=[("GNB files", "*.gnb")]
-    )
-    if file_path:
-        run_editor(file_path)
+def console_build():
+    global guiLoaded
 
-def new_project():
-    folder_path = filedialog.askdirectory(title="Select empty directory for new project")
-    if folder_path:
-        if os.listdir(folder_path):
-            messagebox.showwarning("Warning", "Directory is not empty!")
-        else:
-            run_editor(os.path.join(folder_path, "gnubox.gnb"))
-    
+    guiLoaded = False
+    if len(sys.argv) > 1:
+        if load_project(sys.argv[1]):
+            build_project()
+        sys.exit(0)
 
-img_openproject = ImageTk.PhotoImage(Image.open("gnuboxmaker/images/openproject.png").resize((400, 400)))
-img_newproject = ImageTk.PhotoImage(Image.open("gnuboxmaker/images/newproject.png").resize((400, 400)))
+def gui_base():
+    global gui_window
+    global gui_container
+    global guiLoaded
 
-frame_openproject.grid_rowconfigure(0, weight=1)
-frame_openproject.grid_rowconfigure(1, weight=0)
-frame_openproject.grid_columnconfigure(0, weight=1)
-frame_openproject.grid_columnconfigure(1, weight=1)
+    guiLoaded = True
+    gui_window = tk.Tk()
+    gui_window.title("Gnubox maker")
+    gui_window.geometry("1200x700")
 
-label1 = tk.Label(frame_openproject, image=img_openproject)
-label1.grid(row=0, column=0, padx=10, pady=10)
-label2 = tk.Label(frame_openproject, image=img_newproject)
-label2.grid(row=0, column=1, padx=10, pady=10)
+    gui_window.update_idletasks()
+    width = gui_window.winfo_width()
+    height = gui_window.winfo_height()
+    x = (gui_window.winfo_screenwidth() // 2) - (width // 2)
+    y = (gui_window.winfo_screenheight() // 2) - (height // 2)
+    gui_window.geometry(f'{width}x{height}+{x}+{y}')
 
-button1 = tk.Button(frame_openproject, text="Open Project", command=open_project)
-button1.grid(row=1, column=0, padx=10, pady=10)
-button2 = tk.Button(frame_openproject, text="New Project", command=new_project)
-button2.grid(row=1, column=1, padx=10, pady=10)
+    gui_container = tk.Frame(gui_window)
+    gui_container.pack(fill="both", expand=True)
 
-# ----------------------------------------
+def editor_frame():
+    global frame_editor
+    frame_editor = tk.Frame(gui_container)
 
-show_frame(frame_openproject)
-window.mainloop() 
+    bottom_frame = tk.Frame(frame_editor)
+    bottom_frame.pack(side="bottom", fill="x", padx=10, pady=10)
+
+    progress_label = tk.Label(bottom_frame, text="Nothing")
+    progress_label.grid(row=0, column=0, columnspan=2, sticky="w", pady=(0,5))
+
+    progress = ttk.Progressbar(bottom_frame, orient="horizontal", mode="determinate")
+    progress.grid(row=1, column=0, sticky="ew")
+    progress["maximum"] = 100
+
+    build_btn = tk.Button(bottom_frame, text="Build", command=build_project)
+    build_btn.grid(row=1, column=1, padx=10)
+
+    bottom_frame.grid_columnconfigure(0, weight=1)
+
+    def updateProgress(value=0, text=None):
+        if text is None:
+            text = "Nothing"
+
+        buildLog(f"{value} : {text}")
+        
+        progress["value"] = value
+        progress_label["text"] = text
+        gui_window.update_idletasks()
+
+    frame_editor.place(relwidth=1, relheight=1)
+
+def open_project_frame():
+    global frame_openproject
+    frame_openproject = tk.Frame(gui_container)
+
+    def open_project():
+        file_path = filedialog.askopenfilename(
+            title="Open project (*.gnb)",
+            filetypes=[("GNB files", "*.gnb")]
+        )
+        if file_path:
+            run_editor(file_path)
+
+    def new_project():
+        folder_path = filedialog.askdirectory(title="Select empty directory for new project")
+        if folder_path:
+            if os.listdir(folder_path):
+                messagebox.showwarning("Warning", "Directory is not empty!")
+            else:
+                run_editor(os.path.join(folder_path, "gnubox.gnb"))
+        
+
+    img_openproject = ImageTk.PhotoImage(Image.open("gnuboxmaker/images/openproject.png").resize((400, 400)))
+    img_newproject = ImageTk.PhotoImage(Image.open("gnuboxmaker/images/newproject.png").resize((400, 400)))
+
+    frame_openproject.grid_rowconfigure(0, weight=1)
+    frame_openproject.grid_rowconfigure(1, weight=0)
+    frame_openproject.grid_columnconfigure(0, weight=1)
+    frame_openproject.grid_columnconfigure(1, weight=1)
+
+    label1 = tk.Label(frame_openproject, image=img_openproject)
+    label1.grid(row=0, column=0, padx=10, pady=10)
+    label2 = tk.Label(frame_openproject, image=img_newproject)
+    label2.grid(row=0, column=1, padx=10, pady=10)
+
+    button1 = tk.Button(frame_openproject, text="Open Project", command=open_project)
+    button1.grid(row=1, column=0, padx=10, pady=10)
+    button2 = tk.Button(frame_openproject, text="New Project", command=new_project)
+    button2.grid(row=1, column=1, padx=10, pady=10)
+
+    frame_openproject.place(relwidth=1, relheight=1)
+
+def main():
+    console_build()
+    gui_base()
+    editor_frame()
+    open_project_frame()
+
+    show_frame(frame_openproject)
+    gui_window.mainloop()
+
+if __name__ == "__main__":
+    main()
