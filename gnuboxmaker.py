@@ -330,7 +330,7 @@ def setup_build_architectures(builditems, architectures):
 
 def gen_default_first_chroot_script():
     if current_project.session_mode == "wayland" or current_project.session_mode == "x11":
-        user_shell = "/run_session.sh"
+        user_shell = "/gnubox/run_session.sh"
     else:
         user_shell = "/gnubox/runshell_launcher.sh"
         
@@ -1325,13 +1325,13 @@ def setup_build_base(builditems):
             "path": "/super_kiosk_browser_build/super_kiosk_browser-linux-arm64"
         })
         
-        directories.append(["/super_kiosk_browser", [0, 0, "0755"]])
-        items.append(["super-kiosk-browser-target", "/super_kiosk_browser", [0, 0, "0755"]])
+        directories.append(["/gnubox/super_kiosk_browser", [0, 0, "0755"]])
+        items.append(["super-kiosk-browser-target", "/gnubox/super_kiosk_browser", [0, 0, "0755"]])
 
     if current_project.session_mode == "wayland":
-        items.append(["files/run_session_wayland.sh", "/run_session.sh", [0, 0, "0755"]])
+        items.append(["files/run_session_wayland.sh", "/gnubox/run_session.sh", [0, 0, "0755"]])
     elif current_project.session_mode == "x11":
-        items.append(["files/run_session_x11.sh", "/run_session.sh", [0, 0, "0755"]])
+        items.append(["files/run_session_x11.sh", "/gnubox/run_session.sh", [0, 0, "0755"]])
     elif current_project.session_mode == "tty":
         directories.append(["/gnubox/.session_mode_tty", [0, 0, "0000"]])
 

@@ -108,7 +108,7 @@ def get_browser(url):
 def get_browser(url):
     return {
         "packages": [],
-        "command": f"/super_kiosk_browser/super_kiosk_browser {url}",
+        "command": f"/gnubox/super_kiosk_browser/super_kiosk_browser {url}",
         "project_config": {
             "integrate_super_kiosk_browser": True
         }
