@@ -30,9 +30,6 @@ weston_shell_variants = ["kiosk", "desktop"]
 splash_mode_variants = ["center", "fill", "contain", "cover"]
 boot_sound_variants = ["none", "init", "logo"]
 
-default_devicetree_overlays = {
-}
-
 RIGHTS_644_755 = [[0, 0, "0644"], [0, 0, "0755"]]
 
 default_debian_suite = "trixie"
@@ -148,15 +145,6 @@ class Project:
 
 class CancelGUI(Exception):
     pass
-
-def buildLog(logstr, quiet=False):
-    if not quiet:
-        logstr = f"---------------- GNUBOX MAKER: {logstr}"
-    
-    print(logstr)
-
-    # log_file.write(logstr + "\n")
-    # log_file.flush()
 
 def failed_to_build(err="Failed to build"):
     updateProgress(100, "Failed")
@@ -816,97 +804,6 @@ def setup_bootsound():
     if current_project.boot_sound == "init" or (current_project.boot_sound == "logo" and current_project.boot_splash):
         copyFile(os.path.join(path_temp_syslbuild, "files", "startup.wav"), project_startup_sound_wav_path)
 
-def compile_dts(source_path, output_path):
-    """Компилирует .dts/.dtso файл в .dtb/.dtbo с символами (-@)."""
-    cmd = ['dtc', '-@', '-I', 'dts', '-O', 'dtb', '-o', output_path, source_path]
-    try:
-        subprocess.run(cmd, check=True, capture_output=True, text=True)
-        if os.path.isfile(output_path):
-            buildLog(f"[OK] {source_path} -> {output_path}")
-        else:
-            stop_error(f"[FAIL] {source_path}")
-    except subprocess.CalledProcessError as e:
-        stop_error(f"[FAIL] {source_path}:\n  {e.stderr}", file=sys.stderr)
-
-def prepair_devicetree(devicetree):
-    for plat_name in os.listdir(devicetree):
-        plat_path = os.path.join(devicetree, plat_name)
-        if not os.path.isdir(plat_path):
-            continue
-
-        for file in os.listdir(plat_path):
-            full_path = os.path.join(plat_path, file)
-            if not os.path.isfile(full_path):
-                continue
-
-            if file.endswith('.dts'):
-                out_ext = '.dtb'
-            elif file.endswith('.dtso'):
-                out_ext = '.dtbo'
-            else:
-                continue
-
-            base_name = os.path.splitext(file)[0]
-            out_file = base_name + out_ext
-            out_full = os.path.join(plat_path, out_file)
-            compile_dts(full_path, out_full)
-
-def get_devicetree_override(platform):
-    dt_dir = os.path.join(path_temp_syslbuild, "files", "devicetree", platform)
-    if os.path.isdir(dt_dir):
-        override_path = os.path.join(dt_dir, 'override.txt')
-        if os.path.isfile(override_path):
-            with open(override_path, 'r', encoding='utf-8') as f:
-                content = f.read().strip()
-                if len(content) > 0:
-                    return content
-    
-    return None
-
-def get_devicetree_overlays(platform):
-    dt_dir = os.path.join(path_temp_syslbuild, "files", "devicetree", platform)
-    if os.path.isdir(dt_dir):
-        overlays_path = os.path.join(dt_dir, 'overlays.txt')
-        if os.path.isfile(overlays_path):
-            with open(overlays_path, 'r', encoding='utf-8') as f:
-                content = f.read().strip()
-                if len(content) > 0:
-                    return content.splitlines()
-    
-    return []
-
-def read_gnubox_file(name):
-    path = os.path.join("gnuboxmaker", name)
-    with open(path, 'r', encoding='utf-8') as f:
-        return f.read()
-    
-    return []
-
-def read_project_file(name):
-    path = os.path.join(current_project_directory, name)
-    with open(path, 'r', encoding='utf-8') as f:
-        return f.read()
-    
-    return []
-
-def devicetree_get_files(platform, extension):
-    files = []
-
-    dt_dir = os.path.join(path_temp_syslbuild, "files", "devicetree", platform)
-    if os.path.isdir(dt_dir):
-        for file in sorted(os.listdir(dt_dir)):
-            full_path = os.path.join(dt_dir, file)
-            if not os.path.isfile(full_path):
-                continue
-            
-            if full_path.endswith('.' + extension):
-                files.append(os.path.join("files", "devicetree", platform, file))
-    
-    return files
-
-def copy_files(from_path, to_path):
-    buildExecute(["cp", "-a", from_path + "/.", to_path])
-
 def setup_write_files():
     etc_config = os.path.join(path_temp_syslbuild, "files", "etc_config")
     systemd_config = os.path.join(path_temp_syslbuild, "files", "systemd_config")
@@ -988,9 +885,6 @@ Storage=none""")
     copy_files(os.path.join(path_resources, "files"), user_files)
     copy_files(os.path.join(path_resources, "devicetree"), devicetree)
     copy_files(os.path.join(path_resources, "initramfs"), user_initramfs)
-
-    for platform, path in default_devicetree_overlays.items():
-        copy_files(path, os.path.join(devicetree, platform))
 
     shutil.copy(os.path.join(path_resources, "runshell.sh"), os.path.join(path_temp_syslbuild, "files", "runshell.sh"))
     shutil.copy(os.path.join(path_resources, "preinit.sh"), os.path.join(path_temp_syslbuild, "files", "preinit.sh"))
@@ -1852,6 +1746,7 @@ def main():
 # ----------------------------------------
 
 from internal_utils import *
+from devicetree_funcs import *
 
 import gui_open_project
 import gui_editor

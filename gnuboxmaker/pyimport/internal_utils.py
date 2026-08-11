@@ -53,3 +53,26 @@ def writeText(path, text):
 def copyFile(path, fromPath):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     shutil.copy(fromPath, path)
+
+def copy_files(from_path, to_path):
+    buildExecute(["cp", "-a", from_path + "/.", to_path])
+
+def buildLog(logstr, quiet=False):
+    if not quiet:
+        logstr = f"---------------- GNUBOX MAKER: {logstr}"
+    
+    print(logstr)
+
+def read_gnubox_file(name):
+    path = os.path.join("gnuboxmaker", name)
+    with open(path, 'r', encoding='utf-8') as f:
+        return f.read()
+    
+    return []
+
+def read_project_file(name):
+    path = os.path.join(current_project_directory, name)
+    with open(path, 'r', encoding='utf-8') as f:
+        return f.read()
+    
+    return []
