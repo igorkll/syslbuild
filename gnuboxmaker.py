@@ -682,7 +682,7 @@ def setup_download(builditems):
         "git_checkout": "d9846710f54da5e4383e2d67311819659ac2cf5c"
     })
 
-    addDownload("custom-debian-initramfs-init", "1.6.3")
+    addDownload("custom-debian-initramfs-init", "1.6.5")
     addDownload("linux-embedded-setup-scripts", "0.2")
     addDownloadRelease("linux-bootloaders", "1.2", "linux-bootloaders.tar.gz")
     unpackRelease("linux-bootloaders.tar.gz")
