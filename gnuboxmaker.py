@@ -1029,7 +1029,7 @@ def getWaitFbStr(afterModules):
         return "waitFbAfterModules" if afterModules else "waitFbBeforeModules"
     return ""
 
-def setup_build_base(builditems):
+def setup_build_base(builditems, cmdline):
     setup_build_distro(builditems)
     setup_write_files()
 
@@ -1047,6 +1047,8 @@ def setup_build_base(builditems):
 
     items = [
         ["rootfs directory x1", "."],
+
+        [cmdline, "/gnubox/cmdline.txt", RIGHTS_644_755, True],
 
         ["files/etc_config", "/etc", RIGHTS_644_755],
         ["files/systemd_config", "/etc/systemd", RIGHTS_644_755],
@@ -1244,7 +1246,7 @@ def generate_syslbuild_project():
     
     setup_build_architectures(builditems, architectures)
     setup_download(builditems)
-    setup_build_base(builditems)
+    setup_build_base(builditems, cmdline)
     export.setup_build_targets(builditems, cmdline)
 
     syslbuild_project = {
@@ -1326,21 +1328,6 @@ def build_project():
             failed_to_build()
         else:
             stop_error("Failed to build")
-
-def init_devicetree(name):
-    devicetree = os.path.join(path_resources, "devicetree", name)
-
-    os.makedirs(devicetree, exist_ok=True)
-
-    devicetree_override = os.path.join(devicetree, "override.txt")
-    if not os.path.isfile(devicetree_override):
-        with open(devicetree_override, "w", encoding="utf-8") as f:
-            pass
-
-    devicetree_overlays = os.path.join(devicetree, "overlays.txt")
-    if not os.path.isfile(devicetree_overlays):
-        with open(devicetree_overlays, "w", encoding="utf-8") as f:
-            pass
 
 def update_project_structure():
     os.makedirs(path_resources, exist_ok=True)

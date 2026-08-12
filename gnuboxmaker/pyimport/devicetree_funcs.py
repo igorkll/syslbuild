@@ -74,3 +74,18 @@ def devicetree_get_files(platform, extension):
                 files.append(os.path.join("files", "devicetree", platform, file))
     
     return files
+
+def init_devicetree(name):
+    devicetree = os.path.join(__main__.path_resources, "devicetree", name)
+
+    os.makedirs(devicetree, exist_ok=True)
+
+    devicetree_override = os.path.join(devicetree, "override.txt")
+    if not os.path.isfile(devicetree_override):
+        with open(devicetree_override, "w", encoding="utf-8") as f:
+            pass
+
+    devicetree_overlays = os.path.join(devicetree, "overlays.txt")
+    if not os.path.isfile(devicetree_overlays):
+        with open(devicetree_overlays, "w", encoding="utf-8") as f:
+            pass
