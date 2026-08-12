@@ -42,6 +42,7 @@ tested on OS: linux mint
 * add support for custom kernels
 
 ## bugs
+you can fix any of these bugs yourself if necessary, and if you want to send a pull request. a lot can be fixed with chroot scripts in the project  
 * "screen idle time" does not work on wayland
 * gpu is not working on orange pi zero 3
 * bluetooth is not working on orange pi zero 3
