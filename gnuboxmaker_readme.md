@@ -44,6 +44,7 @@ tested on OS: linux mint
 ## bugs
 * "screen idle time" does not work on wayland
 * gpu is not working on orange pi zero 3
+* bluetooth is not working on orange pi zero 3
 * 32 bit arm and rpi_32 NOT SUPPORTED IN THE MOMENT
 
 ## supported platforms
