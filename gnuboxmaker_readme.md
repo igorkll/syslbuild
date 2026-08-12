@@ -47,6 +47,7 @@ you can fix any of these bugs yourself if necessary, and if you want to send a p
 * gpu is not working on orange pi zero 3
 * bluetooth is not working on orange pi zero 3
 * on raspberry pi and orange pi zero 3, wayland uses a software renderer
+* on the orange pi zero 3, when audio is output to the line output, the sound plays twice as slowly. at the same time, the file reproduction itself slows down and the scale of reproduction is slower (at least in chrome)
 * 32 bit arm and rpi_32 NOT SUPPORTED IN THE MOMENT
 
 ## supported platforms
@@ -80,7 +81,7 @@ alternatively, you can fork gnubox maker and then offer a pull request
 ## platforms support rate (from 0 to 10)
 * x86 - 9/10
 * raspberry pi 64 - 9/10
-* orange pi zero 3 - 4/10
+* orange pi zero 3 - 5/10
 
 ## used kernel patches (from https://github.com/igorkll/linux-embedded-patchs)
 * disable_vt_swithing_from_keyboard.patch - prevents the possibility of switching VT from the keyboard
