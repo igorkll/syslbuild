@@ -1,6 +1,7 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 from tkinter import filedialog, messagebox
+import os
 
 def create_frame(gui_container, run_editor):
     frame_openproject = tk.Frame(gui_container)

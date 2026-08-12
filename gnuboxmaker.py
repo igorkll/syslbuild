@@ -1472,7 +1472,7 @@ from devicetree_funcs import *
 import gui_open_project
 import gui_editor
 
-import initramfs
+from initramfs import *
 
 import rpi_export
 import opi_zero3_export
