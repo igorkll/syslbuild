@@ -60,7 +60,7 @@ you can fix any of these bugs yourself if necessary, and if you want to send a p
 if the platform you need is not available in gnubox maker, you can use syslbuild (a lower-level tool for creating embedded linux builds) where you can customize the build for any hardware you are interested in and do anything with the system  
 alternatively, you can fork gnubox maker and then offer a pull request  
 * in the build for some platforms such as "orange pi zero 3" there are many additional dtb files that can be enabled with a file in the boot partition (or specify an alternative dtb in the file "override.txt" in the "resources/devicetree/PLATFORM" directory), so you can achieve work on similar platforms (for example, orange pi zero 2 or 2w)
-* you can enable the rootfs export function as a directory or in tar format by configuring the build for the desired CPU architecture, then you can create a script yourself that builds a kernel for your platform with kernel patches from gnubox maker (see the section "used kernel patches"), installs modules in this rootfs, builds initramfs and builds an image for your platform. This way you can independently export the gnubox maker project for ANY platform
+* you can enable the rootfs export function as a directory or in tar format by configuring the build for the desired CPU architecture, then you can create a script yourself that builds a kernel for your platform with kernel patches from gnubox maker (see the section "used kernel patches"), installs modules in this rootfs, builds initramfs and builds an image for your platform. This way you can independently export the gnubox maker project for ANY platform. note that if you export rootfs for x86/x86_64, it will already contain the kernel file /kernel.img and kernel modules. don't forget to delete them if you don't need the original kernel. when exporting rootfs for ARM architectures, they will not have a kernel
 
 ## projects used
 * syslbuild: https://github.com/igorkll/syslbuild
@@ -82,8 +82,8 @@ alternatively, you can fork gnubox maker and then offer a pull request
 
 ## platforms support rate (from 0 to 10)
 * x86 - 9/10
-* raspberry pi 64 - 9/10
-* orange pi zero 3 - 5/10
+* raspberry pi 64 - 8/10
+* orange pi zero 3 - 6/10
 
 ## used kernel patches (from https://github.com/igorkll/linux-embedded-patchs)
 * disable_vt_swithing_from_keyboard.patch - prevents the possibility of switching VT from the keyboard
@@ -152,6 +152,7 @@ please note that the partition sizes CANNOT be increased during the update. ther
 * DO NOT USE "boot_splash" on devices without a screen. Since on some platforms the initialization script will wait for the framebuffer to appear so that the user sees the logo, as a result, the device will not start at all. You can use startup sound in init mode, for example, to inform the user that the device's power is on.
 * during the build, a lot is downloaded from the Internet. The assembly will not work without a network connection
 * in the system image built through gnubox maker, it is STRONGLY RECOMMENDED NOT to use the apt and dpkg package manager, much less update the system using them. There is a "/sbin/self_update" mechanism for updating and to install applications on a ready-made embedded device, I recommend implementing flatpak
+* note that if you export rootfs for x86/x86_64, it will already contain the kernel file /kernel.img and kernel modules (although it won't contain a ramdisk). don't forget to delete them if you don't need the original kernel. when exporting rootfs for ARM architectures, they will not have a kernel
 
 ## notes
 * please note that by default, the first time you turn on the created root image, the partition will be enlarged to the maximum possible size for the current media. this is done because I cannot know what size of drive the *.img image will be written to
