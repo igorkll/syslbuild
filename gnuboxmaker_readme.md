@@ -14,7 +14,6 @@ Gnubox maker secures the build from the project, which allows you to save the co
 as well as Gnubox maker projects can be controlled via git  
 The .img images for x86 / x86_64 that Gnubox maker generates are universal. they can be written to a USB drive or to a hard disk/SSD. also, when the device is turned on for the first time, the partition size will increase to the maximum possible (up to the entire available disk space) so that the OS can use all available space  
 a similar program for creating Windows images for embedded devices: https://github.com/igorkll/WinBox-Maker  
-ATTENTION. Starting from version 1.3.9, the kernels do not go with the program, but are assembled on the user's computer during installation. because of this, the installation can take a long time. up to several hours  
 if your task requires an even simpler program, you can consider mkbootable: https://github.com/igorkll/mkbootable  
 If you don't have enough gnubox maker features or you need a minimum image size, you can go down a level and use syslbuild directly: https://github.com/igorkll/syslbuild  
 
