@@ -1779,6 +1779,7 @@ def rawCrossChroot(chrootDirectory, chrootCommand, useSystemd=False, manualValid
             buildExecute(["chmod", "0755", qemuStaticPath])
             buildExecute(["chown", "0:0", qemuStaticPath])
         else:
+            # надо добавить флаг чтобы можно было принудительно копировать qemu переименовывая старый а потом возврашая как было
             buildLog(f"qemu-static should have been copied, but the file with that name is already in the chroot directory. i'm skipping it ({qemuStaticName})")
 
     fix_systemd_container_host_files_copy_list = [
@@ -1832,11 +1833,12 @@ wait $CONTAINER_PID""", checkValid)
         deleteAny(qemuStaticPath)
 
     for bindPath in bindList:
-        buildRawExecute(f"umount \"{pathConcat(chrootDirectory, bindPath)}\"", False)
+        buildRawExecute(f"umount -R \"{pathConcat(chrootDirectory, bindPath)}\"", False)
+
+    buildRawExecute(f"umount -R {chrootDirectory}", False)
 
     for makedDirectoryBindPath in makedDirectories:
         buildRawExecute(f"rm -rf \"{makedDirectoryBindPath}\"")
-
 
     if manualValidation:
         checkObjPath = pathConcat(chrootDirectory, ".chrootend")
