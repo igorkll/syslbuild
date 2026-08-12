@@ -80,7 +80,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * -n - does the build anew, does not use the cache (syslbuild caches the kernel source code anyway, even in this mode. use -d if you want to download the kernel again)
 * -d - do not use the download cache of the kernel sources
 * -e - completely clears the entire cache before building
-* --disable-chroot - disables the build inside the chroot container
+* --enable-chroot - enable the build inside the chroot container (WORK IN PROCESS)
 
 ## supported export architectures
 * ALL - builds a project for all architectures from the list of project architectures

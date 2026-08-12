@@ -2786,11 +2786,11 @@ if __name__ == "__main__":
     parser.add_argument("-d", action="store_true", help="do not use the download cache of the kernel sources")
     parser.add_argument("-e", action="store_true", help="completely clears the entire cache before building")
     parser.add_argument("-g", action="store_true", help="deletes the files of the architecture being builded before building. saves downloaded kernel sources")
-    parser.add_argument("--disable-chroot", action="store_true", help="disables the build inside the chroot container")
+    parser.add_argument("--enable-chroot", action="store_true", help="enable the build inside the chroot container")
     args = parser.parse_args()
     
     requireRoot()
-    if not args.disable_chroot and False:
+    if args.enable_chroot:
         all_args = sys.argv[1:]
         json_path = args.json_path
         all_args.pop(all_args.index(json_path))
