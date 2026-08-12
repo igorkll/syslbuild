@@ -47,7 +47,8 @@ you can fix any of these bugs yourself if necessary, and if you want to send a p
 * bluetooth is not working on orange pi zero 3
 * on raspberry pi and orange pi zero 3, wayland uses a software renderer
 * on the orange pi zero 3, when audio is output to the line output, the sound plays twice as slowly. at the same time, the file reproduction itself slows down and the scale of reproduction is slower (at least in chrome)
-* 32 bit arm and rpi_32 NOT SUPPORTED IN THE MOMENT
+* rpi_32 NOT SUPPORTED IN THE MOMENT
+* boot_sound only works on x86 at the moment
 
 ## supported platforms
 * x86_64 (BIOS, UEFI)
@@ -58,6 +59,7 @@ you can fix any of these bugs yourself if necessary, and if you want to send a p
 if the platform you need is not available in gnubox maker, you can use syslbuild (a lower-level tool for creating embedded linux builds) where you can customize the build for any hardware you are interested in and do anything with the system  
 alternatively, you can fork gnubox maker and then offer a pull request  
 * in the build for some platforms such as "orange pi zero 3" there are many additional dtb files that can be enabled with a file in the boot partition (or specify an alternative dtb in the file "override.txt" in the "resources/devicetree/PLATFORM" directory), so you can achieve work on similar platforms (for example, orange pi zero 2 or 2w)
+* you can enable the rootfs export function as a directory or in tar format by configuring the build for the desired CPU architecture, then you can create a script yourself that builds a kernel for your platform with kernel patches from gnubox maker (see the section "used kernel patches"), installs modules in this rootfs, builds initramfs and builds an image for your platform. This way you can independently export the gnubox maker project for ANY platform
 
 ## projects used
 * syslbuild: https://github.com/igorkll/syslbuild

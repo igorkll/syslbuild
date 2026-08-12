@@ -70,7 +70,7 @@ def setup_export_debian_initramfs(builditems, forPlatform):
             "export": False,
 
             "kernel_config": "kernel_image/amd64/kernel_config",
-            "source": "rootfs directory x4"
+            "source": "rootfs directory"
         })
 
         builditems.append({
@@ -81,7 +81,7 @@ def setup_export_debian_initramfs(builditems, forPlatform):
             "export": False,
 
             "kernel_config": "kernel_image/i386/kernel_config",
-            "source": "rootfs directory x4"
+            "source": "rootfs directory"
         })
 
 def setup_export_initramfs(builditems, forPlatform=None):

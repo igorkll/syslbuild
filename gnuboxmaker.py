@@ -138,6 +138,9 @@ class Project:
     export_img_rpi_32: bool = False
     export_img_rpi_64: bool = False
 
+    export_rootfs_directory: bool = False
+    export_rootfs_tar_gz: bool = False
+
     platform_opi_zero3_cma: str = "256M"
     platform_opi_zero3_hdmi_audio_high_priority: bool = True
 
@@ -1125,23 +1128,19 @@ def setup_build_base(builditems):
     setup_write_bins(builditems)
     items.append(["rootfs directory overlay", "/"])
 
-    builditem = {
+    builditems.append({
         "type": "directory",
         "name": "rootfs directory x2",
         "export": False,
 
         "directories": directories,
-        "items": items,
-        "delete": []
-    }
+        "items": items
+    })
 
-    builditems.append(builditem)
-
-    # im removed rootfs directory x3
     builditems.append({
         "type": "smart-chroot",
-        "name": "rootfs directory x4",
-        "export": False,
+        "name": "rootfs directory",
+        "export": current_project.export_rootfs_directory,
 
         "manual_validation": True,
         "use_systemd_container": True,
@@ -1150,6 +1149,17 @@ def setup_build_base(builditems):
         "source": "rootfs directory x2",
         "scripts": setup_chroot_script()
     })
+
+    if current_project.export_rootfs_tar_gz:
+        builditems.append({
+            "type": "tar",
+            "name": "rootfs.tar.gz",
+            "export": True,
+
+            "source": "rootfs directory",
+
+            "gz": True
+        },)
 
 def generate_syslbuild_project():
     cmdline_console = ""

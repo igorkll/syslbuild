@@ -13,7 +13,7 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         devicetree = "sun50i-h618-orangepi-zero3.dtb"
 
     items = [
-        ["rootfs directory x4", "."],
+        ["rootfs directory", "."],
 
         ["sprdwl_ng", "/etc/modules-load.d/sprdwl_ng.conf", [0, 0, "0644"], True],
 

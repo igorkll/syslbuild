@@ -12,7 +12,7 @@ def export_x86(builditems):
         "export": False,
 
         "items": [
-            ["rootfs directory x4", "."],
+            ["rootfs directory", "."],
             ["initramfs.img", "/initramfs.img", [0, 0, "0644"]]
         ]
     })

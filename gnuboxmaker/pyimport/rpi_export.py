@@ -48,7 +48,7 @@ def export_rpi_32(builditems, cmdline, appendPartitions):
     writeText(os.path.join(__main__.path_temp_syslbuild, "files", "config_rpi_32.txt"), config_txt)
 
     items = [
-        ["rootfs directory x4", "."],
+        ["rootfs directory", "."],
         ["kernel_image/arm64/rpi_64/kernel_modules", "/usr", RIGHTS_644_755],
         ["kernel_image/armhf/rpi_kernel/kernel_modules", "/usr", RIGHTS_644_755],
         ["kernel_image/armhf/rpi_kernel7/kernel_modules", "/usr", RIGHTS_644_755]
@@ -196,7 +196,7 @@ def export_rpi_64(builditems, cmdline, appendPartitions):
     writeText(os.path.join(__main__.path_temp_syslbuild, "files", "config_rpi_64.txt"), config_txt)
 
     items = [
-        ["rootfs directory x4", "."],
+        ["rootfs directory", "."],
         ["kernel_image/arm64/rpi_64/kernel_modules", "/usr", RIGHTS_644_755],
         ["kernel_image/arm64/rpi_5/kernel_modules", "/usr", RIGHTS_644_755]
     ]
