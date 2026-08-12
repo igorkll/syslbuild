@@ -1229,201 +1229,6 @@ def setup_build_base(builditems):
         "scripts": setup_chroot_script()
     })
 
-    export_x86(builditems)
-
-def export_x86(builditems):
-    setup_export_initramfs(builditems)
-
-    builditems.append({
-        "architectures": ["amd64", "i386"],
-
-        "type": "directory",
-        "name": "rootfs directory x86",
-        "export": False,
-
-        "items": [
-            ["rootfs directory x4", "."],
-            ["initramfs.img", "/initramfs.img", [0, 0, "0644"]]
-        ]
-    })
-
-    builditems.append({
-        "architectures": ["amd64", "i386"],
-
-        "type": "filesystem",
-        "name": "rootfs.img",
-        "export": False,
-
-        "source": "rootfs directory x86",
-
-        "fs_type": "ext4",
-        "size": current_project.size_root_partition, 
-        "minsize": current_project.minsize_root_partition,
-        "label": "rootfs"
-    })
-
-def setup_build_targets(builditems, cmdline):
-    appendPartitions = []
-
-    grub_info = {
-        "type": "grub",
-        "config": "grub.cfg",
-        "modules": [
-            "normal",
-            "part_msdos",
-            "part_gpt",
-            "ext2",
-            "configfile"
-        ],
-        "build": "linux-bootloaders/grub/build/no-welcome-2.14"
-    }
-
-    if current_project.separate_data_partition:
-        builditems.append({
-            "type": "filesystem",
-            "name": "data.img",
-            "export": False,
-
-            "fs_type": "ext4",
-            "size": current_project.minsize_data_partition,
-            "label": "DATA",
-
-            "chmod": [
-                ["/", "1777", False]
-            ],
-
-            "chown": [
-                ["/", 0, 0, False]
-            ]
-        })
-        appendPartitions.append(["data.img", "linux"])
-
-    if current_project.export_img_bios_mbr:
-        builditems.append({
-            "architectures": ["amd64", "i386"],
-
-            "type": "full-disk-image",
-            "name": f"{current_project_name} BIOS MBR.img",
-            "export": True,
-
-            "size": "auto + (10 * 1024 * 1024)",
-
-            "partitionTable": "dos",
-            "partitions": [
-                ["rootfs.img", "linux"]
-            ] + appendPartitions,
-
-            "bootloader": grub_info | {
-                "boot": 0
-            }
-        })
-
-    if current_project.export_img_bios_gpt or current_project.export_img_bios_and_uefi_gpt:
-        builditems.append({
-            "architectures": ["amd64", "i386"],
-
-            "type": "filesystem",
-            "name": "bios boot.img",
-            "export": False,
-
-            "size": "1M"
-        })
-
-    if current_project.export_img_bios_gpt:
-        builditems.append({
-            "architectures": ["amd64", "i386"],
-
-            "type": "full-disk-image",
-            "name": f"{current_project_name} BIOS GPT.img",
-            "export": True,
-
-            "size": "auto + (10 * 1024 * 1024)",
-
-            "partitionTable": "gpt",
-            "partitions": [
-                ["bios boot.img", "bios"],
-                ["rootfs.img", "linux"]
-            ] + appendPartitions,
-
-            "bootloader": grub_info | {
-                "boot": 1
-            }
-        })
-
-    if current_project.export_img_uefi_gpt or current_project.export_img_bios_and_uefi_gpt:
-        builditems.append({
-            "architectures": ["amd64", "i386"],
-
-            "type": "filesystem",
-            "name": "uefi boot.img",
-            "export": False,
-
-            "fs_arg": "-F32",
-            "fs_type": "fat",
-            "size": current_project.size_efi_partition,
-            "label": "EFI",
-
-            "minsize": current_project.minsize_efi_partition
-        })
-
-    if current_project.export_img_uefi_gpt:
-        builditems.append({
-            "architectures": ["amd64", "i386"],
-
-            "type": "full-disk-image",
-            "name": f"{current_project_name} UEFI GPT.img",
-            "export": True,
-
-            "size": "auto + (10 * 1024 * 1024)",
-
-            "partitionTable": "gpt",
-            "partitions": [
-                ["uefi boot.img", "efi"],
-                ["rootfs.img", "linux"]
-            ] + appendPartitions,
-
-            "bootloader": grub_info | {
-                "esp": 0,
-                "boot": 1
-            }
-        })
-
-    if current_project.export_img_bios_and_uefi_gpt:
-        builditems.append({
-            "architectures": ["amd64", "i386"],
-
-            "type": "full-disk-image",
-            "name": f"{current_project_name} BIOS UEFI GPT.img",
-            "export": True,
-
-            "size": "auto + (10 * 1024 * 1024)",
-
-            "partitionTable": "gpt",
-            "partitions": [
-                ["uefi boot.img", "efi"],
-                ["bios boot.img", "bios"],
-                ["rootfs.img", "linux"]
-            ] + appendPartitions,
-
-            "bootloader": grub_info | {
-                "esp": 0,
-                "boot": 2,
-                "efiAndBios": True
-            }
-        })
-
-    if current_project.export_img_opi_zero3:
-        opi_zero3_export.export_opi_zero3(builditems, cmdline, appendPartitions)
-
-    if current_project.export_img_rpi_32 or current_project.export_img_rpi_64:
-        rpi_export.any_rpi(builditems)
-
-    if current_project.export_img_rpi_32:
-        rpi_export.export_rpi_32(builditems, cmdline, appendPartitions)
-
-    if current_project.export_img_rpi_64:
-        rpi_export.export_rpi_64(builditems, cmdline, appendPartitions)
-
 def generate_syslbuild_project():
     cmdline_console = ""
 
@@ -1508,7 +1313,7 @@ def generate_syslbuild_project():
     setup_build_architectures(builditems, architectures)
     setup_download(builditems)
     setup_build_base(builditems)
-    setup_build_targets(builditems, cmdline)
+    export.setup_build_targets(builditems, cmdline)
 
     syslbuild_project = {
         "architectures": architectures,
@@ -1603,12 +1408,6 @@ def init_devicetree(name):
     devicetree_overlays = os.path.join(devicetree, "overlays.txt")
     if not os.path.isfile(devicetree_overlays):
         with open(devicetree_overlays, "w", encoding="utf-8") as f:
-            pass
-
-def create_empty_file(name):
-    path = os.path.join(path_resources, name)
-    if not os.path.isfile(path):
-        with open(path, "w", encoding="utf-8") as f:
             pass
 
 def update_project_structure():
@@ -1753,6 +1552,8 @@ import gui_editor
 
 import rpi_export
 import opi_zero3_export
+
+import export
 
 if __name__ == "__main__":
     main()

@@ -77,3 +77,9 @@ def read_project_file(name):
         return f.read()
     
     return []
+
+def create_empty_file(name):
+    path = os.path.join(path_resources, name)
+    if not os.path.isfile(path):
+        with open(path, "w", encoding="utf-8") as f:
+            pass
