@@ -50,8 +50,8 @@ def export_rpi_32(builditems, cmdline, appendPartitions):
     items = [
         ["rootfs directory x4", "."],
         ["kernel_image/arm64/rpi_64/kernel_modules", "/usr", RIGHTS_644_755],
-        ["kernel_image/arm64/rpi_kernel/kernel_modules", "/usr", RIGHTS_644_755],
-        ["kernel_image/arm64/rpi_kernel7/kernel_modules", "/usr", RIGHTS_644_755]
+        ["kernel_image/armhf/rpi_kernel/kernel_modules", "/usr", RIGHTS_644_755],
+        ["kernel_image/armhf/rpi_kernel7/kernel_modules", "/usr", RIGHTS_644_755]
     ]
 
     if __main__.current_project.integrate_raspberry_firmwares_if_need:
@@ -92,21 +92,21 @@ def export_rpi_32(builditems, cmdline, appendPartitions):
         ["rpi_firmware/boot/start_x.elf", "/start_x.elf"],
         ["rpi_firmware/boot/bootcode.bin", "/bootcode.bin"],
 
-        ["kernel_image/arm64/rpi_5/boot", "/"], # тут некоторые dtb лежат. по этому добавляю все равно даже в 32 битный образ
+        ["kernel_image/arm64/rpi_5/boot", "/"], # тут некоторые dtb лежат. по этому добавляю все равно даже в 32 битный образ, хотя само ядро от RPI 5 тут не нужно
 
         ["kernel_image/arm64/rpi_64/boot", "/"],
         ["kernel_image/arm64/rpi_64/kernel.img", "/kernel8.img"],
         ["kernel_image/arm64/rpi_64/kernel_config", "/kernel8_config"],
         ["initramfs_rpi_64.img", "/initramfs8"],
         
-        ["kernel_image/arm64/rpi_kernel/boot", "/"],
-        ["kernel_image/arm64/rpi_kernel/kernel.img", "/kernel.img"],
-        ["kernel_image/arm64/rpi_kernel/kernel_config", "/kernel_config"],
+        ["kernel_image/armhf/rpi_kernel/boot", "/"],
+        ["kernel_image/armhf/rpi_kernel/kernel.img", "/kernel.img"],
+        ["kernel_image/armhf/rpi_kernel/kernel_config", "/kernel_config"],
         ["initramfs_rpi_kernel.img", "/initramfs"],
 
-        ["kernel_image/arm64/rpi_kernel7/boot", "/"],
-        ["kernel_image/arm64/rpi_kernel7/kernel7.img", "/kernel7.img"],
-        ["kernel_image/arm64/rpi_kernel7/kernel7_config", "/kernel7_config"],
+        ["kernel_image/armhf/rpi_kernel7/boot", "/"],
+        ["kernel_image/armhf/rpi_kernel7/kernel7.img", "/kernel7.img"],
+        ["kernel_image/armhf/rpi_kernel7/kernel7_config", "/kernel7_config"],
         ["initramfs_rpi_kernel7.img", "/initramfs7"],
 
         ["files/cmdline_rpi_32.txt", "/cmdline.txt"],
