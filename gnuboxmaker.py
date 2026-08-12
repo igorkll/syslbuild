@@ -1069,7 +1069,7 @@ def setup_build_base(builditems):
         items.append(["files/updatescript.sh", "/gnubox/updatescript.sh", [0, 0, "0755"]])
 
     if current_project.boot_sound == "init" or (current_project.boot_sound == "logo" and current_project.boot_splash):
-        items.append(["files/startup.wav", "/startup.wav", [0, 0, "0644"]])
+        items.append(["files/startup.wav", "/gnubox/startup.wav", [0, 0, "0644"]])
 
     if current_project.integrate_liamounts:
         items.append(["liamounts", "/liamounts", [0, 0, "0755"]])
