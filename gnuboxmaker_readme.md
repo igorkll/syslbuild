@@ -39,6 +39,8 @@ tested on OS: linux mint
 * gui with system settings and choice of platforms for export
 * add support for creating 64-bit images for 32-bit UEFI (yes, for those very old intel atom tablets)
 * add support for custom kernels
+* add export of armel and images for the very first raspberry pi
+* specifying temporary and removable packages in the build configuration. temporary packages will be added to both user packages and removable packages and will be available only at the stage of building the image in chroot scripts
 
 ## bugs
 you can fix any of these bugs yourself if necessary, and if you want to send a pull request. a lot can be fixed with chroot scripts in the project  
