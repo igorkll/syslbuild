@@ -132,6 +132,7 @@ class Project:
     export_x86: bool = False
     export_arm64: bool = False
     export_arm: bool = False
+    export_armel: bool = False
 
     export_img_bios_mbr: bool = False
     export_img_bios_gpt: bool = False
@@ -245,10 +246,8 @@ def request_kernel(builditems, architecture, filtername):
     cmd = f"cd {kernel_build_dir!r} && {sys.executable!r} {os.path.abspath('syslbuild.py')!r} --filters {filtername} --arch {architecture} kernel_build.json"
 
     builditems.insert(0, {
-        "architectures": [architecture],
-
         "type": "execute-commands",
-        "name": f"request_kernel_{filtername}",
+        "name": f"request_kernel_{architecture}_{filtername}",
 
         "working_dir": working_dir,
 
@@ -258,6 +257,11 @@ def request_kernel(builditems, architecture, filtername):
     })
 
 def setup_build_architectures(builditems, architectures):
+    build_rpi64_kernel = False
+    build_rpi32_kernel = False
+
+    
+
     if current_project.export_x86_64:
         architectures.append("amd64")
         request_kernel(builditems, "amd64", "x86")
@@ -273,15 +277,27 @@ def setup_build_architectures(builditems, architectures):
             request_kernel(builditems, "arm64", "sunxi")
 
         if current_project.export_img_rpi_64:
-            request_kernel(builditems, "arm64", "rpi_64")
+            build_rpi64_kernel = True
             request_kernel(builditems, "arm64", "rpi_5")
 
     if current_project.export_arm:
         architectures.append("armhf")
 
         if current_project.export_img_rpi_32:
-            request_kernel(builditems, "armhf", "rpi_kernel")
-            request_kernel(builditems, "armhf", "rpi_kernel7")
+            build_rpi64_kernel = True
+            build_rpi32_kernel = True
+
+    if current_project.export_armel:
+        architectures.append("armel")
+
+    
+
+    if build_rpi64_kernel:
+        request_kernel(builditems, "arm64", "rpi_64")
+
+    if build_rpi32_kernel:
+        request_kernel(builditems, "armhf", "rpi_kernel")
+        request_kernel(builditems, "armhf", "rpi_kernel7")
 
 def gen_default_first_chroot_script():
     if current_project.session_mode == "wayland" and current_project.run_weston_as_service:
@@ -619,6 +635,37 @@ def setup_download(builditems):
 
             "git_url": "https://github.com/armbian/firmware",
             "git_checkout": "d9846710f54da5e4383e2d67311819659ac2cf5c"
+        })
+
+    if current_project.integrate_super_kiosk_browser:
+        builditems.append({
+            "type": "unpack-archive",
+            "name": "super-kiosk-browser-unpacked",
+            "export": False,
+
+            "archive": "super_kiosk_browser_build.zip"
+        })
+
+        builditems.append({
+            "architectures": ["amd64"],
+
+            "type": "from-directory",
+            "name": "super-kiosk-browser-target",
+            "export": False,
+
+            "source": "super-kiosk-browser-unpacked",
+            "path": "/super_kiosk_browser_build/super_kiosk_browser-linux-x64"
+        })
+
+        builditems.append({
+            "architectures": ["arm64"],
+
+            "type": "from-directory",
+            "name": "super-kiosk-browser-target",
+            "export": False,
+
+            "source": "super-kiosk-browser-unpacked",
+            "path": "/super_kiosk_browser_build/super_kiosk_browser-linux-arm64"
         })
 
     addDownload("custom-debian-initramfs-init", "1.6.5")
@@ -1100,36 +1147,6 @@ def setup_build_base(builditems, cmdline):
         items.append(["liamounts", "/liamounts", [0, 0, "0755"]])
 
     if current_project.integrate_super_kiosk_browser:
-        builditems.append({
-            "type": "unpack-archive",
-            "name": "super-kiosk-browser-unpacked",
-            "export": False,
-
-            "archive": "super_kiosk_browser_build.zip"
-        })
-
-        builditems.append({
-            "architectures": ["amd64"],
-
-            "type": "from-directory",
-            "name": "super-kiosk-browser-target",
-            "export": False,
-
-            "source": "super-kiosk-browser-unpacked",
-            "path": "/super_kiosk_browser_build/super_kiosk_browser-linux-x64"
-        })
-
-        builditems.append({
-            "architectures": ["arm64"],
-
-            "type": "from-directory",
-            "name": "super-kiosk-browser-target",
-            "export": False,
-
-            "source": "super-kiosk-browser-unpacked",
-            "path": "/super_kiosk_browser_build/super_kiosk_browser-linux-arm64"
-        })
-        
         directories.append(["/gnubox/super_kiosk_browser", [0, 0, "0755"]])
         items.append(["super-kiosk-browser-target", "/gnubox/super_kiosk_browser", [0, 0, "0755"]])
 
