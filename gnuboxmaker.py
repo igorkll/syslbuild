@@ -704,7 +704,7 @@ Wants=graphical-session.target
 [Service]
 Environment=XDG_RUNTIME_DIR=/run/user/10000
 Environment=XDG_CURRENT_DESKTOP=weston
-ExecStart=/gnubox/run_session_wayland.sh
+ExecStart=/gnubox/run_session_wayland_raw.sh
 ExecStop=/usr/bin/killall weston
 Restart=always
 
@@ -925,6 +925,7 @@ Storage=none""")
     shutil.copy("gnuboxmaker/runshell_launcher.sh", os.path.join(path_temp_syslbuild, "files", "runshell_launcher.sh"))
     shutil.copy("gnuboxmaker/run_session_wayland.sh", os.path.join(path_temp_syslbuild, "files", "run_session_wayland.sh"))
     shutil.copy("gnuboxmaker/run_session_wayland_service.sh", os.path.join(path_temp_syslbuild, "files", "run_session_wayland_service.sh"))
+    shutil.copy("gnuboxmaker/run_session_wayland_raw.sh", os.path.join(path_temp_syslbuild, "files", "run_session_wayland_raw.sh"))
     shutil.copy("gnuboxmaker/run_session_x11.sh", os.path.join(path_temp_syslbuild, "files", "run_session_x11.sh"))
     shutil.copy("gnuboxmaker/system_preinit.sh", os.path.join(path_temp_syslbuild, "files", "system_preinit.sh"))
     shutil.copy("gnuboxmaker/system_init_hook.sh", os.path.join(path_temp_syslbuild, "files", "system_init_hook.sh"))
@@ -1142,9 +1143,11 @@ def setup_build_base(builditems, cmdline):
         items.append(["super-kiosk-browser-target", "/gnubox/super_kiosk_browser", [0, 0, "0755"]])
 
     if current_project.session_mode == "wayland":
-        items.append(["files/run_session_wayland.sh", "/gnubox/run_session.sh", [0, 0, "0755"]])
+        items.append(["files/run_session_wayland_raw.sh", "/gnubox/run_session_wayland_raw.sh", [0, 0, "0755"]])
         if current_project.run_weston_as_service:
             items.append(["files/run_session_wayland_service.sh", "/gnubox/run_session_wayland_service.sh", [0, 0, "0755"]])
+        else:
+            items.append(["files/run_session_wayland.sh", "/gnubox/run_session.sh", [0, 0, "0755"]])
     elif current_project.session_mode == "x11":
         items.append(["files/run_session_x11.sh", "/gnubox/run_session.sh", [0, 0, "0755"]])
     elif current_project.session_mode == "tty":
