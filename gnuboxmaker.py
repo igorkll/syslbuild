@@ -244,6 +244,8 @@ def request_kernel(builditems, architecture, filtername):
     cmd = f"cd {kernel_build_dir!r} && {sys.executable!r} {os.path.abspath('syslbuild.py')!r} --filters {filtername} --arch {architecture} kernel_build.json"
 
     builditems.insert(0, {
+        "architectures": [architecture],
+
         "type": "execute-commands",
         "name": f"request_kernel_{filtername}",
 
