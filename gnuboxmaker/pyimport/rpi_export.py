@@ -3,26 +3,26 @@ import __main__
 
 def any_rpi(builditems):
     builditems.append({
-        "architectures": ["arm64", "armhf"],
+        "architectures": ["arm64", "armhf", "armel"],
 
         "type": "gitclone",
         "name": "rpi_firmware",
         "export": False,
 
-        "git_url": "https://github.com/raspberrypi/firmware",
+        "git_url": "https://github.com/igorkll/firmware",
         "git_branch": "master",
         "git_checkout": "1.20250915"
     })
 
     if __main__.current_project.integrate_raspberry_firmwares_if_need:
         builditems.append({
-            "architectures": ["arm64", "armhf"],
+            "architectures": ["arm64", "armhf", "armel"],
 
             "type": "gitclone",
             "name": "rpi_wireless_firmware",
             "export": False,
 
-            "git_url": "https://github.com/RPi-Distro/firmware-nonfree",
+            "git_url": "https://github.com/igorkll/firmware-nonfree",
             "git_branch": "trixie",
             "git_checkout": "9794282eb9f4a2de1f23b41a738926740e975d83"
         })
