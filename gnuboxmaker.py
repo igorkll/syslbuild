@@ -140,6 +140,7 @@ class Project:
     export_img_bios_and_uefi_gpt: bool = True
 
     export_img_opi_zero3: bool = False
+    export_img_rpi_32_armel: bool = False
     export_img_rpi_32: bool = False
     export_img_rpi_64: bool = False
 
@@ -282,14 +283,15 @@ def setup_build_architectures(builditems, architectures):
 
     if current_project.export_arm:
         architectures.append("armhf")
-
         if current_project.export_img_rpi_32:
             build_rpi64_kernel = True
             build_rpi32_kernel = True
 
     if current_project.export_armel:
         architectures.append("armel")
-
+        if current_project.export_img_rpi_32_armel:
+            build_rpi64_kernel = True
+            build_rpi32_kernel = True
     
 
     if build_rpi64_kernel:
