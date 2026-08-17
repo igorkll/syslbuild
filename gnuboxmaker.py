@@ -67,6 +67,10 @@ class Project:
     uartlogs_speed: int = 115200
     uartlogs_login: bool = False
     uartlogs_rootshell: bool = False
+
+    root_login_unlock: bool = False
+    password_root: str = ""
+    password_user: str = ""
     
     exclude_tty1_from_consoles: bool = False
     exclude_tty1_from_consoles_in_quiet: bool = True
@@ -302,6 +306,12 @@ def setup_build_architectures(builditems, architectures):
         request_kernel(builditems, "armhf", "rpi_kernel")
         request_kernel(builditems, "armhf", "rpi_kernel7")
 
+def setup_user_password(user, password):
+    if len(password) == 0:
+        return f"passwd -d {user}"
+    else:
+        return f"echo \"{user}:{password}\" | chpasswd"
+
 def gen_default_first_chroot_script():
     if current_project.session_mode == "wayland" and current_project.run_weston_as_service:
         user_shell = "/gnubox/run_session_wayland_service.sh"
@@ -347,6 +357,12 @@ useradd -m -u 10000 -s {user_shell} user
 usermod -aG video,input,audio,render user
 mkdir -p -m 700 /home/user
 chown user:user /home/user"""
+
+    if current_project.root_login_unlock:
+        aaa_setup += "\npasswd -u root"
+
+    aaa_setup += "\n" + setup_user_password("root", current_project.password_root)
+    aaa_setup += "\n" + setup_user_password("user", current_project.password_user)
 
     aaa_setup += "\n"
 
