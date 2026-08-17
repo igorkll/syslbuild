@@ -25,7 +25,7 @@ def setup_export_debian_initramfs(builditems, forPlatform):
             "kernel_config": "kernel_image/arm64/rpi_64/kernel_config",
             "source": "rootfs directory RPI 64"
         })
-
+        
         builditems.append({
             "architectures": ["arm64"],
 
@@ -46,7 +46,7 @@ def setup_export_debian_initramfs(builditems, forPlatform):
             "export": False,
 
             "kernel_version": "6.12.47-embedded-rpi-kernel+",
-            "kernel_config": "kernel_image/arm/rpi_kernel/kernel_config",
+            "kernel_config": "kernel_image/armhf/rpi_kernel/kernel_config",
             "source": "rootfs directory RPI 32"
         })
 
@@ -58,7 +58,19 @@ def setup_export_debian_initramfs(builditems, forPlatform):
             "export": False,
 
             "kernel_version": "6.12.47-embedded-rpi-kernel7+",
-            "kernel_config": "kernel_image/arm/rpi_kernel7/kernel_config",
+            "kernel_config": "kernel_image/armhf/rpi_kernel7/kernel_config",
+            "source": "rootfs directory RPI 32"
+        })
+
+        builditems.append({
+            "architectures": ["arm64"],
+
+            "type": "debian-export-initramfs",
+            "name": "initramfs_rpi_64.img",
+            "export": False,
+
+            "kernel_version": "6.12.47-embedded-rpi-64+",
+            "kernel_config": "kernel_image/arm64/rpi_64/kernel_config",
             "source": "rootfs directory RPI 32"
         })
     else:

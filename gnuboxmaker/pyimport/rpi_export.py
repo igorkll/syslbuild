@@ -33,7 +33,7 @@ def any_rpi_rootfs_tweaks(rootfs_tbl):
 
     return rootfs_tbl
 
-def export_rpi_32(builditems, cmdline, appendPartitions):
+def export_rpi_32(builditems, cmdline, appendPartitions, architecture="armhf", suffix="RPI 32"):
     config_txt = read_gnubox_file("rpi_32_config.txt") + "\n" + read_project_file("resources/rpi_32_config_extension.txt")
 
     override = get_devicetree_override("rpi_32")
@@ -59,7 +59,7 @@ def export_rpi_32(builditems, cmdline, appendPartitions):
         items.append(["rpi_wireless_firmware/debian/config/brcm80211/cypress", "/lib/firmware/cypress", RIGHTS_644_755])
 
     builditems.append(any_rpi_rootfs_tweaks({
-        "architectures": ["armhf"],
+        "architectures": [architecture],
 
         "type": "directory",
         "name": "rootfs directory RPI 32",
@@ -122,7 +122,7 @@ def export_rpi_32(builditems, cmdline, appendPartitions):
         items.append([dtbo, f"/overlays/{os.path.basename(dtbo)}"])
 
     builditems.append({
-        "architectures": ["armhf"],
+        "architectures": [architecture],
 
         "type": "directory",
         "name": "boot_rpi_32",
@@ -136,7 +136,7 @@ def export_rpi_32(builditems, cmdline, appendPartitions):
     })
 
     builditems.append({
-        "architectures": ["armhf"],
+        "architectures": [architecture],
 
         "type": "filesystem",
         "name": "boot_rpi_32.img",
@@ -151,7 +151,7 @@ def export_rpi_32(builditems, cmdline, appendPartitions):
     })
 
     builditems.append({
-        "architectures": ["armhf"],
+        "architectures": [architecture],
 
         "type": "filesystem",
         "name": "rootfs_rpi_32.img",
@@ -166,10 +166,10 @@ def export_rpi_32(builditems, cmdline, appendPartitions):
     })
 
     builditems.append({
-        "architectures": ["armhf"],
+        "architectures": [architecture],
 
         "type": "full-disk-image",
-        "name": f"{__main__.current_project_name} RPI 32.img",
+        "name": f"{__main__.current_project_name} {suffix}.img",
         "export": True,
 
         "size": "auto + (10 * 1024 * 1024)",
