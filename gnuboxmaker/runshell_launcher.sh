@@ -5,14 +5,16 @@ if [ -e "/gnubox/.session_mode_tty" ]; then
     else
         clear
         reset
-        clear
         exec bash
     fi
 fi
 
 while true; do
+    clear
     reset
     stty -echo >/dev/null 2>&1
+    clear
+
     /gnubox/runshell.sh
     sleep 1
 done

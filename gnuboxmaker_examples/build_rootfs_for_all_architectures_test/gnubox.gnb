@@ -75,6 +75,7 @@
   "export_x86": true,
   "export_arm64": true,
   "export_arm": true,
+  "export_armel": true,
   "export_img_bios_mbr": false,
   "export_img_bios_gpt": false,
   "export_img_uefi_gpt": false,
