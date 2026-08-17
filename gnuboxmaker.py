@@ -30,6 +30,7 @@ weston_shell_variants = ["kiosk", "desktop"]
 splash_mode_variants = ["center", "fill", "contain", "cover"]
 boot_sound_variants = ["none", "init", "logo"]
 
+QUIET_AGETTY = "--noreset --nohostname --nohints --nonewline --noclear --skip-login --noissue"
 RIGHTS_644_755 = [[0, 0, "0644"], [0, 0, "0755"]]
 
 default_debian_suite = "trixie"
@@ -713,7 +714,7 @@ WantedBy=graphical.target"""
     if current_project.uartlogs_login or current_project.uartlogs_rootshell:
         autologin_str = ""
         if not current_project.uartlogs_login:
-            autologin_str = "--noreset --nohostname --nohints --nonewline --noclear --skip-login --noissue --autologin root "
+            autologin_str = f"{QUIET_AGETTY} --autologin root "
 
         content = f"""[Unit]
 Description=rootshell on UART
