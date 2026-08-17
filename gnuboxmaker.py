@@ -664,7 +664,7 @@ WantedBy=graphical.target"""
     if current_project.uartlogs_login or current_project.uartlogs_rootshell:
         autologin_str = ""
         if not current_project.uartlogs_login:
-            autologin_str = "--autologin root "
+            autologin_str = "--noreset --nohostname --nohints --nonewline --noclear --skip-login --noissue --autologin root "
 
         content = f"""[Unit]
 Description=rootshell on UART
@@ -672,7 +672,7 @@ After=multi-user.target
 
 [Service]
 Type=idle
-ExecStart=-/sbin/agetty {autologin_str}--noclear ttyS0 {current_project.uartlogs_speed} vt102
+ExecStart=-/sbin/agetty {autologin_str}ttyS0 {current_project.uartlogs_speed} vt102
 Restart=always
 RestartSec=0
 StandardInput=tty
@@ -695,8 +695,6 @@ Before=graphical-session.target
 Wants=graphical-session.target
 
 [Service]
-Environment=XDG_RUNTIME_DIR=/run/user/10000
-Environment=XDG_CURRENT_DESKTOP=weston
 ExecStart=/gnubox/run_session_wayland_raw.sh
 ExecStop=/usr/bin/killall weston
 Restart=always
