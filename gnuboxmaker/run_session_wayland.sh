@@ -6,6 +6,8 @@ if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
 
     /gnubox/run_session_wayland_raw.sh
 else
+    clear
     reset
+    clear
     exec bash
 fi

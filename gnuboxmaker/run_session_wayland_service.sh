@@ -9,6 +9,8 @@ if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
         sleep 1
     done
 else
+    clear
     reset
+    clear
     exec bash
 fi
