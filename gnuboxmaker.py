@@ -130,7 +130,6 @@ class Project:
     wifi_autoconnect_password: str = ""
     wifi_autoconnect_security: str = "wpa-psk"
 
-    run_weston_as_service: bool = False
     plymouth_disable_esc_button: bool = True
 
     export_x86_64: bool = True
@@ -313,9 +312,7 @@ def setup_user_password(user, password):
         return f"echo \"{user}:{password}\" | chpasswd"
 
 def gen_default_first_chroot_script():
-    if current_project.session_mode == "wayland" and current_project.run_weston_as_service:
-        user_shell = "/gnubox/run_session_wayland_service.sh"
-    elif current_project.session_mode == "wayland" or current_project.session_mode == "x11":
+    if current_project.session_mode == "wayland" or current_project.session_mode == "x11":
         user_shell = "/gnubox/run_session.sh"
     else:
         user_shell = "/gnubox/runshell_launcher.sh"
@@ -751,32 +748,10 @@ TTYVHangup=yes
 WantedBy=multi-user.target"""
         writeText(os.path.join(systemd_config, "system", "uartshell.service"), content)
 
-def setup_weston_service():
-    systemd_config = os.path.join(path_temp_syslbuild, "files", "systemd_config")
-
-    content = """[Unit]
-Description=Weston Wayland Compositor
-After=default.target
-Before=graphical-session.target
-Wants=graphical-session.target
-
-[Service]
-ExecStart=/gnubox/run_session_wayland_raw.sh
-ExecStop=/usr/bin/killall weston
-Restart=always
-
-[Install]
-WantedBy=graphical-session.target
-"""
-    writeText(os.path.join(systemd_config, "user", "gnubox_weston.service"), content)
-
 def setup_graphic():
     etc_config = os.path.join(path_temp_syslbuild, "files", "etc_config")
 
     if current_project.session_mode == "wayland":
-        if current_project.run_weston_as_service:
-            setup_weston_service()
-
         writeText(os.path.join(etc_config, "xdg", "weston", "weston.ini"), f"""[core]
 shell={current_project.weston_shell}-shell.so
 idle-time={current_project.screen_idle_time}
@@ -981,8 +956,6 @@ Storage=none""")
 
     shutil.copy("gnuboxmaker/runshell_launcher.sh", os.path.join(path_temp_syslbuild, "files", "runshell_launcher.sh"))
     shutil.copy("gnuboxmaker/run_session_wayland.sh", os.path.join(path_temp_syslbuild, "files", "run_session_wayland.sh"))
-    shutil.copy("gnuboxmaker/run_session_wayland_service.sh", os.path.join(path_temp_syslbuild, "files", "run_session_wayland_service.sh"))
-    shutil.copy("gnuboxmaker/run_session_wayland_raw.sh", os.path.join(path_temp_syslbuild, "files", "run_session_wayland_raw.sh"))
     shutil.copy("gnuboxmaker/run_session_x11.sh", os.path.join(path_temp_syslbuild, "files", "run_session_x11.sh"))
     shutil.copy("gnuboxmaker/system_preinit.sh", os.path.join(path_temp_syslbuild, "files", "system_preinit.sh"))
     shutil.copy("gnuboxmaker/system_init_hook.sh", os.path.join(path_temp_syslbuild, "files", "system_init_hook.sh"))
@@ -1170,11 +1143,7 @@ def setup_build_base(builditems, cmdline):
         items.append(["super-kiosk-browser-target", "/gnubox/super_kiosk_browser", [0, 0, "0755"]])
 
     if current_project.session_mode == "wayland":
-        items.append(["files/run_session_wayland_raw.sh", "/gnubox/run_session_wayland_raw.sh", [0, 0, "0755"]])
-        if current_project.run_weston_as_service:
-            items.append(["files/run_session_wayland_service.sh", "/gnubox/run_session_wayland_service.sh", [0, 0, "0755"]])
-        else:
-            items.append(["files/run_session_wayland.sh", "/gnubox/run_session.sh", [0, 0, "0755"]])
+        items.append(["files/run_session_wayland.sh", "/gnubox/run_session.sh", [0, 0, "0755"]])
     elif current_project.session_mode == "x11":
         items.append(["files/run_session_x11.sh", "/gnubox/run_session.sh", [0, 0, "0755"]])
     elif current_project.session_mode == "tty":
