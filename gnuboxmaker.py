@@ -319,20 +319,6 @@ systemctl mask console-getty.service
 
 # ------------
 
-# ---- legacy
-# if [ -d "/lib/firmware/brcm/" ]; then
-#    cd /lib/firmware/brcm/
-#
-#    ln -sf ../cypress/cyfmac43455-sdio.bin brcmfmac43455-sdio.raspberrypi,4-model-b.bin
-#    ln -sf ../cypress/cyfmac43455-sdio.bin brcmfmac43455-sdio.raspberrypi,5-model-b.bin
-#    ln -sf ../cypress/cyfmac43430-sdio.bin brcmfmac43430-sdio.raspberrypi,3-model-b.bin
-#    ln -sf ../cypress/cyfmac43455-sdio.bin brcmfmac43455-sdio.raspberrypi,3-model-b-plus.bin
-#
-#    cd /
-# fi
-
-# ------------
-
 systemctl set-default graphical.target
 
 # ------------
