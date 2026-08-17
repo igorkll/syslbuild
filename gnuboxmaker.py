@@ -125,6 +125,7 @@ class Project:
     wifi_autoconnect_security: str = "wpa-psk"
 
     run_weston_as_service: bool = False
+    plymouth_disable_esc_button: bool = True
 
     export_x86_64: bool = True
     export_x86: bool = False
@@ -339,13 +340,14 @@ usermod -aG video,input,audio,render user
 mkdir -p -m 700 /home/user
 chown user:user /home/user"""
 
-    aaa_setup += "\n\n"
+    aaa_setup += "\n"
 
     if current_project.boot_splash:
-        aaa_setup += f"""plymouth-set-default-theme bootlogo
-cp -f /usr/share/plymouth/themes/bootlogo/bootlogo.plymouth /usr/share/plymouth/themes/default.plymouth
+        aaa_setup += "\n" + f"""plymouth-set-default-theme bootlogo
+cp -f /usr/share/plymouth/themes/bootlogo/bootlogo.plymouth /usr/share/plymouth/themes/default.plymouth"""
 
-# this trash break systemd quiet
+        if current_project.plymouth_disable_esc_button:
+            aaa_setup += "\n" + f"""# this trash break systemd quiet
 systemctl mask plymouth-read-write.service"""
 
     if current_project.dont_show_splash_on_poweroff:
@@ -641,7 +643,7 @@ def setup_download(builditems):
     if current_project.integrate_super_kiosk_browser:
         addDownloadRelease("super-kiosk-browser", "1.1", "super_kiosk_browser_build.zip")
 
-    if current_project.boot_splash:
+    if current_project.boot_splash and current_project.plymouth_disable_esc_button:
         addDownload("embedded-plymouth", "1.2")
     
 def setup_autologin():
@@ -968,7 +970,7 @@ def setup_write_bins(builditems):
         ["kernel_image/amd64/kernel.img", "/kernel.img", [0, 0, "0644"]]
     ]
 
-    if current_project.boot_splash:
+    if current_project.boot_splash and current_project.plymouth_disable_esc_button:
         items.append([f"{embedded_plymouth_base_path}/x86_64", "/", [0, 0, "0755"]])
 
     builditems.append({
@@ -988,7 +990,7 @@ def setup_write_bins(builditems):
         ["kernel_image/i386/kernel.img", "/kernel.img", [0, 0, "0644"]]
     ]
 
-    if current_project.boot_splash:
+    if current_project.boot_splash and current_project.plymouth_disable_esc_button:
         items.append([f"{embedded_plymouth_base_path}/x86", "/", [0, 0, "0755"]])
 
     builditems.append({
@@ -1005,7 +1007,7 @@ def setup_write_bins(builditems):
     # ---------------------- arm64
     items = []
 
-    if current_project.boot_splash:
+    if current_project.boot_splash and current_project.plymouth_disable_esc_button:
         items.append([f"{embedded_plymouth_base_path}/arm64", "/", [0, 0, "0755"]])
 
     builditems.append({
@@ -1022,7 +1024,7 @@ def setup_write_bins(builditems):
     # ---------------------- armhf
     items = []
 
-    if current_project.boot_splash:
+    if current_project.boot_splash and current_project.plymouth_disable_esc_button:
         items.append([f"{embedded_plymouth_base_path}/armhf", "/", [0, 0, "0755"]])
 
     builditems.append({
@@ -1039,7 +1041,7 @@ def setup_write_bins(builditems):
     # ---------------------- armel
     items = []
 
-    if current_project.boot_splash:
+    if current_project.boot_splash and current_project.plymouth_disable_esc_button:
         items.append([f"{embedded_plymouth_base_path}/armel", "/", [0, 0, "0755"]])
 
     builditems.append({
