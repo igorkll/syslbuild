@@ -64,6 +64,7 @@ class Project:
 
     uartlogs: bool = False
     uartlogs_speed: int = 115200
+    uartlogs_login: bool = False
     uartlogs_rootshell: bool = False
     
     exclude_tty1_from_consoles: bool = False
@@ -377,7 +378,7 @@ def gen_default_last_chroot_script():
     if current_project.session_mode != "init":
         zzz_setup += "\n\nsystemctl enable run_shell.service"
 
-    if current_project.uartlogs_rootshell:
+    if current_project.uartlogs_login or current_project.uartlogs_rootshell:
         zzz_setup += "\n\nsystemctl enable uartshell.service"
 
     zzz_setup += "\n\ntouch /.chrootend"
@@ -674,14 +675,18 @@ RestartSec=0
 WantedBy=graphical.target"""
         writeText(os.path.join(systemd_config, "system", "run_shell.service"), content)
 
-    if current_project.uartlogs_rootshell:
+    if current_project.uartlogs_login or current_project.uartlogs_rootshell:
+        autologin_str = ""
+        if not current_project.uartlogs_login:
+            autologin_str = "--autologin root "
+
         content = f"""[Unit]
 Description=rootshell on UART
 After=multi-user.target
 
 [Service]
 Type=idle
-ExecStart=-/sbin/agetty --autologin root --noclear ttyS0 {current_project.uartlogs_speed} vt102
+ExecStart=-/sbin/agetty {autologin_str}--noclear ttyS0 {current_project.uartlogs_speed} vt102
 Restart=always
 RestartSec=0
 StandardInput=tty
