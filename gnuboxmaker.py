@@ -702,7 +702,7 @@ Wants=graphical-session.target
 [Service]
 Environment=XDG_RUNTIME_DIR=/run/user/10000
 Environment=XDG_CURRENT_DESKTOP=weston
-ExecStart=/gnubox/run_session_wayland_service.sh
+ExecStart=/gnubox/run_session_wayland.sh
 ExecStop=/usr/bin/killall weston
 Restart=always
 
