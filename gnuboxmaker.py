@@ -156,11 +156,12 @@ class Project:
     platform_opi_zero3_hdmi_audio_high_priority: bool = True
 
     rebranding_enabled: bool = True
-    rebranding_issue: str = "gnubox \\n \\l"
-    rebranding_issue_net: str = "gnubox"
+    rebranding_issue: str = "gnubox \\n \\l\n\n"
+    rebranding_issue_net: str = "gnubox\n"
     rebranding_motd: str = ""
     rebranding_os_release_name: str = "Gnubox"
     rebranding_os_release_id: str = "gnubox"
+    rebranding_remove_debian_logos: bool = True
 
 # ---------------------------------------- functions
 
@@ -1115,10 +1116,14 @@ def rebranding(delete, directories, items):
         items.append([current_project.rebranding_issue, "/etc/issue", [0, 0, "0644"], True])
         items.append([current_project.rebranding_issue_net, "/etc/issue.net", [0, 0, "0644"], True])
         items.append([current_project.rebranding_motd, "/usr/share/base-files/motd", [0, 0, "0644"], True])
+        items.append([current_project.rebranding_motd, "/etc/motd", [0, 0, "0644"], True])
 
         items.append([f"""NAME="{current_project.rebranding_os_release_name}"
 ID="{current_project.rebranding_os_release_id}"
 """, "/usr/lib/os-release", [0, 0, "0644"], True])
+
+        if current_project.rebranding_remove_debian_logos:
+            delete.append("/usr/share/pixmaps/debian-logo.png")
 
 def setup_build_base(builditems, cmdline):
     setup_build_distro(builditems)
