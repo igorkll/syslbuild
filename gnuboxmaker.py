@@ -154,6 +154,9 @@ class Project:
     platform_opi_zero3_cma: str = "256M"
     platform_opi_zero3_hdmi_audio_high_priority: bool = True
 
+    rebranding_enabled: bool = True
+    rebranding_issue 
+
 # ---------------------------------------- functions
 
 class CancelGUI(Exception):
@@ -1102,6 +1105,9 @@ def getWaitFbStr(afterModules):
         return "waitFbAfterModules" if afterModules else "waitFbBeforeModules"
     return ""
 
+def rebranding(delete, directories, items):
+    pass
+
 def setup_build_base(builditems, cmdline):
     setup_build_distro(builditems)
     setup_write_files()
@@ -1174,6 +1180,9 @@ def setup_build_base(builditems, cmdline):
 
     setup_write_bins(builditems)
     items.append(["rootfs directory overlay", "/"])
+
+    delete = []
+    rebranding(delete, directories, items)
 
     builditems.append({
         "type": "directory",
