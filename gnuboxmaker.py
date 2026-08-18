@@ -155,7 +155,11 @@ class Project:
     platform_opi_zero3_hdmi_audio_high_priority: bool = True
 
     rebranding_enabled: bool = True
-    rebranding_issue 
+    rebranding_issue: str = "gnubox \\n \\l"
+    rebranding_issue_net: str = "gnubox"
+    rebranding_motd: str = ""
+    rebranding_os_release_name: str = "Gnubox"
+    rebranding_os_release_id: str = "gnubox"
 
 # ---------------------------------------- functions
 
@@ -1106,7 +1110,14 @@ def getWaitFbStr(afterModules):
     return ""
 
 def rebranding(delete, directories, items):
-    pass
+    if current_project.rebranding_enabled:
+        items.append([current_project.rebranding_issue, "/etc/issue", [0, 0, "0644"], True])
+        items.append([current_project.rebranding_issue_net, "/etc/issue.net", [0, 0, "0644"], True])
+        items.append([current_project.rebranding_motd, "/usr/share/base-files/motd", [0, 0, "0644"], True])
+
+        items.append([f"""NAME="{current_project.rebranding_os_release_name}"
+ID="{current_project.rebranding_os_release_id}"
+""", "/usr/lib/os-release", [0, 0, "0644"], True])
 
 def setup_build_base(builditems, cmdline):
     setup_build_distro(builditems)
