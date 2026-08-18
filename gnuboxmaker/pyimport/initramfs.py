@@ -1,7 +1,7 @@
 from __main__ import *
 import __main__
 
-def setup_export_debian_initramfs(builditems, forPlatform):
+def setup_export_debian_initramfs(builditems, forPlatform, architecture_override):
     if forPlatform == "opi_zero3":
         builditems.append({
             "architectures": ["arm64"],
@@ -39,7 +39,7 @@ def setup_export_debian_initramfs(builditems, forPlatform):
         })
     elif forPlatform == "rpi_32":
         builditems.append({
-            "architectures": ["armhf"],
+            "architectures": [architecture_override or "armhf"],
 
             "type": "debian-export-initramfs",
             "name": "initramfs_rpi_kernel.img",
@@ -51,7 +51,7 @@ def setup_export_debian_initramfs(builditems, forPlatform):
         })
 
         builditems.append({
-            "architectures": ["armhf"],
+            "architectures": [architecture_override or "armhf"],
 
             "type": "debian-export-initramfs",
             "name": "initramfs_rpi_kernel7.img",
@@ -63,7 +63,7 @@ def setup_export_debian_initramfs(builditems, forPlatform):
         })
 
         builditems.append({
-            "architectures": ["arm64"],
+            "architectures": [architecture_override or "armhf"],
 
             "type": "debian-export-initramfs",
             "name": "initramfs_rpi_64.img",
@@ -96,8 +96,8 @@ def setup_export_debian_initramfs(builditems, forPlatform):
             "source": "rootfs directory"
         })
 
-def setup_export_initramfs(builditems, forPlatform=None):
+def setup_export_initramfs(builditems, forPlatform=None, architecture_override=None):
     if __main__.current_project.distro == "debian":
-        setup_export_debian_initramfs(builditems, forPlatform)
+        setup_export_debian_initramfs(builditems, forPlatform, architecture_override)
     else:
         stop_error(f"unknown distro \"{__main__.current_project.distro}\"")

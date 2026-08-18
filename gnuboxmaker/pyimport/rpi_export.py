@@ -68,7 +68,7 @@ def export_rpi_32(builditems, cmdline, appendPartitions, architecture="armhf", s
         "items": items
     }))
 
-    setup_export_initramfs(builditems, "rpi_32")
+    setup_export_initramfs(builditems, "rpi_32", architecture)
 
     items = [
         ["rpi_firmware/boot/COPYING.linux", "/COPYING.linux"],
