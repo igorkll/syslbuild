@@ -2346,7 +2346,7 @@ def getDependenciesFileOrDirectoryChecksum(pathOrChecksum, hash_algo="sha256"):
 # если какое то поле зависимостей ссылается на массив массивов то в втором массиве учитываются только элементы с индексом 0
 # ТАК И ЗАДУМАНО!
 # возможно стоит пересмотреть это архитектурное решение чтобы потом не запутатся при добавлении новых элементов сборки
-def getDependenciesFieldChecksum(fieldValue, filesOnly=False):
+def getDependenciesFieldChecksum(fieldValue, filesOnly=False, target=None, fieldName=None):
     def inlineFindItem(inputPath):
         if not filesOnly:
             if os.path.exists(pathConcat(path_build, inputPath)) or os.path.exists(pathConcat(path_output_target, inputPath)):
@@ -2372,25 +2372,26 @@ def getDependenciesFieldChecksum(fieldValue, filesOnly=False):
             if isinstance(inlineFieldValue, str):
                 checkDict["array"].append(getDependenciesFileOrDirectoryChecksum(inlineFindItem(inlineFieldValue)))
             elif isinstance(inlineFieldValue, list):
-                checkDict["array"].append(getDependenciesFileOrDirectoryChecksum(inlineFindItem(inlineFieldValue[0])))
+                if target != "directory" or fieldName != "items" or len(inlineFieldValue) <= 3 or not inlineFieldValue[3]:
+                    checkDict["array"].append(getDependenciesFileOrDirectoryChecksum(inlineFindItem(inlineFieldValue[0])))
 
         return dictChecksum(checkDict)
     else:
         buildLog("ERROR: failed to get dependencies checksum")
         sys.exit(1)
 
-def rawGetDependencies(item, items_and_files_fields=None, files_only_fields=None):
+def rawGetDependencies(item, items_and_files_fields=None, files_only_fields=None, target=None):
     dependencies = []
 
     if items_and_files_fields:
         for fieldName in items_and_files_fields:
             if fieldName in item:
-                dependencies.append(getDependenciesFieldChecksum(item[fieldName], False))
+                dependencies.append(getDependenciesFieldChecksum(item[fieldName], False, target, fieldName))
 
     if files_only_fields:
         for fieldName in files_only_fields:
             if fieldName in item:
-                dependencies.append(getDependenciesFieldChecksum(item[fieldName], True))
+                dependencies.append(getDependenciesFieldChecksum(item[fieldName], True, target, fieldName))
 
     return dependencies
 
@@ -2398,7 +2399,7 @@ def getDependenciesDebian(item):
     return rawGetDependencies(item, [], ["hook-directory"])
 
 def getDependenciesDirectory(item):
-    return rawGetDependencies(item, ["items"], [])
+    return rawGetDependencies(item, ["items"], [], "directory")
 
 def getDependenciesFullDiskImage(item):
     dependencies = rawGetDependencies(item, ["partitions"], [])
