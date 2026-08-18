@@ -38,6 +38,9 @@ def exclude_string(lstr, exclude_list):
 def exclude_array(arr, exclude_list):
     return [item for item in arr if item not in exclude_list]
 
+def remove_duplicates(strings):
+    return list(dict.fromkeys(strings))
+
 def deleteAny(path):
     if os.path.islink(path):
         os.remove(path)

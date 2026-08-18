@@ -126,18 +126,21 @@ you can create a custom devicetree to connect the perepherals
 * init - It plays the sound as early as possible. almost immediately after loading the audio driver. ideal for devices without a screen like Bluetooth speakers.
 * logo - It plays a sound when the load logo appears. It ONLY works with "boot_splash" enabled AND DOES NOT WORK on devices without a screen.
 
+## internal utils
+* /usr/local/sbin/self_update - self-updating the system from an image built by gnubox maker. It does not validate images. when transferring an image, make sure that it is an image from the same project and that you have not changed the size of the partitions. to work, the new image must be located in the data partition
+
 ## how self-update works
 The update itself allows you to update the device's firmware automatically using the same .img image that gnubox maker exports  
 in order for the self-update function to be available to you, make sure that the "allow_updatescript" flag is set in the project configuration  
-to start the self-update, you need to call the "/sbin/self_update" script with root rights and pass him the path to the .img file  
+to start the self-update, you need to call the "/usr/local/sbin/self_update" script with root rights and pass him the path to the .img file  
 if your shell runs as root, then this will not be a problem. if not, you can come up with your own way to increase privileges  
 for example, you can use a daemon running from root that will monitor a special path for the presence of an update file  
 alternatively, you can use a SUID binary that will accept the update file, validate it, and if everything is fine, then run a self-update (be careful with SUID)  
-keep in mind that the script itself "/sbin/self_update" It DOES NOT VALIDATE the incoming .img file at ALL  
-he just assumes that the .img that you passed to "/sbin/self_update" is the same .img that you recorded on the device and that it is suitable for this device  
+keep in mind that the script itself "/usr/local/sbin/self_update" It DOES NOT VALIDATE the incoming .img file at ALL  
+he just assumes that the .img that you passed to "/usr/local/sbin/self_update" is the same .img that you recorded on the device and that it is suitable for this device  
 please note that the bootloader will not be affected during the self-update  
-also for launching "/sbin/self_update" an .img file passed as a path to "/sbin/self_update" must be located on the "DATA" section  
-using the script "/sbin/self_update" it is impossible without a separate DATA section enabled. this script will not be in rootfs at all in this case  
+also for launching "/usr/local/sbin/self_update" an .img file passed as a path to "/usr/local/sbin/self_update" must be located on the "DATA" section  
+using the script "/usr/local/sbin/self_update" it is impossible without a separate DATA section enabled. this script will not be in rootfs at all in this case  
 when self-updating, only the "BOOT" and "rootfs" sections are updated. also note that gnubox maker uses "BOOT" ONLY on single-board computers. on x86, there is an EFI partition (if the image is EFI-enabled), but it is not updated using self-update because it refers to the bootloader.  
 please note that the partition sizes CANNOT be increased during the update. therefore, when building the first image, reserve enough space for future updates using "minsize_root_partition" and "minsize_boot_partition" or "size_boot_partition" and "size_root_partition"  
 
@@ -154,8 +157,9 @@ please note that the partition sizes CANNOT be increased during the update. ther
 * if you use boot splash, single-board computers will wait for framebuffer to appear when turned on and will not continue booting without a connected monitor.
 * DO NOT USE "boot_splash" on devices without a screen. Since on some platforms the initialization script will wait for the framebuffer to appear so that the user sees the logo, as a result, the device will not start at all. You can use startup sound in init mode, for example, to inform the user that the device's power is on.
 * during the build, a lot is downloaded from the Internet. The assembly will not work without a network connection
-* in the system image built through gnubox maker, it is STRONGLY RECOMMENDED NOT to use the apt and dpkg package manager, much less update the system using them. There is a "/sbin/self_update" mechanism for updating and to install applications on a ready-made embedded device, I recommend implementing flatpak
+* in the system image built through gnubox maker, it is STRONGLY RECOMMENDED NOT to use the apt and dpkg package manager, much less update the system using them. There is a "/usr/local/sbin/self_update" mechanism for updating and to install applications on a ready-made embedded device, I recommend implementing flatpak
 * note that if you export rootfs for x86/x86_64, it will already contain the kernel file /kernel.img and kernel modules (although it won't contain a ramdisk). don't forget to delete them if you don't need the original kernel. when exporting rootfs for ARM architectures, they will not have a kernel. IMPORTANT: do not forget about the kernel arguments, in gnubox maker, the kernel arguments play a very important role and you must run the kernel with the arguments provided by the build. you can take them from the file /gnubox/cmdline.txt where will all the kernel arguments be except platform-specific and "root=". you should use these arguments to launch the kernel and add the "root=" kernel argument to them, which will point to your root file system. also, if you exported rootfs with the data partition option enabled, then your image should have it too.
+* the "/gnubox/cmdline.txt" file is just a reference so that when exporting rootfs you understand what arguments you need to run the kernel with. changing it in the finished image will not change the arguments of the kernel
 
 ## notes
 * please note that by default, the first time you turn on the created root image, the partition will be enlarged to the maximum possible size for the current media. this is done because I cannot know what size of drive the *.img image will be written to

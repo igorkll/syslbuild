@@ -474,7 +474,13 @@ def setup_chroot_script():
 
     return scripts
 
-def setup_build_debian(builditems):
+def get_t64_suffix(debian_suite, for64bits):
+    if debian_suite == "sid" or (debian_suite == "trixie" and not for64bits):
+        return "t64"
+    
+    return ""
+
+def setup_build_debian(builditems, for64bits):
     include = [
         "initramfs-tools",
 
@@ -516,11 +522,7 @@ def setup_build_debian(builditems):
         include.append("alsa-utils")
         include.append("libpulse0")
         include.append("rtkit")
-
-        if debian_suite == "sid":
-            include.append("libasound2t64")
-        else:
-            include.append("libasound2")
+        include.append("libasound2" + get_t64_suffix(debian_suite, for64bits))
 
     wifiless_packages = False
 
@@ -587,8 +589,9 @@ def setup_build_debian(builditems):
 
     include += current_project.user_packages
     include = exclude_array(include, current_project.exclude_packages)
+    include = remove_duplicates(include)
 
-    builditems.append({
+    item = {
         "type": "debian",
         "name": "rootfs directory x1",
         "export": False,
@@ -604,11 +607,19 @@ def setup_build_debian(builditems):
         "variant": current_project.debian_variant,
         "suite": debian_suite,
         "url": debian_snapshot
-    })
+    }
+
+    if for64bits:
+        item["architectures"] = ["amd64", "arm64"]
+    else:
+        item["architectures"] = ["i386", "armhf", "armel"]
+
+    builditems.append(item)
 
 def setup_build_distro(builditems):
     if current_project.distro == "debian":
-        setup_build_debian(builditems)
+        setup_build_debian(builditems, True)
+        setup_build_debian(builditems, False)
     else:
         stop_error(f"unknown distro \"{current_project.distro}\"")
 
@@ -1104,7 +1115,9 @@ def setup_build_base(builditems, cmdline):
         ["/usr", [0, 0, "0755"]],
         ["/usr/lib", [0, 0, "0755"]],
         ["/usr/lib/firmware", [0, 0, "0755"]],
-        ["/usr/sbin", [0, 0, "0755"]]
+
+        ["/usr/local", [0, 0, "0755"]],
+        ["/usr/local/sbin", [0, 0, "0755"]]
     ]
 
     items = [
@@ -1129,7 +1142,7 @@ def setup_build_base(builditems, cmdline):
     ]
 
     if current_project.allow_updatescript and current_project.separate_data_partition:
-        items.append(["files/self_update.sh", "/usr/sbin/self_update", [0, 0, "0755"]])
+        items.append(["files/self_update.sh", "/usr/local/sbin/self_update", [0, 0, "0755"]])
         items.append(["files/updatescript.sh", "/gnubox/updatescript.sh", [0, 0, "0755"]])
 
     if current_project.boot_sound == "init" or (current_project.boot_sound == "logo" and current_project.boot_splash):
