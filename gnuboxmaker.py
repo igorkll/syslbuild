@@ -150,6 +150,7 @@ class Project:
 
     export_rootfs_directory: bool = False
     export_rootfs_tar_gz: bool = False
+    export_rootfs_tar: bool = False
 
     platform_opi_zero3_cma: str = "256M"
     platform_opi_zero3_hdmi_audio_high_priority: bool = True
@@ -1226,6 +1227,15 @@ def setup_build_base(builditems, cmdline):
             "source": "rootfs directory",
 
             "gz": True
+        },)
+
+    if current_project.export_rootfs_tar:
+        builditems.append({
+            "type": "tar",
+            "name": "rootfs.tar",
+            "export": True,
+
+            "source": "rootfs directory"
         },)
 
 def generate_syslbuild_project():
