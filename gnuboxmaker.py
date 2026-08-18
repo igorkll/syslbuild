@@ -1124,6 +1124,7 @@ ID="{current_project.rebranding_os_release_id}"
 
         if current_project.rebranding_remove_debian_logos:
             delete.append("/usr/share/pixmaps/debian-logo.png")
+            delete.append("/usr/share/plymouth/debian-logo.png")
 
 def setup_build_base(builditems, cmdline):
     setup_build_distro(builditems)
