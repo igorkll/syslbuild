@@ -188,7 +188,7 @@ def setup_build_targets(builditems, cmdline):
     if __main__.current_project.export_img_opi_zero3:
         opi_zero3_export.export_opi_zero3(builditems, cmdline, appendPartitions)
 
-    if __main__.current_project.export_img_rpi_32 or __main__.current_project.export_img_rpi_64:
+    if __main__.current_project.export_img_rpi_32_armel or __main__.current_project.export_img_rpi_32 or __main__.current_project.export_img_rpi_64:
         rpi_export.any_rpi(builditems)
 
     if __main__.current_project.export_img_rpi_32_armel:
