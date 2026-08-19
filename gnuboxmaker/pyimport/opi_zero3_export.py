@@ -52,7 +52,7 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         "label": "rootfs"
     })
 
-    setup_export_debian_initramfs(builditems, "opi_zero3")
+    setup_export_initramfs(builditems, "opi_zero3")
 
     builditems.append({
         "architectures": ["arm64"],
