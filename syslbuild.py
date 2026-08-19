@@ -1856,8 +1856,9 @@ wait $CONTAINER_PID""", checkValid)
         Баг в Debian для dracut-install: #1079443
         . Опубликован в августе 2024 года. Именно в нем подробно описывается проблема для armhf/armel.
         """
-        if architecture == "armhf" or architecture == "armel":
-            buildExecute(["chroot", chrootDirectory, "ln", "-s", "/usr/lib/arm-linux-gnueabi" + ("hf" if architecture == "armhf" else ""), "/usr/lib/arm-linux-gnu"], checkValid)
+        symlink_creation_path = "/usr/lib/arm-linux-gnu"
+        if not os.path.exists(pathConcat(chrootDirectory, symlink_creation_path)) and architecture == "armhf" or architecture == "armel":
+            buildExecute(["chroot", chrootDirectory, "ln", "-s", "/usr/lib/arm-linux-gnueabi" + ("hf" if architecture == "armhf" else ""), symlink_creation_path], checkValid)
 
         buildExecute(["chroot", chrootDirectory] + chrootCommand, checkValid)
 
