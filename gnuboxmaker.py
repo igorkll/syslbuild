@@ -63,6 +63,9 @@ class Project:
     dont_show_splash_on_poweroff: bool = True
     dont_use_splash_on_efi: bool = False
 
+    enable_echo: bool = False
+    enable_cursor: bool = False
+
     uartlogs: bool = False
     uartlogs_speed: int = 115200
     uartlogs_login: bool = False
@@ -1185,6 +1188,12 @@ def setup_build_base(builditems, cmdline):
         items.append(["files/run_session_x11.sh", "/gnubox/run_session.sh", [0, 0, "0755"]])
     elif current_project.session_mode == "tty":
         directories.append(["/gnubox/.session_mode_tty", [0, 0, "0000"]])
+    
+        if current_project.enable_echo:
+            directories.append(["/gnubox/.enable_echo", [0, 0, "0000"]])
+    
+        if current_project.enable_cursor:
+            directories.append(["/gnubox/.enable_cursor", [0, 0, "0000"]])
 
     if current_project.boot_splash:
         directories.append(["/usr/share/plymouth/themes/bootlogo", [0, 0, "0755"]])
