@@ -10,10 +10,18 @@ fi
 
 while true; do
     clear
-    reset
-    stty -echo >/dev/null 2>&1
-    setterm -cursor off
-    clear
+
+    if [ -e "/gnubox/.enable_echo" ]; then
+        stty echo >/dev/null 2>&1
+    else
+        stty -echo >/dev/null 2>&1
+    fi
+
+    if [ -e "/gnubox/.enable_cursor" ]; then
+        setterm -cursor on >/dev/null 2>&1
+    else
+        setterm -cursor off >/dev/null 2>&1
+    fi
 
     /gnubox/runshell.sh
     sleep 1

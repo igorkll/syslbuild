@@ -82,6 +82,7 @@ alternatively, you can fork gnubox maker and then offer a pull request
 * tty signals & control flow (kernel source patch)
 * keyboard echo at the very beginning of the boot (kernel source patch)
 * keyboard echo in tty shell mode (just disabled by default)
+* keyboard cursor in tty shell mode (just disabled by default)
 
 ## platforms support rate (from 0 to 10)
 * x86 - 9/10
