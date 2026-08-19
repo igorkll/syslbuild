@@ -55,13 +55,14 @@ you can fix any of these bugs yourself if necessary, and if you want to send a p
 * when building some gnubox maker projects, I had a problem that all applications written in electron crashed on my computer, and only a reboot helped. I do not know what this is related to, but I assume that it is a matter of systemd-nspawn and mounting the host file systems inside the system being assembled.
 
 ## supported platforms
+if the platform you need is not available in gnubox maker, you can use syslbuild (a lower-level tool for creating embedded linux builds) where you can customize the build for any hardware you are interested in and do anything with the system  
+alternatively, you can fork gnubox maker and then offer a pull request  
 * x86_64 (BIOS, UEFI)
 * x86 (BIOS, UEFI)
 * orange pi zero 3
-* raspberry pi 5/4/3 (i tested this on raspberry pi 5, but in theory the image created via raspberry pi 64 should work on 5/4/3)
-* 32 bit arm and rpi_32 NOT SUPPORTED IN THE MOMENT
-if the platform you need is not available in gnubox maker, you can use syslbuild (a lower-level tool for creating embedded linux builds) where you can customize the build for any hardware you are interested in and do anything with the system  
-alternatively, you can fork gnubox maker and then offer a pull request  
+* raspberry pi 5/4/3 (export_arm64 && export_img_rpi_64) (i tested this on raspberry pi 5, but in theory the image created via raspberry pi 64 should work on 5/4/3)
+* raspberry pi 2 (export_arm && export_img_rpi_32) (tested on raspberry pi 5)
+* raspberry pi 1 (export_armel && export_img_rpi_32_armel) (tested on raspberry pi 5)
 * in the build for some platforms such as "orange pi zero 3" there are many additional dtb files that can be enabled with a file in the boot partition (or specify an alternative dtb in the file "override.txt" in the "resources/devicetree/PLATFORM" directory), so you can achieve work on similar platforms (for example, orange pi zero 2 or 2w)
 * you can enable the rootfs export function as a directory or in tar format by configuring the build for the desired CPU architecture, then you can create a script yourself that builds a kernel for your platform with kernel patches from gnubox maker (see the section "used kernel patches"), installs modules in this rootfs, builds initramfs and builds an image for your platform. This way you can independently export the gnubox maker project for ANY platform. note that if you export rootfs for x86/x86_64, it will already contain the kernel file /kernel.img and kernel modules. don't forget to delete them if you don't need the original kernel. when exporting rootfs for ARM architectures, they will not have a kernel. IMPORTANT: do not forget about the kernel arguments, in gnubox maker, the kernel arguments play a very important role and you must run the kernel with the arguments provided by the build. you can take them from the file /gnubox/cmdline.txt where will all the kernel arguments be except platform-specific and "root=". you should use these arguments to launch the kernel and add the "root=" kernel argument to them, which will point to your root file system. also, if you exported rootfs with the data partition option enabled, then your image should have it too.
 
