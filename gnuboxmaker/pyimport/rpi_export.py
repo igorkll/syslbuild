@@ -105,8 +105,8 @@ def export_rpi_32(builditems, cmdline, appendPartitions, architecture="armhf", s
         ["initramfs_rpi_kernel.img", "/initramfs"],
 
         ["kernel_image/armhf/rpi_kernel7/boot", "/"],
-        ["kernel_image/armhf/rpi_kernel7/kernel7.img", "/kernel7.img"],
-        ["kernel_image/armhf/rpi_kernel7/kernel7_config", "/kernel7_config"],
+        ["kernel_image/armhf/rpi_kernel7/kernel.img", "/kernel7.img"],
+        ["kernel_image/armhf/rpi_kernel7/kernel_config", "/kernel7_config"],
         ["initramfs_rpi_kernel7.img", "/initramfs7"],
 
         ["files/cmdline_rpi_32.txt", "/cmdline.txt"],
