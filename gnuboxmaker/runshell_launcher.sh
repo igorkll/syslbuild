@@ -12,15 +12,15 @@ while true; do
     clear
 
     if [ -e "/gnubox/.enable_echo" ]; then
-        stty echo >/dev/null 2>&1
+        stty echo
     else
-        stty -echo >/dev/null 2>&1
+        stty -echo
     fi
 
     if [ -e "/gnubox/.enable_cursor" ]; then
-        setterm -cursor on >/dev/null 2>&1
+        setterm -cursor on
     else
-        setterm -cursor off >/dev/null 2>&1
+        setterm -cursor off
     fi
 
     /gnubox/runshell.sh
