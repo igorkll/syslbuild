@@ -4,6 +4,7 @@ if [ -e "/gnubox/.session_mode_tty" ]; then
     if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
         :
     else
+        reset
         exec bash
     fi
 fi
