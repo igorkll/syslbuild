@@ -227,72 +227,42 @@ platforms = {
     "desktop_64": {
         "project_config": {
             "export_x86_64": True,
-            "export_x86": False,
-            "export_arm64": False,
-            "export_img_bios_mbr": False,
-            "export_img_bios_gpt": False,
-            "export_img_uefi_gpt": False,
-            "export_img_bios_and_uefi_gpt": True,
-            "export_img_opi_zero3": False,
-            "export_img_rpi_64": False
+            "export_img_bios_and_uefi_gpt": True
         },
         "image_path": "output/amd64/@ BIOS UEFI GPT.img"
     },
     "desktop_32": {
         "project_config": {
-            "export_x86_64": False,
             "export_x86": True,
-            "export_arm64": False,
-            "export_img_bios_mbr": False,
-            "export_img_bios_gpt": True,
-            "export_img_uefi_gpt": False,
-            "export_img_bios_and_uefi_gpt": False,
-            "export_img_opi_zero3": False,
-            "export_img_rpi_64": False
+            "export_img_bios_gpt": True
         },
         "image_path": "output/i386/@ BIOS GPT.img"
     },
     "raspberry_pi_64": {
         "project_config": {
-            "export_x86_64": False,
-            "export_x86": False,
             "export_arm64": True,
-            "export_img_bios_mbr": False,
-            "export_img_bios_gpt": False,
-            "export_img_uefi_gpt": False,
-            "export_img_bios_and_uefi_gpt": False,
-            "export_img_opi_zero3": False,
             "export_img_rpi_64": True
         },
         "image_path": "output/arm64/@ RPI 64.img"
     },
     "raspberry_pi_32": {
         "project_config": {
-            "export_x86_64": False,
-            "export_x86": False,
             "export_arm": True,
-            "export_arm64": False,
-            "export_img_bios_mbr": False,
-            "export_img_bios_gpt": False,
-            "export_img_uefi_gpt": False,
-            "export_img_bios_and_uefi_gpt": False,
-            "export_img_opi_zero3": False,
-            "export_img_rpi_64": False,
             "export_img_rpi_32": True
         },
-        "image_path": "output/arm64/@ RPI 32.img"
+        "image_path": "output/armhf/@ RPI 32.img"
+    },
+    "raspberry_pi_armel": {
+        "project_config": {
+            "export_armel": True,
+            "export_img_rpi_32_armel": True
+        },
+        "image_path": "output/armel/@ RPI 32 ARMEL.img"
     },
     "orange_pi_zero3": {
         "project_config": {
-            "export_x86_64": False,
-            "export_x86": False,
             "export_arm64": True,
-            "export_img_bios_mbr": False,
-            "export_img_bios_gpt": False,
-            "export_img_uefi_gpt": False,
-            "export_img_bios_and_uefi_gpt": False,
-            "export_img_opi_zero3": True,
-            "export_img_rpi_64": False
+            "export_img_opi_zero3": True
         },
         "image_path": "output/arm64/@ OPI ZERO 3.img"
     }
@@ -391,6 +361,11 @@ def generate_project_config():
 
     if args.wifi_security:
         project_config["wifi_autoconnect_security"] = args.wifi_security
+
+    project_config.update({
+        "export_x86_64": False,
+        "export_img_bios_and_uefi_gpt": False
+    })
 
     project_config.update(platforms[args.platform]["project_config"])
 

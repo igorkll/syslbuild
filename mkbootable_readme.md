@@ -29,7 +29,8 @@ there may be nuances in the support of some platforms. read about it here: https
 * desktop_64 (default)
 * desktop_32
 * raspberry_pi_64
-* raspberry_pi_32 (temporarily unavailable)
+* raspberry_pi_32
+* raspberry_pi_armel
 * orange_pi_zero3
 
 ## supported application types
