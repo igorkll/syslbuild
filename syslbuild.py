@@ -1858,7 +1858,7 @@ wait $CONTAINER_PID""", checkValid)
         """
         symlink_creation_path = "/usr/lib/arm-linux-gnu"
         symlink_abs_path = pathConcat(chrootDirectory, symlink_creation_path)
-        if not os.path.exists(symlink_abs_path) and not not os.path.lexists(symlink_abs_path) and architecture == "armhf" or architecture == "armel":
+        if not os.path.exists(symlink_abs_path) and not not os.path.lexists(symlink_abs_path) and (architecture == "armhf" or architecture == "armel"):
             buildExecute(["chroot", chrootDirectory, "ln", "-s", "/usr/lib/arm-linux-gnueabi" + ("hf" if architecture == "armhf" else ""), symlink_creation_path], checkValid)
 
         buildExecute(["chroot", chrootDirectory] + chrootCommand, checkValid)
