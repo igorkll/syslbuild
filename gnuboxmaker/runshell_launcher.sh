@@ -23,6 +23,8 @@ while true; do
         setterm -cursor off
     fi
 
+    clear
+
     /gnubox/runshell.sh
     sleep 1
 done
