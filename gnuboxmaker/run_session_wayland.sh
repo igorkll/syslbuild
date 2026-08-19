@@ -2,6 +2,7 @@
 
 if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
     stty -echo >/dev/null 2>&1
+    setterm -cursor off
     clear
 
     if [ -e "/bootmnt/opi_zero3" ] || [ -e "/bootmnt/rpi_64" ]; then

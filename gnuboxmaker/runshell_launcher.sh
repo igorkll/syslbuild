@@ -12,6 +12,7 @@ while true; do
     clear
     reset
     stty -echo >/dev/null 2>&1
+    setterm -cursor off
     clear
 
     /gnubox/runshell.sh
