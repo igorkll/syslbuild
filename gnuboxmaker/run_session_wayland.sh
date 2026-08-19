@@ -10,7 +10,5 @@ if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
         exec weston --continue-without-input >/dev/null 2>&1
     fi
 else
-    clear
-    reset
     exec bash
 fi
