@@ -38,6 +38,8 @@
   "boot_sound": "none",
   "dont_show_splash_on_poweroff": true,
   "dont_use_splash_on_efi": false,
+  "enable_echo": true,
+  "enable_cursor": true,
   "uartlogs": true,
   "uartlogs_speed": 115200,
   "uartlogs_rootshell": true,
