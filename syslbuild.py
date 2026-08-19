@@ -1857,7 +1857,8 @@ wait $CONTAINER_PID""", checkValid)
         . Опубликован в августе 2024 года. Именно в нем подробно описывается проблема для armhf/armel.
         """
         symlink_creation_path = "/usr/lib/arm-linux-gnu"
-        if not os.path.exists(pathConcat(chrootDirectory, symlink_creation_path)) and architecture == "armhf" or architecture == "armel":
+        symlink_abs_path = pathConcat(chrootDirectory, symlink_creation_path)
+        if not os.path.exists(symlink_abs_path) and not not os.path.lexists(symlink_abs_path) and architecture == "armhf" or architecture == "armel":
             buildExecute(["chroot", chrootDirectory, "ln", "-s", "/usr/lib/arm-linux-gnueabi" + ("hf" if architecture == "armhf" else ""), symlink_creation_path], checkValid)
 
         buildExecute(["chroot", chrootDirectory] + chrootCommand, checkValid)
