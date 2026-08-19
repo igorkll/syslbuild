@@ -1738,6 +1738,10 @@ def checkQemuStaticNeed():
     buildLog(f"the host architecture ({hostArchitecture}) is NOT compatible with the target architecture ({architecture}), we use qemu-static")
     return True
 
+def set_rules_755(path):
+    buildExecute(["chmod", "0755", path])
+    buildExecute(["chown", "0:0", path])
+
 def rawCrossChroot(chrootDirectory, chrootCommand, useSystemd=False, manualValidation=False, item=None):
     if item is None:
         item = {}
@@ -1766,21 +1770,37 @@ def rawCrossChroot(chrootDirectory, chrootCommand, useSystemd=False, manualValid
     qemuStaticName = qemuStaticNames[architecture]
     qemuStaticHostPath = f"/usr/bin/{qemuStaticName}"
     qemuStaticPath = pathConcat(chrootDirectory, "usr/bin", qemuStaticName)
+    qemuCopied = False
+
+    dirCreatedForQemu_usr = False
+    dirCreatedForQemu_usr_bin = False
+    usr_dir = pathConcat(chrootDirectory, "usr")
+    usr_bin_dir = pathConcat(chrootDirectory, "usr/bin")
 
     if boolCopyQemuStatic and not os.path.isfile(qemuStaticHostPath):
         buildLog(f"WARNING: there is no suitable version of qemu-static ({qemuStaticName}) in the host system. we are trying without it")
         boolCopyQemuStatic = False
 
     if boolCopyQemuStatic:
-        if os.path.isfile(qemuStaticPath):
-            buildLog(f"copying qemu-static ({qemuStaticName})")
-            os.makedirs(os.path.dirname(qemuStaticPath), exist_ok=True)
-            buildExecute(["cp", "-a", qemuStaticHostPath, qemuStaticPath])
-            buildExecute(["chmod", "0755", qemuStaticPath])
-            buildExecute(["chown", "0:0", qemuStaticPath])
-        else:
+        if os.path.exists(qemuStaticPath):
             # надо добавить флаг чтобы можно было принудительно копировать qemu переименовывая старый а потом возврашая как было
             buildLog(f"qemu-static should have been copied, but the file with that name is already in the chroot directory. i'm skipping it ({qemuStaticName})")
+        else:
+            buildLog(f"copying qemu-static ({qemuStaticName})")
+            qemuCopied = True
+
+            if not os.path.exists(usr_dir):
+                dirCreatedForQemu_usr = True
+                os.makedirs(usr_dir)
+                set_rules_755(usr_dir)
+
+            if not os.path.exists(usr_bin_dir):
+                dirCreatedForQemu_usr_bin = True
+                os.makedirs(usr_bin_dir)
+                set_rules_755(usr_bin_dir)
+
+            buildExecute(["cp", "-a", qemuStaticHostPath, qemuStaticPath])
+            set_rules_755(qemuStaticPath)
 
     fix_systemd_container_host_files_copy_list = [
         "/etc/localtime",
@@ -1829,8 +1849,14 @@ wait $CONTAINER_PID""", checkValid)
     else:
         buildExecute(["chroot", chrootDirectory] + chrootCommand, checkValid)
 
-    if boolCopyQemuStatic:
+    if qemuCopied:
         deleteAny(qemuStaticPath)
+
+        if dirCreatedForQemu_usr:
+            deleteAny(usr_dir)
+
+        if dirCreatedForQemu_usr_bin:
+            deleteAny(usr_bin_dir)
 
     for bindPath in bindList:
         buildRawExecute(f"umount -R \"{pathConcat(chrootDirectory, bindPath)}\"", False)
