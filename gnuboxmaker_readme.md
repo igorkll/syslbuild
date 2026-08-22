@@ -26,7 +26,7 @@ If you don't have enough gnubox maker features or you need a minimum image size,
 * download the syslbuild release (NOT THE REPOSITORY BRANCH): https://github.com/igorkll/syslbuild/releases
 * unpack it in a convenient place
 * launch install.sh from root
-* wait for the installation process to finish (it can take up to 4 hours)
+* wait for the installation process to finish (it can take up to 2 hours)
 * the unpacked files can now be deleted
 ### supported host systems
 recommended OS: Ubuntu 24.04 LTS (Noble Numbat)  
