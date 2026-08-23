@@ -785,7 +785,8 @@ these changes to the kernel config are applied automatically when building the k
 
             "source": "rootfs directory",
 
-            "gz": false
+            "gz": false,
+            "xz": false
         },
         {
             "type": "tar",
@@ -794,7 +795,18 @@ these changes to the kernel config are applied automatically when building the k
 
             "source": "rootfs directory",
 
-            "gz": true
+            "gz": true,
+            "xz": false
+        },
+        {
+            "type": "tar",
+            "name": "example-distro rootfs.tar.xz",
+            "export": true,
+
+            "source": "rootfs directory",
+
+            "gz": false,
+            "xz": true
         },
 
         // ---------------- making full disk image (an image with an already installed system and bootloader, an OEM image that is usually installed on laptops at the factory. Whatever you want to call it)

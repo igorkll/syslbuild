@@ -1057,9 +1057,13 @@ def buildTar(item):
     tar_path = getItemPath(item)
 
     if readBool(item, "gz"):
-        buildExecute(["tar", "-czf", tar_path, "-C", tar_files, "."])
+        compress = "z"
+    elif readBool(item, "xz"):
+        compress = "J"
     else:
-        buildExecute(["tar", "-cf", tar_path, "-C", tar_files, "."])
+        compress = ""
+
+    buildExecute(["tar", "-c" + compress + "f", tar_path, "-C", tar_files, "."])
 
 def buildFilesystem(item):
     fs_files = findDirectory(item)

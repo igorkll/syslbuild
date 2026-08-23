@@ -1243,7 +1243,18 @@ def setup_build_base(builditems, cmdline):
             "source": "rootfs directory",
 
             "gz": True
-        },)
+        })
+
+    if current_project.export_rootfs_tar_xz:
+        builditems.append({
+            "type": "tar",
+            "name": "rootfs.tar.xz",
+            "export": True,
+
+            "source": "rootfs directory",
+
+            "xz": True
+        })
 
     if current_project.export_rootfs_tar:
         builditems.append({
@@ -1252,7 +1263,7 @@ def setup_build_base(builditems, cmdline):
             "export": True,
 
             "source": "rootfs directory"
-        },)
+        })
 
 def generate_syslbuild_project():
     cmdline_console = ""
