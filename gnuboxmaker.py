@@ -708,7 +708,7 @@ def setup_download(builditems):
             "path": "/super_kiosk_browser_build/super_kiosk_browser-linux-arm64"
         })
 
-    addDownload("custom-debian-initramfs-init", "1.6.5")
+    addDownload("custom-debian-initramfs-init", "1.6.6")
     addDownload("linux-embedded-setup-scripts", "0.2")
     addDownloadRelease("linux-bootloaders", "1.2", "linux-bootloaders.tar.gz")
     unpackRelease("linux-bootloaders.tar.gz")
@@ -1284,7 +1284,7 @@ def generate_syslbuild_project():
         cmdline += " startupsound_afterModulesLoading=/startup.wav"
     
     if current_project.boot_sound == "logo" and current_project.boot_splash:
-        cmdline += " startupsound_afterLogoShow=/startup.wav"
+        cmdline += " startupsound_afterLogoShowOnlyAfterModules=/startup.wav"
 
     if current_project.var_is_temp and not (current_project.separate_data_partition and current_project.separate_data_partition_var_link):
         cmdline += " makevartmp"
