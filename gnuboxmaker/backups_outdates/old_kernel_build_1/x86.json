@@ -1,0 +1,40 @@
+[
+    {
+        "type": "kernel",
+        "name": "kernel.img",
+        "export": true,
+
+        "headers_name": "kernel_headers",
+        "headers_export": true,
+
+        "modules_name": "kernel_modules",
+        "modules_export": true,
+
+        "result_config_name": "kernel_config",
+        "result_config_export": true,
+
+        "symvers_name": "Module.symvers",
+        "symvers_export": true,
+
+        "kernel_source_url": "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.6.tar.xz",
+        "kernel_output_file": "bzImage",
+
+        "patches": [
+            "linux-embedded-patchs/disable_vt_swithing_from_keyboard.patch",
+            "linux-embedded-patchs/disable_vt_swithing_from_wayland.patch",
+            "linux-embedded-patchs/disable_sysrq.patch",
+            "linux-embedded-patchs/disable_cad.patch",
+            "linux-embedded-patchs/disable_keyboard_echo_by_default.patch",
+            "linux-embedded-patchs/disable_tty_signals.patch",
+            "linux-embedded-patchs/disable_tty_control_flow.patch",
+            "linux-embedded-patchs/6.6.0/disable_reboot_and_shutdown_emerg_messages.patch",
+            "linux-embedded-patchs/make_all_emerg_messages_with_alert_loglevel.patch"
+        ],
+
+        "kernel_config_changes_files": [
+            "kernel_config_changes.txt",
+            "kernel_config_changes_base.txt",
+            "kernel_config_changes_x86.txt"
+        ]
+    }
+]

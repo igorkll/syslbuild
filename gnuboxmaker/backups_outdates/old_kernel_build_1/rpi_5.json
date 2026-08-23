@@ -1,0 +1,82 @@
+[
+    {
+        "type": "kernel",
+        "name": "kernel_rpi_5.img",
+        "export": false,
+
+        "headers_name": "kernel_headers_rpi_5",
+        "headers_export": false,
+
+        "modules_name": "kernel_modules_rpi_5",
+        "modules_export": false,
+
+        "result_config_name": "kernel_config_rpi_5",
+        "result_config_export": false,
+
+        "symvers_name": "Module_symvers",
+        "symvers_export": false,
+
+        "kernel_source_git": "https://github.com/raspberrypi/linux",
+        "kernel_source_git_branch": "rpi-6.12.y",
+        "kernel_source_git_checkout": "359f37f0faefb712add32a39f98751aea67d5c1f",
+        "kernel_output_file": "Image",
+
+        "patches": [
+            "linux-embedded-patchs/disable_vt_swithing_from_keyboard.patch",
+            "linux-embedded-patchs/disable_vt_swithing_from_wayland.patch",
+            "linux-embedded-patchs/disable_sysrq.patch",
+            "linux-embedded-patchs/disable_cad.patch",
+            "linux-embedded-patchs/disable_keyboard_echo_by_default.patch",
+            "linux-embedded-patchs/disable_tty_signals.patch",
+            "linux-embedded-patchs/disable_tty_control_flow.patch",
+            "linux-embedded-patchs/7.0//disable_reboot_and_shutdown_emerg_messages.patch",
+            "linux-embedded-patchs/make_all_emerg_messages_with_alert_loglevel.patch"
+        ],
+
+        "kernel_config_changes_files": [
+            "kernel_config_changes.txt",
+            "kernel_config_changes_base.txt",
+            "kernel_config_changes_rpi_5.txt",
+            "kernel_config_changes_singleboards.txt"
+        ],
+
+        "defconfig": "bcm2712_defconfig",
+
+        "additional_export": [
+            ["arch/arm64/boot/dts/broadcom/bcm2712-rpi-cm5l-cm5io.dtb", "bcm2712-rpi-cm5l-cm5io.dtb", false],
+            ["arch/arm64/boot/dts/broadcom/bcm2712-rpi-cm5l-cm4io.dtb", "bcm2712-rpi-cm5l-cm4io.dtb", false],
+            ["arch/arm64/boot/dts/broadcom/bcm2712-rpi-cm5-cm5io.dtb", "bcm2712-rpi-cm5-cm5io.dtb", false],
+            ["arch/arm64/boot/dts/broadcom/bcm2712-rpi-cm5-cm4io.dtb", "bcm2712-rpi-cm5-cm4io.dtb", false],
+            ["arch/arm64/boot/dts/broadcom/bcm2712-rpi-500.dtb", "bcm2712-rpi-500.dtb", false],
+            ["arch/arm64/boot/dts/broadcom/bcm2712-rpi-5-b.dtb", "bcm2712-rpi-5-b.dtb", false],
+            ["arch/arm64/boot/dts/broadcom/bcm2712-d-rpi-5-b.dtb", "bcm2712-d-rpi-5-b.dtb", false],
+            ["arch/arm64/boot/dts/broadcom/bcm2712d0-rpi-5-b.dtb", "bcm2712d0-rpi-5-b.dtb", false]
+        ]
+    },
+    {
+        "type": "directory",
+        "name": "rpi_5",
+        "export": true,
+
+        "directories": [
+            ["/boot", [0, 0, "0755"]]
+        ],
+
+        "items": [
+            ["bcm2712-rpi-cm5l-cm5io.dtb", "/boot/bcm2712-rpi-cm5l-cm5io.dtb"],
+            ["bcm2712-rpi-cm5l-cm4io.dtb", "/boot/bcm2712-rpi-cm5l-cm4io.dtb"],
+            ["bcm2712-rpi-cm5-cm5io.dtb", "/boot/bcm2712-rpi-cm5-cm5io.dtb"],
+            ["bcm2712-rpi-cm5-cm4io.dtb", "/boot/bcm2712-rpi-cm5-cm4io.dtb"],
+            ["bcm2712-rpi-500.dtb", "/boot/bcm2712-rpi-500.dtb"],
+            ["bcm2712-rpi-5-b.dtb", "/boot/bcm2712-rpi-5-b.dtb"],
+            ["bcm2712-d-rpi-5-b.dtb", "/boot/bcm2712-d-rpi-5-b.dtb"],
+            ["bcm2712d0-rpi-5-b.dtb", "/boot/bcm2712d0-rpi-5-b.dtb"],
+
+            ["kernel_headers_rpi_5", "/kernel_headers"],
+            ["kernel_modules_rpi_5", "/kernel_modules"],
+            ["kernel_rpi_5.img", "/kernel.img"],
+            ["kernel_config_rpi_5", "/kernel_config"],
+            ["Module_symvers", "/Module.symvers"]
+        ]
+    }
+]

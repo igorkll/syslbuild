@@ -1,0 +1,26 @@
+[
+    {
+        "type": "gitclone",
+        "name": "linux-embedded-patchs",
+        "export": false,
+
+        "git_url": "https://github.com/igorkll/linux-embedded-patchs",
+        "git_checkout": "5.4"
+    },
+    {
+        "type": "gitclone",
+        "name": "armbian",
+        "export": false,
+
+        "git_url": "https://github.com/armbian/build",
+        "git_checkout": "v26.8.0-trunk.10" //v26.8.0-trunk.10 / v26.8.0-trunk.121
+    },
+    {
+        "type": "gitclone",
+        "name": "armbian_uwe5622",
+        "export": false,
+
+        "git_url": "https://github.com/armbian/uwe5622",
+        "git_checkout": "e93057b3b87b085a02acedf13fb14ca332a13bf4"
+    }
+]

@@ -1,0 +1,101 @@
+[
+    {
+
+        "type": "kernel",
+        "name": "kernel_rpi_64.img",
+        "export": false,
+
+        "headers_name": "kernel_headers_rpi_64",
+        "headers_export": false,
+
+        "modules_name": "kernel_modules_rpi_64",
+        "modules_export": false,
+
+        "result_config_name": "kernel_config_rpi_64",
+        "result_config_export": false,
+
+        "symvers_name": "Module_symvers",
+        "symvers_export": false,
+
+        "kernel_source_git": "https://github.com/raspberrypi/linux",
+        "kernel_source_git_branch": "rpi-6.12.y",
+        "kernel_source_git_checkout": "359f37f0faefb712add32a39f98751aea67d5c1f",
+        "kernel_output_file": "Image",
+
+        "patches": [
+            "linux-embedded-patchs/disable_vt_swithing_from_keyboard.patch",
+            "linux-embedded-patchs/disable_vt_swithing_from_wayland.patch",
+            "linux-embedded-patchs/disable_sysrq.patch",
+            "linux-embedded-patchs/disable_cad.patch",
+            "linux-embedded-patchs/disable_keyboard_echo_by_default.patch",
+            "linux-embedded-patchs/disable_tty_signals.patch",
+            "linux-embedded-patchs/disable_tty_control_flow.patch",
+            "linux-embedded-patchs/7.0/disable_reboot_and_shutdown_emerg_messages.patch",
+            "linux-embedded-patchs/make_all_emerg_messages_with_alert_loglevel.patch"
+        ],
+
+        "kernel_config_changes_files": [
+            "kernel_config_changes.txt",
+            "kernel_config_changes_base.txt",
+            "kernel_config_changes_rpi_64.txt",
+            "kernel_config_changes_singleboards.txt"
+        ],
+
+        "defconfig": "bcm2711_defconfig",
+
+        "additional_export": [
+            ["arch/arm64/boot/dts/broadcom/bcm2837-rpi-zero-2-w.dtb", "bcm2837-rpi-zero-2-w.dtb", false],
+            ["arch/arm64/boot/dts/broadcom/bcm2837-rpi-cm3-io3.dtb", "bcm2837-rpi-cm3-io3.dtb", false],
+            ["arch/arm64/boot/dts/broadcom/bcm2837-rpi-3-b-plus.dtb", "bcm2837-rpi-3-b-plus.dtb", false],
+            ["arch/arm64/boot/dts/broadcom/bcm2837-rpi-3-b.dtb", "bcm2837-rpi-3-b.dtb", false],
+            ["arch/arm64/boot/dts/broadcom/bcm2837-rpi-3-a-plus.dtb", "bcm2837-rpi-3-a-plus.dtb", false],
+            ["arch/arm64/boot/dts/broadcom/bcm2711-rpi-cm4s.dtb", "bcm2711-rpi-cm4s.dtb", false],
+            ["arch/arm64/boot/dts/broadcom/bcm2711-rpi-cm4-io.dtb", "bcm2711-rpi-cm4-io.dtb", false],
+            ["arch/arm64/boot/dts/broadcom/bcm2711-rpi-cm4.dtb", "bcm2711-rpi-cm4.dtb", false],
+            ["arch/arm64/boot/dts/broadcom/bcm2711-rpi-400.dtb", "bcm2711-rpi-400.dtb", false],
+            ["arch/arm64/boot/dts/broadcom/bcm2711-rpi-4-b.dtb", "bcm2711-rpi-4-b.dtb", false],
+            ["arch/arm64/boot/dts/broadcom/bcm2710-rpi-zero-2-w.dtb", "bcm2710-rpi-zero-2-w.dtb", false],
+            ["arch/arm64/boot/dts/broadcom/bcm2710-rpi-zero-2.dtb", "bcm2710-rpi-zero-2.dtb", false],
+            ["arch/arm64/boot/dts/broadcom/bcm2710-rpi-cm3.dtb", "bcm2710-rpi-cm3.dtb", false],
+            ["arch/arm64/boot/dts/broadcom/bcm2710-rpi-cm0.dtb", "bcm2710-rpi-cm0.dtb", false],
+            ["arch/arm64/boot/dts/broadcom/bcm2710-rpi-3-b-plus.dtb", "bcm2710-rpi-3-b-plus.dtb", false],
+            ["arch/arm64/boot/dts/broadcom/bcm2710-rpi-3-b.dtb", "bcm2710-rpi-3-b.dtb", false],
+            ["arch/arm64/boot/dts/broadcom/bcm2710-rpi-2-b.dtb", "bcm2710-rpi-2-b.dtb", false]
+        ]
+    },
+    {
+        "type": "directory",
+        "name": "rpi_64",
+        "export": true,
+
+        "directories": [
+            ["/boot", [0, 0, "0755"]]
+        ],
+
+        "items": [
+            ["bcm2837-rpi-zero-2-w.dtb", "/boot/bcm2837-rpi-zero-2-w.dtb"],
+            ["bcm2837-rpi-cm3-io3.dtb", "/boot/bcm2837-rpi-cm3-io3.dtb"],
+            ["bcm2837-rpi-3-b-plus.dtb", "/boot/bcm2837-rpi-3-b-plus.dtb"],
+            ["bcm2837-rpi-3-b.dtb", "/boot/bcm2837-rpi-3-b.dtb"],
+            ["bcm2837-rpi-3-a-plus.dtb", "/boot/bcm2837-rpi-3-a-plus.dtb"],
+            ["bcm2711-rpi-cm4s.dtb", "/boot/bcm2711-rpi-cm4s.dtb"],
+            ["bcm2711-rpi-cm4-io.dtb", "/boot/bcm2711-rpi-cm4-io.dtb"],
+            ["bcm2711-rpi-cm4.dtb", "/boot/bcm2711-rpi-cm4.dtb"],
+            ["bcm2711-rpi-400.dtb", "/boot/bcm2711-rpi-400.dtb"],
+            ["bcm2711-rpi-4-b.dtb", "/boot/bcm2711-rpi-4-b.dtb"],
+            ["bcm2710-rpi-zero-2-w.dtb", "/boot/bcm2710-rpi-zero-2-w.dtb"],
+            ["bcm2710-rpi-zero-2.dtb", "/boot/bcm2710-rpi-zero-2.dtb"],
+            ["bcm2710-rpi-cm3.dtb", "/boot/bcm2710-rpi-cm3.dtb"],
+            ["bcm2710-rpi-cm0.dtb", "/boot/bcm2710-rpi-cm0.dtb"],
+            ["bcm2710-rpi-3-b-plus.dtb", "/boot/bcm2710-rpi-3-b-plus.dtb"],
+            ["bcm2710-rpi-3-b.dtb", "/boot/bcm2710-rpi-3-b.dtb"],
+            ["bcm2710-rpi-2-b.dtb", "/boot/bcm2710-rpi-2-b.dtb"],
+
+            ["kernel_headers_rpi_64", "/kernel_headers"],
+            ["kernel_modules_rpi_64", "/kernel_modules"],
+            ["kernel_rpi_64.img", "/kernel.img"],
+            ["kernel_config_rpi_64", "/kernel_config"],
+            ["Module_symvers", "/Module.symvers"]
+        ]
+    }
+]

@@ -1,0 +1,83 @@
+[
+    {
+
+        "type": "kernel",
+        "name": "kernel_rpi_kernel.img",
+        "export": false,
+
+        "headers_name": "kernel_headers_rpi_kernel",
+        "headers_export": false,
+
+        "modules_name": "kernel_modules_rpi_kernel",
+        "modules_export": false,
+
+        "result_config_name": "kernel_config_rpi_kernel",
+        "result_config_export": false,
+
+        "symvers_name": "Module_symvers",
+        "symvers_export": false,
+
+        "kernel_source_git": "https://github.com/raspberrypi/linux",
+        "kernel_source_git_branch": "rpi-6.12.y",
+        "kernel_source_git_checkout": "359f37f0faefb712add32a39f98751aea67d5c1f",
+        "kernel_output_file": "Image",
+
+        "patches": [
+            "linux-embedded-patchs/disable_vt_swithing_from_keyboard.patch",
+            "linux-embedded-patchs/disable_vt_swithing_from_wayland.patch",
+            "linux-embedded-patchs/disable_sysrq.patch",
+            "linux-embedded-patchs/disable_cad.patch",
+            "linux-embedded-patchs/disable_keyboard_echo_by_default.patch",
+            "linux-embedded-patchs/disable_tty_signals.patch",
+            "linux-embedded-patchs/disable_tty_control_flow.patch",
+            "linux-embedded-patchs/7.0/disable_reboot_and_shutdown_emerg_messages.patch",
+            "linux-embedded-patchs/make_all_emerg_messages_with_alert_loglevel.patch"
+        ],
+
+        "kernel_config_changes_files": [
+            "kernel_config_changes.txt",
+            "kernel_config_changes_base.txt",
+            "kernel_config_changes_rpi_kernel.txt",
+            "kernel_config_changes_singleboards.txt"
+        ],
+
+        "defconfig": "bcmrpi_defconfig",
+
+        "additional_export": [
+            ["arch/arm/boot/dts/broadcom/bcm2708-rpi-b.dtb", "bcm2708-rpi-b.dtb", false],
+            ["arch/arm/boot/dts/broadcom/bcm2708-rpi-b-plus.dtb", "bcm2708-rpi-b-plus.dtb", false],
+            ["arch/arm/boot/dts/broadcom/bcm2708-rpi-b-rev1.dtb", "bcm2708-rpi-b-rev1.dtb", false],
+            ["arch/arm/boot/dts/broadcom/bcm2708-rpi-cm.dtb", "bcm2708-rpi-cm.dtb", false],
+            ["arch/arm/boot/dts/broadcom/bcm2708-rpi-zero.dtb", "bcm2708-rpi-zero.dtb", false],
+            ["arch/arm/boot/dts/broadcom/bcm2708-rpi-zero-w.dtb", "bcm2708-rpi-zero-w.dtb", false],
+            ["arch/arm/boot/dts/broadcom/bcm2709-rpi-2-b.dtb", "bcm2709-rpi-2-b.dtb", false],
+            ["arch/arm/boot/dts/broadcom/bcm2709-rpi-cm2.dtb", "bcm2709-rpi-cm2.dtb", false]
+        ]
+    },
+    {
+        "type": "directory",
+        "name": "rpi_kernel",
+        "export": true,
+
+        "directories": [
+            ["/boot", [0, 0, "0755"]]
+        ],
+
+        "items": [
+            ["bcm2708-rpi-b.dtb", "/boot/bcm2708-rpi-b.dtb"],
+            ["bcm2708-rpi-b-plus.dtb", "/boot/bcm2708-rpi-b-plus.dtb"],
+            ["bcm2708-rpi-b-rev1.dtb", "/boot/bcm2708-rpi-b-rev1.dtb"],
+            ["bcm2708-rpi-cm.dtb", "/boot/bcm2708-rpi-cm.dtb"],
+            ["bcm2708-rpi-zero.dtb", "/boot/bcm2708-rpi-zero.dtb"],
+            ["bcm2708-rpi-zero-w.dtb", "/boot/bcm2708-rpi-zero-w.dtb"],
+            ["bcm2709-rpi-2-b.dtb", "/boot/bcm2709-rpi-2-b.dtb"],
+            ["bcm2709-rpi-cm2.dtb", "/boot/bcm2709-rpi-cm2.dtb"],
+
+            ["kernel_headers_rpi_kernel", "/kernel_headers"],
+            ["kernel_modules_rpi_kernel", "/kernel_modules"],
+            ["kernel_rpi_kernel.img", "/kernel.img"],
+            ["kernel_config_rpi_kernel", "/kernel_config"],
+            ["Module_symvers", "/Module.symvers"]
+        ]
+    }
+]
