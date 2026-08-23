@@ -50,7 +50,6 @@
 
             ["armbian/patch/kernel/archive/sunxi-6.18/overlay_32", "arch/arm/boot/dts/allwinner/overlay"],
             ["armbian/patch/kernel/archive/sunxi-6.18/overlay_64", "arch/arm64/boot/dts/allwinner/overlay"]
-            //эти dts/dtso еще надо в makefile прописать, но мне пока лень
         ],
 
         "auto_patch_dt_makefile": [
