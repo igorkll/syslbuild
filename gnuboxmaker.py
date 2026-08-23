@@ -128,6 +128,7 @@ class Project:
     integrate_network_timesync: bool = True
     integrate_network_wifi: bool = True
     integrate_audio: bool = True
+    integrate_advanced_gpu_packages: bool = True
 
     wifi_autoconnect_name: str = ""
     wifi_autoconnect_password: str = ""
@@ -586,6 +587,15 @@ def setup_build_debian(builditems, for64bits):
             include.append("libegl1")
         else:
             include.append("libegl1-mesa")
+
+        if current_project.integrate_advanced_gpu_packages:
+            include.append("mesa-vulkan-drivers")
+            include.append("intel-media-va-driver-non-free")
+            include.append("mesa-va-drivers")
+            include.append("mesa-vdpau-drivers")
+            include.append("libva2")
+            include.append("libva-drm2")
+            include.append("libvdpau1")
 
     if current_project.session_mode == "wayland":
         include.append("weston")
