@@ -495,7 +495,11 @@ def get_t64_suffix(debian_suite, for64bits):
     
     return ""
 
-def setup_build_debian(builditems, for64bits):
+def add_for_architectures(includeList, packageName, architectures, architecture):
+    if architectures is None or architecture in architectures:
+        includeList.append(packageName)
+
+def setup_build_debian(builditems, for64bits, architecture):
     include = [
         "initramfs-tools",
 
@@ -589,13 +593,13 @@ def setup_build_debian(builditems, for64bits):
             include.append("libegl1-mesa")
 
         if current_project.integrate_advanced_gpu_packages:
-            include.append("mesa-vulkan-drivers")
-            include.append("intel-media-va-driver-non-free")
-            include.append("mesa-va-drivers")
-            include.append("mesa-vdpau-drivers")
-            include.append("libva2")
-            include.append("libva-drm2")
-            include.append("libvdpau1")
+            add_for_architectures(include, "mesa-vulkan-drivers", None, architecture)
+            add_for_architectures(include, "intel-media-va-driver-non-free", ["amd64", "i386"], architecture)
+            add_for_architectures(include, "mesa-va-drivers", None, architecture)
+            add_for_architectures(include, "mesa-vdpau-drivers", None, architecture)
+            add_for_architectures(include, "libva2", None, architecture)
+            add_for_architectures(include, "libva-drm2", None, architecture)
+            add_for_architectures(include, "libvdpau1", None, architecture)
 
     if current_project.session_mode == "wayland":
         include.append("weston")
@@ -633,17 +637,17 @@ def setup_build_debian(builditems, for64bits):
         "url": debian_snapshot
     }
 
-    if for64bits:
-        item["architectures"] = ["amd64", "arm64"]
-    else:
-        item["architectures"] = ["i386", "armhf", "armel"]
+    item["architectures"] = [architecture]
 
     builditems.append(item)
 
 def setup_build_distro(builditems):
     if current_project.distro == "debian":
-        setup_build_debian(builditems, True)
-        setup_build_debian(builditems, False)
+        setup_build_debian(builditems, True, "amd64")
+        setup_build_debian(builditems, True, "arm64")
+        setup_build_debian(builditems, False, "i386")
+        setup_build_debian(builditems, False, "armhf")
+        setup_build_debian(builditems, False, "armel")
     else:
         stop_error(f"unknown distro \"{current_project.distro}\"")
 
