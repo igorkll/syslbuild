@@ -1597,6 +1597,37 @@ def auto_patch_dt_makefile(git_work_dir: str, dt_rel_dir: str, config_var: str, 
     buildLog(f"Successfully patched {makefile_path}")
     return True
 
+def read_series_conf(series_path: str, prefix: str) -> list:
+    patches = []
+    try:
+        with open(series_path, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+
+                # Пропускаем комментарии
+                if line.startswith('#') or line.startswith('-'):
+                    continue
+
+                # Отбрасываем комментарий внутри строки (если есть)
+                if '#' in line:
+                    line = line.split('#', 1)[0].strip()
+                    if not line:
+                        continue
+
+                # Берём первый токен (имя файла), остальное игнорируем
+                tokens = line.split()
+                if tokens:
+                    patch_name = tokens[0]
+                    patches.append(prefix + patch_name)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"File not found: {series_path}")
+    except Exception as e:
+        raise RuntimeError(f"Error reading {series_path}: {e}")
+
+    return patches
+
 def applyPatches(sources, item):
     if "items_before_patches" in item:
         rawItemsProcess(item["items_before_patches"], sources)

@@ -1131,6 +1131,16 @@ these changes to the kernel config are applied automatically when building the k
                 "disable_printk.patch" // will make the kernel shut up
             ],
 
+            // optional. armbian build features
+            "read_series_conf": [
+                ["path/to/series.conf", "prefix/for/pathes/directory/"]
+            ],
+
+            "auto_patch_dt_makefile": [
+                ["arch/arm/boot/dts/allwinner", "CONFIG_ARCH_SUNXI", true],
+                ["arch/arm64/boot/dts/allwinner", "CONFIG_ARCH_SUNXI", true]
+            ],
+
             // optional
             // execute commands from the source code directory of the kernel
             "pre_patches_commands": [
