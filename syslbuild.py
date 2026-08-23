@@ -1654,14 +1654,14 @@ def applyPatches(sources, item):
         for patchPath in patches:
             buildRawExecute(f"patch -p1 {patches_additional_args} < {os.path.abspath(findItem(patchPath))}", not patches_ignore_errors, sources)
 
-    if "auto_patch_dt_makefile" in item:
-        for auto_patch in item["auto_patch_dt_makefile"]:
-            auto_patch_dt_makefile(sources, auto_patch[0], auto_patch[1], auto_patch[2])
-
     doCommands(sources, item.get("post_patches_commands", None))
 
     if "items_after_patches" in item:
         rawItemsProcess(item["items_after_patches"], sources)
+
+    if "auto_patch_dt_makefile" in item:
+        for auto_patch in item["auto_patch_dt_makefile"]:
+            auto_patch_dt_makefile(sources, auto_patch[0], auto_patch[1], auto_patch[2])
 
     doCommands(sources, item.get("patches_complete_commands", None))
 
