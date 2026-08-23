@@ -4,6 +4,7 @@ CONFIG_KEXEC=y
 CONFIG_HID_BATTERY_STRENGTH=y
 CONFIG_NULL_TTY=y
 CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER=y
+CONFIG_DRM_VKMS=m
 
 # not working... WTF... I'll make a patch later to disable coredump creation
 # CONFIG_COREDUMP=n
