@@ -1,0 +1,1 @@
+sun50i-h616-spidev1_0
