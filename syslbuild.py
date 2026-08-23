@@ -2045,19 +2045,20 @@ wait $CONTAINER_PID""", checkValid)
 
         time.sleep(60)
     else:
-        # кастыль для сборки на armel и armhf
-        # когда пофиксят баг с qemu-arm-static (32 бита) СУКАААААА
-        # обьяснения от deepseek, не ручаюсь за правильность. решается кастылями
-        # без этой фигни не собирается initramfs для armhf и armel
-        """
-        Upstream-баг в glibc: #23960 в баг-трекере Sourceware. Опубликован в 2018 году и до сих пор не исправлен
-        Баг в Debian для dracut-install: #1079443
-        . Опубликован в августе 2024 года. Именно в нем подробно описывается проблема для armhf/armel.
-        """
-        symlink_creation_path = "/usr/lib/arm-linux-gnu"
-        symlink_abs_path = pathConcat(chrootDirectory, symlink_creation_path)
-        if not os.path.lexists(symlink_abs_path) and (architecture == "armhf" or architecture == "armel"):
-            buildExecute(["chroot", chrootDirectory, "ln", "-s", "/usr/lib/arm-linux-gnueabi" + ("hf" if architecture == "armhf" else ""), symlink_creation_path], checkValid)
+        if not item.get("disable_shitfix_armel_armhf_build", False):
+            # кастыль для сборки на armel и armhf
+            # когда пофиксят баг с qemu-arm-static (32 бита) СУКАААААА
+            # обьяснения от deepseek, не ручаюсь за правильность. решается кастылями
+            # без этой фигни не собирается initramfs для armhf и armel
+            """
+            Upstream-баг в glibc: #23960 в баг-трекере Sourceware. Опубликован в 2018 году и до сих пор не исправлен
+            Баг в Debian для dracut-install: #1079443
+            . Опубликован в августе 2024 года. Именно в нем подробно описывается проблема для armhf/armel.
+            """
+            symlink_creation_path = "/usr/lib/arm-linux-gnu"
+            symlink_abs_path = pathConcat(chrootDirectory, symlink_creation_path)
+            if not os.path.lexists(symlink_abs_path) and (architecture == "armhf" or architecture == "armel"):
+                buildExecute(["chroot", chrootDirectory, "ln", "-s", "/usr/lib/arm-linux-gnueabi" + ("hf" if architecture == "armhf" else ""), symlink_creation_path], checkValid)
 
         buildExecute(["chroot", chrootDirectory] + chrootCommand, checkValid)
 
@@ -2087,12 +2088,12 @@ wait $CONTAINER_PID""", checkValid)
 
     return True
 
-def rawUpdateInitramfs(path, kernel_version):
+def rawUpdateInitramfs(path, kernel_version, item=None):
     kernel_version_path = os.path.join(path, ".kernel_version")
     with open(kernel_version_path, "w") as f:
         f.write(kernel_version)
     
-    rawCrossChroot(path, ["update-initramfs", "-c", "-k", kernel_version])
+    rawCrossChroot(path, ["update-initramfs", "-c", "-k", kernel_version], False, False, item)
 
     os.remove(kernel_version_path)
 
@@ -2111,7 +2112,7 @@ def getKernelVersion(item, rootfsPath):
 def debianUpdateInitramfs(item):
     itemPath = getItemFolder(item)
     copyItemFiles(findItem(item["source"]), itemPath)
-    rawUpdateInitramfs(itemPath, getKernelVersion(item, itemPath))
+    rawUpdateInitramfs(itemPath, getKernelVersion(item, itemPath), item)
 
 def debianExportInitramfs(item):
     tempRootfs = getTempFolder("export_initramfs_rootfs")
@@ -2128,7 +2129,7 @@ def debianExportInitramfs(item):
 
         copyItemFiles(findItem(item["kernel_config"]), newKernelConfigPath, DEFAULT_RIGHTS_0755)
 
-    rawUpdateInitramfs(tempRootfs, kernel_version)
+    rawUpdateInitramfs(tempRootfs, kernel_version, item)
 
     initramfsPaths = [
         pathConcat(tempRootfs, f"boot/initrd.img-{kernel_version}"),

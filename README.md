@@ -1393,7 +1393,10 @@ these changes to the kernel config are applied automatically when building the k
             "scripts": [
                 "script_in_project.sh",
                 "script_in_project_2.sh"
-            ]
+            ],
+
+            // disables the armel and armhf assembly fix. it can be used if the bug is fixed in qemu-static/glibc
+            "disable_shitfix_armel_armhf_build": false
         },
 
         // runs the script via "systemd-nspawn" in the systemd-container. it is necessary if you will interact with systemd inside the container (for example, you need to change its settings)
