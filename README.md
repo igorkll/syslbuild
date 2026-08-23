@@ -247,6 +247,8 @@ sudo pip install Pillow --break-system-packages
 * build-if-no-filters-or-one-filter-exists - build an element if no filters are set or at least one matches
 * input - if your builditem exports a directory, and the previous builditem also exports a directory, you can specify "input" to use the previous builditem as the basis for the new one. it is convenient to use when building libraries that depend on each other by combining with @previous and sysroot
 * marker - if set to true, it updates the last "marker" element
+* disable_cache - if set to true, then the element is not cached, its cache will always be invalid and it won't even be saved during assembly. this means that other elements dependent on it will assemble once and will not reassemble themselves. so that they are also reassembled every time they are built, there is a "disable_cache_always_changed" parameter.
+* disable_cache_always_changed - if set to true, it works in conjunction with "disable_cache" and tells other assembly elements that this one has changed every time it is build
 
 ## virtual builditems (start with @)
 you cannot name your builditems starting with the @ symbol, as this refers to the virtual builditems described here  

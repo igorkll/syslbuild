@@ -15,6 +15,7 @@ import urllib.parse
 import platform
 import time
 from pathlib import Path
+import uuid
 
 path_output = "output"
 path_temp = ".temp"
@@ -2717,7 +2718,7 @@ def dictChecksum(tbl):
     return hashlib.md5(json5.dumps(filtered).encode('utf-8')).hexdigest()
 
 def getItemChecksum(item):
-    if item["type"] in getDependencies:
+    if not item.get("disable_cache", False) and item["type"] in getDependencies:
         dependencies = getDependencies[item["type"]](item)
     else:
         dependencies = []
@@ -2740,11 +2741,15 @@ def writeCacheChecksumForName(itemName, checksum):
         f.write(checksum)
 
 def isCacheValid(item, checksum):
+    if item.get("disable_cache", False):
+        return False
+
     checksum_path = getItemChecksumPath(item)
     if os.path.exists(checksum_path):
         with open(checksum_path, "r") as f:
             readed = f.read()
             return readed == checksum or readed.strip() == "TEST"
+    
     return False
 
 def writeOtherChecksums(item, checksum):
@@ -2783,8 +2788,15 @@ def buildItems(builditems):
             itemPath = getItemPath(item)
             deleteAny(itemPath)
             buildActions.get(item["type"], buildUnknown)(item)
-            writeCacheChecksum(item, checksum)
-            writeOtherChecksums(item, checksum)
+
+            if item.get("disable_cache", False):
+                if item.get("disable_cache_always_changed", False):
+                    checksum_random = "RANDOM_" + uuid.uuid4()
+                    writeCacheChecksum(item, checksum_random)
+                    writeOtherChecksums(item, checksum_random)
+            else:
+                writeCacheChecksum(item, checksum)
+                writeOtherChecksums(item, checksum)
 
         previous_builditem = item
 
