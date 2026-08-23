@@ -1598,6 +1598,8 @@ def auto_patch_dt_makefile(git_work_dir: str, dt_rel_dir: str, config_var: str, 
     return True
 
 def read_series_conf(series_path: str, prefix: str) -> list:
+    buildLog(f"read_series_conf: {series_path}, {prefix}")
+
     patches = []
     try:
         with open(series_path, 'r', encoding='utf-8') as f:
@@ -1626,6 +1628,8 @@ def read_series_conf(series_path: str, prefix: str) -> list:
     except Exception as e:
         raise RuntimeError(f"Error reading {series_path}: {e}")
 
+    buildLog(f"read_series_conf count: {len(patches)}")
+
     return patches
 
 def applyPatches(sources, item):
@@ -1635,11 +1639,11 @@ def applyPatches(sources, item):
     doCommands(sources, item.get("pre_patches_commands", None))
 
     patches = item.get("patches", [])
-    if "read_series_conf":
+    if "read_series_conf" in item:
         additional_patches = []
 
         for read_series_conf_part in item["read_series_conf"]:
-            additional_patches += read_series_conf(read_series_conf_part[0], read_series_conf_part[1])
+            additional_patches += read_series_conf(findItem(read_series_conf_part[0]), read_series_conf_part[1])
         
         patches += additional_patches
 
@@ -1650,7 +1654,7 @@ def applyPatches(sources, item):
         for patchPath in patches:
             buildRawExecute(f"patch -p1 {patches_additional_args} < {os.path.abspath(findItem(patchPath))}", not patches_ignore_errors, sources)
 
-    if "auto_patch_dt_makefile":
+    if "auto_patch_dt_makefile" in item:
         for auto_patch in item["auto_patch_dt_makefile"]:
             auto_patch_dt_makefile(sources, auto_patch[0], auto_patch[1], auto_patch[2])
 
