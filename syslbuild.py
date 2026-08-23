@@ -1442,19 +1442,186 @@ def copyKernel(item, kernel_sources):
 
     return copied_kernel_files, out_of_tree_dir, False
 
+def auto_patch_dt_makefile(git_work_dir: str, dt_rel_dir: str, config_var: str, add_only: bool = True) -> bool:
+    """
+    Автоматически патчит Makefile в указанной директории с Device Tree.
+    Находит все .dts файлы и добавляет их в Makefile, если они ещё не добавлены.
+
+    Аргументы:
+        git_work_dir (str): Абсолютный путь к корню исходников ядра.
+        dt_rel_dir (str): Относительный путь к целевой директории (например, "arch/arm/boot/dts/allwinner").
+        config_var (str): Переменная конфигурации ядра (например, "CONFIG_ARCH_SUNXI").
+        add_only (bool): Если True, только добавляет недостающие записи (безопасный режим).
+                         Если False, полностью перезаписывает секцию dtb-... всеми найденными .dts.
+
+    Возвращает:
+        bool: True в случае успеха, иначе завершает работу через sys.exit(1).
+    """
+    # 1. Формируем полные пути
+    dts_dir = Path(git_work_dir) / dt_rel_dir
+    makefile_path = dts_dir / "Makefile"
+
+    if not dts_dir.is_dir():
+        buildLog(f"ERROR: Directory not found: {dts_dir}")
+        sys.exit(1)
+
+    # 2. Находим все .dts файлы (только в самой директории, не рекурсивно)
+    dts_files = sorted([f.name for f in dts_dir.glob("*.dts") if f.is_file()])
+    if not dts_files:
+        buildLog(f"WARNING: No .dts files found in {dts_dir}")
+        return True  # Не ошибка, просто нет файлов
+
+    # 3. Читаем текущий Makefile, если он существует
+    if not makefile_path.exists():
+        buildLog(f"ERROR: Makefile not found: {makefile_path}")
+        sys.exit(1)
+
+    with open(makefile_path, 'r') as f:
+        lines = f.readlines()
+
+    # 4. Извлекаем все существующие имена .dtb (без расширения) из строк вида:
+    #    dtb-$(CONFIG_XXX) += имя.dtb
+    #    или многострочных: dtb-$(CONFIG_XXX) += \ ... \t имя.dtb
+    existing_dtbs = set()
+    dtb_regex = re.compile(r'^dtb-\$\([^)]+\)\s*\+=\s*(.*)$')
+    multi_dtb_regex = re.compile(r'^\s*([\w\-]+)\.dtb\s*(\\?)$')
+
+    for line in lines:
+        line = line.rstrip()
+        m = dtb_regex.match(line)
+        if m:
+            # Одиночная или начальная строка с обратным слешом
+            rest = m.group(1).strip()
+            if rest.endswith('\\'):
+                rest = rest[:-1].strip()
+                # Это начало многострочного блока — нужно собрать все имена
+                # Мы просто извлечём все .dtb из этой и последующих строк
+                # (упрощённо: будем искать все упоминания .dtb в строке)
+                for token in re.findall(r'([\w\-]+)\.dtb', rest):
+                    existing_dtbs.add(token)
+                # Также нужно пройти по следующим строкам, пока не встретим строку без \ в конце
+                # но для простоты мы можем просто собрать все .dtb из всего файла, это надежнее.
+                # Но мы уже сделаем отдельный поиск по всему файлу чуть ниже.
+            else:
+                # Одиночная запись
+                for token in re.findall(r'([\w\-]+)\.dtb', rest):
+                    existing_dtbs.add(token)
+
+    # Дополнительно пройдёмся по всему файлу, чтобы собрать все .dtb упоминания
+    # (это покроет многострочные блоки)
+    all_dtb_matches = re.findall(r'([\w\-]+)\.dtb', ''.join(lines))
+    existing_dtbs.update(all_dtb_matches)
+
+    # 5. Определяем, какие .dts нужно добавить
+    new_dtbs = []
+    for dts in dts_files:
+        dtb_name = dts.replace('.dts', '')
+        if dtb_name not in existing_dtbs:
+            new_dtbs.append(dtb_name)
+
+    if not new_dtbs:
+        buildLog(f"No new DTB files to add in {dt_rel_dir}")
+        return True
+
+    # 6. Патчим Makefile
+    if add_only:
+        # Режим "только добавление": дописываем новые записи в конец файла
+        buildLog(f"Adding {len(new_dtbs)} new DTB entries to {makefile_path}")
+        with open(makefile_path, 'a') as f:
+            f.write(f"\n# Auto-added by Armbian patch (add-only)\n")
+            for dtb in new_dtbs:
+                f.write(f"dtb-$({config_var}) += {dtb}.dtb\n")
+            f.write("# End of auto-added entries\n")
+    else:
+        # Режим "полной замены": пересоздаём секцию dtb-... со всеми найденными .dts
+        buildLog(f"REPLACING DTB section in {makefile_path} with all {len(dts_files)} entries")
+        # Находим диапазон строк, содержащих dtb-$(...), и заменяем их
+        # Для простоты мы удалим все строки между первой и последней строкой с dtb-...,
+        # и вставим новые строки на их место.
+        first_idx = None
+        last_idx = None
+        for i, line in enumerate(lines):
+            if re.search(r'^dtb-\$\([^)]+\)\s*\+=', line):
+                if first_idx is None:
+                    first_idx = i
+                last_idx = i
+
+        if first_idx is None:
+            # Если нет ни одной строки с dtb-..., то добавляем в конец файла
+            buildLog("No existing dtb-... section found, appending to end")
+            with open(makefile_path, 'a') as f:
+                f.write(f"\n# Auto-added by Armbian patch (full replace)\n")
+                # Определяем стиль: если больше 5 файлов, используем многострочный формат
+                if len(dts_files) > 5:
+                    f.write(f"dtb-$({config_var}) += \\\n")
+                    for dts in dts_files:
+                        dtb = dts.replace('.dts', '')
+                        f.write(f"\t{dtb}.dtb \\\n")
+                    f.write("\n")
+                else:
+                    for dts in dts_files:
+                        dtb = dts.replace('.dts', '')
+                        f.write(f"dtb-$({config_var}) += {dtb}.dtb\n")
+                f.write("# End of auto-added entries\n")
+        else:
+            # Заменяем строки с first_idx по last_idx включительно
+            new_lines = lines[:first_idx]
+            # Добавляем комментарий
+            new_lines.append("# Auto-generated DTB entries\n")
+            if len(dts_files) > 5:
+                new_lines.append(f"dtb-$({config_var}) += \\\n")
+                for dts in dts_files:
+                    dtb = dts.replace('.dts', '')
+                    new_lines.append(f"\t{dtb}.dtb \\\n")
+                new_lines.append("\n")
+            else:
+                for dts in dts_files:
+                    dtb = dts.replace('.dts', '')
+                    new_lines.append(f"dtb-$({config_var}) += {dtb}.dtb\n")
+            new_lines.extend(lines[last_idx+1:])
+            with open(makefile_path, 'w') as f:
+                f.writelines(new_lines)
+
+    # 7. Проверяем наличие поддиректории overlay и добавляем её, если нужно
+    overlay_dir = dts_dir / "overlay"
+    if overlay_dir.is_dir() and (overlay_dir / "Makefile").exists():
+        # Проверяем, есть ли уже строка subdir-y += overlay
+        with open(makefile_path, 'r') as f:
+            content = f.read()
+        if "subdir-y += overlay" not in content:
+            buildLog(f"Adding overlay subdir to {makefile_path}")
+            with open(makefile_path, 'a') as f:
+                f.write(f"\n# Support for overlays\n")
+                f.write(f"subdir-y += overlay\n")
+
+    buildLog(f"Successfully patched {makefile_path}")
+    return True
+
 def applyPatches(sources, item):
     if "items_before_patches" in item:
         rawItemsProcess(item["items_before_patches"], sources)
 
     doCommands(sources, item.get("pre_patches_commands", None))
 
-    if "patches" in item:
-        patches = item["patches"]
+    patches = item.get("patches", [])
+    if "read_series_conf":
+        additional_patches = []
+
+        for read_series_conf_part in item["read_series_conf"]:
+            additional_patches += read_series_conf(read_series_conf_part[0], read_series_conf_part[1])
+        
+        patches += additional_patches
+
+    if patches:
         patches_ignore_errors = item.get("patches_ignore_errors", False)
         patches_additional_args = item.get("patches_additional_args", "")
 
         for patchPath in patches:
             buildRawExecute(f"patch -p1 {patches_additional_args} < {os.path.abspath(findItem(patchPath))}", not patches_ignore_errors, sources)
+
+    if "auto_patch_dt_makefile":
+        for auto_patch in item["auto_patch_dt_makefile"]:
+            auto_patch_dt_makefile(sources, auto_patch[0], auto_patch[1], auto_patch[2])
 
     doCommands(sources, item.get("post_patches_commands", None))
 

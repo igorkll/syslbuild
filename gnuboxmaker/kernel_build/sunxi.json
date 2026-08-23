@@ -563,6 +563,11 @@
             //эти dts/dtso еще надо в makefile прописать, но мне пока лень
         ],
 
+        "auto_patch_dt_makefile": [
+            ["arch/arm/boot/dts/allwinner", "CONFIG_ARCH_SUNXI", true],
+            ["arch/arm64/boot/dts/allwinner", "CONFIG_ARCH_SUNXI", true]
+        ],
+
         "additional_export": [
             ["arch/arm64/boot/dts/allwinner", "sunxi_dtbs", false]
         ],
