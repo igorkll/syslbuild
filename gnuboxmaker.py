@@ -153,6 +153,7 @@ class Project:
 
     export_rootfs_directory: bool = False
     export_rootfs_tar_gz: bool = False
+    export_rootfs_tar_xz: bool = False
     export_rootfs_tar: bool = False
 
     platform_opi_zero3_cma: str = "256M"
