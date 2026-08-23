@@ -1323,10 +1323,10 @@ def generate_syslbuild_project():
     if current_project.boot_splash:
         cmdline += boot_splash_substring
 
-    if current_project.session_mode == "init":
+    session_mode = current_project.session_mode
+    if session_mode == "init":
         cmdline += " init=/gnubox/runshell.sh"
 
-    session_mode = current_project.session_mode
     if session_mode != "x11" and session_mode != "wayland" and current_project.screen_idle_time > 0:
         cmdline += f" consoleblank={current_project.screen_idle_time}"
 
