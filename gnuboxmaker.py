@@ -267,6 +267,7 @@ def request_kernel(builditems, architecture, filtername):
         "name": f"request_kernel_{architecture}_{filtername}",
 
         "working_dir": working_dir,
+        "disable_cache": True,
 
         "commands": [
             cmd
