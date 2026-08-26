@@ -1,5 +1,5 @@
-from syslbuild import *
-import syslbuild
+from __main__ import *
+import __main__
 
 # --------------------------------------------------------------------- builditems
 

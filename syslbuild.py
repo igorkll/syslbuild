@@ -710,8 +710,6 @@ def buildItems(builditems):
             buildItemLog(item)
             itemPath = getItemPath(item)
             deleteAny(itemPath)
-
-            print(buildActions)
             buildActions.get(item["type"], buildUnknown)(item)
 
             if item.get("disable_cache", False):
