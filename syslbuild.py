@@ -196,16 +196,15 @@ def readBool(tbl, name):
     
     return False
 
-def getItemPath(item, nameName="name", exportName="export"):
+def getItemPath(item, nameName="name", exportName="export", copyInput=True):
     if readBool(item, exportName):
         path = pathConcat(path_output_target, item[nameName])
     else:
         os.makedirs(path_build, exist_ok=True)
         path = pathConcat(path_build, item[nameName])
 
-    if item.get("input", False):
+    if item.get("input", False) and copyInput:
         parent_item = findItem(item["input"])
-        # deleteDirectory(path) - тут наверное так надо было сделать. я как то странно тут сделал
         os.makedirs(path, exist_ok=True)
         copyItemFiles(parent_item, path)
 
@@ -673,7 +672,7 @@ def buildItems(builditems):
             buildItemLog(item, None, " (cache)")
         else:
             buildItemLog(item)
-            itemPath = getItemPath(item)
+            itemPath = getItemPath(item, "name", "export", False)
             deleteAny(itemPath)
             buildActions.get(item["type"], buildUnknown)(item)
 
