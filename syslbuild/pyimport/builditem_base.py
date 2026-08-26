@@ -804,7 +804,7 @@ def downloadKernel(url, unpacker):
     kernel_sources_downloaded_flag = pathConcat(__main__.path_temp_kernel_sources, url_hash + ".downloaded")
     kernel_sources_archive = pathConcat(__main__.path_temp_kernel_sources, url_hash + get_file_extension(url))
 
-    if args.d or not os.path.isdir(kernel_sources) or not os.path.isfile(kernel_sources_downloaded_flag):
+    if __main__.args.d or not os.path.isdir(kernel_sources) or not os.path.isfile(kernel_sources_downloaded_flag):
         deleteAny(kernel_sources)
         os.makedirs(kernel_sources, exist_ok=True)
         downloadFile(url, kernel_sources_archive)
@@ -820,7 +820,7 @@ def downloadKernelFromGit(item):
     kernel_sources = pathConcat(__main__.path_temp_kernel_sources, url_hash)
     kernel_sources_downloaded_flag = pathConcat(__main__.path_temp_kernel_sources, url_hash + ".downloaded")
 
-    if args.d or not os.path.isdir(kernel_sources) or not os.path.isfile(kernel_sources_downloaded_flag):
+    if __main__.args.d or not os.path.isdir(kernel_sources) or not os.path.isfile(kernel_sources_downloaded_flag):
         deleteAny(kernel_sources)
         os.makedirs(kernel_sources, exist_ok=True)
         
