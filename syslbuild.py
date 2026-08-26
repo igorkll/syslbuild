@@ -740,6 +740,8 @@ def deleteBuildItemKeysProcess(builditemDict):
             deleteBuildItemKeysProcess(v)
 
 def buildItemArchitectureDeleteCheck(builditem):
+    if architecture == "independent" and not builditem.get("independent_architecture", False):
+        return True
     return "architectures" in builditem and not architecture in builditem["architectures"]
 
 def buildItemFilterDeleteCheck(builditem):
@@ -799,6 +801,13 @@ def includeProcess(builditems, included=None):
     
     return builditems
 
+forkKeysBlacklist = [
+    "forkbase",
+    "fork",
+    "forkArraysCombine",
+    "template"
+]
+
 def prepairBuildItems(builditems):
     builditems = includeProcess(builditems)
 
@@ -809,7 +818,7 @@ def prepairBuildItems(builditems):
                 buildLog(f"ERROR: an attempt to fork without a single forkbase before that")
                 sys.exit(1)
             
-            forkCombine(builditem, forkbase, builditem.get("forkArraysCombine", False), ["forkbase", "fork", "forkArraysCombine", "template"], ["deleteBuildItemKeys"])
+            forkCombine(builditem, forkbase, builditem.get("forkArraysCombine", False), forkKeysBlacklist, ["deleteBuildItemKeys"])
         
         if builditem.get("forkbase", False):
             forkbase = builditem
@@ -957,6 +966,7 @@ if __name__ == "__main__":
         filters = []
     
     architecture = args.arch
+    saved_architecture = args.arch
     loadTempPaths()
     if args.e:
         deleteAny(path_temp)
@@ -991,6 +1001,10 @@ if __name__ == "__main__":
                 for arch in projectData["architectures"]:
                     buildLog(arch)
                 buildLog(";")
+
+                architecture = "independent"
+                loadTempPaths()
+                buildProject(args.json_path)
                 
                 for arch in projectData["architectures"]:
                     architecture = arch
@@ -999,6 +1013,11 @@ if __name__ == "__main__":
             else:
                 buildLog("Architectures list is not defined in project json")
         else:
+            architecture = "independent"
+            loadTempPaths()
+            buildProject(args.json_path)
+            
+            architecture = saved_architecture
             loadTempPaths()
             buildProject(args.json_path)
 

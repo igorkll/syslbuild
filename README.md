@@ -249,6 +249,7 @@ sudo pip install Pillow --break-system-packages
 * marker - if set to true, it updates the last "marker" element
 * disable_cache - if set to true, then the element is not cached, its cache will always be invalid and it won't even be saved during assembly. this means that other elements dependent on it will assemble once and will not reassemble themselves. so that they are also reassembled every time they are built, there is a "disable_cache_always_changed" parameter.
 * disable_cache_always_changed - if set to true, it works in conjunction with "disable_cache" and tells other assembly elements that this one has changed every time it is build
+* independent_architecture - executes an assembly element up to specific architectures, independently. It is not suitable for architecture-specific assembly elements, but it is suitable for executing commands and external scripts so that they are not called multiple times during assembly for each architecture. it makes sense when building for multiple architectures at the same time. for example, through --arch ALL
 
 ## virtual builditems (start with @)
 you cannot name your builditems starting with the @ symbol, as this refers to the virtual builditems described here  
