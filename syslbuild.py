@@ -16,7 +16,6 @@ import platform
 import time
 from pathlib import Path
 import uuid
-import version
 
 # ---------------------------------------
 
@@ -27,6 +26,9 @@ else:
     syslbuild_path = "."
 
 sys.path.insert(0, os.path.join(syslbuild_path, "syslbuild", "pyimport"))
+sys.path.insert(0, os.path.join(syslbuild_path))
+
+import version
 
 # ---------------------------------------
 
