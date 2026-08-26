@@ -270,6 +270,7 @@ def request_kernel(builditems, architecture, filtername):
 
         "working_dir": working_dir,
         "disable_cache": True,
+        "independent_architecture": True,
 
         "commands": [
             cmd
