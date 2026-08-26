@@ -187,6 +187,50 @@ def calcSize(sizeLitteral, folderOrFilelist=None):
 
     return math.ceil(number * SIZE_UNITS[unit])
 
+def changeAccessRights(path, changeRights):
+    """
+    Устанавливает права и владельца на путь path.
+    
+    Старый формат changeRights:
+        [owner, group, perms]  или [owner, group] — perms применяется рекурсивно через chmod -R.
+    
+    Новый формат changeRights:
+        [[owner, group, perms_files], [owner, group, perms_dirs]]
+        — perms_files применяется только к файлам (find -type f)
+        — perms_dirs применяется только к каталогам (find -type d)
+        — владельцы применяются отдельно для файлов и каталогов (по соответствующим подспискам)
+    """
+
+    if (isinstance(changeRights, list) and len(changeRights) == 2 and
+        isinstance(changeRights[0], list) and len(changeRights[0]) >= 3 and
+        isinstance(changeRights[1], list) and len(changeRights[1]) >= 3):
+        
+        file_owner, file_group, file_perms = changeRights[0][0], changeRights[0][1], changeRights[0][2]
+        dir_owner,  dir_group,  dir_perms  = changeRights[1][0], changeRights[1][1], changeRights[1][2]
+        
+        if file_perms is not None:
+            buildExecute(["find", path, "-type", "f", "-exec", "chmod", file_perms, "{}", "+"])
+        
+        if dir_perms is not None:
+            buildExecute(["find", path, "-type", "d", "-exec", "chmod", dir_perms, "{}", "+"])
+    
+        if file_owner is not None or file_group is not None:
+            chown_files = chownStr(file_owner, file_group)
+            if chown_files:
+                buildExecute(["find", path, "-type", "f", "-exec", "chown", chown_files, "{}", "+"])
+        
+        if dir_owner is not None or dir_group is not None:
+            chown_dirs = chownStr(dir_owner, dir_group)
+            if chown_dirs:
+                buildExecute(["find", path, "-type", "d", "-exec", "chown", chown_dirs, "{}", "+"])
+    else:
+        if len(changeRights) >= 3 and changeRights[2]:
+            buildExecute(["chmod", "-R", changeRights[2], path])
+        
+        chown_str = chownStr(changeRights[0], changeRights[1])
+        if chown_str:
+            buildExecute(["chown", "-R", chown_str, path])
+
 def makedirsChangeRights(path, changeRights=None):
     if not os.path.exists(path):
         os.makedirs(path)
@@ -535,6 +579,15 @@ def umountFilesystem(mount_path):
         if loop_device:
             buildExecute(["losetup", "-d", loop_device])
         deleteDirectory(mount_path)
+
+def makeAllFilesExecutable(path):
+    for entry in os.scandir(path):
+        if entry.is_file():
+            st = os.stat(entry.path)
+            os.chmod(entry.path, st.st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+
+def recursionDeleleSymlinks(directoryPath):
+    buildRawExecute("find . -type l -exec rm -f {} +", True, directoryPath)
 
 # -------------------------------------------------- builditems
 
