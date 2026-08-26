@@ -1,5 +1,6 @@
 from __main__ import *
 import __main__
+import funcs
 
 # --------------------------------------------------------------------- builditems
 
@@ -71,7 +72,7 @@ def buildDebian(item):
 127.0.1.1 hostname"""
 
     path_etc = pathConcat(itemFolder, "etc")
-    makedirsChangeRights(path_etc, [0, 0, "0755"])
+    funcs.makedirsChangeRights(path_etc, [0, 0, "0755"])
 
     path_hosts = pathConcat(path_etc, "hosts")
     path_resolv_conf = pathConcat(path_etc, "resolv.conf")
@@ -163,10 +164,10 @@ def grubIsoImage(item):
     tempPath = getTempFolder("isotemp")
 
     bootDirectory = pathConcat(tempPath, "boot")
-    makedirsChangeRights(bootDirectory)
+    funcs.makedirsChangeRights(bootDirectory)
 
     grubDirectory = pathConcat(bootDirectory, "grub")
-    makedirsChangeRights(grubDirectory)
+    funcs.makedirsChangeRights(grubDirectory)
 
     if "kernel" in item:
         copyItemFiles(findItem(item["kernel"]), pathConcat(bootDirectory, "vmlinuz"), DEFAULT_RIGHTS_0700)
@@ -228,7 +229,7 @@ def copyItemFiles(fromPath, toPath, changeRights=None, allowSymlinks=True, copyS
         rsync_arg += "L"
 
     if os.path.isdir(fromPath):
-        makedirsChangeRights(toPath)
+        funcs.makedirsChangeRights(toPath)
         if allowSymlinks:
             if changeRights:
                 tempFolder = getTempFolder("changeRights")
@@ -255,7 +256,7 @@ def copyItemFiles(fromPath, toPath, changeRights=None, allowSymlinks=True, copyS
 
         file_dir = os.path.dirname(toPath)
         if not os.path.isdir(file_dir):
-            makedirsChangeRights(file_dir)
+            funcs.makedirsChangeRights(file_dir)
 
         if allowSymlinks:
             buildExecute(["rsync", rsync_arg, "--keep-dirlinks", fromPath, toPath])
@@ -270,7 +271,7 @@ def writeRawItem(raw, toPath, changeRights=None):
 
     file_dir = os.path.dirname(toPath)
     if not os.path.isdir(file_dir):
-        makedirsChangeRights(file_dir)
+        funcs.makedirsChangeRights(file_dir)
 
     with open(toPath, "w") as f:
         f.write(raw)
@@ -371,7 +372,7 @@ def rawItemsProcess(items, itemsDirectory):
         # и системы контроля версий
         # права доступа на файлы из проекта должны быть указаны в конфиге проекта
         # а не в самих файлов проекта
-        if not changeRights and (writeRaw or isUserItem(itemObj[0])):
+        if not changeRights and (writeRaw or __main__.isUserItem(itemObj[0])):
             changeRights = DEFAULT_RIGHTS_0700
         
         if changeRights:
@@ -445,7 +446,7 @@ def buildDirectory(item):
                 changeRights = directoryData[1]
 
             buildLog(f"Create empty directory: {directoryPath} {changeRights}")
-            makedirsChangeRights(directoryPath, changeRights)
+            funcs.makedirsChangeRights(directoryPath, changeRights)
 
     if "items" in item:
         rawItemsProcess(item["items"], buildDirectoryPath)
@@ -596,7 +597,7 @@ def installBootloader(item, path, partitionsOffsets, sectorsize):
             efi = True
 
         bootDirectory = pathConcat(__main__.path_mount, "boot")
-        makedirsChangeRights(bootDirectory)
+        funcs.makedirsChangeRights(bootDirectory)
 
         modulesString = ""
         if "modules" in bootloaderInfo:
@@ -612,7 +613,7 @@ def installBootloader(item, path, partitionsOffsets, sectorsize):
             # in EFI mode, grub-install writes grub files to the /efi/boot directory, while grub itself searches for them simply by following the /boot/grub path
             # Thanks to the grub developers
             grubdir = os.path.join(__main__.path_mount2, "boot", "grub")
-            makedirsChangeRights(grubdir)
+            funcs.makedirsChangeRights(grubdir)
             buildExecute(["cp", "-a", os.path.join(__main__.path_mount2, "efi", "boot") + "/.", grubdir])
 
             if readBool(bootloaderInfo, "efiAndBios"):
@@ -621,7 +622,7 @@ def installBootloader(item, path, partitionsOffsets, sectorsize):
             buildExecute(getGrubInstallCmd(bootloaderInfo, getGrubTarget(item, False), install_extra_args + [f"--modules={modulesString}", f"--boot-directory={bootDirectory}", path]))
 
         if "config" in bootloaderInfo:
-            makedirsChangeRights(pathConcat(bootDirectory, "grub"))
+            funcs.makedirsChangeRights(pathConcat(bootDirectory, "grub"))
             copyItemFiles(findItem(bootloaderInfo["config"]), pathConcat(bootDirectory, "grub", "grub.cfg"), DEFAULT_RIGHTS_0700)
 
         umountFilesystem(__main__.path_mount)

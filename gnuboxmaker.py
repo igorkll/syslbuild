@@ -1505,7 +1505,7 @@ def load_project(path):
 
     if os.path.isfile(path):
         current_project = raw_load_project(path)
-        version_diff = checkVersion(current_project)
+        version_diff = version.checkVersion(current_project)
         if version_diff > 0:
             show_error(f"you have the syslbuild {version.formatVersion(version.VERSION)} version, while the project was saved in a newer version of {version.formatVersion(current_project.gnubox_version)}")
             return False
