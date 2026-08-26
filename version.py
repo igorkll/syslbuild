@@ -9,7 +9,7 @@ def checkVersion(project):
     
     minVersion = project["min-syslbuild-version"]
 
-    for index, vernum in enumerate(version.VERSION):
+    for index, vernum in enumerate(VERSION):
         if vernum > minVersion[index]:
             return True
         elif vernum < minVersion[index]:
