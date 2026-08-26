@@ -20,7 +20,7 @@ def raw_save_project(path, proj):
 # 0 - версии совпадают
 # 1 - версия проекта выше чем версия тула (не катит)
 def checkVersion(project):
-    minVersion = syslbuild.VERSION
+    minVersion = version.VERSION
 
     for index, vernum in enumerate(project.gnubox_version):
         if vernum > minVersion[index]:

@@ -1,5 +1,5 @@
-from __main__ import *
-import __main__
+from syslbuild import *
+import syslbuild
 
 # --------------------------------------------------------------------- builditems
 
@@ -389,43 +389,6 @@ def formatFilesystem(path, item):
     cmd.append(path)
     buildExecute(cmd)
 
-def recursionUmount(path):
-    path = os.path.abspath(path)
-    with open("/proc/self/mounts") as f:
-        mounts = [line.split()[1] for line in f]
-    mounts = [m.replace("\\040", " ") for m in mounts if m.startswith(path)]
-    for m in sorted(mounts, key=len, reverse=True):
-        subprocess.run(["umount", "-l", m], check=False)
-
-mountLoops = {}
-
-def mountFilesystem(img_path, mount_path, offset=None):
-    mount_path = os.path.normpath(mount_path)
-    os.makedirs(mount_path, exist_ok=True)
-
-    result = subprocess.run(["losetup", "-f"], capture_output=True, text=True, check=True)
-    loop_device = result.stdout.strip()
-
-    losetup_cmd = ["losetup", loop_device, img_path]
-    if offset:
-        losetup_cmd.insert(2, f"-o {offset}")
-    buildExecute(losetup_cmd)
-
-    buildExecute(["mount", loop_device, mount_path])    
-    mountLoops[mount_path] = loop_device
-
-def umountFilesystem(mount_path):
-    mount_path = os.path.normpath(mount_path)
-    loop_device = mountLoops.get(mount_path)
-    if loop_device:
-        del mountLoops[mount_path]
-
-    if os.path.exists(mount_path):
-        buildExecute(["umount", mount_path], False)
-        if loop_device:
-            buildExecute(["losetup", "-d", loop_device])
-        deleteDirectory(mount_path)
-
 def rawItemsProcess(items, itemsDirectory):
     for itemObj in items:
         outputPath = pathConcat(itemsDirectory, itemObj[1])
@@ -791,10 +754,6 @@ def buildFullDiskImage(item):
     # install bootloader
     if "bootloader" in item:
         installBootloader(item, path, partitionsOffsets, resultSectorsize)
-
-def buildUnknown(item):
-    buildLog(f"ERROR: unknown build item type: {item['type']}")
-    sys.exit(1)
 
 def buildFromDirectory(item):
     path = getItemPath(item)

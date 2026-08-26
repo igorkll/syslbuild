@@ -16,10 +16,19 @@ import platform
 import time
 from pathlib import Path
 import uuid
+import version
 
-syslbuild_dir = os.path.join(os.getcwd(), "syslbuild")
-module_dir = os.path.join(syslbuild_dir, "pyimport")
-sys.path.insert(0, module_dir)
+# ---------------------------------------
+
+syslbuild_install_path = "/opt/syslbuild"
+if os.path.isdir(syslbuild_install_path):
+    syslbuild_path = syslbuild_install_path
+else:
+    syslbuild_path = "."
+
+sys.path.insert(0, os.path.join(syslbuild_path, "syslbuild", "pyimport"))
+
+# ---------------------------------------
 
 path_output = "output"
 path_temp = ".temp"
@@ -78,18 +87,13 @@ SIZE_UNITS = {
 
 DD_BS = "4M"
 
-VERSION = [1, 8, 6]
-
-def formatVersion(version):
-    return '.'.join(str(n) for n in version)
-
 def checkVersion(project):
     if not "min-syslbuild-version" in project:
         return True
     
     minVersion = project["min-syslbuild-version"]
 
-    for index, vernum in enumerate(VERSION):
+    for index, vernum in enumerate(version.VERSION):
         if vernum > minVersion[index]:
             return True
         elif vernum < minVersion[index]:
@@ -495,7 +499,48 @@ def dictChecksum(tbl):
     filtered = filter_underscored(tbl)
     return hashlib.md5(json5.dumps(filtered).encode('utf-8')).hexdigest()
 
+def recursionUmount(path):
+    path = os.path.abspath(path)
+    with open("/proc/self/mounts") as f:
+        mounts = [line.split()[1] for line in f]
+    mounts = [m.replace("\\040", " ") for m in mounts if m.startswith(path)]
+    for m in sorted(mounts, key=len, reverse=True):
+        subprocess.run(["umount", "-l", m], check=False)
+
+mountLoops = {}
+
+def mountFilesystem(img_path, mount_path, offset=None):
+    mount_path = os.path.normpath(mount_path)
+    os.makedirs(mount_path, exist_ok=True)
+
+    result = subprocess.run(["losetup", "-f"], capture_output=True, text=True, check=True)
+    loop_device = result.stdout.strip()
+
+    losetup_cmd = ["losetup", loop_device, img_path]
+    if offset:
+        losetup_cmd.insert(2, f"-o {offset}")
+    buildExecute(losetup_cmd)
+
+    buildExecute(["mount", loop_device, mount_path])    
+    mountLoops[mount_path] = loop_device
+
+def umountFilesystem(mount_path):
+    mount_path = os.path.normpath(mount_path)
+    loop_device = mountLoops.get(mount_path)
+    if loop_device:
+        del mountLoops[mount_path]
+
+    if os.path.exists(mount_path):
+        buildExecute(["umount", mount_path], False)
+        if loop_device:
+            buildExecute(["losetup", "-d", loop_device])
+        deleteDirectory(mount_path)
+
 # -------------------------------------------------- builditems
+
+def buildUnknown(item):
+    buildLog(f"ERROR: unknown build item type: {item['type']}")
+    sys.exit(1)
 
 buildActions = {}
 
@@ -665,6 +710,8 @@ def buildItems(builditems):
             buildItemLog(item)
             itemPath = getItemPath(item)
             deleteAny(itemPath)
+
+            print(buildActions)
             buildActions.get(item["type"], buildUnknown)(item)
 
             if item.get("disable_cache", False):
@@ -690,7 +737,7 @@ def showProjectInfo(projectData):
     buildLog(f"Project info:")
 
     if "min-syslbuild-version" in projectData:
-        buildLog(f"Minimal syslbuild: {formatVersion(projectData['min-syslbuild-version'])}")
+        buildLog(f"Minimal syslbuild: {version.formatVersion(projectData['min-syslbuild-version'])}")
     
     buildLog(";")
 
@@ -960,7 +1007,7 @@ if __name__ == "__main__":
         log_file3 = None
 
     buildLog("Syslbuild info:")
-    buildLog(f"Syslbuild version: {formatVersion(VERSION)}")
+    buildLog(f"Syslbuild version: {version.formatVersion(version.VERSION)}")
     buildLog(f"Syslbuild working directory: {os.getcwd()}")
     buildLog(";")
 
@@ -971,7 +1018,7 @@ if __name__ == "__main__":
         projectData = json5.load(f)
         showProjectInfo(projectData)
         if not checkVersion(projectData):
-            buildLog(f"ERROR: the project requires at least the syslbuild {formatVersion(projectData['min-syslbuild-version'])} version. you have {formatVersion(VERSION)} installed")
+            buildLog(f"ERROR: the project requires at least the syslbuild {version.formatVersion(projectData['min-syslbuild-version'])} version. you have {version.formatVersion(version.VERSION)} installed")
             sys.exit(1)
 
         if architecture == "ALL":

@@ -12,7 +12,7 @@ import json
 import subprocess
 import sys
 import time
-import syslbuild
+import version
 
 # module_dir = os.path.join(os.path.dirname(__file__), "gnuboxmaker/pyimport")
 
@@ -1507,16 +1507,16 @@ def load_project(path):
         current_project = raw_load_project(path)
         version_diff = checkVersion(current_project)
         if version_diff > 0:
-            show_error(f"you have the syslbuild {syslbuild.formatVersion(syslbuild.VERSION)} version, while the project was saved in a newer version of {syslbuild.formatVersion(current_project.gnubox_version)}")
+            show_error(f"you have the syslbuild {version.formatVersion(version.VERSION)} version, while the project was saved in a newer version of {version.formatVersion(current_project.gnubox_version)}")
             return False
         elif version_diff < 0:
-            current_project.gnubox_version = syslbuild.VERSION.copy()
+            current_project.gnubox_version = version.VERSION.copy()
             raw_save_project(path, current_project)
         else:
-            current_project.gnubox_version = syslbuild.VERSION.copy()
+            current_project.gnubox_version = version.VERSION.copy()
     else:
         current_project = Project()
-        current_project.gnubox_version = syslbuild.VERSION.copy()
+        current_project.gnubox_version = version.VERSION.copy()
         raw_save_project(path, current_project)
 
     current_project_directory = os.path.dirname(path)
