@@ -89,7 +89,7 @@ def buildDebian(item):
             f.write("ff02::1 ip6-allnodes\n")
             f.write("ff02::2 ip6-allrouters\n")
 
-        changeAccessRights(path_hosts, [0, 0, "0644"])
+        funcs.changeAccessRights(path_hosts, [0, 0, "0644"])
 
     if not os.path.exists(path_resolv_conf) and not os.path.lexists(path_resolv_conf):
         with open(path_resolv_conf, "w") as f:
@@ -98,7 +98,7 @@ def buildDebian(item):
             f.write("nameserver 2606:4700:4700::1111\n")
             f.write("nameserver 2606:4700:4700::1001\n")
         
-        changeAccessRights(path_resolv_conf, [0, 0, "0644"])
+        funcs.changeAccessRights(path_resolv_conf, [0, 0, "0644"])
 
 def makePacmanConfig(pacman_conf):
     lines = []
@@ -193,7 +193,7 @@ def grubIsoImage(item):
             if item.get("show_boot_process", False):
                 f.write("echo \"Booting...\"\n")
             f.write("boot\n")
-        changeAccessRights(grub_cfg_path, DEFAULT_RIGHTS_0700)
+        funcs.changeAccessRights(grub_cfg_path, DEFAULT_RIGHTS_0700)
 
     cmd = ["grub-mkrescue", "-o", getItemPath(item), tempPath]
     if "modules" in item:
@@ -214,7 +214,7 @@ def buildDownload(item):
     downloadFile(item["url"], getItemPath(item))
 
 """
-def changeAccessRights(path, changeRights):
+def funcs.changeAccessRights(path, changeRights):
     if len(changeRights) >= 3 and changeRights[2]:
         buildExecute(["chmod", "-R", changeRights[2], path])
     
@@ -234,7 +234,7 @@ def copyItemFiles(fromPath, toPath, changeRights=None, allowSymlinks=True, copyS
             if changeRights:
                 tempFolder = getTempFolder("changeRights")
                 buildExecute(["cp", "-a", fromPath + "/.", tempFolder])
-                changeAccessRights(tempFolder, changeRights) # рекурсивно устанавливаем права доступа для всего внутри каталога
+                funcs.changeAccessRights(tempFolder, changeRights) # рекурсивно устанавливаем права доступа для всего внутри каталога
                 buildExecute(["chmod", "--reference=" + toPath, tempFolder]) # не меняем права доступа на сам каталог, для этого переносим оригинальные на него
                 buildExecute(["chown", "--reference=" + toPath, tempFolder])
                 buildExecute(["rsync", rsync_arg, "--keep-dirlinks", tempFolder + "/.", toPath])
@@ -244,7 +244,7 @@ def copyItemFiles(fromPath, toPath, changeRights=None, allowSymlinks=True, copyS
             if changeRights:
                 tempFolder = getTempFolder("changeRights")
                 buildExecute(["cp", "-a", fromPath + "/.", tempFolder])
-                changeAccessRights(tempFolder, changeRights)
+                funcs.changeAccessRights(tempFolder, changeRights)
                 buildExecute(["chmod", "--reference=" + toPath, tempFolder])
                 buildExecute(["chown", "--reference=" + toPath, tempFolder])
                 buildExecute(["cp", "-a", tempFolder + "/.", toPath])
@@ -264,7 +264,7 @@ def copyItemFiles(fromPath, toPath, changeRights=None, allowSymlinks=True, copyS
             shutil.copy2(fromPath, toPath)
 
         if changeRights:
-            changeAccessRights(toPath, changeRights)
+            funcs.changeAccessRights(toPath, changeRights)
 
 def writeRawItem(raw, toPath, changeRights=None):
     deleteAny(toPath)
@@ -277,7 +277,7 @@ def writeRawItem(raw, toPath, changeRights=None):
         f.write(raw)
 
     if changeRights:
-        changeAccessRights(toPath, changeRights)
+        funcs.changeAccessRights(toPath, changeRights)
 
 def allocateFile(path, size):
     buildLog(f"Allocation file with size {size}: {path}")
