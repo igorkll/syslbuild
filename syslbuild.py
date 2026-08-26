@@ -501,15 +501,6 @@ def umountFilesystem(mount_path):
             buildExecute(["losetup", "-d", loop_device])
         deleteDirectory(mount_path)
 
-def makeAllFilesExecutable(path):
-    for entry in os.scandir(path):
-        if entry.is_file():
-            st = os.stat(entry.path)
-            os.chmod(entry.path, st.st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
-
-def recursionDeleleSymlinks(directoryPath):
-    buildRawExecute("find . -type l -exec rm -f {} +", True, directoryPath)
-
 # -------------------------------------------------- builditems
 
 def buildUnknown(item):

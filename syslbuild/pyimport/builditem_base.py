@@ -64,7 +64,7 @@ def buildDebian(item):
     cmd.append(f"--customize-hook=echo hostname > \"$1/etc/hostname\"")
     cmd.append(f"--customize-hook=rm \"$1\"/etc/resolv.conf")
     if "hook-directory" in item:
-        makeAllFilesExecutable(item["hook-directory"])
+        funcs.makeAllFilesExecutable(item["hook-directory"])
         cmd.append(f"--hook-directory={item['hook-directory']}")
     buildExecute(cmd)
 
@@ -372,7 +372,7 @@ def rawItemsProcess(items, itemsDirectory):
         # и системы контроля версий
         # права доступа на файлы из проекта должны быть указаны в конфиге проекта
         # а не в самих файлов проекта
-        if not changeRights and (writeRaw or __main__.isUserItem(itemObj[0])):
+        if not changeRights and (writeRaw or funcs.isUserItem(itemObj[0])):
             changeRights = DEFAULT_RIGHTS_0700
         
         if changeRights:
@@ -1311,13 +1311,13 @@ def buildKernel(item):
         buildLog(f"exporting modules...")
         export_path = getItemFolder(item, "modules_name", "modules_export")
         buildExecute(make_cmd([ARCH_STR, CROSS_COMPILE_STR, "modules_install", f"INSTALL_MOD_PATH={os.path.abspath(export_path)}"]), True, None, kernel_sources)
-        recursionDeleleSymlinks(export_path)
+        funcs.recursionDeleleSymlinks(export_path)
 
     if "headers_name" in item:
         buildLog(f"exporting headers...")
         export_path = getItemFolder(item, "headers_name", "headers_export")
         buildExecute(make_cmd([ARCH_STR, CROSS_COMPILE_STR, "headers_install", f"INSTALL_HDR_PATH={os.path.abspath(export_path)}"]), True, None, kernel_sources)
-        recursionDeleleSymlinks(export_path)
+        funcs.recursionDeleleSymlinks(export_path)
 
     if "symvers_name" in item:
         buildLog(f"exporting symvers...")
