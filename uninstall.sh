@@ -6,22 +6,22 @@ fi
 
 if [ "$PWD" = "/opt/syslbuild" ]; then
   cd ..
-  echo "INSTALLER: cd $(pwd)"
+  echo "UNINSTALLER: cd $(pwd)"
 fi
 
-echo "INSTALLER: delete syslbuild"
+echo "UNINSTALLER: delete syslbuild"
 rm -rf "/opt/syslbuild"
 
-echo "INSTALLER: delete system cli tools"
+echo "UNINSTALLER: delete system cli tools"
 rm -f "/usr/bin/syslbuild"
 rm -f "/usr/bin/mkbootable"
 
-echo "INSTALLER: delete desktop shortcuts"
+echo "UNINSTALLER: delete desktop shortcuts"
 rm -f "/usr/share/applications/syslbuild.desktop"
 rm -f "/usr/share/applications/gnuboxmaker.desktop"
 rm -f "/usr/share/applications/mkbootable.desktop"
 
-echo "INSTALLER: update-desktop-database"
+echo "UNINSTALLER: update-desktop-database"
 update-desktop-database
 
 ./uninstall_chroot.sh
