@@ -52,11 +52,11 @@ def makedirsChangeRights(path, changeRights=None):
 
 def isUserItem(itemName):
     itemName = resolveItemName(itemName)
-    path = pathConcat(path_build, itemName)
+    path = pathConcat(__main__.path_build, itemName)
     if os.path.exists(path):
         return False
     else:
-        path = pathConcat(path_output_target, itemName)
+        path = pathConcat(__main__.path_output_target, itemName)
         if os.path.exists(path):
             return False
         else:
