@@ -51,7 +51,7 @@ def buildDebian(item):
     include_arg = "--include=" + ",".join(includeList) if includeList else None
     # exclude_arg = "--exclude=" + ",".join(item["exclude"]) if item.get("exclude") else None
 
-    cmd = ["mmdebstrap", "--arch", architecture, "--variant", variant]
+    cmd = ["mmdebstrap", "--arch", __main__.architecture, "--variant", variant]
     if "components" in item:
         components_line = " ".join(item["components"])
         cmd.append(f"--components={components_line}")
@@ -135,7 +135,7 @@ def makeExtendedPacmanConfig(pacman_conf):
         del pacman_conf["_auto"]
 
     if "Architecture" not in pacman_conf["options"]:
-        pacman_conf["options"]["Architecture"] = pacman_architectures_names[architecture]
+        pacman_conf["options"]["Architecture"] = pacman_architectures_names[__main__.architecture]
     
     if "CacheDir" not in pacman_conf["options"]:
         pacman_conf["options"]["CacheDir"] = __main__.path_temp_cache_pacman
