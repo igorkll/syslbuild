@@ -17,7 +17,7 @@ def getDebianKernelName(kernelType):
         buildLog(f"ERROR: unknown kernel type: {kernelType}")
         sys.exit(1)
 
-    kernelName += debianKernelArchitectureAliases.get(architecture, architecture)
+    kernelName += debianKernelArchitectureAliases.get(__main__.architecture, __main__.architecture)
 
     return kernelName
 
@@ -114,7 +114,7 @@ def makePacmanConfig(pacman_conf):
             lines.append(f"{key} = {val}")
         lines.append("")
 
-    with open(path_temp_pacman_conf, "w") as f:
+    with open(__main__.path_temp_pacman_conf, "w") as f:
         f.write("\n".join(lines))
 
 pacman_architectures_names = {
@@ -138,7 +138,7 @@ def makeExtendedPacmanConfig(pacman_conf):
         pacman_conf["options"]["Architecture"] = pacman_architectures_names[architecture]
     
     if "CacheDir" not in pacman_conf["options"]:
-        pacman_conf["options"]["CacheDir"] = path_temp_cache_pacman
+        pacman_conf["options"]["CacheDir"] = __main__.path_temp_cache_pacman
     
     makePacmanConfig(pacman_conf)
     prepairPacman(pacman_conf)
@@ -147,7 +147,7 @@ def archLinuxBuild(item):
     makeExtendedPacmanConfig(item["pacman_conf"])
     root_path = getItemFolder(item)
 
-    cmd = ["pacstrap", "-M", "-C", path_temp_pacman_conf, root_path]
+    cmd = ["pacstrap", "-M", "-C", __main__.path_temp_pacman_conf, root_path]
     if item.get("withoutDependencies", False):
         cmd.append("--nodeps")
     cmd += item.get("include", [])
@@ -158,7 +158,7 @@ def archLinuxPackage(item):
     makeExtendedPacmanConfig(item["pacman_conf"])
     root_path = getItemFolder(item)
 
-    cmd = ["pacman", "-r", root_path, "-C", path_temp_pacman_conf, "-Sy", "--noconfirm"]
+    cmd = ["pacman", "-r", root_path, "-C", __main__.path_temp_pacman_conf, "-Sy", "--noconfirm"]
     if item.get("withoutDependencies", False):
         cmd.append("--nodeps")
     cmd.append(item["package"])
@@ -601,18 +601,18 @@ def buildFilesystem(item):
         formatFilesystem(fs_path, item)
 
     if fs_files or "chmod" in item or "chown" in item:
-        mountFilesystem(fs_path, path_mount)
+        mountFilesystem(fs_path, __main__.path_mount)
 
         if fs_files:
-            copyItemFiles(fs_files, path_mount)
+            copyItemFiles(fs_files, __main__.path_mount)
 
         if "chmod" in item:
-            makeChmod(path_mount, item["chmod"])
+            makeChmod(__main__.path_mount, item["chmod"])
 
         if "chown" in item:
-            makeChown(path_mount, item["chown"])
+            makeChown(__main__.path_mount, item["chown"])
 
-        umountFilesystem(path_mount)
+        umountFilesystem(__main__.path_mount)
 
 
 parititionTypesList_gpt = {
@@ -654,12 +654,12 @@ def getGrubTarget(item, efi):
 
     target = None
     if efi:
-        target = defaultGrubTargets_efi.get(architecture)
+        target = defaultGrubTargets_efi.get(__main__.architecture)
     else:
-        target = defaultGrubTargets_bios.get(architecture)
+        target = defaultGrubTargets_bios.get(__main__.architecture)
 
     if target is None:
-        buildLog(f"ERROR: unknown grub target for {architecture} ({'efi' if efi else 'bios'})")
+        buildLog(f"ERROR: unknown grub target for {__main__.architecture} ({'efi' if efi else 'bios'})")
         sys.exit(1)
 
     return target
@@ -682,12 +682,12 @@ def installBootloader(item, path, partitionsOffsets, sectorsize):
     if bootloaderType == "grub":
         efi = False
 
-        mountFilesystem(path, path_mount, partitionsOffsets[bootloaderInfo["boot"]])
+        mountFilesystem(path, __main__.path_mount, partitionsOffsets[bootloaderInfo["boot"]])
         if "esp" in bootloaderInfo:
-            mountFilesystem(path, path_mount2, partitionsOffsets[bootloaderInfo["esp"]])
+            mountFilesystem(path, __main__.path_mount2, partitionsOffsets[bootloaderInfo["esp"]])
             efi = True
 
-        bootDirectory = pathConcat(path_mount, "boot")
+        bootDirectory = pathConcat(__main__.path_mount, "boot")
         makedirsChangeRights(bootDirectory)
 
         modulesString = ""
@@ -699,13 +699,13 @@ def installBootloader(item, path, partitionsOffsets, sectorsize):
             install_extra_args = bootloaderInfo["install_extra_args"]
 
         if efi:
-            buildExecute(getGrubInstallCmd(bootloaderInfo, getGrubTarget(item, True), install_extra_args + [f"--modules={modulesString}", f"--boot-directory={bootDirectory}", f"--efi-directory={path_mount2}", "--removable", path]))
+            buildExecute(getGrubInstallCmd(bootloaderInfo, getGrubTarget(item, True), install_extra_args + [f"--modules={modulesString}", f"--boot-directory={bootDirectory}", f"--efi-directory={__main__.path_mount2}", "--removable", path]))
 
             # in EFI mode, grub-install writes grub files to the /efi/boot directory, while grub itself searches for them simply by following the /boot/grub path
             # Thanks to the grub developers
-            grubdir = os.path.join(path_mount2, "boot", "grub")
+            grubdir = os.path.join(__main__.path_mount2, "boot", "grub")
             makedirsChangeRights(grubdir)
-            buildExecute(["cp", "-a", os.path.join(path_mount2, "efi", "boot") + "/.", grubdir])
+            buildExecute(["cp", "-a", os.path.join(__main__.path_mount2, "efi", "boot") + "/.", grubdir])
 
             if readBool(bootloaderInfo, "efiAndBios"):
                 buildExecute(getGrubInstallCmd(bootloaderInfo, getGrubTarget(item, False), install_extra_args + [f"--modules={modulesString}", f"--boot-directory={bootDirectory}", path]))
@@ -716,10 +716,10 @@ def installBootloader(item, path, partitionsOffsets, sectorsize):
             makedirsChangeRights(pathConcat(bootDirectory, "grub"))
             copyItemFiles(findItem(bootloaderInfo["config"]), pathConcat(bootDirectory, "grub", "grub.cfg"), DEFAULT_RIGHTS_0700)
 
-        umountFilesystem(path_mount)
+        umountFilesystem(__main__.path_mount)
 
         if efi:
-            umountFilesystem(path_mount2)
+            umountFilesystem(__main__.path_mount2)
     elif bootloaderType == "binary":
         firstPartitionOffset = min(partitionsOffsets)
 
@@ -854,7 +854,7 @@ def collect_sources(item):
     return sources
 
 def gccBuild(item):
-    gccargs = [gccNames[architecture] + "-gcc"]
+    gccargs = [gccNames[__main__.architecture] + "-gcc"]
 
     if "sysroot" in item:
         gccargs += ["--sysroot=" + findItem(item["sysroot"])]
@@ -895,9 +895,9 @@ def get_file_extension(url):
 
 def downloadKernel(url, unpacker):
     url_hash = hashlib.md5(url.encode('utf-8')).hexdigest()
-    kernel_sources = pathConcat(path_temp_kernel_sources, url_hash)
-    kernel_sources_downloaded_flag = pathConcat(path_temp_kernel_sources, url_hash + ".downloaded")
-    kernel_sources_archive = pathConcat(path_temp_kernel_sources, url_hash + get_file_extension(url))
+    kernel_sources = pathConcat(__main__.path_temp_kernel_sources, url_hash)
+    kernel_sources_downloaded_flag = pathConcat(__main__.path_temp_kernel_sources, url_hash + ".downloaded")
+    kernel_sources_archive = pathConcat(__main__.path_temp_kernel_sources, url_hash + get_file_extension(url))
 
     if args.d or not os.path.isdir(kernel_sources) or not os.path.isfile(kernel_sources_downloaded_flag):
         deleteAny(kernel_sources)
@@ -912,8 +912,8 @@ def downloadKernelFromGit(item):
     url = item["kernel_source_git"]
 
     url_hash = hashlib.md5(url.encode('utf-8') + item.get("kernel_source_git_branch", "").encode('utf-8') + item.get("kernel_source_git_checkout", "").encode('utf-8')).hexdigest()
-    kernel_sources = pathConcat(path_temp_kernel_sources, url_hash)
-    kernel_sources_downloaded_flag = pathConcat(path_temp_kernel_sources, url_hash + ".downloaded")
+    kernel_sources = pathConcat(__main__.path_temp_kernel_sources, url_hash)
+    kernel_sources_downloaded_flag = pathConcat(__main__.path_temp_kernel_sources, url_hash + ".downloaded")
 
     if args.d or not os.path.isdir(kernel_sources) or not os.path.isfile(kernel_sources_downloaded_flag):
         deleteAny(kernel_sources)
@@ -949,7 +949,7 @@ def copyKernel(item, kernel_sources):
         
     patches_checksum = dictChecksum(patches_checksum)
 
-    copied_kernel_files = pathConcat(path_temp_kernel_build, hashlib.md5((kernel_sources + ":" + patches_checksum).encode("utf-8")).hexdigest())
+    copied_kernel_files = pathConcat(__main__.path_temp_kernel_build, hashlib.md5((kernel_sources + ":" + patches_checksum).encode("utf-8")).hexdigest())
     out_of_tree_dir = copied_kernel_files + "_build"
     copied_kernel_files_flag = pathConcat(copied_kernel_files, ".copied")
     patched_kernel_files_flag = pathConcat(copied_kernel_files, ".patched")
@@ -1340,11 +1340,11 @@ def buildKernel(item):
     if item.get("only_test_patches", False):
         return
 
-    ARCH = kernelArchitectures[architecture]
-    CROSS_COMPILE = gccNames[architecture]
+    ARCH = kernelArchitectures[__main__.architecture]
+    CROSS_COMPILE = gccNames[__main__.architecture]
     ARCH_STR = f"ARCH={ARCH}"
     CROSS_COMPILE_STR = f"CROSS_COMPILE={CROSS_COMPILE}-"
-    DEFCONFIG_NAME = item.get("defconfig", kernelArchitectureConfigs.get(architecture, "defconfig"))
+    DEFCONFIG_NAME = item.get("defconfig", kernelArchitectureConfigs.get(__main__.architecture, "defconfig"))
 
     def make_cmd(base_cmd):
         cmd = ["make"]
@@ -1383,7 +1383,7 @@ def buildKernel(item):
     buildRawExecute(make_raw_cmd(f"{additional_make_str}{ARCH_STR} {CROSS_COMPILE_STR} -j$(nproc)"), True, kernel_sources)
 
     kernel_output_filename = item.get("kernel_output_file", "bzImage")
-    kernel_output_file = pathConcat(build_output_dir_or_sources, "arch", kernelArchitectures[architecture], "boot", kernel_output_filename)
+    kernel_output_file = pathConcat(build_output_dir_or_sources, "arch", kernelArchitectures[__main__.architecture], "boot", kernel_output_filename)
 
     if not os.path.isfile(kernel_output_file):
         # запасной вариант: корень сборки / исходников
@@ -1455,15 +1455,15 @@ notNeedQemuStatic = {
 
 def checkQemuStaticNeed():
     hostArchitecture = get_host_arch()
-    if hostArchitecture == architecture:
-        buildLog(f"the architectures of the host and the target system are the same ({architecture}) we do not use qemu-static")
+    if hostArchitecture == __main__.architecture:
+        buildLog(f"the architectures of the host and the target system are the same ({__main__.architecture}) we do not use qemu-static")
         return False
     
-    if hostArchitecture == "amd64" and architecture == "i386":
-        buildLog(f"the host architecture ({hostArchitecture}) is compatible with the target architecture ({architecture}) we do not use qemu-static")
+    if hostArchitecture == "amd64" and __main__.architecture == "i386":
+        buildLog(f"the host architecture ({hostArchitecture}) is compatible with the target architecture ({__main__.architecture}) we do not use qemu-static")
         return False
 
-    buildLog(f"the host architecture ({hostArchitecture}) is NOT compatible with the target architecture ({architecture}), we use qemu-static")
+    buildLog(f"the host architecture ({hostArchitecture}) is NOT compatible with the target architecture ({__main__.architecture}), we use qemu-static")
     return True
 
 def set_rules_755(path):
@@ -1495,7 +1495,7 @@ def rawCrossChroot(chrootDirectory, chrootCommand, useSystemd=False, manualValid
         buildRawExecute(f"mount --bind /{bindPath} \"{chrootSubdirPath}\"")
 
     boolCopyQemuStatic = checkQemuStaticNeed()
-    qemuStaticName = qemuStaticNames[architecture]
+    qemuStaticName = qemuStaticNames[__main__.architecture]
     qemuStaticHostPath = f"/usr/bin/{qemuStaticName}"
     qemuStaticPath = pathConcat(chrootDirectory, "usr/bin", qemuStaticName)
     qemuCopied = False
@@ -1587,8 +1587,8 @@ wait $CONTAINER_PID""", checkValid)
             """
             symlink_creation_path = "/usr/lib/arm-linux-gnu"
             symlink_abs_path = pathConcat(chrootDirectory, symlink_creation_path)
-            if not os.path.lexists(symlink_abs_path) and (architecture == "armhf" or architecture == "armel"):
-                buildExecute(["chroot", chrootDirectory, "ln", "-s", "/usr/lib/arm-linux-gnueabi" + ("hf" if architecture == "armhf" else ""), symlink_creation_path], checkValid)
+            if not os.path.lexists(symlink_abs_path) and (__main__.architecture == "armhf" or __main__.architecture == "armel"):
+                buildExecute(["chroot", chrootDirectory, "ln", "-s", "/usr/lib/arm-linux-gnueabi" + ("hf" if __main__.architecture == "armhf" else ""), symlink_creation_path], checkValid)
 
         buildExecute(["chroot", chrootDirectory] + chrootCommand, checkValid)
 
@@ -1928,7 +1928,7 @@ def buildConfigureMake(item):
     host_architecture = get_host_arch()
 
     gcc_native = gccNames[host_architecture]
-    gcc_cross = gccNames[architecture]
+    gcc_cross = gccNames[__main__.architecture]
 
     if item.get("disable_cross_compile", False):
         gcc_cross = gcc_native
@@ -2017,7 +2017,7 @@ def buildMake(item):
 
     host_architecture = get_host_arch()
     gcc_native = gccNames[host_architecture]
-    gcc_cross = gccNames[architecture]
+    gcc_cross = gccNames[__main__.architecture]
     if item.get("disable_cross_compile", False):
         gcc_cross = gcc_native
 

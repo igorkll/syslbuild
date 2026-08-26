@@ -17,6 +17,10 @@ import time
 from pathlib import Path
 import uuid
 
+syslbuild_dir = os.path.join(os.getcwd(), "syslbuild")
+module_dir = os.path.join(syslbuild_dir, "pyimport")
+sys.path.insert(0, module_dir)
+
 path_output = "output"
 path_temp = ".temp"
 
@@ -491,7 +495,7 @@ def dictChecksum(tbl):
     filtered = filter_underscored(tbl)
     return hashlib.md5(json5.dumps(filtered).encode('utf-8')).hexdigest()
 
-# -------------------------------------------------- build items
+# -------------------------------------------------- builditems
 
 buildActions = {}
 
@@ -905,6 +909,8 @@ def start_build_in_chroot(json_path, all_args, nspawn_mode=False):
 
         subprocess.run(cmdstr, shell=True)
         exit(0)
+
+import builditem_base
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="an assembly system for creating Linux distributions. it is focused on embedded distributions")
