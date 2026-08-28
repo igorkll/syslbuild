@@ -315,7 +315,7 @@ def generate_project_config():
         "HandleHibernateKey": "ignore",
         "HandleLidSwitch": "ignore",
         "boot_quiet": not args.debug and not args.enable_bootlogs,
-        "boot_splash": True,
+        "boot_splash": not args.no_logo,
         "boot_sound": "none",
         "dont_show_splash_on_poweroff": True,
         "dont_use_splash_on_efi": False,
