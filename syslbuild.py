@@ -28,6 +28,8 @@ else:
 sys.path.insert(0, os.path.join(syslbuild_path, "syslbuild", "pyimport"))
 sys.path.insert(0, os.path.join(syslbuild_path))
 
+print("syslbuild path: ", syslbuild_path)
+
 import version
 
 # ---------------------------------------
