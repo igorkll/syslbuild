@@ -100,6 +100,10 @@ alternatively, you can fork gnubox maker and then offer a pull request
 
 ## project structure
 * gnubox.gnb - the main file
+* output - the finished result of the build
+* .temp - temporary files used during the build process
+* last.log - log of the last project build
+* .gitignore - this is necessary to prevent "output" and ".temp" from ending up in your project's git repository
 * resources - all project resources used during the build process
 * resources/files - files that will be copied to rootfs before executing chroot scripts. please note that all your files and directories from this directory will have rights 755 and belong to root, regardless of what rights they have during the build. this is necessary for repeatable assembly on different machines. if you need to change the permissions on the target system, use the "chroot" scripts.
 * resources/chroot - scripts executed inside a chroot in the system during the build process (not just a chroot, but a systemd-nspawn container) please note that at the end of each file you need to create an empty file or directory with the path "/.chrootend" otherwise the build will fail
@@ -111,8 +115,6 @@ alternatively, you can fork gnubox maker and then offer a pull request
 * resources/startup.wav - the sound that will be used during the booting. requires configuration with a special parameter in the project. turned off by default
 * resources/rpi_32_config_extension.txt - configuration extensions for RPI 32
 * resources/rpi_64_config_extension.txt - configuration extensions for RPI 64
-* output - the finished result of the build
-* .temp - temporary files used during the build process
 
 ## devicetree
 you can create a custom devicetree to connect the perepherals  
