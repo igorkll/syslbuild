@@ -1,8 +1,6 @@
 from __main__ import *
 import __main__
 
-from internal_utils import *
-
 @dataclass
 class Project:
     gnubox_version: list[int] = field(default_factory=lambda: [0, 0, 0])
@@ -149,6 +147,9 @@ def build_project():
             stop_error("Failed to build")
 
 def update_project_structure():
+    import internal_utils
+    import devicetree_funcs
+
     os.makedirs(__main__.path_resources, exist_ok=True)
     os.makedirs(__main__.path_temp, exist_ok=True)
     os.makedirs(__main__.path_temp_syslbuild, exist_ok=True)
@@ -159,28 +160,28 @@ def update_project_structure():
 
     runshell_path = os.path.join(__main__.path_resources, "runshell.sh")
     if not os.path.isfile(runshell_path):
-        copyFile(runshell_path, "gnuboxmaker/runshell.sh")
+        internal_utils.copyFile(runshell_path, "gnuboxmaker/runshell.sh")
 
     preinit_path = os.path.join(__main__.path_resources, "preinit.sh")
     if not os.path.isfile(preinit_path):
-        copyFile(preinit_path, "gnuboxmaker/preinit.sh")
+        internal_utils.copyFile(preinit_path, "gnuboxmaker/preinit.sh")
 
     logo_path_png = os.path.join(__main__.path_resources, "logo.png")
     logo_path_gif = os.path.join(__main__.path_resources, "logo.gif") # gif на экране загрузки еще не реализован
     if not os.path.isfile(logo_path_png) and not os.path.isfile(logo_path_gif):
-        copyFile(logo_path_png, "gnuboxmaker.png")
+        internal_utils.copyFile(logo_path_png, "gnuboxmaker.png")
 
     logo_updating_path_png = os.path.join(__main__.path_resources, "logo_updating.png")
     logo_updating_path_gif = os.path.join(__main__.path_resources, "logo_updating.gif")
     if not os.path.isfile(logo_updating_path_png) and not os.path.isfile(logo_updating_path_gif):
-        copyFile(logo_updating_path_png, "gnuboxmaker/logo_updating.png")
+        internal_utils.copyFile(logo_updating_path_png, "gnuboxmaker/logo_updating.png")
 
     startup_sound = os.path.join(__main__.path_resources, "startup.wav")
     if not os.path.isfile(startup_sound):
-        copyFile(startup_sound, "gnuboxmaker/startup.wav")
+        internal_utils.copyFile(startup_sound, "gnuboxmaker/startup.wav")
 
-    create_empty_file("rpi_32_config_extension.txt")
-    create_empty_file("rpi_64_config_extension.txt")
+    internal_utils.create_empty_file("rpi_32_config_extension.txt")
+    internal_utils.create_empty_file("rpi_64_config_extension.txt")
 
     gitignore_path = os.path.join(__main__.current_project_directory, ".gitignore")
     if not os.path.isfile(gitignore_path):
@@ -189,14 +190,16 @@ def update_project_structure():
             f.write(".temp\n")
             f.write("last.log\n")
 
-    init_devicetree("opi_zero3")
-    init_devicetree("rpi_64")
-    init_devicetree("rpi_32")
+    devicetree_funcs.init_devicetree("opi_zero3")
+    devicetree_funcs.init_devicetree("rpi_64")
+    devicetree_funcs.init_devicetree("rpi_32")
 
 def load_project(path):
+    import internal_utils
+
     if os.path.isfile(path):
-        __main__.current_project = raw_load_project(path)
-        version_diff = checkVersion(__main__.current_project)
+        __main__.current_project = internal_utils.raw_load_project(path)
+        version_diff = internal_utils.checkVersion(__main__.current_project)
         if version_diff > 0:
             show_error(f"you have the syslbuild {version.formatVersion(version.VERSION)} version, while the project was saved in a newer version of {version.formatVersion(__main__.current_project.gnubox_version)}")
             return False
