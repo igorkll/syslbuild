@@ -71,9 +71,11 @@ if you have selected an encryption mode that requires a password (for example, d
 * --multi-file - then not only the application file will be added to the image, but also all files from its directory. use carefully so as not to add unnecessary files to the image
 * --debug - enable the kernel log and root shell at UART0 115200
 * --clear-cache - cleans up the cache before building
-* --x11-session - enables x11 graphics session mode
+* --x11-session - enables x11 graphics session mode (wayland is used by default)
 * --fullscreen-logo - makes the bootlogo fullscreen
 * --white-logo - makes the background of the bootlogo white
+* --no-logo - disable the boot logo. By default, a black screen or uefi logo will appear instead of the logo
+* --enable-bootlogs - enables display of the bootlog on the screen during boot. If the logo isn't disabled, it also allows using the ESC key to hide it and access the logs
 
 ## examples
 * desktop, google, web kiosk: mkbootable --web https://google.com --output kiosk_google.img

@@ -78,6 +78,8 @@ argsparser.add_argument("--clear-cache", action='store_true', default=False, hel
 argsparser.add_argument("--x11-session", action='store_true', default=False, help="enables x11 graphics session mode")
 argsparser.add_argument("--fullscreen-logo", action='store_true', default=False, help="makes the bootlogo fullscreen")
 argsparser.add_argument("--white-logo", action='store_true', default=False, help="makes the background of the bootlogo white")
+argsparser.add_argument("--no-logo", action='store_true', default=False, help="disable the boot logo. By default, a black screen or uefi logo will appear instead of the logo")
+argsparser.add_argument("--enable-bootlogs", action='store_true', default=False, help="enables display of the bootlog on the screen during boot. If the logo isn't disabled, it also allows using the ESC key to hide it and access the logs")
 
 argsparser.add_argument("--packages", default=None, help="add additional packages to the system. separation by \",\"")
 argsparser.add_argument("--wifi-name", default=None, help="the name of the wifi network for automatic connection")
@@ -312,7 +314,7 @@ def generate_project_config():
         "HandleSuspendKey": "ignore",
         "HandleHibernateKey": "ignore",
         "HandleLidSwitch": "ignore",
-        "boot_quiet": False,
+        "boot_quiet": not args.debug and not args.enable_bootlogs,
         "boot_splash": True,
         "boot_sound": "none",
         "dont_show_splash_on_poweroff": True,
@@ -320,7 +322,7 @@ def generate_project_config():
         "uartlogs": args.debug,
         "uartlogs_speed": 115200,
         "uartlogs_rootshell": args.debug,
-        "exclude_tty1_from_consoles": True,
+        "exclude_tty1_from_consoles": not args.enable_bootlogs,
         "exclude_tty1_from_consoles_in_quiet": True,
         "make_tty1_primary_console": False,
         "use_separate_splash_for_update": False,
@@ -336,7 +338,8 @@ def generate_project_config():
         "session_mode": session_type,
         "minlogotime": 10,
         "cmdline": "clear noCursorBlink vt.global_cursor_default=0 systemd.show_status=false",
-        "sudo_privileges": args.sudo_privileges
+        "sudo_privileges": args.sudo_privileges,
+        "plymouth_disable_esc_button": not args.enable_bootlogs
     }
 
     if args.white_logo:
