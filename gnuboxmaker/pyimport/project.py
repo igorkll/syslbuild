@@ -141,7 +141,7 @@ def build_project():
         time.sleep(2)
         updateProgress()
     else:
-        if guiLoaded:
+        if __main__.guiLoaded:
             failed_to_build()
         else:
             stop_error("Failed to build")
@@ -205,13 +205,13 @@ def load_project(path):
             return False
         elif version_diff < 0:
             __main__.current_project.gnubox_version = version.VERSION.copy()
-            raw_save_project(path, __main__.current_project)
+            internal_utils.raw_save_project(path, __main__.current_project)
         else:
             __main__.current_project.gnubox_version = version.VERSION.copy()
     else:
         __main__.current_project = Project()
         __main__.current_project.gnubox_version = version.VERSION.copy()
-        raw_save_project(path, __main__.current_project)
+        internal_utils.raw_save_project(path, __main__.current_project)
 
     __main__.current_project_directory = os.path.dirname(path)
     __main__.current_project_name = os.path.basename(__main__.current_project_directory)
