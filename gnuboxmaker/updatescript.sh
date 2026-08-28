@@ -37,6 +37,7 @@ partitiontable=$(sfdisk -J "$image_path")
 
 sector_size=$(echo "$partitiontable" | jq -r '.partitiontable.sectorsize')
 
+# проверка типов разделов, чтобы не обновлять те что обновления не требуют (например EFI раздел)
 bios_start_part=$(echo "$partitiontable" | jq -r '
   .partitiontable.partitions[]
   | select(.type == "21686148-6449-6E6F-744E-656564454649")
@@ -67,6 +68,10 @@ if [ -n "$ROOT_AT_1" ]; then # для export_img_bios_gpt и export_img_uefi_gpt
     image_rootfs_start=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[1].start')
     image_rootfs_size=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[1].size')
 
+    # нам НЕ НУЖНО обновлять EFI раздел с загрузчиком
+    # в случаи с одноплатником boot раздел обновляется
+    # EFI раздел так же определяется в boot_dev как boot, так как идет первым и монтируется кастомным initramfs в bootmnt
+    # но загрузчик лучше лишний раз не трогать при обновлении, по этому дальше я по типу разделов проверяю
     boot_dev=""
 
     echo "root position: ROOT_AT_1"
