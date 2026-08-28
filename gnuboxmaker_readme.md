@@ -16,6 +16,7 @@ The .img images for x86 / x86_64 that Gnubox maker generates are universal. they
 a similar program for creating Windows images for embedded devices: https://github.com/igorkll/WinBox-Maker  
 if your task requires an even simpler program, you can consider mkbootable: https://github.com/igorkll/mkbootable  
 If you don't have enough gnubox maker features or you need a minimum image size, you can go down a level and use syslbuild directly: https://github.com/igorkll/syslbuild  
+if you find a bug, please leave an issue. I won't ignore it and will work to solve the problem. If you need help, I'll be happy to help  
 
 ## subprojects
 * syslbuild (main) - a low-level build system for custom linux distributions: https://github.com/igorkll/syslbuild
@@ -185,6 +186,7 @@ please note that the partition sizes CANNOT be increased during the update. ther
 * delete the directories .temp and output (clear the temporary project files) and try again
 * try to build a project from the examples of gnubox maker, and if it is going to, then the problem is in your project. If not, it's possible that there are some dependencies missing or your host system is not supported
 * try to build the project on a virtual machine with Ubuntu 24.04 LTS
+* try downloading a previous version of Gnubox Maker or the one you used to build the project
 
 ## how do I rebuild kernels in the gnubox maker program?
 * local kernel rebuild for the project is not supported yet.
