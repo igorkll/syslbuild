@@ -545,6 +545,8 @@ def setup_download(builditems):
 
     def unpackRelease(archive):
         builditems.append({
+            "independent_architecture": True,
+            
             "type": "unpack-tar-auto",
             "name": get_name_without_all_extensions(archive),
             "export": False,
