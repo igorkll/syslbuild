@@ -756,7 +756,12 @@ def deleteBuildItemKeysProcess(builditemDict):
             deleteBuildItemKeysProcess(v)
 
 def buildItemArchitectureDeleteCheck(builditem):
-    if (architecture == "independent") != (not not builditem.get("independent_architecture", False)):
+    independent_architecture = builditem.get("independent_architecture", False)
+
+    if architecture == "independent" and independent_architecture and "architectures" in builditem and not (set(global_architectures) & set(builditem["architectures"])):
+        return True
+
+    if (architecture == "independent") != (not not independent_architecture):
         return True
     
     return "architectures" in builditem and not architecture in builditem["architectures"]
@@ -1014,6 +1019,8 @@ if __name__ == "__main__":
 
         if architecture == "ALL":
             if "architectures" in projectData:
+                global_architectures = projectData["architectures"]
+
                 buildLog("build for the following list of architectures:")
                 for arch in projectData["architectures"]:
                     buildLog(arch)
@@ -1030,6 +1037,8 @@ if __name__ == "__main__":
             else:
                 buildLog("Architectures list is not defined in project json")
         else:
+            global_architectures = [saved_architecture]
+
             architecture = "independent"
             loadTempPaths()
             buildProject(args.json_path)
