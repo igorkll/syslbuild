@@ -627,6 +627,10 @@ these changes to the kernel config are applied automatically when building the k
             "hook-directory": "hooks"
         },
         {
+            //use this to download a single instance for all architectures. 
+            // please note that you can use this together with "architectures" to filter downloads only if --arch is the specified architecture or if ALL architecture is used and one of the specified architectures is in the list of project architectures. (maybe I'm not good at explaining and writing documentation...)
+            "independent_architecture": true,
+
             "type": "download",
             "name": "downloaded file",
             "export": false,
