@@ -3,6 +3,7 @@ import __main__
 
 def any_rpi(builditems):
     builditems.append({
+        "independent_architecture": True,
         "architectures": ["arm64", "armhf", "armel"],
 
         "type": "gitclone",
@@ -16,6 +17,7 @@ def any_rpi(builditems):
 
     if __main__.current_project.integrate_raspberry_firmwares_if_need:
         builditems.append({
+            "independent_architecture": True,
             "architectures": ["arm64", "armhf", "armel"],
 
             "type": "gitclone",

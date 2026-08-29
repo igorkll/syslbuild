@@ -522,6 +522,8 @@ def setup_build_distro(builditems):
 def setup_download(builditems):
     def addDownload(name, version):
         builditems.append({
+            "independent_architecture": True,
+
             "type": "gitclone",
             "name": name,
             "export": False,
@@ -532,6 +534,8 @@ def setup_download(builditems):
 
     def addDownloadRelease(reponame, version, filename):
         builditems.append({
+            "independent_architecture": True,
+            
             "type": "download",
             "name": filename,
             "export": False,
@@ -550,6 +554,7 @@ def setup_download(builditems):
 
     if current_project.integrate_armbian_firmwares_if_need:
         builditems.append({
+            "independent_architecture": True,
             "architectures": ["arm64"],
 
             "type": "gitclone",
@@ -561,7 +566,12 @@ def setup_download(builditems):
         })
 
     if current_project.integrate_super_kiosk_browser:
+        addDownloadRelease("super-kiosk-browser", "1.1", "super_kiosk_browser_build.zip")
+        
         builditems.append({
+            "independent_architecture": True,
+            "architectures": ["amd64", "arm64"],
+
             "type": "unpack-archive",
             "name": "super-kiosk-browser-unpacked",
             "export": False,
@@ -598,9 +608,6 @@ def setup_download(builditems):
 
     if current_project.integrate_liamounts:
         addDownload("liamounts", "2.1")
-
-    if current_project.integrate_super_kiosk_browser:
-        addDownloadRelease("super-kiosk-browser", "1.1", "super_kiosk_browser_build.zip")
 
     if current_project.boot_splash and current_project.plymouth_disable_esc_button:
         addDownload("embedded-plymouth", "1.2")
