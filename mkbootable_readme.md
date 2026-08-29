@@ -1,4 +1,4 @@
-# mkbootable (BETA)
+# mkbootable
 ![preview](https://raw.githubusercontent.com/igorkll/mkbootable/refs/heads/main/preview.png)  
 create a bootable linux image from your application  
 there will be nothing superfluous in the boot image created from your application. no system hotkeys. no visual artifacts during loading like the flashing VT. just your logo followed immediately by the app  
