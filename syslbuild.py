@@ -785,8 +785,8 @@ def deleteBuildItemKeysProcess(builditemDict):
 def buildItemArchitectureDeleteCheck(builditem):
     independent_architecture = builditem.get("independent_architecture", False)
 
-    if architecture == "independent" and independent_architecture and "architectures" in builditem and not (set(global_architectures) & set(builditem["architectures"])):
-        return True
+    if architecture == "independent" and independent_architecture and "architectures" in builditem:
+        return not (set(global_architectures) & set(builditem["architectures"]))
 
     if (architecture == "independent") != (not not independent_architecture):
         return True
