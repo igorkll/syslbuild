@@ -56,7 +56,7 @@ argsparser.add_argument("--web", default=None, help="the link to the web page to
 
 argsparser.add_argument(
     "--platform",
-    choices=["desktop_64", "desktop_32", "raspberry_pi_64", "raspberry_pi_32", "orange_pi_zero3"],
+    choices=["desktop_64", "desktop_32", "raspberry_pi_64", "raspberry_pi_32", "orange_pi_zero3", "rootfs_64", "rootfs_32", "rootfs_arm64", "rootfs_armhf", "rootfs_armel"],
     default="desktop_64",
     help="Target platform (default: desktop_64)"
 )
