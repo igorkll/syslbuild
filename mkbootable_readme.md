@@ -33,6 +33,13 @@ there may be nuances in the support of some platforms. read about it here: https
 * raspberry_pi_armel
 * orange_pi_zero3
 
+## rootfs.tar.gz architectures support
+* rootfs_64
+* rootfs_32
+* rootfs_arm64
+* rootfs_armhf
+* rootfs_armel
+
 ## supported application types
 * flatpak - the flatpak format package (NOT IMPLEMENTED AT THE MOMENT)
 * AppImage - the AppImage application type
