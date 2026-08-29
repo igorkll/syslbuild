@@ -546,7 +546,7 @@ def setup_download(builditems):
     def unpackRelease(archive):
         builditems.append({
             "independent_architecture": True,
-            
+
             "type": "unpack-tar-auto",
             "name": get_name_without_all_extensions(archive),
             "export": False,
@@ -603,7 +603,7 @@ def setup_download(builditems):
             "path": "/super_kiosk_browser_build/super_kiosk_browser-linux-arm64"
         })
 
-    addDownload("custom-debian-initramfs-init", "1.6.6")
+    addDownload("custom-debian-initramfs-init", "1.6.7")
     addDownload("linux-embedded-setup-scripts", "0.2")
     addDownloadRelease("linux-bootloaders", "1.2", "linux-bootloaders.tar.gz")
     unpackRelease("linux-bootloaders.tar.gz")
