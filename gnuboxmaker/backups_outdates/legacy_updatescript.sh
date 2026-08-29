@@ -37,7 +37,7 @@ partitiontable=$(sfdisk -J "$image_path")
 
 sector_size=$(echo "$partitiontable" | jq -r '.partitiontable.sectorsize')
 
-# проверка типов разделов, чтобы не обновлять те что обновления не требуют
+# проверка типов разделов, чтобы не обновлять те что обновления не требуют (например EFI раздел)
 bios_start_part=$(echo "$partitiontable" | jq -r '
   .partitiontable.partitions[]
   | select(.type == "21686148-6449-6E6F-744E-656564454649")
@@ -53,29 +53,37 @@ efi_start_part=$(echo "$partitiontable" | jq -r '
 echo "bios_start_part: $bios_start_part"
 echo "efi_start_part: $efi_start_part"
 
+# как блять сделать работу на export_img_bios_gpt, export_img_uefi_gpt, export_img_bios_and_uefi_gpt
+# поправочка: ну вроде должно работать
+
 if { [ "$efi_start_part" != "null" ] && [ -n "$efi_start_part" ]; } \
 && { [ "$bios_start_part" != "null" ] && [ -n "$bios_start_part" ]; }; then # для export_img_bios_and_uefi_gpt
     ROOT_AT_2=y
-elif { [ "$bios_start_part" != "null" ] && [ -n "$bios_start_part" ]; }; then # для export_img_bios_gpt
+elif { [ "$bios_start_part" != "null" ] && [ -n "$bios_start_part" ]; } \
+|| { [ "$efi_start_part" != "null" ] && [ -n "$efi_start_part" ]; }; then # для export_img_bios_gpt и export_img_uefi_gpt
     ROOT_AT_1=y
 fi
 
-if [ -n "$ROOT_AT_1" ]; then # для export_img_bios_gpt
+if [ -n "$ROOT_AT_1" ]; then # для export_img_bios_gpt и export_img_uefi_gpt
     image_rootfs_start=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[1].start')
     image_rootfs_size=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[1].size')
 
+    # нам НЕ НУЖНО обновлять EFI раздел с загрузчиком
+    # в случаи с одноплатником boot раздел обновляется
+    # EFI раздел так же определяется в boot_dev как boot, так как идет первым и монтируется кастомным initramfs в bootmnt
+    # возможно это вызовет проблемы при смене версии grub, так как его часть не обновляется (я все равно не собираюсь менять версию grub в gnubox maker, так что это не вызовет проблем)
+    # так же это может вызвать проблему если сменится UUID нового rootfs, который grub возможно использует в EFI разделе для обнаружения rootfs (надо перепроверить, хотя у меня все работало)
     boot_dev=""
 
     echo "root position: ROOT_AT_1"
 elif [ -n "$ROOT_AT_2" ]; then # для export_img_bios_and_uefi_gpt
-    image_boot_start=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[0].start')
-    image_boot_size=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[0].size')
-
     image_rootfs_start=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[2].start')
     image_rootfs_size=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[2].size')
 
+    boot_dev=""
+
     echo "root position: ROOT_AT_2"
-elif [ -n "$boot_dev" ] && [ -n "$rootfs_dev" ]; then # rootfs и boot / EFI. то есть для одноплатников и export_img_uefi_gpt
+elif [ -n "$boot_dev" ] && [ -n "$rootfs_dev" ]; then # rootfs и boot (EFI раздел не считается, только для одноплатников)
     image_boot_start=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[0].start')
     image_boot_size=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[0].size')
 
