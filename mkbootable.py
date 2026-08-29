@@ -226,6 +226,7 @@ build_log(f"output: {args.output}")
 # --------------------------------------- build project
 
 platforms = {
+    # bootable images (.img)
     "desktop_64": {
         "project_config": {
             "export_x86_64": True,
@@ -267,6 +268,43 @@ platforms = {
             "export_img_opi_zero3": True
         },
         "image_path": "output/arm64/@ OPI ZERO 3.img"
+    },
+
+    # rootfs images (.tar.gz)
+    "rootfs_64": {
+        "project_config": {
+            "export_x86_64": True,
+            "export_rootfs_tar_gz": True
+        },
+        "image_path": "output/amd64/rootfs.tar.gz"
+    },
+    "rootfs_32": {
+        "project_config": {
+            "export_x86": True,
+            "export_rootfs_tar_gz": True
+        },
+        "image_path": "output/i386/rootfs.tar.gz"
+    },
+    "rootfs_arm64": {
+        "project_config": {
+            "export_arm64": True,
+            "export_rootfs_tar_gz": True
+        },
+        "image_path": "output/arm64/rootfs.tar.gz"
+    },
+    "rootfs_armhf": {
+        "project_config": {
+            "export_arm": True,
+            "export_rootfs_tar_gz": True
+        },
+        "image_path": "output/armhf/rootfs.tar.gz"
+    },
+    "rootfs_armel": {
+        "project_config": {
+            "export_armel": True,
+            "export_rootfs_tar_gz": True
+        },
+        "image_path": "output/armel/rootfs.tar.gz"
     }
 }
 
