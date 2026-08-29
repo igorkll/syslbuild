@@ -42,6 +42,7 @@ def loadTempPaths():
     global path_build
     global path_build_independent
     global path_build_checksums
+    global path_build_checksums_independent
     global path_temp_cache_pacman
     global path_temp_pacman_conf
     global path_temp_kernel_build
@@ -58,7 +59,8 @@ def loadTempPaths():
             deleteAny(path_temp_architecture)
 
     path_build_independent = os.path.join(path_temp, "independent", "build")
-    
+    path_build_checksums_independent = os.path.join(path_temp, "independent", "build_checksums")
+
     path_build = os.path.join(path_temp_architecture, "build")
     path_build_checksums = os.path.join(path_temp_architecture, "build_checksums")
     path_temp_cache_pacman = os.path.join(path_temp_architecture, "pacman")
@@ -237,8 +239,15 @@ def getItemChecksumPathFromName(itemName):
     os.makedirs(path_build_checksums, exist_ok=True)
     return pathConcat(path_build_checksums, itemName)
 
+def getItemChecksumPathFromName_independent(itemName):
+    os.makedirs(path_build_checksums_independent, exist_ok=True)
+    return pathConcat(path_build_checksums_independent, itemName)
+
 def getItemChecksumPath(item):
     return getItemChecksumPathFromName(item["name"])
+
+def getItemChecksumPath_independent(item):
+    return getItemChecksumPathFromName_independent(item["name"])
 
 def deleteDirectory(path):
     if os.path.isdir(path):
@@ -569,6 +578,12 @@ def getDependenciesFileOrDirectoryChecksum(pathOrChecksum, hash_algo="sha256"):
 def getDependenciesFieldChecksum(fieldValue, filesOnly=False, target=None, fieldName=None):
     def inlineFindItem(inputPath):
         if not filesOnly:
+            if os.path.exists(pathConcat(path_build_independent, inputPath)) or os.path.exists(pathConcat(path_output_target_independent, inputPath)):
+                checksumPath = getItemChecksumPathFromName_independent(inputPath.split("/", 1)[0])
+                if os.path.exists(checksumPath):
+                    with open(checksumPath, "r") as f:
+                        return "@" + f.read()
+
             if os.path.exists(pathConcat(path_build, inputPath)) or os.path.exists(pathConcat(path_output_target, inputPath)):
                 # так как начиная с версии syslbuild 1.5.5 добавилась поддержка указания путей добавляемого обьекта прямо внутри имени builditem через /
                 # что уменьшает количество использований from-directory и сокрашает размер файлов конфигурации
@@ -579,6 +594,7 @@ def getDependenciesFieldChecksum(fieldValue, filesOnly=False, target=None, field
                         return "@" + f.read()
                 else:
                     return "NOT CALCULATED"
+            
         return inputPath
 
     if isinstance(fieldValue, str):
@@ -592,6 +608,7 @@ def getDependenciesFieldChecksum(fieldValue, filesOnly=False, target=None, field
             if isinstance(inlineFieldValue, str):
                 checkDict["array"].append(getDependenciesFileOrDirectoryChecksum(inlineFindItem(inlineFieldValue)))
             elif isinstance(inlineFieldValue, list):
+                # не учитываем прямую запись строчки в file через builditem "directory"
                 if target != "directory" or fieldName != "items" or len(inlineFieldValue) <= 3 or not inlineFieldValue[3]:
                     checkDict["array"].append(getDependenciesFileOrDirectoryChecksum(inlineFindItem(inlineFieldValue[0])))
 
@@ -647,11 +664,21 @@ def isCacheValid(item, checksum):
     if item.get("disable_cache", False):
         return False
 
+    def check(f):
+        readed = f.read()
+        return readed == checksum or readed.strip() == "TEST"
+
+    checksum_path_independent = getItemChecksumPath_independent(item)
+    if os.path.exists(checksum_path_independent):
+        with open(checksum_path_independent, "r") as f:
+            if check(f):
+                return True
+
     checksum_path = getItemChecksumPath(item)
     if os.path.exists(checksum_path):
         with open(checksum_path, "r") as f:
-            readed = f.read()
-            return readed == checksum or readed.strip() == "TEST"
+            if check(f):
+                return True
     
     return False
 
