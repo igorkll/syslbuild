@@ -16,3 +16,4 @@ fixed a bug in the kernels cache that leads to repeated calls to the kernels bui
 a small refactoring of the syslbuild tool
 fixed self_update for UEFI-based platforms in gnubox maker
 several build flags and export rootfs.tar.gz have been added to mkbootable
+fixed example html_desktop in mkbootable
