@@ -11,3 +11,8 @@ fixed the setting of access rights for specifying files and directories separate
 embedded-plymouth is now downloaded from a separate repository
 added a built-in chroot container that is now used for default builds (temporarily unavailable)
 fixed a bug in the kernels cache that leads to repeated calls to the kernels build
+
+1.9.0
+a small refactoring of the syslbuild tool
+fixed self_update for UEFI-based platforms in gnubox maker
+several build flags and export rootfs.tar.gz have been added to mkbootable
