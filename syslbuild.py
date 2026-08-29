@@ -40,6 +40,7 @@ path_temp = ".temp"
 def loadTempPaths():
     global path_temp_architecture
     global path_build
+    global path_build_independent
     global path_build_checksums
     global path_temp_cache_pacman
     global path_temp_pacman_conf
@@ -55,6 +56,8 @@ def loadTempPaths():
         os.makedirs(path_temp_architecture, exist_ok=True)
         if args.g:
             deleteAny(path_temp_architecture)
+
+    path_build_independent = os.path.join(path_temp, "independent", "build")
     
     path_build = os.path.join(path_temp_architecture, "build")
     path_build_checksums = os.path.join(path_temp_architecture, "build_checksums")
@@ -284,17 +287,26 @@ def findItem(itemName):
         return itemName[1:]
     
     itemName = resolveItemName(itemName)
+
     path = pathConcat(path_build, itemName)
     if os.path.exists(path):
         return path
-    else:
-        path = pathConcat(path_output_target, itemName)
-        if os.path.exists(path):
-            return path
-        else:
-            path = pathConcat(".", itemName)
-            if os.path.exists(path):
-                return path
+    
+    path = pathConcat(path_output_target, itemName)
+    if os.path.exists(path):
+        return path
+
+    path = pathConcat(path_build_independent, itemName)
+    if os.path.exists(path):
+        return path
+
+    path = pathConcat(path_output_target_independent, itemName)
+    if os.path.exists(path):
+        return path
+    
+    path = pathConcat(".", itemName)
+    if os.path.exists(path):
+        return path
 
     buildLog(f"ERROR: failed to find item: {itemName}")
     sys.exit(1)
@@ -715,10 +727,12 @@ def cleanup():
 
 def prepairBuild():
     global path_output_target
+    global path_output_target_independent
     path_output_target = pathConcat(path_output, architecture)
-    # recursionUmount(path_output_target)
-    # deleteDirectory(path_output_target)
+    path_output_target_independent = pathConcat(path_output, "independent")
+
     os.makedirs(path_output_target, exist_ok=True)
+    os.makedirs(path_output_target_independent, exist_ok=True)
 
 def forkCombine(builditem, forkbase, forkArraysCombine=False, keysBlackList=None, recursionKeyBlackList=None):
     for k, v in forkbase.items():
