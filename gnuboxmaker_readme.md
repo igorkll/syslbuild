@@ -1,4 +1,4 @@
-# Gnubox maker (The GUI is not finished)
+# Gnubox maker - creating linux with a single application (The GUI is not finished)
 ![preview](https://raw.githubusercontent.com/igorkll/Gnubox-Maker/refs/heads/main/preview.png)  
 the easiest way is to create an embedded/kiosk linux distribution with a single application that cannot be exited  
 it uses a patched linux kernel, which prevents switching VT and using ctrl+alt+del  
