@@ -67,6 +67,7 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         "uboot_script": "&" + os.path.join(gnuboxmaker_dir, "uboot_bootscript.cmd"),
 
         "bootloader": "blobs/u-boot-sunxi-with-spl.bin",
+        "bootloader": "blobs/u-boot-sunxi-with-spl-armbian.bin",
         "bootloader_offset": 16,
         "bootloaderDtb": devicetree,
 
