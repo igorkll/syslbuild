@@ -37,11 +37,12 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         "name": "rootfs directory OPI ZERO 3",
         "export": False,
 
-        "symlinks": [
+        "items": items,
+
+        "symlinks_after_items": [
             ["/etc/systemd/system/BT_AW859A.service", "/etc/systemd/system/multi-user.target.wants/BT_AW859A.service"],
             ["/etc/systemd/system/reload_panfrost.service", "/etc/systemd/system/multi-user.target.wants/reload_panfrost.service"]
-        ],
-        "items": items
+        ]
     })
 
     builditems.append({

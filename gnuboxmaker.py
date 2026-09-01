@@ -1045,6 +1045,7 @@ def setup_build_base(builditems, cmdline):
         ["/etc", RIGHTS_755],
         ["/etc/systemd", RIGHTS_755],
         ["/etc/systemd/system", RIGHTS_755],
+        ["/etc/systemd/system/multi-user.target.wants", RIGHTS_755]
     ]
 
     items = [
