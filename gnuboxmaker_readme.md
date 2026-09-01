@@ -45,7 +45,6 @@ tested on OS: linux mint
 ## bugs
 you can fix any of these bugs yourself if necessary, and if you want to send a pull request. a lot can be fixed with chroot scripts in the project  
 * "screen idle time" does not work on wayland
-* bluetooth is not working on orange pi zero 3
 * on raspberry pi, wayland uses a software renderer (on the hardware renderer, any mouse movement (cursor appearance) led to an instant crash. this may be fixed if you upgrade weston to version 15)
 * on the orange pi zero 3, when audio is output to the line output, the sound plays twice as slowly. at the same time, the file reproduction itself slows down and the scale of reproduction is slower (at least in chrome)
 * boot_sound only works on x86 at the moment
