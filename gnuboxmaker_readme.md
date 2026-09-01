@@ -45,9 +45,8 @@ tested on OS: linux mint
 ## bugs
 you can fix any of these bugs yourself if necessary, and if you want to send a pull request. a lot can be fixed with chroot scripts in the project  
 * "screen idle time" does not work on wayland
-* gpu is not working on orange pi zero 3
 * bluetooth is not working on orange pi zero 3
-* on raspberry pi and orange pi zero 3, wayland uses a software renderer (on the hardware renderer, any mouse movement (cursor appearance) led to an instant crash. this may be fixed if you upgrade weston to version 15)
+* on raspberry pi, wayland uses a software renderer (on the hardware renderer, any mouse movement (cursor appearance) led to an instant crash. this may be fixed if you upgrade weston to version 15)
 * on the orange pi zero 3, when audio is output to the line output, the sound plays twice as slowly. at the same time, the file reproduction itself slows down and the scale of reproduction is slower (at least in chrome)
 * boot_sound only works on x86 at the moment
 * when building some gnubox maker projects, I had a problem that all applications written in electron crashed on my computer, and only a reboot helped. I do not know what this is related to, but I assume that it is a matter of systemd-nspawn and mounting the host file systems inside the system being assembled (this happened when building rootfs for i368)
