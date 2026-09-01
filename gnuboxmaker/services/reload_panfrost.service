@@ -1,0 +1,14 @@
+[Unit]
+Description=Reload panfrost module (fix deferred probe)
+After=systemd-modules-load.service
+Wants=systemd-modules-load.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/sbin/modprobe -r panfrost
+ExecStart=/sbin/modprobe panfrost
+TimeoutSec=0
+
+[Install]
+WantedBy=multi-user.target

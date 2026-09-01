@@ -15,9 +15,12 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
     items = [
         ["rootfs directory", "."],
         ["blobs/hciattach_opi", "/usr/local/bin/hciattach_opi", RIGHTS_755],
+        ["panfrost", "/etc/modules-load.d/panfrost.conf", RIGHTS_644, True],
         ["uwe5622_bsp_sdio\nsprdwl_ng\nsprdbt_tty", "/etc/modules-load.d/uwe5622.conf", RIGHTS_644, True],
         ["kernel_image/arm64/sunxi/kernel_modules", "/usr", RIGHTS_644_755],
-        [get_gnuboxmaker_dirpath("services/BT_AW859A.service"), "/etc/systemd/system/BT_AW859A.service", RIGHTS_644]
+
+        [get_gnuboxmaker_dirpath("services/BT_AW859A.service"), "/etc/systemd/system/BT_AW859A.service", RIGHTS_644],
+        [get_gnuboxmaker_dirpath("services/reload_panfrost.service"), "/etc/systemd/system/reload_panfrost.service", RIGHTS_644],
     ]
 
     if __main__.current_project.integrate_armbian_firmwares_if_need:
@@ -35,7 +38,8 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         "export": False,
 
         "symlinks": [
-            ["/etc/systemd/system/BT_AW859A.service", "/etc/systemd/system/multi-user.target.wants/BT_AW859A.service"]
+            ["/etc/systemd/system/BT_AW859A.service", "/etc/systemd/system/multi-user.target.wants/BT_AW859A.service"],
+            ["/etc/systemd/system/reload_panfrost.service", "/etc/systemd/system/multi-user.target.wants/reload_panfrost.service"]
         ],
         "items": items
     })
