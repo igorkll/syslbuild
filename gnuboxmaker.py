@@ -1039,7 +1039,12 @@ def setup_build_base(builditems, cmdline):
         ["/usr/lib/firmware", RIGHTS_755],
 
         ["/usr/local", RIGHTS_755],
-        ["/usr/local/sbin", RIGHTS_755]
+        ["/usr/local/sbin", RIGHTS_755],
+        ["/usr/local/bin", RIGHTS_755],
+
+        ["/etc", RIGHTS_755],
+        ["/etc/systemd", RIGHTS_755],
+        ["/etc/systemd/system", RIGHTS_755],
     ]
 
     items = [
