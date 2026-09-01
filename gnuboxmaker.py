@@ -31,7 +31,9 @@ splash_mode_variants = ["center", "fill", "contain", "cover"]
 boot_sound_variants = ["none", "init", "logo"]
 
 QUIET_AGETTY = "--noreset --nohostname --nohints --nonewline --noclear --skip-login --noissue"
-RIGHTS_644_755 = [[0, 0, "0644"], [0, 0, "0755"]]
+RIGHTS_644 = [0, 0, "0644"]
+RIGHTS_755 = [0, 0, "0755"]
+RIGHTS_644_755 = [RIGHTS_644, RIGHTS_755]
 
 default_debian_suite = "trixie"
 default_debian_snapshot = "http://snapshot.debian.org/archive/debian/20260217T143331Z"
@@ -907,18 +909,18 @@ def setup_write_bins(builditems):
     embedded_plymouth_base_path = "embedded-plymouth/release-binary/debian-bookworm-plymouth-22.02.122-patched"
 
     directories = [
-        ["/usr", [0, 0, "0755"]]
+        ["/usr", RIGHTS_755]
     ]
 
     # ---------------------- x86_64
 
     items = [
         ["kernel_image/amd64/kernel_modules", "/usr", RIGHTS_644_755],
-        ["kernel_image/amd64/kernel.img", "/kernel.img", [0, 0, "0644"]]
+        ["kernel_image/amd64/kernel.img", "/kernel.img", RIGHTS_644]
     ]
 
     if current_project.boot_splash and current_project.plymouth_disable_esc_button:
-        items.append([f"{embedded_plymouth_base_path}/x86_64", "/", [0, 0, "0755"]])
+        items.append([f"{embedded_plymouth_base_path}/x86_64", "/", RIGHTS_755])
 
     builditems.append({
         "architectures": ["amd64"],
@@ -934,11 +936,11 @@ def setup_write_bins(builditems):
     # ---------------------- x86
     items = [
         ["kernel_image/i386/kernel_modules", "/usr", RIGHTS_644_755],
-        ["kernel_image/i386/kernel.img", "/kernel.img", [0, 0, "0644"]]
+        ["kernel_image/i386/kernel.img", "/kernel.img", RIGHTS_644]
     ]
 
     if current_project.boot_splash and current_project.plymouth_disable_esc_button:
-        items.append([f"{embedded_plymouth_base_path}/x86", "/", [0, 0, "0755"]])
+        items.append([f"{embedded_plymouth_base_path}/x86", "/", RIGHTS_755])
 
     builditems.append({
         "architectures": ["i386"],
@@ -955,7 +957,7 @@ def setup_write_bins(builditems):
     items = []
 
     if current_project.boot_splash and current_project.plymouth_disable_esc_button:
-        items.append([f"{embedded_plymouth_base_path}/arm64", "/", [0, 0, "0755"]])
+        items.append([f"{embedded_plymouth_base_path}/arm64", "/", RIGHTS_755])
 
     builditems.append({
         "architectures": ["arm64"],
@@ -972,7 +974,7 @@ def setup_write_bins(builditems):
     items = []
 
     if current_project.boot_splash and current_project.plymouth_disable_esc_button:
-        items.append([f"{embedded_plymouth_base_path}/armhf", "/", [0, 0, "0755"]])
+        items.append([f"{embedded_plymouth_base_path}/armhf", "/", RIGHTS_755])
 
     builditems.append({
         "architectures": ["armhf"],
@@ -989,7 +991,7 @@ def setup_write_bins(builditems):
     items = []
 
     if current_project.boot_splash and current_project.plymouth_disable_esc_button:
-        items.append([f"{embedded_plymouth_base_path}/armel", "/", [0, 0, "0755"]])
+        items.append([f"{embedded_plymouth_base_path}/armel", "/", RIGHTS_755])
 
     builditems.append({
         "architectures": ["armel"],
@@ -1009,14 +1011,14 @@ def getWaitFbStr(afterModules):
 
 def rebranding(delete, directories, items):
     if current_project.rebranding_enabled:
-        items.append([current_project.rebranding_issue, "/etc/issue", [0, 0, "0644"], True])
-        items.append([current_project.rebranding_issue_net, "/etc/issue.net", [0, 0, "0644"], True])
-        items.append([current_project.rebranding_motd, "/usr/share/base-files/motd", [0, 0, "0644"], True])
-        items.append([current_project.rebranding_motd, "/etc/motd", [0, 0, "0644"], True])
+        items.append([current_project.rebranding_issue, "/etc/issue", RIGHTS_644, True])
+        items.append([current_project.rebranding_issue_net, "/etc/issue.net", RIGHTS_644, True])
+        items.append([current_project.rebranding_motd, "/usr/share/base-files/motd", RIGHTS_644, True])
+        items.append([current_project.rebranding_motd, "/etc/motd", RIGHTS_644, True])
 
         items.append([f"""NAME="{current_project.rebranding_os_release_name}"
 ID="{current_project.rebranding_os_release_id}"
-""", "/usr/lib/os-release", [0, 0, "0644"], True])
+""", "/usr/lib/os-release", RIGHTS_644, True])
 
         if current_project.rebranding_remove_debian_logos:
             delete.append("/usr/share/pixmaps/debian-logo.png")
@@ -1027,17 +1029,17 @@ def setup_build_base(builditems, cmdline):
     setup_write_files()
 
     directories = [
-        ["/bootmnt", [0, 0, "0755"]],
+        ["/bootmnt", RIGHTS_755],
 
-        ["/gnubox", [0, 0, "0755"]],
-        ["/gnubox/user_initramfs", [0, 0, "0755"]],
+        ["/gnubox", RIGHTS_755],
+        ["/gnubox/user_initramfs", RIGHTS_755],
 
-        ["/usr", [0, 0, "0755"]],
-        ["/usr/lib", [0, 0, "0755"]],
-        ["/usr/lib/firmware", [0, 0, "0755"]],
+        ["/usr", RIGHTS_755],
+        ["/usr/lib", RIGHTS_755],
+        ["/usr/lib/firmware", RIGHTS_755],
 
-        ["/usr/local", [0, 0, "0755"]],
-        ["/usr/local/sbin", [0, 0, "0755"]]
+        ["/usr/local", RIGHTS_755],
+        ["/usr/local/sbin", RIGHTS_755]
     ]
 
     items = [
@@ -1048,37 +1050,37 @@ def setup_build_base(builditems, cmdline):
         ["files/etc_config", "/etc", RIGHTS_644_755],
         ["files/systemd_config", "/etc/systemd", RIGHTS_644_755],
 
-        ["files/runshell.sh", "/gnubox/runshell.sh", [0, 0, "0755"]],
-        ["files/runshell_launcher.sh", "/gnubox/runshell_launcher.sh", [0, 0, "0755"]],
-        ["files/preinit.sh", "/gnubox/preinit.sh", [0, 0, "0755"]],
-        ["files/system_preinit.sh", "/gnubox/system_preinit.sh", [0, 0, "0755"]],
+        ["files/runshell.sh", "/gnubox/runshell.sh", RIGHTS_755],
+        ["files/runshell_launcher.sh", "/gnubox/runshell_launcher.sh", RIGHTS_755],
+        ["files/preinit.sh", "/gnubox/preinit.sh", RIGHTS_755],
+        ["files/system_preinit.sh", "/gnubox/system_preinit.sh", RIGHTS_755],
 
-        ["custom-debian-initramfs-init/custom_init.sh", "/usr/share/initramfs-tools/init", [0, 0, "0755"]],
-        ["custom-debian-initramfs-init/custom_init_hook.sh", "/etc/initramfs-tools/hooks/custom_init_hook.sh", [0, 0, "0755"]],
-        ["files/system_init_hook.sh", "/etc/initramfs-tools/hooks/system_init_hook.sh", [0, 0, "0755"]],
+        ["custom-debian-initramfs-init/custom_init.sh", "/usr/share/initramfs-tools/init", RIGHTS_755],
+        ["custom-debian-initramfs-init/custom_init_hook.sh", "/etc/initramfs-tools/hooks/custom_init_hook.sh", RIGHTS_755],
+        ["files/system_init_hook.sh", "/etc/initramfs-tools/hooks/system_init_hook.sh", RIGHTS_755],
 
-        ["files/user_files", "/", [0, 0, "0755"]],
-        ["files/user_initramfs", "/gnubox/user_initramfs", [0, 0, "0755"]],
+        ["files/user_files", "/", RIGHTS_755],
+        ["files/user_initramfs", "/gnubox/user_initramfs", RIGHTS_755],
     ]
 
     if current_project.allow_updatescript and current_project.separate_data_partition:
-        items.append(["files/self_update.sh", "/usr/local/sbin/self_update", [0, 0, "0755"]])
-        items.append(["files/updatescript.sh", "/gnubox/updatescript.sh", [0, 0, "0755"]])
+        items.append(["files/self_update.sh", "/usr/local/sbin/self_update", RIGHTS_755])
+        items.append(["files/updatescript.sh", "/gnubox/updatescript.sh", RIGHTS_755])
 
     if current_project.boot_sound == "init" or (current_project.boot_sound == "logo" and current_project.boot_splash):
-        items.append(["files/startup.wav", "/gnubox/startup.wav", [0, 0, "0644"]])
+        items.append(["files/startup.wav", "/gnubox/startup.wav", RIGHTS_644])
 
     if current_project.integrate_liamounts:
-        items.append(["liamounts", "/liamounts", [0, 0, "0755"]])
+        items.append(["liamounts", "/liamounts", RIGHTS_755])
 
     if current_project.integrate_super_kiosk_browser:
-        directories.append(["/gnubox/super_kiosk_browser", [0, 0, "0755"]])
-        items.append(["super-kiosk-browser-target", "/gnubox/super_kiosk_browser", [0, 0, "0755"]])
+        directories.append(["/gnubox/super_kiosk_browser", RIGHTS_755])
+        items.append(["super-kiosk-browser-target", "/gnubox/super_kiosk_browser", RIGHTS_755])
 
     if current_project.session_mode == "wayland":
-        items.append(["files/run_session_wayland.sh", "/gnubox/run_session.sh", [0, 0, "0755"]])
+        items.append(["files/run_session_wayland.sh", "/gnubox/run_session.sh", RIGHTS_755])
     elif current_project.session_mode == "x11":
-        items.append(["files/run_session_x11.sh", "/gnubox/run_session.sh", [0, 0, "0755"]])
+        items.append(["files/run_session_x11.sh", "/gnubox/run_session.sh", RIGHTS_755])
     elif current_project.session_mode == "tty":
         directories.append(["/gnubox/.session_mode_tty", [0, 0, "0000"]])
     
@@ -1089,14 +1091,14 @@ def setup_build_base(builditems, cmdline):
             directories.append(["/gnubox/.enable_cursor", [0, 0, "0000"]])
 
     if current_project.boot_splash:
-        directories.append(["/usr/share/plymouth/themes/bootlogo", [0, 0, "0755"]])
-        directories.append(["/var/lib/plymouth", [0, 0, "0755"]])
-        directories.append(["/var/spool/plymouth", [0, 0, "0755"]])
-        directories.append(["/run/plymouth", [0, 0, "0755"]])
-        items.append(["files/bootlogo", "/usr/share/plymouth/themes/bootlogo", [0, 0, "0644"]])
+        directories.append(["/usr/share/plymouth/themes/bootlogo", RIGHTS_755])
+        directories.append(["/var/lib/plymouth", RIGHTS_755])
+        directories.append(["/var/spool/plymouth", RIGHTS_755])
+        directories.append(["/run/plymouth", RIGHTS_755])
+        items.append(["files/bootlogo", "/usr/share/plymouth/themes/bootlogo", RIGHTS_644])
 
     if current_project.separate_data_partition:
-        directories.append(["/data", [0, 0, "0755"]])
+        directories.append(["/data", RIGHTS_755])
 
     setup_write_bins(builditems)
     items.append(["rootfs directory overlay", "/"])

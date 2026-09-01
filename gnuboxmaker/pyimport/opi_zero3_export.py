@@ -14,9 +14,8 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
 
     items = [
         ["rootfs directory", "."],
-
-        ["sprdwl_ng", "/etc/modules-load.d/sprdwl_ng.conf", [0, 0, "0644"], True],
-
+        ["blobs/hciattach_opi", "/usr/local/bin/hciattach_opi", RIGHTS_755],
+        ["uwe5622_bsp_sdio\nsprdwl_ng\nsprdbt_tty", "/etc/modules-load.d/uwe5622.conf", RIGHTS_644, True],
         ["kernel_image/arm64/sunxi/kernel_modules", "/usr", RIGHTS_644_755]
     ]
 
@@ -24,8 +23,8 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         items.append(["armbian_firmware", "/usr/lib/firmware", RIGHTS_644_755])
 
     if __main__.current_project.platform_opi_zero3_hdmi_audio_high_priority:
-        conf = "&" + os.path.join(gnuboxmaker_dir, "opi_zero3_hdmi_audio_high_priority.conf")
-        items.append([conf, "/etc/wireplumber/wireplumber.conf.d/hdmi-audio-priority.conf", [0, 0, "0644"]])
+        conf = get_gnuboxmaker_dirpath("opi_zero3_hdmi_audio_high_priority.conf")
+        items.append([conf, "/etc/wireplumber/wireplumber.conf.d/hdmi-audio-priority.conf", RIGHTS_644])
 
     builditems.append({
         "architectures": ["arm64"],
@@ -64,7 +63,7 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         "singleboardType": "uboot-offset",
 
         "extlinux_path": "start.conf",
-        "uboot_script": "&" + os.path.join(gnuboxmaker_dir, "uboot_bootscript.cmd"),
+        "uboot_script": get_gnuboxmaker_dirpath("uboot_bootscript.cmd"),
 
         # "bootloader": "blobs/u-boot-sunxi-with-spl.bin",
         "bootloader": "blobs/u-boot-sunxi-with-spl-armbian.bin",
