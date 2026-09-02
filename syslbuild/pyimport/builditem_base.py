@@ -15,8 +15,7 @@ def getDebianKernelName(kernelType):
     elif kernelType == "realtime":
         kernelName += "rt-"
     else:
-        buildLog(f"ERROR: unknown kernel type: {kernelType}")
-        sys.exit(1)
+        buildError(f"unknown kernel type: {kernelType}")
 
     kernelName += debianKernelArchitectureAliases.get(__main__.architecture, __main__.architecture)
 
@@ -483,8 +482,7 @@ def findDirectory(item):
 
     dirpath = findItem(item["source"])
     if not os.path.isdir(dirpath):
-        buildLog(f"ERROR: item \"{dirpath}\" is not a directory")
-        sys.exit(1)
+        buildError(f"item \"{dirpath}\" is not a directory")
     return dirpath
 
 def buildTar(item):
@@ -573,8 +571,7 @@ def getGrubTarget(item, efi):
         target = defaultGrubTargets_bios.get(__main__.architecture)
 
     if target is None:
-        buildLog(f"ERROR: unknown grub target for {__main__.architecture} ({'efi' if efi else 'bios'})")
-        sys.exit(1)
+        buildError(f"unknown grub target for {__main__.architecture} ({'efi' if efi else 'bios'})")
 
     return target
 
@@ -656,8 +653,7 @@ def installBootloader(item, path, partitionsOffsets, sectorsize):
                 "oflag=seek_bytes"
             ])
     else:
-        buildLog("ERROR: unknown bootloader type")
-        sys.exit(1)
+        buildError("unknown bootloader type")
 
 def buildFullDiskImage(item):
     # allocate file
@@ -898,19 +894,17 @@ def auto_patch_dt_makefile(git_work_dir: str, dt_rel_dir: str, config_var: str, 
     makefile_path = dts_dir / "Makefile"
 
     if not dts_dir.is_dir():
-        buildLog(f"ERROR: Directory not found: {dts_dir}")
-        sys.exit(1)
+        buildError(f"Directory not found: {dts_dir}")
 
     # 2. Находим все .dts файлы (только в самой директории, не рекурсивно)
     dts_files = sorted([f.name for f in dts_dir.glob("*.dts") if f.is_file()])
     if not dts_files:
-        buildLog(f"WARNING: No .dts files found in {dts_dir}")
+        buildWarning(f"No .dts files found in {dts_dir}")
         return True  # Не ошибка, просто нет файлов
 
     # 3. Читаем текущий Makefile, если он существует
     if not makefile_path.exists():
-        buildLog(f"ERROR: Makefile not found: {makefile_path}")
-        sys.exit(1)
+        buildError(f"Makefile not found: {makefile_path}")
 
     with open(makefile_path, 'r') as f:
         lines = f.readlines()
@@ -1217,8 +1211,7 @@ def buildKernel(item):
     elif "kernel_source_git" in item:
         downloaded_kernel_sources = downloadKernelFromGit(item)
     else:
-        buildLog("ERROR: it is impossible to build a kernel without specifying the source code download source")
-        sys.exit(1)
+        buildError("it is impossible to build a kernel without specifying the source code download source")
 
     kernel_sources, out_of_tree_dir, realCopied = copyKernel(item, downloaded_kernel_sources)
 
@@ -1301,16 +1294,14 @@ def buildKernel(item):
         if os.path.isfile(fallback):
             kernel_output_file = fallback
         else:
-            buildLog(f"ERROR: failed to find \"{kernel_output_filename}\" kernel output file")
-            sys.exit(1)
+            buildError(f"failed to find \"{kernel_output_filename}\" kernel output file")
     
     # -------------------------------------------------------------
 
     if os.path.isfile(kernel_output_file):
         copyItemFiles(kernel_output_file, getItemPath(item), None, True, True)
     else:
-        buildLog(f"ERROR: failed to find \"{kernel_output_filename}\" kernel output file")
-        sys.exit(1)
+        buildError(f"failed to find \"{kernel_output_filename}\" kernel output file")
 
     if "modules_name" in item:
         buildLog(f"exporting modules...")
@@ -1416,7 +1407,7 @@ def rawCrossChroot(chrootDirectory, chrootCommand, useSystemd=False, manualValid
     usr_bin_dir = pathConcat(chrootDirectory, "usr/bin")
 
     if boolCopyQemuStatic and not os.path.isfile(qemuStaticHostPath):
-        buildLog(f"WARNING: there is no suitable version of qemu-static ({qemuStaticName}) in the host system. we are trying without it")
+        buildWarning(f"there is no suitable version of qemu-static ({qemuStaticName}) in the host system. we are trying without it")
         boolCopyQemuStatic = False
 
     if boolCopyQemuStatic:
@@ -1611,8 +1602,7 @@ def smartChroot(item):
         if rawCrossChroot(itemPath, ["/.syslbuild-smart-chroot.sh"], use_systemd_container, manual_validation, item):
             buildExecute("reset")
         else:
-            buildLog(f"ERROR: with \"manual_validation\" enabled, the chroot script \"{scriptPath}\" did not create a file or directory on the path \"/.chrootend\"")
-            sys.exit(1)
+            buildError(f"with \"manual_validation\" enabled, the chroot script \"{scriptPath}\" did not create a file or directory on the path \"/.chrootend\"")
 
         os.remove(chroot_script_path)
 

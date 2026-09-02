@@ -102,8 +102,7 @@ def _pathConcat(path1, path2):
     abs_path1 = os.path.abspath(path1)
     abs_full = os.path.abspath(full_path)
     if not abs_full.startswith(abs_path1):
-        buildLog(f"ERROR: building outside the sandbox: {path1} | {path2}")
-        sys.exit(1)
+        buildError(f"building outside the sandbox: {path1} | {path2}")
 
     return full_path
 
@@ -184,8 +183,7 @@ def calcSize(sizeLitteral, folderOrFilelist=None):
     number, unit = splitNumberUnit(sizeLitteral)
 
     if not unit in SIZE_UNITS:
-        buildLog(f"ERROR: unknown size unit: {unit}")
-        sys.exit(1)
+        buildError(f"unknown size unit: {unit}")
 
     return math.ceil(number * SIZE_UNITS[unit])
 
@@ -287,14 +285,12 @@ def resolveItemName(itemName):
         if previous_builditem:
             return previous_builditem["name"]
         else:
-            buildLog(f"ERROR: you can't use @previous in the first builditem.")
-            sys.exit(1)
+            buildError(f"you can't use @previous in the first builditem.")
     elif itemName == "@marker":
         if marker_builditem:
             return marker_builditem["name"]
         else:
-            buildLog(f"ERROR: you can't use @marker before \"marker: true\" element")
-            sys.exit(1)
+            buildError(f"you can't use @marker before \"marker: true\" element")
 
     return itemName
 
@@ -324,8 +320,7 @@ def findItem(itemName):
     if os.path.exists(path):
         return path
 
-    buildLog(f"ERROR: failed to find item: {itemName}")
-    sys.exit(1)
+    buildError(f"failed to find item: {itemName}")
 
 def buildExecute(cmd, checkValid=True, input_data=None, cwd=None, envmod=None):
     if cwd is not None:
@@ -367,8 +362,7 @@ def buildExecute(cmd, checkValid=True, input_data=None, cwd=None, envmod=None):
     returncode = process.wait()
 
     if returncode != 0 and checkValid:
-        buildLog("ERROR: failed to build")
-        sys.exit(1)
+        buildError("failed to build")
 
     return "\n".join(output_lines)
 
@@ -405,8 +399,7 @@ def buildRawExecute(cmd, checkValid=True, cwd=None, envmod=None):
     returncode = process.wait()
 
     if returncode != 0 and checkValid:
-        buildLog("ERROR: failed to build")
-        sys.exit(1)
+        buildError("failed to build")
 
     return "\n".join(output_lines)
 
@@ -436,8 +429,7 @@ def buildRawExecuteLiveOutput(cmd, checkValid=True, cwd=None, envmod=None):
     returncode = process.wait()
 
     if returncode != 0 and checkValid:
-        buildLog("ERROR: failed to build")
-        sys.exit(1)
+        buildError("failed to build")
 
 def doCommands(cwd, commands=None):
     if commands:
@@ -535,8 +527,7 @@ def umountFilesystem(mount_path):
 # -------------------------------------------------- builditems
 
 def buildUnknown(item):
-    buildLog(f"ERROR: unknown build item type: {item['type']}")
-    sys.exit(1)
+    buildError(f"unknown build item type: {item['type']}")
 
 buildActions = {}
 
@@ -621,8 +612,7 @@ def getDependenciesFieldChecksum(fieldValue, filesOnly=False, target=None, field
 
         return dictChecksum(checkDict)
     else:
-        buildLog("ERROR: failed to get dependencies checksum")
-        sys.exit(1)
+        buildError("failed to get dependencies checksum")
 
 def rawGetDependencies(item, items_and_files_fields=None, files_only_fields=None, target=None):
     dependencies = []
@@ -871,8 +861,7 @@ def prepairBuildItems(builditems):
     for builditem in builditems:
         if builditem.get("fork", False):
             if forkbase is None:
-                buildLog(f"ERROR: an attempt to fork without a single forkbase before that")
-                sys.exit(1)
+                buildError(f"an attempt to fork without a single forkbase before that")
             
             forkCombine(builditem, forkbase, builditem.get("forkArraysCombine", False), forkKeysBlacklist, ["deleteBuildItemKeys"])
         
@@ -911,20 +900,16 @@ def buildProject(json_path):
     buildLog("Item list:")
     for item in builditems:
         if "name" not in item:
-            buildLog(f"ERROR: builditem without a name")
-            sys.exit(1)
+            buildError(f"builditem without a name")
         elif "type" not in item:
-            buildLog(f"ERROR: builditem without a type")
-            sys.exit(1)
+            buildError(f"builditem without a type")
         elif item["name"].startswith("@"):
-            buildLog(f"ERROR: the builditem name cannot start with the @ character, as this is reserved for virtual builditems")
-            sys.exit(1)
+            buildError(f"the builditem name cannot start with the @ character, as this is reserved for virtual builditems")
         elif item["name"] not in namesExists:
             buildItemLog(item)
             namesExists.append(item["name"])
         else:
-            buildLog(f"ERROR: more than one builditem named {item['name']}")
-            sys.exit(1)
+            buildError(f"more than one builditem named {item['name']}")
     buildLog(";")
     
     exported = buildItems(builditems)
@@ -1042,14 +1027,13 @@ if __name__ == "__main__":
     buildLog(";")
 
     if has_cwd_non_ascii_or_spaces():
-        buildLog(f"WARNING: there are non-ascii or spaces characters in the path to the working directory. THIS MAY CAUSE BUILD PROBLEMS!")
+        buildWarning(f"there are non-ascii or spaces characters in the path to the working directory. THIS MAY CAUSE BUILD PROBLEMS!")
 
     with open(args.json_path, "r", encoding="utf-8") as f:
         projectData = json5.load(f)
         showProjectInfo(projectData)
         if not version.checkVersion(projectData):
-            buildLog(f"ERROR: the project requires at least the syslbuild {version.formatVersion(projectData['min-syslbuild-version'])} version. you have {version.formatVersion(version.VERSION)} installed")
-            sys.exit(1)
+            buildError(f"the project requires at least the syslbuild {version.formatVersion(projectData['min-syslbuild-version'])} version. you have {version.formatVersion(version.VERSION)} installed")
 
         if architecture == "ALL":
             if "architectures" in projectData:

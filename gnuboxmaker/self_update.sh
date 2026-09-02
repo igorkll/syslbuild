@@ -18,7 +18,7 @@ fi
 BOOTIMAGE="$1"
 
 if [ ! -f "$BOOTIMAGE" ]; then
-    echo "Error: File not found $BOOTIMAGE"
+    echo "File not found $BOOTIMAGE"
     exit 1
 fi
 
