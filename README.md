@@ -701,6 +701,12 @@ these changes to the kernel config are applied automatically when building the k
                 // if we assume that directories 3 and 4 do not exist, then they will be created, but NOT WITH RIGHTS 644 (as one might think)
                 // but with rights 700! since when creating directories in a chain, the rights of all directories in the chain (except the last element) are set as 700
                 ["any file", "/1/2/3/4/file", [0, 0, "0644"]],
+
+                // in this example, let's assume there was no /merge directory. this means that it will be created as a chain and will receive the rights [0, 0, 700]
+                // also note that the rights to directories are not overwritten. this means that if there is a directory "merge access rights 1/testdir" and "merge access rights 2/testdir" with different access rights, then the access rights will be taken from "merge access rights 1/testdir"
+                // with files, the opposite is true. the rights are being overwritten and will be taken from the last overwritten file. suppose if there is a file "merge access rights 1/file" and "merge access rights 2/file", then the access rights will be taken from "merge access rights 2/file"
+                ["merge access rights 1", "/merge"],
+                ["merge access rights 2", "/merge"]
             ],
 
             "move_after_items": [
