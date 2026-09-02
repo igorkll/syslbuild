@@ -153,6 +153,9 @@ def makeAllFilesExecutable(path):
 def recursionDeleleSymlinks(directoryPath):
     buildRawExecute("find . -type l -exec rm -f {} +", True, directoryPath)
 
+def moveAccessRules(fromPath, toPath, ):
+
+
 def copyItemFiles(fromPath, toPath, changeRights=None, allowSymlinks=True, copySymlinksAsFiles=False, overrideRightsForExistingDirectories=False):
     rsync_arg = "-a"
     if copySymlinksAsFiles:
@@ -177,7 +180,9 @@ def copyItemFiles(fromPath, toPath, changeRights=None, allowSymlinks=True, copyS
             buildExecute(["rsync", rsync_arg, "--no-perms", "--no-owner", "--no-group", "--keep-dirlinks", copypath + "/.", toPath])
         else:
             # всегда копирует симлинки как симлинки
-            buildExecute(["cp", "-a", copypath + "/.", toPath])
+            buildExecute(["cp", "-a", "--no-preserve=mode,ownership", copypath + "/.", toPath])
+
+        moveAccessRules(copypath, toPath)
     else:
         # this is necessary to correctly overwrite the symlink that links to a working file in the host system.
         deleteAny(toPath)
