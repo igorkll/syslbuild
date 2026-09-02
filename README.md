@@ -684,6 +684,15 @@ these changes to the kernel config are applied automatically when building the k
                 ["downloaded file", "/home/test.mp3", [0, 0, "0755"]],
                 ["userfile.txt", "/home/userfile.txt", [0, 0, "0755"]], //file from the project folder
                 ["other directory with non-executable files", ".", [[0, 0, "0644"], [0, 0, "0755"]]] //you can specify permissions first for files and then for directories.
+
+                // please note that all access rights will be transferred this way. however, the access rights to the root directory will not be transferred because when copying an item, the rights to the target directory (in this case, "/") will not be transferred.
+                // if you want to set rights to the root directory other than the standard ones, see the method below.
+                ["debian directory", "."],
+
+                // if we assume that directories 1 and 2 already exist, they will retain their access rights and will not be touched.
+                // if we assume that directories 3 and 4 do not exist, then they will be created, but NOT WITH RIGHTS 644 (as one might think)
+                // but with rights 700! since when creating directories in a chain, the rights of all directories in the chain (except the last element) are set as 700
+                ["any file", "/1/2/3/4/file", [0, 0, "0644"]],
             ],
 
             "move_after_items": [
@@ -697,11 +706,15 @@ these changes to the kernel config are applied automatically when building the k
             "chmod": [
                 // allows you to change access rights in the filesystem
                 // first, specify the path to the object, then the new access rights (symbolic entry option is supported) and then a recursion flag if needed
-                ["/home/MY EMPTY DIR", "1777", false] //let's say I want it to be a shared folder
+                ["/home/MY EMPTY DIR", "1777", false], //let's say I want it to be a shared folder
+
+                // you can change the access rights to the root directory.
+                ["/", "0755", false]
             ],
 
             "chown": [
-                ["/home/MY EMPTY DIR", 0, 0, false]
+                // you can change the owner/group to the root directory
+                ["/", 0, 0, false]
             ],
 
             "delete": [
