@@ -31,7 +31,6 @@ sys.path.insert(0, os.path.join(syslbuild_path))
 print("syslbuild path: ", syslbuild_path)
 
 import version
-import funcs
 
 # ---------------------------------------
 
@@ -139,7 +138,7 @@ def buildWarning(logstr):
 
 def buildError(logstr):
     buildLog(f"ERROR: {logstr}")
-    os.exit(1)
+    sys.exit(1)
 
 def getSize(path):
     if os.path.isfile(path):
@@ -972,6 +971,7 @@ def start_build_in_chroot(json_path, all_args, nspawn_mode=False):
         subprocess.run(cmdstr, shell=True)
         exit(0)
 
+import funcs
 import builditem_base
 
 if __name__ == "__main__":

@@ -169,14 +169,14 @@ def grubIsoImage(item):
     funcs.makedirsChangeRights(grubDirectory)
 
     if "kernel" in item:
-        copyItemFiles(findItem(item["kernel"]), pathConcat(bootDirectory, "vmlinuz"), DEFAULT_RIGHTS_0700)
+        funcs.copyItemFiles(findItem(item["kernel"]), pathConcat(bootDirectory, "vmlinuz"), DEFAULT_RIGHTS_0700)
 
     if "initramfs" in item:
-        copyItemFiles(findItem(item["initramfs"]), pathConcat(bootDirectory, "initrd.img"), DEFAULT_RIGHTS_0700)
+        funcs.copyItemFiles(findItem(item["initramfs"]), pathConcat(bootDirectory, "initrd.img"), DEFAULT_RIGHTS_0700)
 
     grub_cfg_path = pathConcat(grubDirectory, "grub.cfg")
     if "config" in item:
-        copyItemFiles(findItem(item["config"]), grub_cfg_path, DEFAULT_RIGHTS_0700)
+        funcs.copyItemFiles(findItem(item["config"]), grub_cfg_path, DEFAULT_RIGHTS_0700)
     else:
         with open(grub_cfg_path, "w") as f:
             if "kernel" in item:
@@ -327,7 +327,7 @@ def rawItemsProcess(items, itemsDirectory):
         if writeRaw:
             writeRawItem(rawItem, outputPath, changeRights)
         else:
-            copyItemFiles(itemPath, outputPath, changeRights)
+            funcs.copyItemFiles(itemPath, outputPath, changeRights)
 
 def handlelink(topdir, filep, subdir):
     link = os.readlink(filep)
@@ -463,7 +463,7 @@ def buildFilesystem(item):
         mountFilesystem(fs_path, __main__.path_mount)
 
         if fs_files:
-            copyItemFiles(fs_files, __main__.path_mount)
+            funcs.copyItemFiles(fs_files, __main__.path_mount)
 
         if "chmod" in item:
             makeChmod(__main__.path_mount, item["chmod"])
@@ -572,7 +572,7 @@ def installBootloader(item, path, partitionsOffsets, sectorsize):
 
         if "config" in bootloaderInfo:
             funcs.makedirsChangeRights(pathConcat(bootDirectory, "grub"))
-            copyItemFiles(findItem(bootloaderInfo["config"]), pathConcat(bootDirectory, "grub", "grub.cfg"), DEFAULT_RIGHTS_0700)
+            funcs.copyItemFiles(findItem(bootloaderInfo["config"]), pathConcat(bootDirectory, "grub", "grub.cfg"), DEFAULT_RIGHTS_0700)
 
         umountFilesystem(__main__.path_mount)
 
@@ -654,9 +654,9 @@ def buildFromDirectory(item):
     source = findDirectory(item)
     sourcePath = pathConcat(source, item["path"])
     if item.get("save_rights", False):
-        copyItemFiles(sourcePath, path)
+        funcs.copyItemFiles(sourcePath, path)
     else:
-        copyItemFiles(sourcePath, path, DEFAULT_RIGHTS_0755)
+        funcs.copyItemFiles(sourcePath, path, DEFAULT_RIGHTS_0755)
 
 gccNames = {
     "amd64": "x86_64-linux-gnu",
@@ -814,7 +814,7 @@ def copyKernel(item, kernel_sources):
         deleteDirectory(out_of_tree_dir)
         os.makedirs(out_of_tree_dir, exist_ok=True)
 
-        copyItemFiles(kernel_sources, copied_kernel_files)
+        funcs.copyItemFiles(kernel_sources, copied_kernel_files)
         with open(copied_kernel_files_flag, "w") as f:
             pass
         return copied_kernel_files, out_of_tree_dir, True
@@ -1147,7 +1147,7 @@ def modifyKernelConfig(item, kernel_sources, ARCH_STR, CROSS_COMPILE_STR, build_
 def additionalExportProcess(export_from, additional_export_list):
     for additional_export_item in additional_export_list:
         object_path = pathConcat(export_from, additional_export_item[0])
-        copyItemFiles(object_path, getCustomItemPath(additional_export_item[1], additional_export_item[2]), None, True, True)
+        funcs.copyItemFiles(object_path, getCustomItemPath(additional_export_item[1], additional_export_item[2]), None, True, True)
 
 def buildKernel(item):
     if "kernel_source_url" in item:
@@ -1216,7 +1216,7 @@ def buildKernel(item):
 
     if "kernel_config" in item:
         buildLog(f"Copy kernel config to: {kernel_config_path}")
-        copyItemFiles(findItem(item["kernel_config"]), kernel_config_path)
+        funcs.copyItemFiles(findItem(item["kernel_config"]), kernel_config_path)
 
     modifyKernelConfig(item, kernel_sources, ARCH_STR, CROSS_COMPILE_STR, build_output_dir)
     buildExecute(make_cmd([ARCH_STR, CROSS_COMPILE_STR, "modules_prepare"]), True, None, kernel_sources)
@@ -1224,7 +1224,7 @@ def buildKernel(item):
     if "result_config_name" in item:
         buildLog(f"exporting result kernel config...")
         export_path = getItemPath(item, "result_config_name", "result_config_export")
-        copyItemFiles(kernel_config_path, export_path, None, True, True)
+        funcs.copyItemFiles(kernel_config_path, export_path, None, True, True)
 
     additional_make_str = ""
     if "additional_make_str" in item:
@@ -1246,7 +1246,7 @@ def buildKernel(item):
     # -------------------------------------------------------------
 
     if os.path.isfile(kernel_output_file):
-        copyItemFiles(kernel_output_file, getItemPath(item), None, True, True)
+        funcs.copyItemFiles(kernel_output_file, getItemPath(item), None, True, True)
     else:
         buildError(f"failed to find \"{kernel_output_filename}\" kernel output file")
 
@@ -1391,7 +1391,7 @@ def rawCrossChroot(chrootDirectory, chrootCommand, useSystemd=False, manualValid
                 old_path = pathConcat(chrootDirectory, localpath)
                 new_path = pathConcat(chrootDirectory, localpath + "_")
                 buildLog(f"fix_systemd_container_host_files_copy (start): {old_path} > {new_path}")
-                copyItemFiles(old_path, new_path)
+                funcs.copyItemFiles(old_path, new_path)
 
         machineName = "smartchroot"
         buildRawExecute(f"""machinectl terminate {machineName}
@@ -1418,7 +1418,7 @@ wait $CONTAINER_PID""", checkValid)
                 new_path = pathConcat(chrootDirectory, localpath)
                 buildLog(f"fix_systemd_container_host_files_copy (end): {old_path} > {new_path}")
                 deleteAny(new_path)
-                copyItemFiles(old_path, new_path)
+                funcs.copyItemFiles(old_path, new_path)
                 deleteAny(old_path)
 
         time.sleep(60)
@@ -1489,12 +1489,12 @@ def getKernelVersion(item, rootfsPath):
 
 def debianUpdateInitramfs(item):
     itemPath = getItemFolder(item)
-    copyItemFiles(findItem(item["source"]), itemPath)
+    funcs.copyItemFiles(findItem(item["source"]), itemPath)
     rawUpdateInitramfs(itemPath, getKernelVersion(item, itemPath), item)
 
 def debianExportInitramfs(item):
     tempRootfs = getTempFolder("export_initramfs_rootfs")
-    copyItemFiles(findItem(item["source"]), tempRootfs)
+    funcs.copyItemFiles(findItem(item["source"]), tempRootfs)
 
     kernel_version = getKernelVersion(item, tempRootfs)
 
@@ -1505,7 +1505,7 @@ def debianExportInitramfs(item):
         if not os.path.isdir(bootDirectoryPath):
             os.makedirs(bootDirectoryPath)
 
-        copyItemFiles(findItem(item["kernel_config"]), newKernelConfigPath, DEFAULT_RIGHTS_0755)
+        funcs.copyItemFiles(findItem(item["kernel_config"]), newKernelConfigPath, DEFAULT_RIGHTS_0755)
 
     rawUpdateInitramfs(tempRootfs, kernel_version, item)
 
@@ -1522,13 +1522,13 @@ def debianExportInitramfs(item):
     exportInitramfsPath = getItemPath(item)
     for initramfsPath in initramfsPaths:
         if os.path.isfile(initramfsPath):
-            copyItemFiles(initramfsPath, exportInitramfsPath, DEFAULT_RIGHTS_0755, True, True)
+            funcs.copyItemFiles(initramfsPath, exportInitramfsPath, DEFAULT_RIGHTS_0755, True, True)
             break
 
 def cloneBuildItem(fromItem, newItem):
     newItemPath = getItemFolder(newItem)
     oldItemPath = findItem(fromItem)
-    copyItemFiles(oldItemPath, newItemPath)
+    funcs.copyItemFiles(oldItemPath, newItemPath)
     return newItemPath
 
 def smartChroot(item):
@@ -1545,7 +1545,7 @@ def smartChroot(item):
             manual_validation = scriptItem[2]
 
         chroot_script_path = pathConcat(itemPath, ".syslbuild-smart-chroot.sh")
-        copyItemFiles(findItem(scriptPath), chroot_script_path, DEFAULT_RIGHTS_0755)
+        funcs.copyItemFiles(findItem(scriptPath), chroot_script_path, DEFAULT_RIGHTS_0755)
         if rawCrossChroot(itemPath, ["/.syslbuild-smart-chroot.sh"], use_systemd_container, manual_validation, item):
             buildExecute("reset")
         else:
@@ -1860,7 +1860,7 @@ def buildMake(item):
     path = findItem(item["source"])
     output = getItemFolder(item)
     build_temp = getTempFolder("build-make")
-    copyItemFiles(path, build_temp)
+    funcs.copyItemFiles(path, build_temp)
 
     host_architecture = get_host_arch()
     gcc_native = gccNames[host_architecture]
