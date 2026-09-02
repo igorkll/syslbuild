@@ -165,7 +165,7 @@ def moveAccessRules(src, dst):
     except (PermissionError, OSError):
         pass
 
-def moveAccessRulesRecursion(fromPath, toPath, dontProcessTargetPathRoot=False,
+def moveAccessRulesRecursion(fromPath, toPath, dontProcessTargetPathRoot=False, # ТУТ ЕБАНЫЙ ПИЗДЕЦ ИИШНЫЙ. ЭТО ПОЛНЕЙШИЙ НЕЛИКВИД СДЕЛАНЫЙ ДЛЯ ТЕСТА. Я ПЕРЕДЕЛАЮ ЭТО ЗАВТРА
                              overrideRightsForExistingDirectories=False,
                              existing_dirs_set=None):
     """

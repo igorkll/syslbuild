@@ -1030,22 +1030,14 @@ def setup_build_base(builditems, cmdline):
 
     directories = [
         ["/bootmnt", RIGHTS_755],
+        ["/var", RIGHTS_755],
+        ["/run", RIGHTS_755],
 
-        ["/gnubox", RIGHTS_755],
-        ["/gnubox/user_initramfs", RIGHTS_755],
-
-        ["/usr", RIGHTS_755],
-        ["/usr/lib", RIGHTS_755],
-        ["/usr/lib/firmware", RIGHTS_755],
-
-        ["/usr/local", RIGHTS_755],
-        ["/usr/local/sbin", RIGHTS_755],
-        ["/usr/local/bin", RIGHTS_755],
-
-        ["/etc", RIGHTS_755],
-        ["/etc/systemd", RIGHTS_755],
-        ["/etc/systemd/system", RIGHTS_755],
-        ["/etc/systemd/system/multi-user.target.wants", RIGHTS_755]
+        ["/gnubox/user_initramfs", RIGHTS_755, RIGHTS_755],
+        ["/usr/lib/firmware", RIGHTS_755, RIGHTS_755],
+        ["/usr/local/sbin", RIGHTS_755, RIGHTS_755],
+        ["/usr/local/bin", RIGHTS_755, RIGHTS_755],
+        ["/etc/systemd/system/multi-user.target.wants", RIGHTS_755, RIGHTS_755]
     ]
 
     items = [
@@ -1097,10 +1089,10 @@ def setup_build_base(builditems, cmdline):
             directories.append(["/gnubox/.enable_cursor", [0, 0, "0000"]])
 
     if current_project.boot_splash:
-        directories.append(["/usr/share/plymouth/themes/bootlogo", RIGHTS_755])
-        directories.append(["/var/lib/plymouth", RIGHTS_755])
-        directories.append(["/var/spool/plymouth", RIGHTS_755])
-        directories.append(["/run/plymouth", RIGHTS_755])
+        directories.append(["/usr/share/plymouth/themes/bootlogo", RIGHTS_755, RIGHTS_755])
+        directories.append(["/var/lib/plymouth", RIGHTS_755, RIGHTS_755])
+        directories.append(["/var/spool/plymouth", RIGHTS_755, RIGHTS_755])
+        directories.append(["/run/plymouth", RIGHTS_755, RIGHTS_755])
         items.append(["files/bootlogo", "/usr/share/plymouth/themes/bootlogo", RIGHTS_644])
 
     if current_project.separate_data_partition:
