@@ -45,10 +45,35 @@ def changeAccessRights(path, changeRights):
         if chown_str:
             buildExecute(["chown", "-R", chown_str, path])
 
-def makedirsChangeRights(path, changeRights=None):
-    if not os.path.exists(path):
-        os.makedirs(path)
-        changeAccessRights(path, changeRights or DEFAULT_RIGHTS_0700)
+def makedirsChangeRights(path, changeRights=None, chainDirsRights=None):
+    if changeRights is None:
+        changeRights = DEFAULT_RIGHTS_0700
+
+    if chainDirsRights is None:
+        chainDirsRights = DEFAULT_RIGHTS_0700
+    
+    if not os.path.lexists(path):
+        chainParts = Path(path).parts
+        chainPartsCount = len(chainParts)
+
+        currentPath = ""
+        currentIndex = 0
+        for pathPart in chainParts:
+            currentIndex += 1
+            
+            if currentIndex == 1:
+                currentPath = pathPart
+            else:
+                currentPath = os.path.join(currentPath, pathPart)
+
+            if currentIndex == chainPartsCount:
+                localRights = changeRights
+            else:
+                localRights = chainDirsRights
+
+            if not os.path.lexists(currentPath):
+                os.makedirs(currentPath)
+                changeAccessRights(currentPath, localRights)
 
 def isUserItem(itemName):
     itemName = resolveItemName(itemName)
