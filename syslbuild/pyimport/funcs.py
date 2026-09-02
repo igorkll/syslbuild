@@ -1,7 +1,9 @@
 from __main__ import *
 import __main__
 
-def changeAccessRights(path, changeRights):
+import os
+
+def changeAccessRights(path, changeRights, recursion=True):
     """
     Устанавливает права и владельца на путь path.
     
@@ -13,8 +15,12 @@ def changeAccessRights(path, changeRights):
         — perms_files применяется только к файлам (find -type f)
         — perms_dirs применяется только к каталогам (find -type d)
         — владельцы применяются отдельно для файлов и каталогов (по соответствующим подспискам)
+    
+    Параметр recursion:
+        Если False, то действия выполняются только над самим path, без рекурсивного обхода.
     """
 
+    # --- Проверка нового формата ---
     if (isinstance(changeRights, list) and len(changeRights) == 2 and
         isinstance(changeRights[0], list) and len(changeRights[0]) >= 3 and
         isinstance(changeRights[1], list) and len(changeRights[1]) >= 3):
@@ -22,28 +28,69 @@ def changeAccessRights(path, changeRights):
         file_owner, file_group, file_perms = changeRights[0][0], changeRights[0][1], changeRights[0][2]
         dir_owner,  dir_group,  dir_perms  = changeRights[1][0], changeRights[1][1], changeRights[1][2]
         
-        if file_perms is not None:
-            buildExecute(["find", path, "-type", "f", "-exec", "chmod", file_perms, "{}", "+"])
+        if recursion:
+            # Рекурсивный режим: применяем права отдельно к файлам и каталогам
+
+            # ------------ права доступа
+            
+            # файлы
+            if file_perms is not None:
+                buildExecute(["find", path, "-type", "f", "-exec", "chmod", file_perms, "{}", "+"])
         
-        if dir_perms is not None:
-            buildExecute(["find", path, "-type", "d", "-exec", "chmod", dir_perms, "{}", "+"])
-    
-        if file_owner is not None or file_group is not None:
-            chown_files = chownStr(file_owner, file_group)
-            if chown_files:
-                buildExecute(["find", path, "-type", "f", "-exec", "chown", chown_files, "{}", "+"])
-        
-        if dir_owner is not None or dir_group is not None:
-            chown_dirs = chownStr(dir_owner, dir_group)
-            if chown_dirs:
-                buildExecute(["find", path, "-type", "d", "-exec", "chown", chown_dirs, "{}", "+"])
+            # каталоги
+            if dir_perms is not None:
+                buildExecute(["find", path, "-type", "d", "-exec", "chmod", dir_perms, "{}", "+"])
+
+            # ------------ владельцы/группы
+
+            # файлы
+            if file_owner is not None or file_group is not None:
+                chown_files = chownStr(file_owner, file_group)
+                if chown_files:
+                    buildExecute(["find", path, "-type", "f", "-exec", "chown", chown_files, "{}", "+"])
+            
+            # каталоги
+            if dir_owner is not None or dir_group is not None:
+                chown_dirs = chownStr(dir_owner, dir_group)
+                if chown_dirs:
+                    buildExecute(["find", path, "-type", "d", "-exec", "chown", chown_dirs, "{}", "+"])
+        else:
+            # Нерекурсивный режим: применяем права только к самому path
+            # Определяем тип объекта
+            if os.path.isdir(path):
+                # Это каталог – применяем dir-права
+
+                if dir_perms is not None:
+                    buildExecute(["chmod", dir_perms, path])
+                
+                if dir_owner is not None or dir_group is not None:
+                    chown_str = chownStr(dir_owner, dir_group)
+                    if chown_str:
+                        buildExecute(["chown", chown_str, path])
+            else:
+                # Это файл (или симлинк) – применяем file-права
+
+                if file_perms is not None:
+                    buildExecute(["chmod", file_perms, path])
+                
+                if file_owner is not None or file_group is not None:
+                    chown_str = chownStr(file_owner, file_group)
+                    if chown_str:
+                        buildExecute(["chown", chown_str, path])
+
     else:
         if len(changeRights) >= 3 and changeRights[2]:
-            buildExecute(["chmod", "-R", changeRights[2], path])
+            arr = ["chmod", changeRights[2], path]
+            if recursion:
+                arr.insert(1, "-R")
+            buildExecute(arr)
         
         chown_str = chownStr(changeRights[0], changeRights[1])
         if chown_str:
-            buildExecute(["chown", "-R", chown_str, path])
+            arr = ["chown", chown_str, path]
+            if recursion:
+                arr.insert(1, "-R")
+            buildExecute(arr)
 
 def makedirsChangeRights(path, changeRights=None, chainDirsRights=None):
     if changeRights is None:
@@ -79,7 +126,7 @@ def makedirsChangeRights(path, changeRights=None, chainDirsRights=None):
                 if currentChain and defaultChainRights:
                     buildWarning(f"chain directory creating with default rights: {currentPath}")
                 os.makedirs(currentPath)
-                changeAccessRights(currentPath, localRights)
+                changeAccessRights(currentPath, localRights, False)
 
 def isUserItem(itemName):
     itemName = resolveItemName(itemName)
