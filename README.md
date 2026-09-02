@@ -663,8 +663,11 @@ these changes to the kernel config are applied automatically when building the k
 
             "directories": [
                 // empty directories that will be created before adding items can be listed here
-                // this is not necessary, since all directories are created automatically when adding items, but it can be used if you need an empty directory
-                ["/home/MY EMPTY DIR", [0, 0, "0755"]]
+                ["/home/MY EMPTY DIR", [0, 0, "0755"]],
+
+                // creating directory chain
+                // please note that in this case you have specified access rights only for directory 4, all others are created as a chain and receive access rights [0, 0, 700]
+                ["/1/2/3/4", [0, 0, "0755"]]
             ],
 
             "items": [

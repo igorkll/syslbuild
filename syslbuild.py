@@ -134,6 +134,13 @@ def buildLog(logstr, quiet=False):
         log_file3.write(logstr + "\n")
         log_file3.flush()
 
+def buildWarning(logstr):
+    buildLog(f"WARNING: {logstr}")
+
+def buildError(logstr):
+    buildLog(f"ERROR: {logstr}")
+    os.exit(1)
+
 def getSize(path):
     if os.path.isfile(path):
         return os.path.getsize(path)

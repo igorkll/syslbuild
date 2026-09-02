@@ -49,7 +49,9 @@ def makedirsChangeRights(path, changeRights=None, chainDirsRights=None):
     if changeRights is None:
         changeRights = DEFAULT_RIGHTS_0700
 
+    defaultChainRights = False
     if chainDirsRights is None:
+        defaultChainRights = True
         chainDirsRights = DEFAULT_RIGHTS_0700
     
     if not os.path.lexists(path):
@@ -68,10 +70,14 @@ def makedirsChangeRights(path, changeRights=None, chainDirsRights=None):
 
             if currentIndex == chainPartsCount:
                 localRights = changeRights
+                currentChain = False
             else:
                 localRights = chainDirsRights
+                currentChain = True
 
             if not os.path.lexists(currentPath):
+                if currentChain and defaultChainRights:
+                    
                 os.makedirs(currentPath)
                 changeAccessRights(currentPath, localRights)
 
