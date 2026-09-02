@@ -172,8 +172,11 @@ def copyItemFiles(fromPath, toPath, changeRights=None, allowSymlinks=True, copyS
             copypath = fromPath
 
         if allowSymlinks:
-            buildExecute(["rsync", rsync_arg, "--keep-dirlinks", copypath + "/.", toPath])
+            # проходит по симлинкам в целевом каталоге копируя в целевой каталог на который указывает симлинк
+            # то скопирует ли он симлинки или целевой обьект симлинка зависит от переменной copySymlinksAsFiles
+            buildExecute(["rsync", rsync_arg, "--no-perms", "--no-owner", "--no-group", "--keep-dirlinks", copypath + "/.", toPath])
         else:
+            # всегда копирует симлинки как симлинки
             buildExecute(["cp", "-a", copypath + "/.", toPath])
     else:
         # this is necessary to correctly overwrite the symlink that links to a working file in the host system.
@@ -186,6 +189,7 @@ def copyItemFiles(fromPath, toPath, changeRights=None, allowSymlinks=True, copyS
         if allowSymlinks:
             buildExecute(["rsync", rsync_arg, "--keep-dirlinks", fromPath, toPath])
         else:
+            # всегда копирует симлинки как файлы
             # shutil.copy2(fromPath, toPath)
             buildExecute(["cp", "-Lp", fromPath, toPath])
 
