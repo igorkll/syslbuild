@@ -153,12 +153,77 @@ def makeAllFilesExecutable(path):
 def recursionDeleleSymlinks(directoryPath):
     buildRawExecute("find . -type l -exec rm -f {} +", True, directoryPath)
 
-def moveAccessRules(fromPath, toPath):
-    pass
+def moveAccessRules(src, dst):
+    """
+    Копирует владельца, группу и права доступа с src на dst.
+    Игнорирует ошибки (PermissionError, OSError).
+    """
+    try:
+        st = os.stat(src)
+        os.chown(dst, st.st_uid, st.st_gid)
+        os.chmod(dst, st.st_mode)
+    except (PermissionError, OSError):
+        pass
 
-def moveAccessRulesRecursion(fromPath, toPath, dontProcessTargetPathRoot=False):
-    pass
+def moveAccessRulesRecursion(fromPath, toPath, dontProcessTargetPathRoot=False,
+                             overrideRightsForExistingDirectories=False,
+                             existing_dirs_set=None):
+    """
+    Рекурсивно применяет права доступа от объектов внутри fromPath
+    к соответствующим объектам внутри toPath.
 
+    Параметры:
+        fromPath: исходный каталог
+        toPath: целевой каталог
+        dontProcessTargetPathRoot: если True, не применять права к корню toPath
+        overrideRightsForExistingDirectories: если True, применять права ко всем каталогам,
+                                               если False – не трогать существовавшие каталоги
+        existing_dirs_set: множество абсолютных путей каталогов,
+                           которые существовали в toPath ДО копирования
+    """
+    if existing_dirs_set is None:
+        existing_dirs_set = set()
+
+    # --- Обработка корневого каталога ---
+    if not dontProcessTargetPathRoot:
+        # Если корень toPath существовал ранее, то применяем права только
+        # если overrideRightsForExistingDirectories == True
+        if toPath in existing_dirs_set:
+            if overrideRightsForExistingDirectories:
+                moveAccessRules(fromPath, toPath)
+        else:
+            # Новый каталог — применяем права всегда
+            moveAccessRules(fromPath, toPath)
+
+    # --- Обход всех подкаталогов и файлов ---
+    for root, dirs, files in os.walk(fromPath):
+        relpath = os.path.relpath(root, fromPath)
+        if relpath == '.':
+            # Корень уже обработан (или пропущен), но продолжаем обход вложенных объектов
+            continue
+
+        # Целевой каталог для текущего root
+        dst_root = os.path.join(toPath, relpath)
+
+        # Обработка вложенных каталогов
+        for d in dirs:
+            src_dir = os.path.join(root, d)
+            dst_dir = os.path.join(dst_root, d)
+
+            # Если каталог существовал до копирования
+            if dst_dir in existing_dirs_set:
+                if overrideRightsForExistingDirectories:
+                    moveAccessRules(src_dir, dst_dir)
+                # иначе пропускаем (не меняем права)
+            else:
+                # Новый каталог — применяем права всегда
+                moveAccessRules(src_dir, dst_dir)
+
+        # Обработка файлов (права обновляются всегда)
+        for f in files:
+            src_file = os.path.join(root, f)
+            dst_file = os.path.join(dst_root, f)
+            moveAccessRules(src_file, dst_file)
 """
 if changeRights:
     tempFolder = getTempFolder("changeRights")
@@ -187,7 +252,7 @@ def copyItemFiles(fromPath, toPath, changeRights=None, allowSymlinks=True, copyS
             # всегда копирует симлинки как симлинки
             buildExecute(["cp", "-a", "--no-preserve=mode,ownership", fromPath + "/.", toPath])
 
-        moveAccessRulesRecursion(fromPath, toPath, not moveRightsToTargetDir)
+        moveAccessRulesRecursion(fromPath, toPath, not moveRightsToTargetDir, overrideRightsForExistingDirectories)
     else:
         # this is necessary to correctly overwrite the symlink that links to a working file in the host system.
         deleteAny(toPath)

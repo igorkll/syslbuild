@@ -1049,7 +1049,7 @@ def setup_build_base(builditems, cmdline):
     ]
 
     items = [
-        # ["rootfs directory x1", "."],
+        ["rootfs directory x1", "."],
 
         [cmdline, "/gnubox/cmdline.txt", RIGHTS_644_755, True],
 
