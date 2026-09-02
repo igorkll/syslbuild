@@ -31,6 +31,7 @@ sys.path.insert(0, os.path.join(syslbuild_path))
 print("syslbuild path: ", syslbuild_path)
 
 import version
+import funcs
 
 # ---------------------------------------
 
@@ -220,7 +221,7 @@ def getItemPath(item, nameName="name", exportName="export", copyInput=True):
     if item.get("input", False) and copyInput:
         parent_item = findItem(item["input"])
         os.makedirs(path, exist_ok=True)
-        copyItemFiles(parent_item, path)
+        funcs.copyItemFiles(parent_item, path)
 
     return path
 

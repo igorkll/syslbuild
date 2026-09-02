@@ -152,3 +152,46 @@ def makeAllFilesExecutable(path):
 
 def recursionDeleleSymlinks(directoryPath):
     buildRawExecute("find . -type l -exec rm -f {} +", True, directoryPath)
+
+def copyItemFiles(fromPath, toPath, changeRights=None, allowSymlinks=True, copySymlinksAsFiles=False, overrideRightsForExistingDirectories=False):
+    rsync_arg = "-a"
+    if copySymlinksAsFiles:
+        rsync_arg += "L"
+
+    if os.path.isdir(fromPath):
+        makedirsChangeRights(toPath)
+        if allowSymlinks:
+            if changeRights:
+                tempFolder = getTempFolder("changeRights")
+                buildExecute(["cp", "-a", fromPath + "/.", tempFolder])
+                changeAccessRights(tempFolder, changeRights) # рекурсивно устанавливаем права доступа для всего внутри каталога
+                buildExecute(["chmod", "--reference=" + toPath, tempFolder]) # не меняем права доступа на сам каталог, для этого переносим оригинальные на него
+                buildExecute(["chown", "--reference=" + toPath, tempFolder])
+                buildExecute(["rsync", rsync_arg, "--keep-dirlinks", tempFolder + "/.", toPath])
+            else:
+                buildExecute(["rsync", rsync_arg, "--keep-dirlinks", fromPath + "/.", toPath])
+        else:
+            if changeRights:
+                tempFolder = getTempFolder("changeRights")
+                buildExecute(["cp", "-a", fromPath + "/.", tempFolder])
+                changeAccessRights(tempFolder, changeRights)
+                buildExecute(["chmod", "--reference=" + toPath, tempFolder])
+                buildExecute(["chown", "--reference=" + toPath, tempFolder])
+                buildExecute(["cp", "-a", tempFolder + "/.", toPath])
+            else:
+                buildExecute(["cp", "-a", fromPath + "/.", toPath])
+    else:
+        # this is necessary to correctly overwrite the symlink that links to a working file in the host system.
+        deleteAny(toPath)
+
+        file_dir = os.path.dirname(toPath)
+        if not os.path.isdir(file_dir):
+            makedirsChangeRights(file_dir)
+
+        if allowSymlinks:
+            buildExecute(["rsync", rsync_arg, "--keep-dirlinks", fromPath, toPath])
+        else:
+            shutil.copy2(fromPath, toPath)
+
+        if changeRights:
+            changeAccessRights(toPath, changeRights)
