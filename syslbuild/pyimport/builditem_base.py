@@ -441,12 +441,17 @@ def buildDirectory(item):
     if "directories" in item:
         for directoryData in item["directories"]:
             directoryPath = pathConcat(buildDirectoryPath, directoryData[0])
+
             changeRights = DEFAULT_RIGHTS_0700
             if len(directoryData) >= 2:
                 changeRights = directoryData[1]
 
-            buildLog(f"Create empty directory: {directoryPath} {changeRights}")
-            funcs.makedirsChangeRights(directoryPath, changeRights)
+            chainRights = None
+            if len(directoryData) >= 3:
+                chainRights = directoryData[2]
+
+            buildLog(f"Create empty directory: {directoryPath} {changeRights} {chainRights}")
+            funcs.makedirsChangeRights(directoryPath, changeRights, chainRights)
 
     if "items" in item:
         rawItemsProcess(item["items"], buildDirectoryPath)

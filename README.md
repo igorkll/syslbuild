@@ -667,7 +667,15 @@ these changes to the kernel config are applied automatically when building the k
 
                 // creating directory chain
                 // please note that in this case you have specified access rights only for directory 4, all others are created as a chain and receive access rights [0, 0, 700]
-                ["/1/2/3/4", [0, 0, "0755"]]
+                ["/1/2/3/4", [0, 0, "0755"]],
+
+                // now you can specify access rights for the entire directory chain when creating it. 
+                // In this example, 777 access rights are specified for the last element of the chain, and 755 for all other chain elements instead of the standard 700
+                // However, you can specify the same rights for the entire chain.
+                ["/5/6/7/8", [0, 0, "0777"], [0, 0, "0755"]],
+
+                // chain change rights
+                ["/usr/local/bin", [0, 0, "0755"], [0, 0, "0755"]]
             ],
 
             "items": [
