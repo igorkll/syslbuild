@@ -191,7 +191,8 @@ def copyItemFiles(fromPath, toPath, changeRights=None, allowSymlinks=True, copyS
         if allowSymlinks:
             buildExecute(["rsync", rsync_arg, "--keep-dirlinks", fromPath, toPath])
         else:
-            shutil.copy2(fromPath, toPath)
+            # shutil.copy2(fromPath, toPath)
+            buildExecute(["cp", "-Lp", fromPath, toPath])
 
         if changeRights:
             changeAccessRights(toPath, changeRights)
