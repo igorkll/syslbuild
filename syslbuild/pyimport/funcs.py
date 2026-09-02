@@ -160,29 +160,20 @@ def copyItemFiles(fromPath, toPath, changeRights=None, allowSymlinks=True, copyS
 
     if os.path.isdir(fromPath):
         makedirsChangeRights(toPath)
+
+        if changeRights:
+            tempFolder = getTempFolder("changeRights")
+            buildExecute(["cp", "-a", fromPath + "/.", tempFolder])
+            changeAccessRights(tempFolder, changeRights) # рекурсивно устанавливаем права доступа для всего внутри каталога
+            buildExecute(["chmod", "--reference=" + toPath, tempFolder]) # не меняем права доступа на сам каталог, для этого переносим оригинальные на него
+            buildExecute(["chown", "--reference=" + toPath, tempFolder])
+            copypath = tempFolder
+        else:
+            copypath = fromPath
+
         if allowSymlinks:
-            if changeRights:
-                tempFolder = getTempFolder("changeRights")
-                buildExecute(["cp", "-a", fromPath + "/.", tempFolder])
-                changeAccessRights(tempFolder, changeRights) # рекурсивно устанавливаем права доступа для всего внутри каталога
-                buildExecute(["chmod", "--reference=" + toPath, tempFolder]) # не меняем права доступа на сам каталог, для этого переносим оригинальные на него
-                buildExecute(["chown", "--reference=" + toPath, tempFolder])
-                copypath = tempFolder
-            else:
-                copypath = fromPath
-            
             buildExecute(["rsync", rsync_arg, "--keep-dirlinks", copypath + "/.", toPath])
         else:
-            if changeRights:
-                tempFolder = getTempFolder("changeRights")
-                buildExecute(["cp", "-a", fromPath + "/.", tempFolder])
-                changeAccessRights(tempFolder, changeRights)
-                buildExecute(["chmod", "--reference=" + toPath, tempFolder])
-                buildExecute(["chown", "--reference=" + toPath, tempFolder])
-                copypath = tempFolder
-            else:
-                copypath = fromPath
-            
             buildExecute(["cp", "-a", copypath + "/.", toPath])
     else:
         # this is necessary to correctly overwrite the symlink that links to a working file in the host system.
