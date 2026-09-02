@@ -525,9 +525,12 @@ def export_image(project_path):
     image_path = image_path.replace("@", os.path.basename(project_path))
     image_full_path = os.path.join(project_path, image_path)
 
-    build_log("copy image file...")
-    shutil.copy(image_full_path, args.output)
-    build_log(f"image exported: {args.output}")
+    if args.output == "none":
+        build_log(f"image located: {image_full_path}")
+    else:
+        build_log(f"copy image file ({image_full_path}) > ({args.output})...")
+        shutil.copy(image_full_path, args.output)
+        build_log(f"image exported: {args.output}")
 
 # ---------------------------------------
 

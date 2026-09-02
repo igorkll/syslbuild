@@ -61,7 +61,7 @@ you have to pass one of them. but not more than one
 * --wifi-name - the name of the wifi network for automatic connection
 * --wifi-password - the password of the wifi network for automatic connection
 * --wifi-security - the security of the wifi network for automatic connection. there is usually no need to change this.
-* --output - output path to the boot image
+* --output - output path to the boot image (set it as "none" to avoid copying the project file after the build. in this case, you can find it on the path "~/.mkbootable/project/output/<architecture>")
 * --syslbuild - the path to the syslbuild directory. it will be detected automatically if your syslbuild is installed using the standard path in /opt/syslbuild
 
 ## wifi-security variants
