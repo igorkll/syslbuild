@@ -159,6 +159,18 @@ def moveAccessRules(fromPath, toPath):
 def moveAccessRulesRecursion(fromPath, toPath, dontProcessTargetPathRoot=False):
     pass
 
+"""
+if changeRights:
+    tempFolder = getTempFolder("changeRights")
+    buildExecute(["cp", "-a", fromPath + "/.", tempFolder])
+    changeAccessRights(tempFolder, changeRights) # рекурсивно устанавливаем права доступа для всего внутри каталога
+    buildExecute(["chmod", "--reference=" + toPath, tempFolder]) # не меняем права доступа на сам каталог, для этого переносим оригинальные на него
+    buildExecute(["chown", "--reference=" + toPath, tempFolder])
+    copypath = tempFolder
+else:
+    copypath = fromPath
+"""
+
 def copyItemFiles(fromPath, toPath, changeRights=None, allowSymlinks=True, copySymlinksAsFiles=False, overrideRightsForExistingDirectories=False, moveRightsToTargetDir=False):
     rsync_arg = "-a"
     if copySymlinksAsFiles:
@@ -167,23 +179,13 @@ def copyItemFiles(fromPath, toPath, changeRights=None, allowSymlinks=True, copyS
     if os.path.isdir(fromPath):
         makedirsChangeRights(toPath)
 
-        if changeRights:
-            tempFolder = getTempFolder("changeRights")
-            buildExecute(["cp", "-a", fromPath + "/.", tempFolder])
-            changeAccessRights(tempFolder, changeRights) # рекурсивно устанавливаем права доступа для всего внутри каталога
-            buildExecute(["chmod", "--reference=" + toPath, tempFolder]) # не меняем права доступа на сам каталог, для этого переносим оригинальные на него
-            buildExecute(["chown", "--reference=" + toPath, tempFolder])
-            copypath = tempFolder
-        else:
-            copypath = fromPath
-
         if allowSymlinks:
             # проходит по симлинкам в целевом каталоге копируя в целевой каталог на который указывает симлинк
             # то скопирует ли он симлинки или целевой обьект симлинка зависит от переменной copySymlinksAsFiles
-            buildExecute(["rsync", rsync_arg, "--no-perms", "--no-owner", "--no-group", "--keep-dirlinks", copypath + "/.", toPath])
+            buildExecute(["rsync", rsync_arg, "--no-perms", "--no-owner", "--no-group", "--keep-dirlinks", fromPath + "/.", toPath])
         else:
             # всегда копирует симлинки как симлинки
-            buildExecute(["cp", "-a", "--no-preserve=mode,ownership", copypath + "/.", toPath])
+            buildExecute(["cp", "-a", "--no-preserve=mode,ownership", fromPath + "/.", toPath])
 
         moveAccessRulesRecursion(fromPath, toPath, not moveRightsToTargetDir)
     else:
