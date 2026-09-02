@@ -156,7 +156,7 @@ def recursionDeleleSymlinks(directoryPath):
 def moveAccessRules(fromPath, toPath, ):
 
 
-def copyItemFiles(fromPath, toPath, changeRights=None, allowSymlinks=True, copySymlinksAsFiles=False, overrideRightsForExistingDirectories=False):
+def copyItemFiles(fromPath, toPath, changeRights=None, allowSymlinks=True, copySymlinksAsFiles=False, overrideRightsForExistingDirectories=False, moveRightsToTargetDir=False):
     rsync_arg = "-a"
     if copySymlinksAsFiles:
         rsync_arg += "L"
@@ -181,6 +181,11 @@ def copyItemFiles(fromPath, toPath, changeRights=None, allowSymlinks=True, copyS
         else:
             # всегда копирует симлинки как симлинки
             buildExecute(["cp", "-a", "--no-preserve=mode,ownership", copypath + "/.", toPath])
+
+        if moveRightsToTargetDir:
+            moveAccessRules(fromPath, toPath)
+        else:
+            moveAccessRules()
 
         moveAccessRules(copypath, toPath)
     else:
