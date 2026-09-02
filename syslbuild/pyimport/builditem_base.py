@@ -1389,6 +1389,9 @@ def rawCrossChroot(chrootDirectory, chrootCommand, useSystemd=False, manualValid
         if fix_systemd_container_host_files_copy:
             for localpath in fix_systemd_container_host_files_copy_list:
                 old_path = pathConcat(chrootDirectory, localpath)
+                if not os.path.lexists(old_path):
+                    continue
+
                 new_path = pathConcat(chrootDirectory, localpath + "_")
                 buildLog(f"fix_systemd_container_host_files_copy (start): {old_path} > {new_path}")
                 funcs.copyItemFiles(old_path, new_path)
@@ -1415,6 +1418,9 @@ wait $CONTAINER_PID""", checkValid)
         if fix_systemd_container_host_files_copy:
             for localpath in fix_systemd_container_host_files_copy_list:
                 old_path = pathConcat(chrootDirectory, localpath + "_")
+                if not os.path.lexists(old_path):
+                    continue
+                
                 new_path = pathConcat(chrootDirectory, localpath)
                 buildLog(f"fix_systemd_container_host_files_copy (end): {old_path} > {new_path}")
                 deleteAny(new_path)
