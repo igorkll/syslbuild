@@ -167,9 +167,11 @@ def copyItemFiles(fromPath, toPath, changeRights=None, allowSymlinks=True, copyS
                 changeAccessRights(tempFolder, changeRights) # рекурсивно устанавливаем права доступа для всего внутри каталога
                 buildExecute(["chmod", "--reference=" + toPath, tempFolder]) # не меняем права доступа на сам каталог, для этого переносим оригинальные на него
                 buildExecute(["chown", "--reference=" + toPath, tempFolder])
-                buildExecute(["rsync", rsync_arg, "--keep-dirlinks", tempFolder + "/.", toPath])
+                copypath = tempFolder
             else:
-                buildExecute(["rsync", rsync_arg, "--keep-dirlinks", fromPath + "/.", toPath])
+                copypath = fromPath
+            
+            buildExecute(["rsync", rsync_arg, "--keep-dirlinks", copypath + "/.", toPath])
         else:
             if changeRights:
                 tempFolder = getTempFolder("changeRights")
@@ -177,9 +179,11 @@ def copyItemFiles(fromPath, toPath, changeRights=None, allowSymlinks=True, copyS
                 changeAccessRights(tempFolder, changeRights)
                 buildExecute(["chmod", "--reference=" + toPath, tempFolder])
                 buildExecute(["chown", "--reference=" + toPath, tempFolder])
-                buildExecute(["cp", "-a", tempFolder + "/.", toPath])
+                copypath = tempFolder
             else:
-                buildExecute(["cp", "-a", fromPath + "/.", toPath])
+                copypath = fromPath
+            
+            buildExecute(["cp", "-a", copypath + "/.", toPath])
     else:
         # this is necessary to correctly overwrite the symlink that links to a working file in the host system.
         deleteAny(toPath)
