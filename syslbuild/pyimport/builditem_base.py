@@ -212,16 +212,6 @@ def downloadFile(url, path):
 def buildDownload(item):
     downloadFile(item["url"], getItemPath(item))
 
-"""
-def funcs.changeAccessRights(path, changeRights):
-    if len(changeRights) >= 3 and changeRights[2]:
-        buildExecute(["chmod", "-R", changeRights[2], path])
-    
-    chownString = chownStr(changeRights[0], changeRights[1])
-    if chownString:
-        buildExecute(["chown", "-R", chownString, path])
-"""
-
 def writeRawItem(raw, toPath, changeRights=None):
     deleteAny(toPath)
 
