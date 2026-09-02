@@ -51,6 +51,7 @@ there may be nuances in the support of some platforms. read about it here: https
 you have to pass one of them. but not more than one  
 * --application - the path to your application's executable file
 * --web - the link to the web page to be displayed in kiosk mode
+* --command - executes any command. please note that by default, it runs in console mode, if you are running a graphical application, then specify this explicitly
 
 ## args
 * --platform - select an available platform from the list (default: desktop_64)

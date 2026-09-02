@@ -53,6 +53,7 @@ argsparser = argparse.ArgumentParser(
 
 argsparser.add_argument("--application", default=None, help="the path to your application's executable file")
 argsparser.add_argument("--web", default=None, help="the link to the web page to be displayed in kiosk mode")
+argsparser.add_argument("--command", default=None, help="executes any command. please note that by default, it runs in console mode, if you are running a graphical application, then specify this explicitly")
 
 argsparser.add_argument(
     "--platform",
@@ -145,6 +146,12 @@ def get_application_session_type():
     
     return graphic_session_type
 
+def get_command_session_type(command):
+    if args.mode == "graphic":
+        return graphic_session_type
+
+    return "tty"
+
 def get_application_logo():
     return None
 
@@ -165,6 +172,12 @@ def get_application_run_features():
     return {
         "packages": [],
         "command": f"cd /application && ./{application_name}"
+    }
+
+def get_command_run_features(command):
+    return {
+        "packages": [],
+        "command": command
     }
 
 # --------------------------------------- get web info
@@ -210,6 +223,13 @@ elif args.web:
 
     if args.output is None:
         args.output = pathlib.Path(args.web).stem + ".img"
+elif args.command:
+    session_type = get_command_session_type(args.command)
+    default_logo = None
+    run_features = get_command_run_features(args.command)
+
+    if args.output is None:
+        args.output = "bootable.img"
 else:
     build_log("specify the required application parameter")
     sys.exit(0)
