@@ -77,7 +77,7 @@ def makedirsChangeRights(path, changeRights=None, chainDirsRights=None):
 
             if not os.path.lexists(currentPath):
                 if currentChain and defaultChainRights:
-                    
+                    buildWarning(f"chain directory creating with default rights: {currentPath}")
                 os.makedirs(currentPath)
                 changeAccessRights(currentPath, localRights)
 
