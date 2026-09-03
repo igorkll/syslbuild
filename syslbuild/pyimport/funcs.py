@@ -159,6 +159,9 @@ def moveAccessRules(src, dst):
     os.chmod(dst, st.st_mode)
     os.utime(dst, (st.st_atime, st.st_mtime))
 
+def moveRightsDuplecateDirs(fromDirs, toDirs):
+
+
 def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False, changeRightsOnTargetRoot=False, chainDirsRights=None, dontChangeRightsOnExistsDirs=False):
     # проходит по симлинкам в целевом каталоге копируя в целевой каталог на который указывает симлинк
     # то скопирует ли он симлинки или целевой обьект симлинка зависит от переменной copySymlinksAsFiles
@@ -179,6 +182,9 @@ def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False
         # по умалчанию: нет
         if not changeRightsOnTargetRoot:
             moveAccessRules(toPath, tempFolder)
+
+        if dontChangeRightsOnExistsDirs:
+            moveRightsDuplecateDirs(toPath, tempFolder)
 
         # копирую временый каталог в целевой
         buildExecute(["rsync", rsync_arg, "--keep-dirlinks", tempFolder + "/.", toPath])
