@@ -163,7 +163,7 @@ def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False
     # проходит по симлинкам в целевом каталоге копируя в целевой каталог на который указывает симлинк
     # то скопирует ли он симлинки или целевой обьект симлинка зависит от переменной copySymlinksAsFiles
 
-    rsync_arg = "-aUN"
+    rsync_arg = "-aU"
     if copySymlinksAsFiles:
         rsync_arg += "L"
 
@@ -178,7 +178,7 @@ def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False
         # тут выбирается будут ли перенесены права с корня fromPath на toPath
         targetRulesRightsReference = toPath
         if changeRightsOnTargetRoot:
-            targetRulesRightsReference = fromPath
+            targetRulesRightsReference = tempFolder
         buildExecute(["chmod", "--reference=" + targetRulesRightsReference, tempFolder])
         buildExecute(["chown", "--reference=" + targetRulesRightsReference, tempFolder])
 
