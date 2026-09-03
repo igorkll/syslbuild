@@ -39,7 +39,7 @@
             // [ITEM_OR_PATH, TARGET_PATH, RECURSION_ACCESS_RIGHTS, RAW_WRITE_TEXT, CHAIN_DIR_RIGHTS, CHANGE_RIGHTS_ON_TARGET_ROOT, DONT_CHANGE_RIGHTS_ON_EXISTS_DIRS]
             "items": [
                 ["arch", "/", null, false, null, true, true],
-                ["overlay", "/", [[0, 0, "0644"], [0, 0, "0755"]], null, false, null, true, true]
+                ["overlay", "/", [[0, 0, "0644"], [0, 0, "0755"]], false, null, true, true]
             ]
         },
         
@@ -68,6 +68,14 @@
         },
 
         // ----------------------------------- bootable image
+        {
+            "independent_architecture": true,
+
+            "type": "download",
+            "name": "linux-bootloaders",
+
+            "url": "https://github.com/igorkll/linux-bootloaders/releases/download/1.2/linux-bootloaders.tar.gz"
+        },
         {
             "type": "filesystem",
             "name": "bios boot.img",
@@ -111,7 +119,8 @@
                     "part_gpt",
                     "ext2",
                     "configfile"
-                ]
+                ],
+                "build": "linux-bootloaders/grub/build/no-welcome-2.14"
             }
         }
     ]
