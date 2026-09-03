@@ -157,12 +157,13 @@ def moveAccessRules(src, dst):
     st = os.stat(src)
     os.chown(dst, st.st_uid, st.st_gid)
     os.chmod(dst, st.st_mode)
+    os.utime(dst, (st.st_atime, st.st_mtime))
 
 def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False, changeRightsOnTargetRoot=False):
     # проходит по симлинкам в целевом каталоге копируя в целевой каталог на который указывает симлинк
     # то скопирует ли он симлинки или целевой обьект симлинка зависит от переменной copySymlinksAsFiles
 
-    rsync_arg = "-a"
+    rsync_arg = "-aUN"
     if copySymlinksAsFiles:
         rsync_arg += "L"
 
@@ -170,9 +171,9 @@ def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False
         makedirsChangeRights(toPath)
 
         tempFolder = getTempFolder("changeRights")
-        buildExecute(["cp", "-a", fromPath + "/.", tempFolder])
+        buildExecute(["rsync", rsync_arg, "--keep-dirlinks", fromPath + "/.", tempFolder])
         if changeRights:
-            funcs.changeAccessRights(tempFolder, changeRights) # рекурсивно устанавливаем права доступа для всего внутри каталога
+            changeAccessRights(tempFolder, changeRights) # рекурсивно устанавливаем права доступа для всего внутри каталога
 
         # тут выбирается будут ли перенесены права с корня fromPath на toPath
         targetRulesRightsReference = toPath
