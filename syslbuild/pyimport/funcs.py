@@ -175,12 +175,11 @@ def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False
         if changeRights:
             changeAccessRights(tempFolder, changeRights) # рекурсивно устанавливаем права доступа для всего внутри каталога
 
-        # тут выбирается будут ли перенесены права с корня fromPath на toPath
-        targetRulesRightsReference = toPath
-        if changeRightsOnTargetRoot:
-            targetRulesRightsReference = tempFolder
-        buildExecute(["chmod", "--reference=" + targetRulesRightsReference, tempFolder])
-        buildExecute(["chown", "--reference=" + targetRulesRightsReference, tempFolder])
+        # тут выбирается будут ли перенесены права с корня fromPath на корень toPath
+        # по умалчанию: нет
+        if not changeRightsOnTargetRoot:
+            buildExecute(["chmod", "--reference=" + toPath, tempFolder])
+            buildExecute(["chown", "--reference=" + toPath, tempFolder])
 
         # копирую временый каталог в целевой
         buildExecute(["rsync", rsync_arg, "--keep-dirlinks", tempFolder + "/.", toPath])
