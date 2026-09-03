@@ -680,9 +680,16 @@ these changes to the kernel config are applied automatically when building the k
             ],
 
             // [ITEM_OR_PATH, TARGET_PATH, RECURSION_ACCESS_RIGHTS, RAW_WRITE_TEXT, CHAIN_DIR_RIGHTS, CHANGE_RIGHTS_ON_TARGET_ROOT, DONT_CHANGE_RIGHTS_ON_EXISTS_DIRS]
-            // RAW_WRITE_TEXT - if set to true, the text from the first argument will be included in the file directly
-            // CHAIN_DIR_RIGHTS - you can specify access rights for new automatically created directories in the chain. default the last directory (target) It is ALSO considered a chain catalog. however, if the "CHANGE_RIGHTS_ON_TARGET_ROOT" flag is set, then the rights to the last directory are set from the root directory of "item" and not as for the chain.
-            // CHANGE_RIGHTS_ON_TARGET_ROOT - 
+            
+            // descriptions of arguments. defaults are listed using ":"
+            
+            // RAW_WRITE_TEXT: false - if set to true, the text from the first argument will be included in the file directly
+            
+            // CHAIN_DIR_RIGHTS: [0, 0, "0700"] - you can specify access rights for new automatically created directories in the chain. default the last directory (target) It is ALSO considered a chain catalog. however, if the "CHANGE_RIGHTS_ON_TARGET_ROOT" flag is set, then the rights to the last directory are set from the root directory of "item" and not as for the chain.
+            
+            // CHANGE_RIGHTS_ON_TARGET_ROOT: false - if it is false, then when creating the target directory automatically (if it did not exist), its rights will be set as for automatically created chain directories. if set to true, the rights of the target directory will be transferred from the source
+
+            // DONT_CHANGE_RIGHTS_ON_EXISTS_DIRS: false - if set to true, the permissions for existing directories will not be changed to new ones when merging directories. it is especially convenient when applying user changes to rootfs linux.
             "items": [
                 // adding the previously built debian to the file system
                 // you can also import files/directories from your project's directory by simply specifying their name here
@@ -712,10 +719,11 @@ these changes to the kernel config are applied automatically when building the k
                 ["merge access rights 1", "/merge"],
                 ["merge access rights 2", "/merge"],
 
-                // in this example, let's assume there was no /merge directory. this means that it will be created as a chain and will receive the rights [0, 0, 700]
-                // however, the access rights of all items inside the "merge access rights 1" and "merge access rights 2" directories will be moved to "/merge" and will correspond to the last rewrite
-                ["merge access rights 1", "/merge"],
-                ["merge access rights 2", "/merge"],
+                // this example includes "CHANGE_RIGHTS_ON_TARGET_ROOT" and "DONT_CHANGE_RIGHTS_ON_EXISTS_DIRS"
+                // this means that the rights to the "/merge" directory will be set according to the rights to the "merge access rights 1" directory, and when merging directories (when both have the same directory), the rights will be transferred from "merge access rights 1", and only if "merge access rights 1" does not have such a directory, then from "merge access rights 2"
+                // "DONT_CHANGE_RIGHTS_ON_EXISTS_DIRS" does not affect overwriting rights for files, which means that when overwriting files, the rights will be taken from "merge access rights 2"
+                ["merge access rights 1", "/merge", null, false, null, true, true],
+                ["merge access rights 2", "/merge", null, false, null, true, true],
 
                 // raw write text to file
                 ["raw write text", "/file", [0, 0, "0644"], true]

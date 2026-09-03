@@ -298,6 +298,14 @@ def rawItemsProcess(items, itemsDirectory):
         chainDirsRights = None
         if len(itemObj) >= 5:
             chainDirsRights = itemObj[4]
+
+        changeRightsOnTargetRoot = False
+        if len(itemObj) >= 6:
+            changeRightsOnTargetRoot = itemObj[5]
+
+        dontChangeRightsOnExistsDirs = False
+        if len(itemObj) >= 7:
+            dontChangeRightsOnExistsDirs = itemObj[6]
         
         if writeRaw:
             rawItem = itemObj[0]
@@ -333,7 +341,7 @@ def rawItemsProcess(items, itemsDirectory):
         if writeRaw:
             writeRawItem(rawItem, outputPath, changeRights)
         else:
-            funcs.copyItemFiles(itemPath, outputPath, changeRights, False, False, chainDirsRights)
+            funcs.copyItemFiles(itemPath, outputPath, changeRights, False, changeRightsOnTargetRoot, chainDirsRights, dontChangeRightsOnExistsDirs)
 
 def handlelink(topdir, filep, subdir):
     link = os.readlink(filep)
