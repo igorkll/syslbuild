@@ -37,7 +37,10 @@
             "export": false,
 
             "items": [
+                // in fact, you could specify here: ["debian", "/", null, false, null, true, false] since DONT_CHANGE_RIGHTS_ON_EXISTS_DIRS does not make sense when there are no files yet
                 ["debian", "/", null, false, null, true, true],
+                
+                //in fact, you can specify here: ["overlay", "/", [[0, 0, "0644"], [0, 0, "0755"]], false, null, false, true] because CHANGE_RIGHTS_ON_TARGET_ROOT will not transfer rights anyway when the directory already exists and the DONT_CHANGE_RIGHTS_ON_EXISTS_DIRS flag is set
                 ["overlay", "/", [[0, 0, "0644"], [0, 0, "0755"]], false, null, true, true]
             ]
         },
