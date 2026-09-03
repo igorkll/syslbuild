@@ -165,7 +165,7 @@ def moveAccessRules(src, dst):
     except (PermissionError, OSError):
         pass
 
-def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False, changeRightsOnTargetRoot=False):
+def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False):
     # проходит по симлинкам в целевом каталоге копируя в целевой каталог на который указывает симлинк
     # то скопирует ли он симлинки или целевой обьект симлинка зависит от переменной copySymlinksAsFiles
 
@@ -176,20 +176,15 @@ def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False
     if os.path.isdir(fromPath):
         makedirsChangeRights(toPath)
 
-        tempFolder = getTempFolder("changeRights")
-        buildExecute(["cp", "-a", fromPath + "/.", tempFolder])
         if changeRights:
-            funcs.changeAccessRights(tempFolder, changeRights) # рекурсивно устанавливаем права доступа для всего внутри каталога
+            tempFolder = getTempFolder("changeRights")
+            buildExecute(["cp", "-a", fromPath + "/.", tempFolder])
+            changeAccessRights(tempFolder, changeRights) # рекурсивно устанавливаем права доступа для всего внутри каталога
+            copyPath = tempFolder
+        else:
+            copyPath = fromPath
 
-        # тут выбирается будут ли перенесены права с корня fromPath на toPath
-        targetRulesRightsReference = toPath
-        if changeRightsOnTargetRoot:
-            targetRulesRightsReference = fromPath
-        buildExecute(["chmod", "--reference=" + targetRulesRightsReference, tempFolder])
-        buildExecute(["chown", "--reference=" + targetRulesRightsReference, tempFolder])
-
-        # копирую временый каталог в целевой
-        buildExecute(["rsync", rsync_arg, "--keep-dirlinks", tempFolder + "/.", toPath])
+        buildExecute(["rsync", rsync_arg, "--keep-dirlinks", copyPath + "/.", toPath])
     else:
         # this is necessary to correctly overwrite the symlink that links to a working file in the host system.
         deleteAny(toPath)
