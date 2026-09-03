@@ -70,12 +70,17 @@
         // ----------------------------------- bootable image
         {
             "independent_architecture": true,
-
             "type": "download",
-            "name": "linux-bootloaders",
-
+            "name": "linux-bootloaders.tar.gz",
             "url": "https://github.com/igorkll/linux-bootloaders/releases/download/1.2/linux-bootloaders.tar.gz"
         },
+        {
+            "independent_architecture": true,
+            "type": "unpack-tar-auto",
+            "name": "linux-bootloaders",
+            "archive": "linux-bootloaders.tar.gz"
+        },
+
         {
             "type": "filesystem",
             "name": "bios boot.img",
