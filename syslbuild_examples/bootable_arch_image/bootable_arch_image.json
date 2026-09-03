@@ -36,9 +36,10 @@
             "name": "arch_with_overlay",
             "export": false,
 
+            // [ITEM_OR_PATH, TARGET_PATH, RECURSION_ACCESS_RIGHTS, RAW_WRITE_TEXT, CHAIN_DIR_RIGHTS, CHANGE_RIGHTS_ON_TARGET_ROOT, DONT_CHANGE_RIGHTS_ON_EXISTS_DIRS]
             "items": [
-                ["arch", "/"],
-                ["overlay", "/", [0, 0, "0755"]]
+                ["arch", "/", null, false, null, true, true],
+                ["overlay", "/", [[0, 0, "0644"], [0, 0, "0755"]], null, false, null, true, true]
             ]
         },
         
