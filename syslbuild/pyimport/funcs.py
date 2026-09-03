@@ -160,7 +160,7 @@ def moveAccessRules(src, dst):
     os.utime(dst, (st.st_atime, st.st_mtime))
 
 def moveRightsDuplecateDirs(fromDirs, toDirs):
-
+    moveAccessRules(fromDirs, toDirs)
 
 def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False, changeRightsOnTargetRoot=False, chainDirsRights=None, dontChangeRightsOnExistsDirs=False):
     # проходит по симлинкам в целевом каталоге копируя в целевой каталог на который указывает симлинк
@@ -171,20 +171,25 @@ def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False
         rsync_arg += "L"
 
     if os.path.isdir(fromPath):
-        makedirsChangeRights(toPath, chainDirsRights, chainDirsRights)
+        if changeRightsOnTargetRoot and dontChangeRightsOnExistsDirs and os.path.isdir(fromPath):
+
+        else:
+            makedirsChangeRights(toPath, chainDirsRights, chainDirsRights)
 
         tempFolder = getTempFolder("changeRights")
         buildExecute(["rsync", rsync_arg, "--keep-dirlinks", fromPath + "/.", tempFolder])
         if changeRights:
             changeAccessRights(tempFolder, changeRights) # рекурсивно устанавливаем права доступа для всего внутри каталога
 
-        # тут выбирается будут ли перенесены права с корня fromPath на корень toPath
-        # по умалчанию: нет
-        if not changeRightsOnTargetRoot:
-            moveAccessRules(toPath, tempFolder)
-
+        # если включена опция dontChangeRightsOnExistsDirs права на уже существующие каталоги НЕ ДОЛЖНЫ менятся
+        # для этого переносим права с уже существующих каталогов на временый каталог
         if dontChangeRightsOnExistsDirs:
             moveRightsDuplecateDirs(toPath, tempFolder)
+        else:
+            # тут выбирается будут ли перенесены права с корня fromPath на корень toPath
+            # по умалчанию: нет
+            if not changeRightsOnTargetRoot:
+                moveAccessRules(toPath, tempFolder)
 
         # копирую временый каталог в целевой
         buildExecute(["rsync", rsync_arg, "--keep-dirlinks", tempFolder + "/.", toPath])
