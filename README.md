@@ -679,7 +679,10 @@ these changes to the kernel config are applied automatically when building the k
                 ["/usr/local/bin", [0, 0, "0755"], [0, 0, "0755"]]
             ],
 
-            // [ITEM_OR_PATH, TARGET_PATH, RECURSION_ACCESS_RIGHTS, RAW_WRITE_TEXT, CHAIN_DIR_RIGHTS]
+            // [ITEM_OR_PATH, TARGET_PATH, RECURSION_ACCESS_RIGHTS, RAW_WRITE_TEXT, CHAIN_DIR_RIGHTS, CHANGE_RIGHTS_ON_TARGET_ROOT, DONT_CHANGE_RIGHTS_ON_EXISTS_DIRS]
+            // RAW_WRITE_TEXT - if set to true, the text from the first argument will be included in the file directly
+            // CHAIN_DIR_RIGHTS - you can specify access rights for new automatically created directories in the chain. default the last directory (target) It is ALSO considered a chain catalog. however, if the "CHANGE_RIGHTS_ON_TARGET_ROOT" flag is set, then the rights to the last directory are set from the root directory of "item" and not as for the chain.
+            // CHANGE_RIGHTS_ON_TARGET_ROOT - 
             "items": [
                 // adding the previously built debian to the file system
                 // you can also import files/directories from your project's directory by simply specifying their name here
@@ -703,6 +706,11 @@ these changes to the kernel config are applied automatically when building the k
                 // if we assume that directories 3 and 4 do not exist, then they will be created, but NOT WITH RIGHTS 644 (as one might think)
                 // but with rights 700! since when creating directories in a chain, the rights of all directories in the chain (except the last element) are set as 700
                 ["any file", "/1/2/3/4/file", [0, 0, "0644"]],
+
+                // in this example, let's assume there was no /merge directory. this means that it will be created as a chain and will receive the rights [0, 0, 700]
+                // however, the access rights of all items inside the "merge access rights 1" and "merge access rights 2" directories will be moved to "/merge" and will correspond to the last rewrite
+                ["merge access rights 1", "/merge"],
+                ["merge access rights 2", "/merge"],
 
                 // in this example, let's assume there was no /merge directory. this means that it will be created as a chain and will receive the rights [0, 0, 700]
                 // however, the access rights of all items inside the "merge access rights 1" and "merge access rights 2" directories will be moved to "/merge" and will correspond to the last rewrite

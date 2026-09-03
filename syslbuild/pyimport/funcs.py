@@ -159,7 +159,7 @@ def moveAccessRules(src, dst):
     os.chmod(dst, st.st_mode)
     os.utime(dst, (st.st_atime, st.st_mtime))
 
-def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False, changeRightsOnTargetRoot=False, chainDirsRights=None):
+def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False, changeRightsOnTargetRoot=False, chainDirsRights=None, dontChangeRightsOnExistsDirs=False):
     # проходит по симлинкам в целевом каталоге копируя в целевой каталог на который указывает симлинк
     # то скопирует ли он симлинки или целевой обьект симлинка зависит от переменной copySymlinksAsFiles
 
@@ -178,8 +178,7 @@ def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False
         # тут выбирается будут ли перенесены права с корня fromPath на корень toPath
         # по умалчанию: нет
         if not changeRightsOnTargetRoot:
-            buildExecute(["chmod", "--reference=" + toPath, tempFolder])
-            buildExecute(["chown", "--reference=" + toPath, tempFolder])
+            moveAccessRules(toPath, tempFolder)
 
         # копирую временый каталог в целевой
         buildExecute(["rsync", rsync_arg, "--keep-dirlinks", tempFolder + "/.", toPath])
