@@ -161,6 +161,7 @@ def moveAccessRules(src, dst):
 
 def moveRightsDuplecateDirs(fromDirs, toDirs):
     moveAccessRules(fromDirs, toDirs)
+    # я просто еще не реализовал это до конца
 
 def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False, changeRightsOnTargetRoot=False, chainDirsRights=None, dontChangeRightsOnExistsDirs=False):
     # проходит по симлинкам в целевом каталоге копируя в целевой каталог на который указывает симлинк
@@ -171,8 +172,13 @@ def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False
         rsync_arg += "L"
 
     if os.path.isdir(fromPath):
-        if changeRightsOnTargetRoot and dontChangeRightsOnExistsDirs and os.path.isdir(fromPath):
-
+        if changeRightsOnTargetRoot and dontChangeRightsOnExistsDirs and not os.path.isdir(toPath):
+            # срабатывает только в случаи если целевой директории еще нет
+            # И одновремено включено changeRightsOnTargetRoot и dontChangeRightsOnExistsDirs
+            # создаем директорию и сразу меняем права доступа toPath на права из fromPath
+            # чтобы в дальнейшим они были перенесены tempFolder в вызове: moveRightsDuplecateDirs(toPath, tempFolder)
+            makedirsChangeRights(toPath, chainDirsRights, chainDirsRights)
+            moveAccessRules(fromPath, toPath)
         else:
             makedirsChangeRights(toPath, chainDirsRights, chainDirsRights)
 
@@ -182,7 +188,7 @@ def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False
             changeAccessRights(tempFolder, changeRights) # рекурсивно устанавливаем права доступа для всего внутри каталога
 
         # если включена опция dontChangeRightsOnExistsDirs права на уже существующие каталоги НЕ ДОЛЖНЫ менятся
-        # для этого переносим права с уже существующих каталогов на временый каталог
+        # для этого переносим права с уже существующих каталогов в toPath (включая его самого) на временый каталог
         if dontChangeRightsOnExistsDirs:
             moveRightsDuplecateDirs(toPath, tempFolder)
         else:
