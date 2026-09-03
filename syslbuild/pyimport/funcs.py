@@ -93,15 +93,15 @@ def changeAccessRights(path, changeRights, recursion=True):
             buildExecute(arr)
 
 def makedirsChangeRights(path, changeRights=None, chainDirsRights=None):
-    if changeRights is None:
-        changeRights = DEFAULT_RIGHTS_0700
-
-    defaultChainRights = False
-    if chainDirsRights is None:
-        defaultChainRights = True
-        chainDirsRights = DEFAULT_RIGHTS_0700
-    
     if not os.path.lexists(path):
+        if changeRights is None:
+            changeRights = DEFAULT_RIGHTS_0700
+
+        defaultChainRights = False
+        if chainDirsRights is None:
+            defaultChainRights = True
+            chainDirsRights = DEFAULT_RIGHTS_0700
+            
         chainParts = Path(path).parts
         chainPartsCount = len(chainParts)
 
@@ -165,78 +165,7 @@ def moveAccessRules(src, dst):
     except (PermissionError, OSError):
         pass
 
-def moveAccessRulesRecursion(fromPath, toPath, dontProcessTargetPathRoot=False, # ТУТ ЕБАНЫЙ ПИЗДЕЦ ИИШНЫЙ. ЭТО ПОЛНЕЙШИЙ НЕЛИКВИД СДЕЛАНЫЙ ДЛЯ ТЕСТА. Я ПЕРЕДЕЛАЮ ЭТО ЗАВТРА
-                             overrideRightsForExistingDirectories=False,
-                             existing_dirs_set=None):
-    """
-    Рекурсивно применяет права доступа от объектов внутри fromPath
-    к соответствующим объектам внутри toPath.
-
-    Параметры:
-        fromPath: исходный каталог
-        toPath: целевой каталог
-        dontProcessTargetPathRoot: если True, не применять права к корню toPath
-        overrideRightsForExistingDirectories: если True, применять права ко всем каталогам,
-                                               если False – не трогать существовавшие каталоги
-        existing_dirs_set: множество абсолютных путей каталогов,
-                           которые существовали в toPath ДО копирования
-    """
-    if existing_dirs_set is None:
-        existing_dirs_set = set()
-
-    # --- Обработка корневого каталога ---
-    if not dontProcessTargetPathRoot:
-        # Если корень toPath существовал ранее, то применяем права только
-        # если overrideRightsForExistingDirectories == True
-        if toPath in existing_dirs_set:
-            if overrideRightsForExistingDirectories:
-                moveAccessRules(fromPath, toPath)
-        else:
-            # Новый каталог — применяем права всегда
-            moveAccessRules(fromPath, toPath)
-
-    # --- Обход всех подкаталогов и файлов ---
-    for root, dirs, files in os.walk(fromPath):
-        relpath = os.path.relpath(root, fromPath)
-        if relpath == '.':
-            # Корень уже обработан (или пропущен), но продолжаем обход вложенных объектов
-            continue
-
-        # Целевой каталог для текущего root
-        dst_root = os.path.join(toPath, relpath)
-
-        # Обработка вложенных каталогов
-        for d in dirs:
-            src_dir = os.path.join(root, d)
-            dst_dir = os.path.join(dst_root, d)
-
-            # Если каталог существовал до копирования
-            if dst_dir in existing_dirs_set:
-                if overrideRightsForExistingDirectories:
-                    moveAccessRules(src_dir, dst_dir)
-                # иначе пропускаем (не меняем права)
-            else:
-                # Новый каталог — применяем права всегда
-                moveAccessRules(src_dir, dst_dir)
-
-        # Обработка файлов (права обновляются всегда)
-        for f in files:
-            src_file = os.path.join(root, f)
-            dst_file = os.path.join(dst_root, f)
-            moveAccessRules(src_file, dst_file)
-"""
-if changeRights:
-    tempFolder = getTempFolder("changeRights")
-    buildExecute(["cp", "-a", fromPath + "/.", tempFolder])
-    changeAccessRights(tempFolder, changeRights) # рекурсивно устанавливаем права доступа для всего внутри каталога
-    buildExecute(["chmod", "--reference=" + toPath, tempFolder]) # не меняем права доступа на сам каталог, для этого переносим оригинальные на него
-    buildExecute(["chown", "--reference=" + toPath, tempFolder])
-    copypath = tempFolder
-else:
-    copypath = fromPath
-"""
-
-def copyItemFiles(fromPath, toPath, changeRights=None, allowSymlinks=True, copySymlinksAsFiles=False, overrideRightsForExistingDirectories=False, moveRightsToTargetDir=False):
+def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False):
     rsync_arg = "-a"
     if copySymlinksAsFiles:
         rsync_arg += "L"
@@ -244,15 +173,9 @@ def copyItemFiles(fromPath, toPath, changeRights=None, allowSymlinks=True, copyS
     if os.path.isdir(fromPath):
         makedirsChangeRights(toPath)
 
-        if allowSymlinks:
-            # проходит по симлинкам в целевом каталоге копируя в целевой каталог на который указывает симлинк
-            # то скопирует ли он симлинки или целевой обьект симлинка зависит от переменной copySymlinksAsFiles
-            buildExecute(["rsync", rsync_arg, "--no-perms", "--no-owner", "--no-group", "--keep-dirlinks", fromPath + "/.", toPath])
-        else:
-            # всегда копирует симлинки как симлинки
-            buildExecute(["cp", "-a", "--no-preserve=mode,ownership", fromPath + "/.", toPath])
-
-        moveAccessRulesRecursion(fromPath, toPath, not moveRightsToTargetDir, overrideRightsForExistingDirectories)
+        # проходит по симлинкам в целевом каталоге копируя в целевой каталог на который указывает симлинк
+        # то скопирует ли он симлинки или целевой обьект симлинка зависит от переменной copySymlinksAsFiles
+        buildExecute(["rsync", rsync_arg, "--keep-dirlinks", fromPath + "/.", toPath])
     else:
         # this is necessary to correctly overwrite the symlink that links to a working file in the host system.
         deleteAny(toPath)
@@ -261,12 +184,7 @@ def copyItemFiles(fromPath, toPath, changeRights=None, allowSymlinks=True, copyS
         if not os.path.isdir(file_dir):
             makedirsChangeRights(file_dir)
 
-        if allowSymlinks:
-            buildExecute(["rsync", rsync_arg, "--keep-dirlinks", fromPath, toPath])
-        else:
-            # всегда копирует симлинки как файлы
-            # shutil.copy2(fromPath, toPath)
-            buildExecute(["cp", "-Lp", fromPath, toPath])
+        buildExecute(["rsync", rsync_arg, "--keep-dirlinks", fromPath, toPath])
 
         if changeRights:
             changeAccessRights(toPath, changeRights)
