@@ -280,6 +280,9 @@ def getTempFolder(subdirectory):
     os.makedirs(path, exist_ok=True)
     return path
 
+def delTempFolder(subdirectory):
+    deleteDirectory(getTempPath(subdirectory))
+
 def resolveItemName(itemName):
     if itemName == "@previous":
         if previous_builditem:

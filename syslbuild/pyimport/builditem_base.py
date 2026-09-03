@@ -199,6 +199,8 @@ def grubIsoImage(item):
         cmd.append("--modules=\"" + " ".join(item["modules"]) + "\"")
     buildExecute(cmd)
 
+    delTempFolder("isotemp")
+
 def unpackInitramfs(item):
     initramfs = os.path.abspath(findItem(item["initramfs"]))
     folder = getItemFolder(item)
@@ -1535,6 +1537,8 @@ def debianExportInitramfs(item):
             funcs.copyItemFiles(initramfsPath, exportInitramfsPath, DEFAULT_RIGHTS_0755, True)
             break
 
+    delTempFolder("export_initramfs_rootfs")
+
 def cloneBuildItem(fromItem, newItem):
     newItemPath = getItemFolder(newItem)
     oldItemPath = findItem(fromItem)
@@ -1866,6 +1870,8 @@ def buildConfigureMake(item):
     cmd = f"make install DESTDIR=\"{os.path.abspath(output)}\""
     buildRawExecute(cmd, True, build_temp, env)
 
+    delTempFolder("build-configure-make")
+
 def buildMake(item):
     path = findItem(item["source"])
     output = getItemFolder(item)
@@ -1905,6 +1911,8 @@ def buildMake(item):
 
     cmd = f"make install {install_args_str} {' '.join(item.get('make_install_args', []))}"
     buildRawExecute(cmd, True, path, env)
+
+    delTempFolder("build-make")
 
 # --------------------------------------------------------------------- get dependencies
 

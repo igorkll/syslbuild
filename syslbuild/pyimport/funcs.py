@@ -184,6 +184,8 @@ def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False
 
         # копирую временый каталог в целевой
         buildExecute(["rsync", rsync_arg, "--keep-dirlinks", tempFolder + "/.", toPath])
+
+        delTempFolder("changeRights")
     else:
         # this is necessary to correctly overwrite the symlink that links to a working file in the host system.
         deleteAny(toPath)
