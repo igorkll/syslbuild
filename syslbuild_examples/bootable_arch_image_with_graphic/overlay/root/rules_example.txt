@@ -1,0 +1,2 @@
+thanks to the enabled DONT_CHANGE_RIGHTS_ON_EXISTS_DIRS, when overlaying, the rights to the /root directory itself are not overwritten (since it already exists at the time of merging)
+if DONT_CHANGE_RIGHTS_ON_EXISTS_DIRS had been disabled in the project config, when the directories were superimposed, the rights to /root would have been changed to 755, which would have created a vulnerability.

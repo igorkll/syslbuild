@@ -37,8 +37,8 @@
             "export": false,
 
             "items": [
-                ["debian", "/"],
-                ["overlay", "/", [0, 0, "0755"]]
+                ["debian", "/", null, false, null, true, true],
+                ["overlay", "/", [[0, 0, "0644"], [0, 0, "0755"]], false, null, true, true]
             ]
         },
         

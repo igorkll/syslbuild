@@ -45,8 +45,8 @@
             "export": false,
 
             "items": [
-                ["arch", "/"],
-                ["overlay", "/", [0, 0, "0755"]]
+                ["arch", "/", null, false, null, true, true],
+                ["overlay", "/", [[0, 0, "0644"], [0, 0, "0755"]], false, null, true, true]
             ]
         },
         
