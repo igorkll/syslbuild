@@ -158,10 +158,17 @@ def moveAccessRules(src, dst):
     os.chown(dst, st.st_uid, st.st_gid)
     os.chmod(dst, st.st_mode)
     os.utime(dst, (st.st_atime, st.st_mtime))
+    buildLog(f"moveAccessRules: {src} > {dst}")
 
 def moveRightsDuplecateDirs(fromDirs, toDirs):
-    moveAccessRules(fromDirs, toDirs)
-    # я просто еще не реализовал это до конца
+    if not os.path.isdir(fromDirs) or os.path.islink(fromDirs):
+        return
+    
+    for root, dirs, files in os.walk(fromDirs, followlinks=False):
+        rel_path = os.path.relpath(root, fromDirs)
+        target = os.path.join(toDirs, rel_path)
+        if os.path.isdir(target) and not os.path.islink(target):
+            moveAccessRules(root, target)
 
 def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False, changeRightsOnTargetRoot=False, chainDirsRights=None, dontChangeRightsOnExistsDirs=False):
     # проходит по симлинкам в целевом каталоге копируя в целевой каталог на который указывает симлинк
