@@ -159,7 +159,7 @@ def moveAccessRules(src, dst):
     os.chmod(dst, st.st_mode)
     os.utime(dst, (st.st_atime, st.st_mtime))
 
-def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False, changeRightsOnTargetRoot=False):
+def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False, changeRightsOnTargetRoot=False, chainDirsRights=None):
     # проходит по симлинкам в целевом каталоге копируя в целевой каталог на который указывает симлинк
     # то скопирует ли он симлинки или целевой обьект симлинка зависит от переменной copySymlinksAsFiles
 
@@ -168,7 +168,7 @@ def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False
         rsync_arg += "L"
 
     if os.path.isdir(fromPath):
-        makedirsChangeRights(toPath)
+        makedirsChangeRights(toPath, chainDirsRights, chainDirsRights)
 
         tempFolder = getTempFolder("changeRights")
         buildExecute(["rsync", rsync_arg, "--keep-dirlinks", fromPath + "/.", tempFolder])
@@ -190,7 +190,7 @@ def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False
 
         file_dir = os.path.dirname(toPath)
         if not os.path.isdir(file_dir):
-            makedirsChangeRights(file_dir)
+            makedirsChangeRights(file_dir, chainDirsRights, chainDirsRights)
 
         buildExecute(["rsync", rsync_arg, "--keep-dirlinks", fromPath, toPath])
 

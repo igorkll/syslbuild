@@ -679,7 +679,7 @@ these changes to the kernel config are applied automatically when building the k
                 ["/usr/local/bin", [0, 0, "0755"], [0, 0, "0755"]]
             ],
 
-            // [ITEM_OR_PATH, TARGET_PATH, RECURSION_ACCESS_RIGHTS, CHAIN_DIR_RIGHTS]
+            // [ITEM_OR_PATH, TARGET_PATH, RECURSION_ACCESS_RIGHTS, RAW_WRITE_TEXT, CHAIN_DIR_RIGHTS]
             "items": [
                 // adding the previously built debian to the file system
                 // you can also import files/directories from your project's directory by simply specifying their name here
@@ -707,10 +707,14 @@ these changes to the kernel config are applied automatically when building the k
                 // in this example, let's assume there was no /merge directory. this means that it will be created as a chain and will receive the rights [0, 0, 700]
                 // however, the access rights of all items inside the "merge access rights 1" and "merge access rights 2" directories will be moved to "/merge" and will correspond to the last rewrite
                 ["merge access rights 1", "/merge"],
-                ["merge access rights 2", "/merge"]
+                ["merge access rights 2", "/merge"],
 
-                // suppose the "test" directory does not exist here
-                ["test", "/test", [0, 0, "0755"], [0, 0, "0750"]]
+                // raw write text to file
+                ["raw write text", "/file", [0, 0, "0644"], true]
+
+                // suppose the "/test1/test2" directory does not exist here
+                // in this example, the contents of the "test2" directory itself will be set as [0, 0, "755"] and the /test1 and /test1/test2 directories themselves as [0, 0, "750"]
+                ["test", "/test1/test2", [0, 0, "0755"], false, [0, 0, "0750"]]
             ],
 
             "move_after_items": [
