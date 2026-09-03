@@ -1213,11 +1213,13 @@ def generate_syslbuild_project():
         if not current_project.use_separate_splash_for_update:
             cmdline += " updatescript_state_not_need_in_plymouth"
 
-    if current_project.boot_splash:
+    if current_project.boot_splash and current_project.minlogotime > 0:
         cmdline += f" minlogotime={current_project.minlogotime}"
 
     if current_project.boot_quiet:
         cmdline += f" systemd.show_status=false rd.systemd.show_status=false systemd.log_target=journal rd.systemd.log_target=journal udev.log_level=1 rd.udev.log_level=1 systemd.log_level=emerg rd.systemd.log_level=emerg clear noCursorBlink vt.global_cursor_default=0 quiet loglevel=0"
+    else:
+        cmdline += f" loglevel={current_project.loglevel_without_quiet}"
 
     if True:
         cmdline += " logo.nologo"

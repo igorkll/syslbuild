@@ -23,6 +23,7 @@ class Project:
     boot_quiet: bool = True
     boot_splash: bool = True
     boot_sound: str = "none"
+    loglevel_without_quiet: int = 4
     dont_show_splash_on_poweroff: bool = True
     dont_use_splash_on_efi: bool = False
 
