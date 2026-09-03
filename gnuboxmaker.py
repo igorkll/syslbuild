@@ -1041,7 +1041,7 @@ def setup_build_base(builditems, cmdline):
     ]
 
     items = [
-        ["rootfs directory x1", "."],
+        ["rootfs directory x1", ".", None, False, None, True, False],
 
         [cmdline, "/gnubox/cmdline.txt", RIGHTS_644_755, True],
 
@@ -1057,7 +1057,7 @@ def setup_build_base(builditems, cmdline):
         ["custom-debian-initramfs-init/custom_init_hook.sh", "/etc/initramfs-tools/hooks/custom_init_hook.sh", RIGHTS_755],
         ["files/system_init_hook.sh", "/etc/initramfs-tools/hooks/system_init_hook.sh", RIGHTS_755],
 
-        ["files/user_files", "/", RIGHTS_755],
+        ["files/user_files", "/", RIGHTS_755, False, None, False, True],
         ["files/user_initramfs", "/gnubox/user_initramfs", RIGHTS_755],
     ]
 
