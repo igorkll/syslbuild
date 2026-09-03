@@ -661,6 +661,7 @@ these changes to the kernel config are applied automatically when building the k
                 //"/any path"
             ],
 
+            // [PATH, LAST_DIR_RIGHTS, CHAIN_DIR_RIGHTS]
             "directories": [
                 // empty directories that will be created before adding items can be listed here
                 ["/home/MY EMPTY DIR", [0, 0, "0755"]],
@@ -678,6 +679,7 @@ these changes to the kernel config are applied automatically when building the k
                 ["/usr/local/bin", [0, 0, "0755"], [0, 0, "0755"]]
             ],
 
+            // [ITEM_OR_PATH, TARGET_PATH, RECURSION_ACCESS_RIGHTS, CHAIN_DIR_RIGHTS]
             "items": [
                 // adding the previously built debian to the file system
                 // you can also import files/directories from your project's directory by simply specifying their name here
@@ -706,6 +708,9 @@ these changes to the kernel config are applied automatically when building the k
                 // however, the access rights of all items inside the "merge access rights 1" and "merge access rights 2" directories will be moved to "/merge" and will correspond to the last rewrite
                 ["merge access rights 1", "/merge"],
                 ["merge access rights 2", "/merge"]
+
+                // suppose the "test" directory does not exist here
+                ["test", "/test", [0, 0, "0755"], [0, 0, "0750"]]
             ],
 
             "move_after_items": [
