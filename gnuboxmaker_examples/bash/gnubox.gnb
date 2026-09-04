@@ -1,8 +1,8 @@
 {
   "gnubox_version": [
     1,
-    8,
-    2
+    10,
+    0
   ],
   "distro": "debian",
   "user_packages": [],
@@ -19,6 +19,7 @@
   "boot_quiet": false,
   "boot_splash": false,
   "boot_sound": "none",
+  "loglevel_without_quiet": 4,
   "dont_show_splash_on_poweroff": true,
   "dont_use_splash_on_efi": false,
   "enable_echo": true,
@@ -74,6 +75,7 @@
   "integrate_network_timesync": true,
   "integrate_network_wifi": true,
   "integrate_audio": true,
+  "integrate_advanced_gpu_packages": true,
   "wifi_autoconnect_name": "",
   "wifi_autoconnect_password": "",
   "wifi_autoconnect_security": "wpa-psk",
@@ -93,6 +95,7 @@
   "export_img_rpi_64": false,
   "export_rootfs_directory": false,
   "export_rootfs_tar_gz": false,
+  "export_rootfs_tar_xz": false,
   "export_rootfs_tar": false,
   "platform_opi_zero3_cma": "256M",
   "platform_opi_zero3_hdmi_audio_high_priority": true,

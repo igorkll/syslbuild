@@ -191,6 +191,7 @@ def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False
 
         tempFolder = getTempFolder("changeRights")
         buildExecute(["rsync", rsync_arg, "--keep-dirlinks", fromPath + "/.", tempFolder])
+        moveAccessRules(fromPath, tempFolder)
         if changeRights:
             changeAccessRights(tempFolder, changeRights) # рекурсивно устанавливаем права доступа для всего внутри каталога
 
@@ -206,6 +207,7 @@ def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False
 
         # копирую временый каталог в целевой
         buildExecute(["rsync", rsync_arg, "--keep-dirlinks", tempFolder + "/.", toPath])
+        moveAccessRules(tempFolder, toPath) # переношу права доступа на корень. насколько я понял из за fromPath/. это не гарантировано, и зависит от версии rsync
 
         delTempFolder("changeRights")
     else:
