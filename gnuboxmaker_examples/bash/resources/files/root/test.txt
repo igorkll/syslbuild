@@ -1,0 +1,1 @@
+i wanted to make sure that gnubox maker handles directory merging correctly without overwriting the access rights for existing ones
