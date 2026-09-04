@@ -2,3 +2,4 @@ checking the merging of user directories.
 I make sure that the access rights will be set correctly.
 that /etc/skel will be copied in this case.
 in gnubox maker, when overlaying, the DONT_CHANGE_RIGHTS_ON_EXISTS_DIRS flag is enabled so that the rights to existing directories do not change when merging
+Also, gnubox maker automatically makes all files in the user's directory available to the user.
