@@ -235,10 +235,13 @@ systemctl set-default graphical.target
 # ------------
 
 usermod -s {user_shell} root
-useradd -m -u 10000 -s {user_shell} user
+
+mkdir -p /home/user
+useradd -d /home/user -u 10000 -s {user_shell} user
 usermod -aG video,input,audio,render user
-mkdir -p -m 700 /home/user
-chown user:user /home/user"""
+cp -an /etc/skel/. /home/user
+chown -R user:user /home/user
+chmod 700 /home/user"""
 
     if current_project.root_login_unlock:
         aaa_setup += "\npasswd -u root"
