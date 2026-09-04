@@ -54,29 +54,29 @@ def changeAccessRights(path, changeRights, recursion=True):
                 chown_dirs = chownStr(dir_owner, dir_group)
                 if chown_dirs:
                     buildExecute(["find", path, "-type", "d", "-exec", "chown", chown_dirs, "{}", "+"])
+
+        # Нерекурсивный режим: применяем права только к самому path
+        # Определяем тип объекта
+        if os.path.isdir(path):
+            # Это каталог – применяем dir-права
+
+            if dir_perms is not None:
+                buildExecute(["chmod", dir_perms, path])
+            
+            if dir_owner is not None or dir_group is not None:
+                chown_str = chownStr(dir_owner, dir_group)
+                if chown_str:
+                    buildExecute(["chown", chown_str, path])
         else:
-            # Нерекурсивный режим: применяем права только к самому path
-            # Определяем тип объекта
-            if os.path.isdir(path):
-                # Это каталог – применяем dir-права
+            # Это файл (или симлинк) – применяем file-права
 
-                if dir_perms is not None:
-                    buildExecute(["chmod", dir_perms, path])
-                
-                if dir_owner is not None or dir_group is not None:
-                    chown_str = chownStr(dir_owner, dir_group)
-                    if chown_str:
-                        buildExecute(["chown", chown_str, path])
-            else:
-                # Это файл (или симлинк) – применяем file-права
-
-                if file_perms is not None:
-                    buildExecute(["chmod", file_perms, path])
-                
-                if file_owner is not None or file_group is not None:
-                    chown_str = chownStr(file_owner, file_group)
-                    if chown_str:
-                        buildExecute(["chown", chown_str, path])
+            if file_perms is not None:
+                buildExecute(["chmod", file_perms, path])
+            
+            if file_owner is not None or file_group is not None:
+                chown_str = chownStr(file_owner, file_group)
+                if chown_str:
+                    buildExecute(["chown", chown_str, path])
 
     else:
         if len(changeRights) >= 3 and changeRights[2]:
@@ -207,7 +207,11 @@ def copyItemFiles(fromPath, toPath, changeRights=None, copySymlinksAsFiles=False
 
         # копирую временый каталог в целевой
         buildExecute(["rsync", rsync_arg, "--keep-dirlinks", tempFolder + "/.", toPath])
-        moveAccessRules(tempFolder, toPath) # переношу права доступа на корень. насколько я понял из за fromPath/. это не гарантировано, и зависит от версии rsync
+
+        # переношу права доступа на корень. насколько я понял из за fromPath/. это не гарантировано, и зависит от версии rsync.
+        # в моей системе в этом нет необходимости и права переносятся, хотя по логике не должны
+        # чтобы добавится идентичного поведения произвожу явный перенос прав доступа на корень каталога
+        moveAccessRules(tempFolder, toPath)
 
         delTempFolder("changeRights")
     else:
