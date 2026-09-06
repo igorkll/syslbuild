@@ -25,7 +25,7 @@ sys.path.insert(0, module_dir)
 
 HandleKey_varians = ["ignore", "poweroff", "reboot", "suspend", "hibernate", "lock"] # halt, kexec
 session_user_variants = ["user", "root"]
-session_mode_variants = ["wayland", "x11", "tty", "init"]
+session_mode_variants = ["wayland", "x11", "tty", "tty_with_graphic_support", "init"]
 weston_shell_variants = ["kiosk", "desktop"]
 splash_mode_variants = ["center", "fill", "contain", "cover"]
 boot_sound_variants = ["none", "init", "logo"]
@@ -454,7 +454,7 @@ def setup_build_debian(builditems, for64bits, architecture):
         include.append("plymouth") # install basic plymouth files. The part will later be replaced by embedded plymouth.
         include.append("plymouth-themes")
 
-    if current_project.session_mode == "wayland" or current_project.session_mode == "x11":
+    if current_project.session_mode == "wayland" or current_project.session_mode == "x11" or current_project.session_mode == "tty_with_graphic_support":
         include.append("mesa-utils")
         include.append("libgl1-mesa-dri")
         include.append("libgbm1")
@@ -1082,7 +1082,7 @@ def setup_build_base(builditems, cmdline):
         items.append(["files/run_session_wayland.sh", "/gnubox/run_session.sh", RIGHTS_755])
     elif current_project.session_mode == "x11":
         items.append(["files/run_session_x11.sh", "/gnubox/run_session.sh", RIGHTS_755])
-    elif current_project.session_mode == "tty":
+    elif current_project.session_mode == "tty" or current_project.session_mode == "tty_with_graphic_support":
         directories.append(["/gnubox/.session_mode_tty", [0, 0, "0000"]])
     
         if current_project.enable_echo:
