@@ -909,7 +909,7 @@ def buildProject(json_path):
         elif item["name"].startswith("@"):
             buildError(f"the builditem name cannot start with the @ character, as this is reserved for virtual builditems")
         elif item["name"] not in namesExists:
-            buildItemLog(item)
+            buildItemLog(item, "-- ")
             namesExists.append(item["name"])
         else:
             buildError(f"more than one builditem named {item['name']}")
