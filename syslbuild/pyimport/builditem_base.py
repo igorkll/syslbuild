@@ -1472,7 +1472,7 @@ wait $CONTAINER_PID""", checkValid)
     for bindPath in bindList:
         buildRawExecute(f"umount -R \"{pathConcat(chrootDirectory, bindPath)}\"", False)
 
-    buildRawExecute(f"umount -R {chrootDirectory}", False)
+    buildRawExecute(f"umount -R \"{chrootDirectory}\"", False)
 
     for makedDirectoryBindPath in makedDirectories:
         buildRawExecute(f"rm -rf \"{makedDirectoryBindPath}\"")
