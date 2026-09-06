@@ -7,6 +7,7 @@ if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
     
     startx > /dev/null 2>&1
 else
+    clear
     reset
     exec bash
 fi
