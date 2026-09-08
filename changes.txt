@@ -17,3 +17,9 @@ a small refactoring of the syslbuild tool
 fixed self_update for UEFI-based platforms in gnubox maker
 several build flags and export rootfs.tar.gz have been added to mkbootable
 fixed example html_desktop in mkbootable
+
+1.11.0
+gnubox maker:
+the basic version of debian sid is used, with a fixed snapshot at the time of the changes. this allowed us to get weston 16 and GPU acceleration on raspberry pi 5.
+updated the kernel version for x86 and raspberry pi.
+added support for using the kernel logo if enabled in the config.
