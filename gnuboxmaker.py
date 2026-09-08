@@ -1227,7 +1227,7 @@ def generate_syslbuild_project():
     else:
         cmdline += f" loglevel={current_project.loglevel_without_quiet}"
 
-    if True:
+    if not current_project.boot_kernel_logo:
         cmdline += " logo.nologo"
 
     boot_splash_substring = " splash earlysplash"
