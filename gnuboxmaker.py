@@ -36,7 +36,8 @@ RIGHTS_755 = [0, 0, "0755"]
 RIGHTS_644_755 = [RIGHTS_644, RIGHTS_755]
 
 default_debian_suite = "trixie"
-default_debian_snapshot = "http://snapshot.debian.org/archive/debian/20260217T143331Z"
+#default_debian_snapshot = "http://snapshot.debian.org/archive/debian/20260217T143331Z"
+default_debian_snapshot = "http://snapshot.debian.org/archive/debian/20260908T083558Z"
 default_value = "<default>"
 github_user = "igorkll"
 
