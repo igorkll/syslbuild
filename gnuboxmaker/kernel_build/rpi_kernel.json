@@ -19,7 +19,7 @@
 
         "kernel_source_git": "https://github.com/raspberrypi/linux",
         "kernel_source_git_branch": "rpi-6.12.y",
-        "kernel_source_git_checkout": "359f37f0faefb712add32a39f98751aea67d5c1f",
+        "kernel_source_git_checkout": "60ea684a8ace97bb0db1a16e20753bdd6ab371ff",
         "kernel_output_file": "Image",
 
         "patches": [

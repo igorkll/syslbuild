@@ -18,7 +18,7 @@
 
         "kernel_source_git": "https://github.com/raspberrypi/linux",
         "kernel_source_git_branch": "rpi-6.12.y",
-        "kernel_source_git_checkout": "359f37f0faefb712add32a39f98751aea67d5c1f",
+        "kernel_source_git_checkout": "60ea684a8ace97bb0db1a16e20753bdd6ab371ff",
         "kernel_output_file": "Image",
 
         "patches": [
@@ -29,7 +29,7 @@
             "linux-embedded-patchs/disable_keyboard_echo_by_default.patch",
             "linux-embedded-patchs/disable_tty_signals.patch",
             "linux-embedded-patchs/disable_tty_control_flow.patch",
-            "linux-embedded-patchs/7.0//disable_reboot_and_shutdown_emerg_messages.patch",
+            "linux-embedded-patchs/7.0/disable_reboot_and_shutdown_emerg_messages.patch",
             "linux-embedded-patchs/make_all_emerg_messages_with_alert_loglevel.patch"
         ],
 
