@@ -1,0 +1,97 @@
+[
+    {
+        "type": "kernel",
+        "name": "kernel_sunxi.img",
+        "export": false,
+
+        "headers_name": "kernel_headers_sunxi",
+        "headers_export": false,
+
+        "modules_name": "kernel_modules_sunxi",
+        "modules_export": false,
+
+        "result_config_name": "kernel_config_sunxi",
+        "result_config_export": false,
+
+        "symvers_name": "Module_symvers_sunxi",
+        "symvers_export": false,
+
+        "kernel_source_url": "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.18.44.tar.xz",
+        "kernel_output_file": "Image",
+
+        "items_before_patches": [
+            ["armbian_uwe5622", "drivers/net/wireless/uwe5622"]
+        ],
+
+        "pre_patches_commands": [
+            "echo \"obj-\\$(CONFIG_SPARD_WLAN_SUPPORT) += uwe5622/\" >> \"drivers/net/wireless/Makefile\"",
+            "sed -i '/source \"drivers\\/net\\/wireless\\/ti\\/Kconfig\"/a source \"drivers\\/net\\/wireless\\/uwe5622\\/Kconfig\"' \"drivers/net/wireless/Kconfig\""
+        ],
+
+        "patches": [
+            "linux-embedded-patchs/disable_vt_swithing_from_keyboard.patch",
+            "linux-embedded-patchs/7.0/disable_vt_swithing_from_wayland.patch",
+            "linux-embedded-patchs/disable_sysrq.patch",
+            "linux-embedded-patchs/disable_cad.patch",
+            "linux-embedded-patchs/disable_keyboard_echo_by_default.patch",
+            "linux-embedded-patchs/disable_tty_signals.patch",
+            "linux-embedded-patchs/disable_tty_control_flow.patch",
+            "linux-embedded-patchs/7.0/disable_reboot_and_shutdown_emerg_messages.patch",
+            "linux-embedded-patchs/make_all_emerg_messages_with_alert_loglevel.patch"
+        ],
+
+        "read_series_conf": [
+            ["armbian/patch/kernel/archive/sunxi-6.18/series.conf", "armbian/patch/kernel/archive/sunxi-6.18/"]
+        ],
+
+        "items_after_patches": [
+            ["armbian/patch/kernel/archive/sunxi-6.18/dt_32", "arch/arm/boot/dts/allwinner"],
+            ["armbian/patch/kernel/archive/sunxi-6.18/dt_64", "arch/arm64/boot/dts/allwinner"],
+
+            ["armbian/patch/kernel/archive/sunxi-6.18/overlay_32", "arch/arm/boot/dts/allwinner/overlay"],
+            ["armbian/patch/kernel/archive/sunxi-6.18/overlay_64", "arch/arm64/boot/dts/allwinner/overlay"]
+        ],
+
+        "auto_patch_dt_makefile": [
+            ["arch/arm/boot/dts/allwinner", "CONFIG_ARCH_SUNXI", true],
+            ["arch/arm64/boot/dts/allwinner", "CONFIG_ARCH_SUNXI", true]
+        ],
+
+        "additional_export": [
+            ["arch/arm64/boot/dts/allwinner", "sunxi_dtbs", false]
+        ],
+
+        "additional_make_str": "KCFLAGS=\"-Wno-error=incompatible-pointer-types\"",
+
+        "out_of_tree": true,
+
+        "defconfig": "defconfig",
+        "kernel_config": "armbian/config/kernel/linux-sunxi64-current.config",
+
+        "kernel_config_changes_files": [
+            "kernel_config_changes.txt",
+            "armbian/config/kernel/linux-sunxi64-current.config",
+            "kernel_config_changes_sunxi.txt",
+            "kernel_config_changes_base.txt"
+        ]
+    },
+    {
+        "type": "directory",
+        "name": "sunxi",
+        "export": true,
+
+        "directories": [
+            ["/dtbs", [0, 0, "0755"]]
+        ],
+
+        "items": [
+            ["kernel_headers_sunxi", "/kernel_headers"],
+            ["kernel_modules_sunxi", "/kernel_modules"],
+            ["kernel_sunxi.img", "/kernel.img"],
+            ["kernel_config_sunxi", "/kernel_config"],
+            ["Module_symvers_sunxi", "/Module.symvers"],
+
+            ["sunxi_dtbs", "/dtbs", [[0, 0, "0644"], [0, 0, "0755"]]]
+        ]
+    }
+]
