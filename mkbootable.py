@@ -364,8 +364,6 @@ def generate_project_config():
         "user_packages": user_packages,
         "exclude_packages": [],
         "debian_variant": "minbase",
-        "debian_suite": "trixie",
-        "debian_snapshot": "http://snapshot.debian.org/archive/debian/20260217T143331Z",
         "screen_idle_time": 0,
         "HandlePowerKey": "poweroff",
         "HandleRebootKey": "reboot",
