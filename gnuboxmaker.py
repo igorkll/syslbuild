@@ -341,7 +341,7 @@ def makeFinalChroot(chroot_scripts_directory):
     delete_packages += current_project.delete_packages
 
     for package in delete_packages:
-        finalChrootStr += f"apt purge \"{package}\"\n"
+        finalChrootStr += f"apt purge -y \"{package}\"\n"
 
     writeText(os.path.join(chroot_scripts_directory, "final.sh"), finalChrootStr)
 
