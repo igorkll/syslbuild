@@ -5,7 +5,9 @@
     0
   ],
   "distro": "debian",
-  "user_packages": [],
+  "user_packages": [
+    "nano"
+  ],
   "exclude_packages": [],
   "debian_variant": "minbase",
   "debian_suite": "<default>",

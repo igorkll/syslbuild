@@ -5,7 +5,9 @@
     0
   ],
   "distro": "debian",
-  "user_packages": [],
+  "user_packages": [
+    "nano"
+  ],
   "exclude_packages": [],
   "debian_variant": "minbase",
   "debian_suite": "<default>",
@@ -28,7 +30,7 @@
   "uartlogs": false,
   "uartlogs_speed": 115200,
   "uartlogs_login": false,
-  "uartlogs_rootshell": true,
+  "uartlogs_rootshell": false,
   "root_login_unlock": false,
   "password_root": "",
   "password_user": "",
@@ -63,7 +65,7 @@
   "minlogotime": 10,
   "cmdline": "",
   "exclude_cmdline": [],
-  "sudo_privileges": false,
+  "sudo_privileges": true,
   "integrate_liamounts": false,
   "integrate_super_kiosk_browser": false,
   "integrate_xwayland": false,
