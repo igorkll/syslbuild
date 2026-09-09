@@ -433,6 +433,11 @@ def setup_build_debian(builditems, for64bits, architecture):
     if current_project.integrate_firmwares:
         include.append("firmware-linux")
 
+    if current_project.integrate_firmwares2:
+        add_for_architectures(include, "firmware-intel-graphics", ["amd64", "i386"], architecture)
+        add_for_architectures(include, "firmware-intel-sound", ["amd64", "i386"], architecture)
+        add_for_architectures(include, "firmware-nvidia-graphics", ["amd64", "i386"], architecture)
+
     if current_project.integrate_network:
         include.append("network-manager")
         include.append("iproute2")
@@ -494,6 +499,10 @@ def setup_build_debian(builditems, for64bits, architecture):
     if current_project.integrate_liamounts:
         include.append("at")
         include.append("bindfs")
+
+    if current_project.integrate_cpu_microcode_for_x86:
+        add_for_architectures(include, "intel-microcode", ["amd64", "i386"], architecture)
+        add_for_architectures(include, "amd64-microcode", ["amd64", "i386"], architecture)
 
     include += current_project.user_packages
     include = exclude_array(include, current_project.exclude_packages)
@@ -1235,6 +1244,9 @@ def generate_syslbuild_project():
         cmdline += " logo.nologo"
     else:
         cmdline += " fbcon=nodefer"
+
+    if current_project.disable_hardware_vulnerabilities_fixs_boost_old_cpu:
+        cmdline += " mitigations=off"
 
     boot_splash_substring = " splash earlysplash"
     if current_project.boot_splash:

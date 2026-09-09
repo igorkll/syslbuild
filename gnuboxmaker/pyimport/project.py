@@ -85,6 +85,7 @@ class Project:
 
     integrate_xwayland: bool = True
     integrate_firmwares: bool = True
+    integrate_firmwares2: bool = True
     integrate_armbian_firmwares_if_need: bool = True
     integrate_raspberry_firmwares_if_need: bool = True
     integrate_bluetooth: bool = True
@@ -94,12 +95,14 @@ class Project:
     integrate_network_wifi: bool = True
     integrate_audio: bool = True
     integrate_advanced_gpu_packages: bool = True
+    integrate_cpu_microcode_for_x86: bool = True
 
     wifi_autoconnect_name: str = ""
     wifi_autoconnect_password: str = ""
     wifi_autoconnect_security: str = "wpa-psk"
 
     plymouth_disable_esc_button: bool = True
+    disable_hardware_vulnerabilities_fixs_boost_old_cpu: bool = True
 
     export_x86_64: bool = True
     export_x86: bool = False
