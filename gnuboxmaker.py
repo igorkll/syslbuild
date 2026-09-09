@@ -398,7 +398,7 @@ def getTempPackages():
     temp_packages += current_project.temp_packages
 
     if current_project.integrate_liamounts:
-        temp_packages += ["gcc"]
+        temp_packages += ["gcc", "libc6-dev"]
 
     return temp_packages
 
