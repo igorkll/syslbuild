@@ -334,7 +334,7 @@ EOF
 
     return last_setup
 
-def makeFinalChroot():
+def makeFinalChroot(chroot_scripts_directory):
     finalChrootStr = ""
 
     delete_packages = getTempPackages()
@@ -376,7 +376,7 @@ def setup_chroot_script():
     with open(os.path.join(chroot_scripts_directory, "last_setup.sh"), "w") as f:
         f.write(gen_last_non_systemd_script())
 
-    makeFinalChroot()
+    makeFinalChroot(chroot_scripts_directory)
     scripts.append([f"chroot/final.sh", False, False])
 
     scripts.append([f"files/cleanup.sh", False, False])
@@ -398,7 +398,7 @@ def getTempPackages():
     temp_packages += current_project.temp_packages
 
     if current_project.integrate_liamounts:
-        temp_packages += "gcc"
+        temp_packages += ["gcc"]
 
     return temp_packages
 

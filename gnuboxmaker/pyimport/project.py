@@ -104,7 +104,7 @@ class Project:
     wifi_autoconnect_security: str = "wpa-psk"
 
     plymouth_disable_esc_button: bool = True
-    disable_hardware_vulnerabilities_fixs_boost_old_cpu: bool = True
+    disable_hardware_vulnerabilities_fixs_boost_old_cpu: bool = False
 
     export_x86_64: bool = True
     export_x86: bool = False
