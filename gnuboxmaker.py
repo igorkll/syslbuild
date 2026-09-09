@@ -953,15 +953,22 @@ def setup_write_bins(builditems):
     embedded_plymouth_base_path = "embedded-plymouth/release-binary/debian-bookworm-plymouth-22.02.122-patched"
 
     directories = [
-        ["/usr", RIGHTS_755]
+        ["/usr", RIGHTS_755],
+        ["/etc/default", RIGHTS_755, RIGHTS_755],
     ]
+
+    x32_and_x64 = []
+
+    if current_project.integrate_cpu_microcode_for_x86:
+        x32_and_x64.append([get_gnuboxmaker_dirpath("misc/amd64-microcode"), "/etc/default/amd64-microcode", RIGHTS_644])
+        x32_and_x64.append([get_gnuboxmaker_dirpath("misc/intel-microcode"), "/etc/default/intel-microcode", RIGHTS_644])
 
     # ---------------------- x86_64
 
     items = [
         ["kernel_image/amd64/kernel_modules", "/usr", RIGHTS_644_755],
         ["kernel_image/amd64/kernel.img", "/kernel.img", RIGHTS_644]
-    ]
+    ] + x32_and_x64
 
     if current_project.boot_splash and current_project.plymouth_disable_esc_button:
         items.append([f"{embedded_plymouth_base_path}/x86_64", "/", RIGHTS_755])
@@ -981,7 +988,7 @@ def setup_write_bins(builditems):
     items = [
         ["kernel_image/i386/kernel_modules", "/usr", RIGHTS_644_755],
         ["kernel_image/i386/kernel.img", "/kernel.img", RIGHTS_644]
-    ]
+    ] + x32_and_x64
 
     if current_project.boot_splash and current_project.plymouth_disable_esc_button:
         items.append([f"{embedded_plymouth_base_path}/x86", "/", RIGHTS_755])
@@ -1081,7 +1088,8 @@ def setup_build_base(builditems, cmdline):
         ["/usr/lib/firmware", RIGHTS_755, RIGHTS_755],
         ["/usr/local/sbin", RIGHTS_755, RIGHTS_755],
         ["/usr/local/bin", RIGHTS_755, RIGHTS_755],
-        ["/etc/systemd/system/multi-user.target.wants", RIGHTS_755, RIGHTS_755]
+        ["/etc/systemd/system/multi-user.target.wants", RIGHTS_755, RIGHTS_755],
+        ["/etc/default", RIGHTS_755, RIGHTS_755]
     ]
 
     items = [
