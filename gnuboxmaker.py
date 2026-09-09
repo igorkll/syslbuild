@@ -334,6 +334,17 @@ EOF
 
     return last_setup
 
+def makeFinalChroot():
+    finalChrootStr = ""
+
+    delete_packages = getTempPackages()
+    delete_packages += current_project.delete_packages
+
+    for package in delete_packages:
+        finalChrootStr += f"apt purge \"{package}\"\n"
+
+    writeText(os.path.join(chroot_scripts_directory, "final.sh"), finalChrootStr)
+
 def setup_chroot_script():
     chroot_project_directory = os.path.join(path_resources, "chroot")
     chroot_scripts_directory = os.path.join(path_temp_syslbuild, "chroot")
@@ -365,7 +376,10 @@ def setup_chroot_script():
     with open(os.path.join(chroot_scripts_directory, "last_setup.sh"), "w") as f:
         f.write(gen_last_non_systemd_script())
 
-    scripts.append([f"files/cleanup_after_firstboot.sh", False, False])
+    makeFinalChroot()
+    scripts.append([f"chroot/final.sh", False, False])
+
+    scripts.append([f"files/cleanup.sh", False, False])
 
     return scripts
 
@@ -378,6 +392,15 @@ def get_t64_suffix(debian_suite, for64bits):
 def add_for_architectures(includeList, packageName, architectures, architecture):
     if architectures is None or architecture in architectures:
         includeList.append(packageName)
+
+def getTempPackages():
+    temp_packages = []
+    temp_packages += current_project.temp_packages
+
+    if current_project.integrate_liamounts:
+        temp_packages += "gcc"
+
+    return temp_packages
 
 def setup_build_debian(builditems, for64bits, architecture):
     include = [
@@ -504,7 +527,7 @@ def setup_build_debian(builditems, for64bits, architecture):
         add_for_architectures(include, "intel-microcode", ["amd64", "i386"], architecture)
         add_for_architectures(include, "amd64-microcode", ["amd64", "i386"], architecture)
 
-    include += current_project.user_packages
+    include += current_project.user_packages + getTempPackages()
     include = exclude_array(include, current_project.exclude_packages)
     include = remove_duplicates(include)
 
@@ -897,7 +920,7 @@ Storage=none""")
     shutil.copy("gnuboxmaker/system_preinit.sh", os.path.join(path_temp_syslbuild, "files", "system_preinit.sh"))
     shutil.copy("gnuboxmaker/system_init_hook.sh", os.path.join(path_temp_syslbuild, "files", "system_init_hook.sh"))
     shutil.copy("gnuboxmaker/fix.sh", os.path.join(path_temp_syslbuild, "files", "fix.sh"))
-    shutil.copy("gnuboxmaker/cleanup_after_firstboot.sh", os.path.join(path_temp_syslbuild, "files", "cleanup_after_firstboot.sh"))
+    shutil.copy("gnuboxmaker/cleanup.sh", os.path.join(path_temp_syslbuild, "files", "cleanup.sh"))
     shutil.copy("gnuboxmaker/fix-rpi-x11.conf", os.path.join(path_temp_syslbuild, "files", "fix-rpi-x11.conf"))
 
     if current_project.allow_updatescript and current_project.separate_data_partition:

@@ -7,7 +7,9 @@ class Project:
 
     distro: str = "debian"
     user_packages: list[str] = field(default_factory=list)
+    temp_packages: list[str] = field(default_factory=list)
     exclude_packages: list[str] = field(default_factory=list)
+    delete_packages: list[str] = field(default_factory=list)
     
     debian_variant: str = "minbase"
     debian_suite: str = default_value
