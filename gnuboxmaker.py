@@ -405,6 +405,8 @@ def getTempPackages():
 def setup_build_debian(builditems, for64bits, architecture):
     include = [
         "initramfs-tools",
+        "cpio",
+        "zstd",
 
         "systemd",
         "systemd-sysv",
