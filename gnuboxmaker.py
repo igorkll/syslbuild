@@ -1233,6 +1233,8 @@ def generate_syslbuild_project():
 
     if not current_project.boot_kernel_logo:
         cmdline += " logo.nologo"
+    else:
+        cmdline += " fbcon=nodefer"
 
     boot_splash_substring = " splash earlysplash"
     if current_project.boot_splash:
