@@ -9,5 +9,5 @@ if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
 else
     clear
     reset
-    exec bash
+    exec -l bash
 fi

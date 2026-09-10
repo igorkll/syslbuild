@@ -6,7 +6,7 @@ if [ -e "/gnubox/.session_mode_tty" ]; then
     else
         clear
         reset
-        exec bash
+        exec -l bash
     fi
 fi
 
