@@ -53,6 +53,10 @@ if [ -e "/root/data/after_update_or_first_start.flag" ]; then
         esac
     done
 
+    if [ -d "/root/gnubox/etc_overwrite" ]; then
+        /nativechroot /root /usr/bin/rsync -aHAX --copy-dirlinks "/gnubox/etc_overwrite/" "/data/etc/"
+    fi
+
     rm -f /root/data/after_update_or_first_start.flag
 fi
 

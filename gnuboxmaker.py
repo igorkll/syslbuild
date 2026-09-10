@@ -843,12 +843,14 @@ def setup_write_files():
     user_files = os.path.join(path_temp_syslbuild, "files", "user_files")
     devicetree = os.path.join(path_temp_syslbuild, "files", "devicetree")
     user_initramfs = os.path.join(path_temp_syslbuild, "files", "user_initramfs")
+    etc_overwrite = os.path.join(path_temp_syslbuild, "files", "etc_overwrite")
 
     os.makedirs(etc_config, exist_ok=True)
     os.makedirs(systemd_config, exist_ok=True)
     os.makedirs(user_files, exist_ok=True)
     os.makedirs(devicetree, exist_ok=True)
     os.makedirs(user_initramfs, exist_ok=True)
+    os.makedirs(etc_overwrite, exist_ok=True)
 
     writeText(os.path.join(systemd_config, "logind.conf"), f"""[Login]
 NAutoVTs=0
@@ -918,6 +920,7 @@ Storage=none""")
     copy_files(os.path.join(path_resources, "files"), user_files)
     copy_files(os.path.join(path_resources, "devicetree"), devicetree)
     copy_files(os.path.join(path_resources, "initramfs"), user_initramfs)
+    copy_files(os.path.join(path_resources, "etc_overwrite"), etc_overwrite)
 
     shutil.copy(os.path.join(path_resources, "runshell.sh"), os.path.join(path_temp_syslbuild, "files", "runshell.sh"))
     shutil.copy(os.path.join(path_resources, "preinit.sh"), os.path.join(path_temp_syslbuild, "files", "preinit.sh"))
@@ -1091,6 +1094,7 @@ def setup_build_base(builditems, cmdline):
         ["/run", RIGHTS_755],
 
         ["/gnubox/user_initramfs", RIGHTS_755, RIGHTS_755],
+        ["/gnubox/etc_overwrite", RIGHTS_755, RIGHTS_755],
         ["/usr/lib/firmware", RIGHTS_755, RIGHTS_755],
         ["/usr/local/sbin", RIGHTS_755, RIGHTS_755],
         ["/usr/local/bin", RIGHTS_755, RIGHTS_755],
@@ -1117,6 +1121,7 @@ def setup_build_base(builditems, cmdline):
 
         ["files/user_files", "/", RIGHTS_755, False, None, False, True],
         ["files/user_initramfs", "/gnubox/user_initramfs", RIGHTS_755],
+        ["files/etc_overwrite", "/gnubox/etc_overwrite", RIGHTS_755],
     ]
 
     if current_project.allow_updatescript and current_project.separate_data_partition:

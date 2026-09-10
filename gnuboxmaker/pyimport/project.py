@@ -167,6 +167,7 @@ def update_project_structure():
     os.makedirs(os.path.join(__main__.path_resources, "chroot"), exist_ok=True)
     os.makedirs(os.path.join(__main__.path_resources, "files"), exist_ok=True)
     os.makedirs(os.path.join(__main__.path_resources, "initramfs"), exist_ok=True)
+    os.makedirs(os.path.join(__main__.path_resources, "etc_overwrite"), exist_ok=True)
 
     runshell_path = os.path.join(__main__.path_resources, "runshell.sh")
     if not os.path.isfile(runshell_path):
