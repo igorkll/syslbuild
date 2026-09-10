@@ -53,6 +53,16 @@ def setup_build_targets(builditems, cmdline):
 
     if __main__.current_project.separate_data_partition:
         builditems.append({
+            "type": "directory",
+            "name": "data default",
+            "export": False,
+
+            "directories": [
+                ["/after_update_or_first_start.flag", [0, 0, "0000"]]
+            ]
+        })
+
+        builditems.append({
             "type": "filesystem",
             "name": "data.img",
             "export": False,
@@ -60,6 +70,8 @@ def setup_build_targets(builditems, cmdline):
             "fs_type": "ext4",
             "size": __main__.current_project.minsize_data_partition,
             "label": "DATA",
+
+            "source": "data default",
 
             "chmod": [
                 ["/", "1777", False]
