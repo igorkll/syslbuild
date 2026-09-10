@@ -18,7 +18,7 @@ data_link() {
     /nativemount --bind "/root/data/$1" "/root/$1"
 }
 
-if [ -e "/root/data/after_update_or_first_start.flag" ]; then
+if [ -d "/root/data/after_update_or_first_start.flag" ]; then
     for x in $(cat /root/proc/cmdline); do
         case $x in
             home_merge_add)
@@ -63,7 +63,7 @@ if [ -e "/root/data/after_update_or_first_start.flag" ]; then
         esac
     done
 
-    rm -f /root/data/after_update_or_first_start.flag
+    rmdir /root/data/after_update_or_first_start.flag
 fi
 
 for x in $(cat /root/proc/cmdline); do
