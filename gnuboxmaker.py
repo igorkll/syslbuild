@@ -655,7 +655,7 @@ def setup_download(builditems):
     unpackRelease("linux-bootloaders.tar.gz")
 
     if current_project.integrate_liamounts:
-        addDownload("liamounts", "2.1")
+        addDownload("liamounts", "2.2")
 
     if current_project.boot_splash and current_project.plymouth_disable_esc_button:
         addDownload("embedded-plymouth", "1.2")
