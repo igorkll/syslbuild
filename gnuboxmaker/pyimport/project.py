@@ -62,6 +62,9 @@ class Project:
     separate_data_partition_home_link: bool = True
     separate_data_partition_var_link: bool = False
     separate_data_partition_etc_link: bool = False
+    separate_data_partition_home_merge_mode: str = "none"
+    separate_data_partition_var_merge_mode: str = "none"
+    separate_data_partition_etc_merge_mode: str = "add"
     var_is_temp: bool = True
     minsize_boot_partition: str = "64MB"
     minsize_efi_partition: str = "64MB"

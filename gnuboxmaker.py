@@ -30,6 +30,11 @@ weston_shell_variants = ["kiosk", "desktop"]
 splash_mode_variants = ["center", "fill", "contain", "cover"]
 boot_sound_variants = ["none", "init", "logo"]
 
+# надо еще добавить режим как в fedora silverblue
+# чтобы учитывалась и директория от старой версии, новой и текущей
+# и заменялись только те файлы которые пользователь не изменил но они изменились между старой и новой версии
+dir_merge_variants = ["none", "overwrite", "add"]
+
 QUIET_AGETTY = "--noreset --nohostname --nohints --nonewline --noclear --skip-login --noissue"
 RIGHTS_644 = [0, 0, "0644"]
 RIGHTS_755 = [0, 0, "0755"]
@@ -1253,12 +1258,18 @@ def generate_syslbuild_project():
 
         if current_project.separate_data_partition_home_link:
             cmdline += " home_link"
+            if current_project.separate_data_partition_home_merge_mode != "none":
+                cmdline += f" home_merge_{current_project.separate_data_partition_home_merge_mode}"
 
         if current_project.separate_data_partition_var_link:
             cmdline += " var_link"
+            if current_project.separate_data_partition_var_merge_mode != "none":
+                cmdline += f" var_merge_{current_project.separate_data_partition_var_merge_mode}"
 
         if current_project.separate_data_partition_etc_link:
             cmdline += " etc_link"
+            if current_project.separate_data_partition_etc_merge_mode != "none":
+                cmdline += f" etc_merge_{current_project.separate_data_partition_etc_merge_mode}"
 
     if current_project.allow_updatescript:
         cmdline += " allow_updatescript while_after_updatescript_crash"
