@@ -26,6 +26,7 @@ file_dev=$(stat -c %d "$BOOTIMAGE")
 data_dev=$(stat -c %d /data)
 
 if [ "$file_dev" -eq "$data_dev" ]; then
+    mkdir -p -m 0000 /data/after_update_or_first_start.flag
     mount -o remount,rw /
 
     rm -rf /updatescript

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 data_merge_add() {
     local dir="$1"
@@ -18,39 +18,43 @@ data_link() {
     /nativemount --bind "/root/data/$1" "/root/$1"
 }
 
-for x in $(cat /root/proc/cmdline); do
-    case $x in
-        home_merge_add)
-            data_merge_add "home"
-            data_merge_add "root"
-            ;;
-        
-        var_merge_add)
-            data_merge_add "var"
-            ;;
+if [ -e "/root/data/after_update_or_first_start.flag" ]; then
+    for x in $(cat /root/proc/cmdline); do
+        case $x in
+            home_merge_add)
+                data_merge_add "home"
+                data_merge_add "root"
+                ;;
+            
+            var_merge_add)
+                data_merge_add "var"
+                ;;
 
-        etc_merge_add)
-            data_merge_add "etc"
-            ;;
-    esac
-done
+            etc_merge_add)
+                data_merge_add "etc"
+                ;;
+        esac
+    done
 
-for x in $(cat /root/proc/cmdline); do
-    case $x in
-        home_merge_overwrite)
-            data_merge_overwrite "home"
-            data_merge_overwrite "root"
-            ;;
-        
-        var_merge_overwrite)
-            data_merge_overwrite "var"
-            ;;
+    for x in $(cat /root/proc/cmdline); do
+        case $x in
+            home_merge_overwrite)
+                data_merge_overwrite "home"
+                data_merge_overwrite "root"
+                ;;
+            
+            var_merge_overwrite)
+                data_merge_overwrite "var"
+                ;;
 
-        etc_merge_overwrite)
-            data_merge_overwrite "etc"
-            ;;
-    esac
-done
+            etc_merge_overwrite)
+                data_merge_overwrite "etc"
+                ;;
+        esac
+    done
+
+    rm -f /root/data/after_update_or_first_start.flag
+fi
 
 for x in $(cat /root/proc/cmdline); do
     case $x in
