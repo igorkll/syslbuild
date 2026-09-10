@@ -23,6 +23,7 @@ copy_exec /usr/sbin/blockdev /usr/sbin
 copy_exec /usr/bin/dd /nativedd
 copy_exec /usr/bin/umount /nativeumount
 copy_exec /usr/bin/cp /nativeucp
+copy_exec /usr/sbin/chroot /nativechroot
 
 if [ -e "/gnubox/startup.wav" ]; then
     cp /gnubox/startup.wav "${DESTDIR}/startup.wav"

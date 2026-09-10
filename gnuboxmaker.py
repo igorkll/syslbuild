@@ -407,6 +407,7 @@ def setup_build_debian(builditems, for64bits, architecture):
         "initramfs-tools",
         "cpio",
         "zstd",
+        "rsync",
 
         "systemd",
         "systemd-sysv",

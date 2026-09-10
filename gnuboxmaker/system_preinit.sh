@@ -1,7 +1,13 @@
 #!/bin/sh
 
-data_merge_overwrite() {
+data_merge_add() {
+    local dir="$1"
+    /nativechroot /root /usr/bin/rsync -aHAX --copy-dirlinks --ignore-existing "/$dir/" "/data/$dir/"
+}
 
+data_merge_overwrite() {
+    local dir="$1"
+    /nativechroot /root /usr/bin/rsync -aHAX --copy-dirlinks "/$dir/" "/data/$dir/"
 }
 
 data_link() {
@@ -14,12 +20,29 @@ data_link() {
 
 for x in $(cat /root/proc/cmdline); do
     case $x in
+        home_merge_add)
+            data_merge_add "home"
+            data_merge_add "root"
+            ;;
+        
+        var_merge_add)
+            data_merge_add "var"
+            ;;
+
+        etc_merge_add)
+            data_merge_add "etc"
+            ;;
+    esac
+done
+
+for x in $(cat /root/proc/cmdline); do
+    case $x in
         home_merge_overwrite)
             data_merge_overwrite "home"
             data_merge_overwrite "root"
             ;;
         
-        home_merge_overwrite)
+        var_merge_overwrite)
             data_merge_overwrite "var"
             ;;
 
