@@ -1272,7 +1272,7 @@ def generate_syslbuild_project():
                 cmdline += f" var_merge_{current_project.separate_data_partition_var_merge_mode}"
 
         if current_project.separate_data_partition_etc_link:
-            cmdline += " etc_link"
+            cmdline += " etc_link etc_overwrite "
             if current_project.separate_data_partition_etc_merge_mode != "none":
                 cmdline += f" etc_merge_{current_project.separate_data_partition_etc_merge_mode}"
 
