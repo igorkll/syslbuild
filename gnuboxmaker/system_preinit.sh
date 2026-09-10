@@ -1,12 +1,33 @@
 #!/bin/sh
 
+data_merge_overwrite() {
+
+}
+
 data_link() {
 	if [ ! -d "/root/data/$1" ]; then
-        cp -a "/root/$1" "/root/data/$1"
+        /nativeucp -a "/root/$1" "/root/data/$1"
     fi
 
     /nativemount --bind "/root/data/$1" "/root/$1"
 }
+
+for x in $(cat /root/proc/cmdline); do
+    case $x in
+        home_merge_overwrite)
+            data_merge_overwrite "home"
+            data_merge_overwrite "root"
+            ;;
+        
+        home_merge_overwrite)
+            data_merge_overwrite "var"
+            ;;
+
+        etc_merge_overwrite)
+            data_merge_overwrite "etc"
+            ;;
+    esac
+done
 
 for x in $(cat /root/proc/cmdline); do
     case $x in
