@@ -289,7 +289,6 @@ these changes to the kernel config are applied automatically when building the k
 * support for the operation (packing and unpacking) of initramfs with a multiblock structure
 * add riscV support and an example for the opencomputers 2 mod in minecraft
 * an assembly element that collects popular ready-made modules into your rootfs. such as glibc, coreutils, busybox and other gnu utilities
-* the ability to use the specified version of grub to create images, rather than the one provided in the host system
 * built-in chroot environment for running syslbuild and other package programs
 ### completed
 * execution of arbitrary scripts in the system's chroot, with qemu-static support for execution during assembly for a different architecture
@@ -304,6 +303,7 @@ these changes to the kernel config are applied automatically when building the k
 * to save the source code of more than one kernel for one architecture (so that the cache works normally when building multiple cores for one architecture)
 * in directory items, you can specify the rights for directories and files in copy objects separately.
 * the ability to specify a filesystem revision
+* the ability to use the specified version of grub to create images, rather than the one provided in the host system
 
 ## singleboards whose assembly is guaranteed to work
 * orange pi zero 3
