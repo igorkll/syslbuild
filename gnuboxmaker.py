@@ -141,7 +141,7 @@ def request_kernel(builditems, architecture, filtername):
 
     buildLog(f"request kernel: {architecture} {filtername}")
     buildLog(f"working dir: {working_dir}")
-    buildLog(f"kernel dir: {kernel_path}")
+    buildLog(f"kernel path: {kernel_path}")
 
     if os.path.exists(kernel_path):
         return
