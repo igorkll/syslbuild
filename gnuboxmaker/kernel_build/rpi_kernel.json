@@ -72,11 +72,11 @@
             ["bcm2709-rpi-2-b.dtb", "/boot/bcm2709-rpi-2-b.dtb"],
             ["bcm2709-rpi-cm2.dtb", "/boot/bcm2709-rpi-cm2.dtb"],
 
-            ["kernel_headers_rpi_kernel", "/kernel_headers"],
-            ["kernel_modules_rpi_kernel", "/kernel_modules"],
-            ["kernel_rpi_kernel.img", "/kernel.img"],
-            ["kernel_config_rpi_kernel", "/kernel_config"],
-            ["Module_symvers", "/Module.symvers"]
+            ["kernel_headers_rpi_kernel", "/kernel_headers", [[0, 0, "0644"], [0, 0, "0755"]], false, [0, 0, "0755"]],
+            ["kernel_modules_rpi_kernel", "/kernel_modules", [[0, 0, "0644"], [0, 0, "0755"]], false, [0, 0, "0755"]],
+            ["kernel_rpi_kernel.img", "/kernel.img", [[0, 0, "0644"], [0, 0, "0755"]], false, [0, 0, "0755"]],
+            ["kernel_config_rpi_kernel", "/kernel_config", [[0, 0, "0644"], [0, 0, "0755"]], false, [0, 0, "0755"]],
+            ["Module_symvers", "/Module.symvers", [[0, 0, "0644"], [0, 0, "0755"]], false, [0, 0, "0755"]]
         ]
     }
 ]

@@ -80,18 +80,14 @@
         "name": "sunxi",
         "export": true,
 
-        "directories": [
-            ["/dtbs", [0, 0, "0755"]]
-        ],
-
         "items": [
-            ["kernel_headers_sunxi", "/kernel_headers"],
-            ["kernel_modules_sunxi", "/kernel_modules"],
-            ["kernel_sunxi.img", "/kernel.img"],
-            ["kernel_config_sunxi", "/kernel_config"],
-            ["Module_symvers_sunxi", "/Module.symvers"],
+            ["kernel_headers_sunxi", "/kernel_headers", [[0, 0, "0644"], [0, 0, "0755"]], false, [0, 0, "0755"]],
+            ["kernel_modules_sunxi", "/kernel_modules", [[0, 0, "0644"], [0, 0, "0755"]], false, [0, 0, "0755"]],
+            ["kernel_sunxi.img", "/kernel.img", [[0, 0, "0644"], [0, 0, "0755"]], false, [0, 0, "0755"]],
+            ["kernel_config_sunxi", "/kernel_config", [[0, 0, "0644"], [0, 0, "0755"]], false, [0, 0, "0755"]],
+            ["Module_symvers_sunxi", "/Module.symvers", [[0, 0, "0644"], [0, 0, "0755"]], false, [0, 0, "0755"]],
 
-            ["sunxi_dtbs", "/dtbs", [[0, 0, "0644"], [0, 0, "0755"]]]
+            ["sunxi_dtbs", "/dtbs", [[0, 0, "0644"], [0, 0, "0755"]], false, [0, 0, "0755"]]
         ]
     }
 ]

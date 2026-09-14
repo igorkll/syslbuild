@@ -55,11 +55,11 @@
         ],
 
         "items": [
-            ["kernel_headers_rpi_kernel7", "/kernel_headers"],
-            ["kernel_modules_rpi_kernel7", "/kernel_modules"],
-            ["kernel_rpi_kernel7.img", "/kernel.img"],
-            ["kernel_config_rpi_kernel7", "/kernel_config"],
-            ["Module_symvers", "/Module.symvers"]
+            ["kernel_headers_rpi_kernel7", "/kernel_headers", [[0, 0, "0644"], [0, 0, "0755"]], false, [0, 0, "0755"]],
+            ["kernel_modules_rpi_kernel7", "/kernel_modules", [[0, 0, "0644"], [0, 0, "0755"]], false, [0, 0, "0755"]],
+            ["kernel_rpi_kernel7.img", "/kernel.img", [[0, 0, "0644"], [0, 0, "0755"]], false, [0, 0, "0755"]],
+            ["kernel_config_rpi_kernel7", "/kernel_config", [[0, 0, "0644"], [0, 0, "0755"]], false, [0, 0, "0755"]],
+            ["Module_symvers", "/Module.symvers", [[0, 0, "0644"], [0, 0, "0755"]], false, [0, 0, "0755"]]
         ]
     }
 ]
