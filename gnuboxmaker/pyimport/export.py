@@ -1,14 +1,23 @@
 from __main__ import *
 import __main__
 
-def export_x86(builditems):
+def get_desktop_architectures():
+    archs = ["amd64", "i386"]
+
+    if __main__.current_project.export_img_uefi_arm64:
+        archs.append("arm64")
+
+    return archs
+
+def export_desktop(builditems):
     setup_export_initramfs(builditems)
+    archs = get_desktop_architectures()
 
     builditems.append({
-        "architectures": ["amd64", "i386"],
+        "architectures": archs,
 
         "type": "directory",
-        "name": "rootfs directory x86",
+        "name": "rootfs directory desktop",
         "export": False,
 
         "items": [
@@ -18,13 +27,13 @@ def export_x86(builditems):
     })
 
     builditems.append({
-        "architectures": ["amd64", "i386"],
+        "architectures": archs,
 
         "type": "filesystem",
         "name": "rootfs.img",
         "export": False,
 
-        "source": "rootfs directory x86",
+        "source": "rootfs directory desktop",
 
         "fs_type": "ext4",
         "size": __main__.current_project.size_root_partition, 
@@ -33,8 +42,8 @@ def export_x86(builditems):
     })
 
 def setup_build_targets(builditems, cmdline):
-    if __main__.current_project.export_img_bios_mbr or __main__.current_project.export_img_bios_gpt or __main__.current_project.export_img_uefi_gpt or __main__.current_project.export_img_bios_and_uefi_gpt:
-        export_x86(builditems)
+    if __main__.current_project.export_img_bios_mbr or __main__.current_project.export_img_bios_gpt or __main__.current_project.export_img_uefi_gpt or __main__.current_project.export_img_bios_and_uefi_gpt or __main__.current_project.export_img_uefi_arm64:
+        export_desktop(builditems)
 
     appendPartitions = []
 
@@ -137,7 +146,7 @@ def setup_build_targets(builditems, cmdline):
 
     if __main__.current_project.export_img_uefi_gpt or __main__.current_project.export_img_bios_and_uefi_gpt or __main__.current_project.export_img_uefi_arm64:
         builditems.append({
-            "architectures": ["amd64", "i386"],
+            "architectures": get_desktop_architectures(),
 
             "type": "filesystem",
             "name": "uefi boot.img",

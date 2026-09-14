@@ -96,6 +96,18 @@ def setup_export_debian_initramfs(builditems, forPlatform, architecture_override
             "source": "rootfs directory"
         })
 
+        if __main__.current_project.export_img_uefi_arm64:
+            builditems.append({
+                "architectures": ["arm64"],
+
+                "type": "debian-export-initramfs",
+                "name": "initramfs.img",
+                "export": False,
+
+                "kernel_config": "kernel_image/arm64/kernel_config",
+                "source": "rootfs directory"
+            })
+
 def setup_export_initramfs(builditems, forPlatform=None, architecture_override=None):
     if __main__.current_project.distro == "debian":
         setup_export_debian_initramfs(builditems, forPlatform, architecture_override)
