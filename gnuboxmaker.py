@@ -1021,6 +1021,10 @@ def setup_write_bins(builditems):
     # ---------------------- arm64
     items = []
 
+    if current_project.export_img_uefi_arm64:
+        items.append(["kernel_image/arm64/kernel_modules", "/usr", RIGHTS_644_755])
+        items.append(["kernel_image/arm64/kernel.img", "/kernel.img", RIGHTS_644])
+
     if current_project.boot_splash and current_project.plymouth_disable_esc_button:
         items.append([f"{embedded_plymouth_base_path}/arm64", "/", RIGHTS_755])
 
