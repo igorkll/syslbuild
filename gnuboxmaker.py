@@ -185,6 +185,9 @@ def setup_build_architectures(builditems, architectures):
             build_rpi64_kernel = True
             request_kernel(builditems, "arm64", "rpi_5")
 
+        if current_project.export_img_uefi_arm64:
+            request_kernel(builditems, "arm64", "uefi_arm64")
+
     if current_project.export_arm:
         architectures.append("armhf")
         if current_project.export_img_rpi_32:
