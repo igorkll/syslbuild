@@ -135,7 +135,7 @@ def setup_build_targets(builditems, cmdline):
             }
         })
 
-    if __main__.current_project.export_img_uefi_gpt or __main__.current_project.export_img_bios_and_uefi_gpt:
+    if __main__.current_project.export_img_uefi_gpt or __main__.current_project.export_img_bios_and_uefi_gpt or __main__.current_project.export_img_uefi_arm64:
         builditems.append({
             "architectures": ["amd64", "i386"],
 
@@ -194,6 +194,28 @@ def setup_build_targets(builditems, cmdline):
                 "esp": 0,
                 "boot": 2,
                 "efiAndBios": True
+            }
+        })
+
+    if __main__.current_project.export_img_uefi_arm64:
+        builditems.append({
+            "architectures": ["arm64"],
+
+            "type": "full-disk-image",
+            "name": f"{__main__.current_project_name} UEFI ARM64.img",
+            "export": True,
+
+            "size": "auto + (10 * 1024 * 1024)",
+
+            "partitionTable": "gpt",
+            "partitions": [
+                ["uefi boot.img", "efi"],
+                ["rootfs.img", "linux"]
+            ] + appendPartitions,
+
+            "bootloader": grub_info | {
+                "esp": 0,
+                "boot": 1
             }
         })
 
