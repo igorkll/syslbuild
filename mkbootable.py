@@ -260,7 +260,7 @@ build_log(f"output: {args.output}")
 # --------------------------------------- build project
 
 platforms = {
-    # bootable images (.img)
+    # desktop bootable images (.img)
     "desktop_64": {
         "project_config": {
             "export_x86_64": True,
@@ -275,6 +275,8 @@ platforms = {
         },
         "image_path": "output/i386/@ BIOS GPT.img"
     },
+
+    # single boards bootable images (.img)
     "raspberry_pi_64": {
         "project_config": {
             "export_arm64": True,
