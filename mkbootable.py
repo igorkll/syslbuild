@@ -60,6 +60,7 @@ argsparser.add_argument(
     choices=[
         "desktop_64",
         "desktop_32",
+        "desktop_arm64",
         
         "raspberry_pi_64",
         "raspberry_pi_32",
@@ -274,6 +275,13 @@ platforms = {
             "export_img_bios_gpt": True
         },
         "image_path": "output/i386/@ BIOS GPT.img"
+    },
+    "desktop_arm64": {
+        "project_config": {
+            "export_arm64": True,
+            "export_img_uefi_arm64": True
+        },
+        "image_path": "output/arm64/@ UEFI ARM64.img"
     },
 
     # single boards bootable images (.img)

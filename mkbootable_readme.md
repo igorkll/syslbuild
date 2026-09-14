@@ -28,6 +28,7 @@ recommended OS: Ubuntu 24.04 LTS (Noble Numbat)
 there may be nuances in the support of some platforms. read about it here: https://github.com/igorkll/Gnubox-Maker  
 * desktop_64 (default)
 * desktop_32
+* desktop_arm64
 * raspberry_pi_64
 * raspberry_pi_32
 * raspberry_pi_armel
