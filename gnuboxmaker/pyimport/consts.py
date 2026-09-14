@@ -345,4 +345,17 @@ virtio_pci
 xfs
 xhci_hcd
 xhci_pci
+
+
+
+
+mfd_rp1
+gpio_keys
+pwm_bcm2835
+xts
+aes_x86_64
+aes_generic
+snd_hda_codec_idt
+snd_hda_codec_cirrus
+snd_hda_codec_conexant
 """
