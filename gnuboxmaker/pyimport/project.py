@@ -104,6 +104,7 @@ class Project:
 
     initramfs_use_list_mode: bool = True
     initramfs_add_internal_modules_list: bool = True
+    initramfs_add_modules: list[str] = field(default_factory=list)
 
     wifi_autoconnect_name: str = ""
     wifi_autoconnect_password: str = ""

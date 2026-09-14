@@ -1102,7 +1102,9 @@ def setup_build_base(builditems, cmdline):
         ["/usr/local/bin", RIGHTS_755, RIGHTS_755],
         ["/etc/systemd/system/multi-user.target.wants", RIGHTS_755, RIGHTS_755],
         ["/etc/default", RIGHTS_755, RIGHTS_755],
-        ["/usr/share/initramfs-tools/modules.d", RIGHTS_755, RIGHTS_755]
+
+        ["/usr/share/initramfs-tools/modules.d", RIGHTS_755, RIGHTS_755],
+        ["/etc/initramfs-tools/conf.d", RIGHTS_755, RIGHTS_755]
     ]
 
     items = [
@@ -1127,8 +1129,13 @@ def setup_build_base(builditems, cmdline):
         ["files/etc_overwrite", "/gnubox/etc_overwrite", RIGHTS_755]
     ]
 
+    if current_project.initramfs_use_list_mode:
+        items.append(["MODULES=list", "/etc/initramfs-tools/conf.d/99-gnubox.conf", RIGHTS_644, True])
+
     if current_project.initramfs_add_internal_modules_list:
         items.append([consts.modules_list, "/usr/share/initramfs-tools/modules.d/gnubox-modules.list", RIGHTS_644, True])
+
+    items.append(["\n".join(current_project.initramfs_add_modules), "/usr/share/initramfs-tools/modules.d/user-modules.list", RIGHTS_644, True])
 
     if current_project.allow_updatescript and current_project.separate_data_partition:
         items.append(["files/self_update.sh", "/usr/local/sbin/self_update", RIGHTS_755])
