@@ -57,7 +57,21 @@ argsparser.add_argument("--command", default=None, help="executes any command. p
 
 argsparser.add_argument(
     "--platform",
-    choices=["desktop_64", "desktop_32", "raspberry_pi_64", "raspberry_pi_32", "orange_pi_zero3", "rootfs_64", "rootfs_32", "rootfs_arm64", "rootfs_armhf", "rootfs_armel"],
+    choices=[
+        "desktop_64",
+        "desktop_32",
+        
+        "raspberry_pi_64",
+        "raspberry_pi_32",
+        "raspberry_pi_armel",
+        "orange_pi_zero3",
+        
+        "rootfs_64",
+        "rootfs_32",
+        "rootfs_arm64",
+        "rootfs_armhf",
+        "rootfs_armel"
+    ],
     default="desktop_64",
     help="Target platform (default: desktop_64)"
 )
