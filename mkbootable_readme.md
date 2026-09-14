@@ -77,7 +77,7 @@ if you have selected an encryption mode that requires a password (for example, d
 * --root-privileges - the application in the image will have root privileges
 * --sudo-privileges - it is a more "soft" version of "root-privileges". the application will not be launched from root. but it will be able to get root by executing sudo. no password is required and the user will see sudo execution on the screen
 * --multi-file - then not only the application file will be added to the image, but also all files from its directory. use carefully so as not to add unnecessary files to the image
-* --debug - enable the kernel log and root shell at UART0 115200
+* --debug - enable the kernel log and login shell (with "root" and "user") at UART0 115200
 * --clear-cache - cleans up the cache before building
 * --x11-session - enables x11 graphics session mode (wayland is used by default)
 * --fullscreen-logo - makes the bootlogo fullscreen

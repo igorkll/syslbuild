@@ -21,6 +21,8 @@ module_dir = os.path.join(gnuboxmaker_dir, "pyimport")
 
 sys.path.insert(0, module_dir)
 
+import consts
+
 # ---------------------------------------- data
 
 HandleKey_varians = ["ignore", "poweroff", "reboot", "suspend", "hibernate", "lock"] # halt, kexec
@@ -1099,7 +1101,8 @@ def setup_build_base(builditems, cmdline):
         ["/usr/local/sbin", RIGHTS_755, RIGHTS_755],
         ["/usr/local/bin", RIGHTS_755, RIGHTS_755],
         ["/etc/systemd/system/multi-user.target.wants", RIGHTS_755, RIGHTS_755],
-        ["/etc/default", RIGHTS_755, RIGHTS_755]
+        ["/etc/default", RIGHTS_755, RIGHTS_755],
+        ["/usr/share/initramfs-tools/modules.d", RIGHTS_755, RIGHTS_755]
     ]
 
     items = [
@@ -1121,8 +1124,11 @@ def setup_build_base(builditems, cmdline):
 
         ["files/user_files", "/", RIGHTS_755, False, None, False, True],
         ["files/user_initramfs", "/gnubox/user_initramfs", RIGHTS_755],
-        ["files/etc_overwrite", "/gnubox/etc_overwrite", RIGHTS_755],
+        ["files/etc_overwrite", "/gnubox/etc_overwrite", RIGHTS_755]
     ]
+
+    if current_project.initramfs_add_internal_modules_list:
+        items.append([consts.modules_list, "/usr/share/initramfs-tools/modules.d/gnubox-modules.list", RIGHTS_644, True])
 
     if current_project.allow_updatescript and current_project.separate_data_partition:
         items.append(["files/self_update.sh", "/usr/local/sbin/self_update", RIGHTS_755])

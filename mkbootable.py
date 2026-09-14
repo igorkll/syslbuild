@@ -377,7 +377,8 @@ def generate_project_config():
         "dont_use_splash_on_efi": False,
         "uartlogs": args.debug,
         "uartlogs_speed": 115200,
-        "uartlogs_rootshell": args.debug,
+        "uartlogs_login": args.debug,
+        "root_login_unlock": args.debug,
         "exclude_tty1_from_consoles": not args.enable_bootlogs,
         "exclude_tty1_from_consoles_in_quiet": True,
         "make_tty1_primary_console": False,
@@ -393,7 +394,7 @@ def generate_project_config():
         "session_user": "root" if args.root_privileges else "user",
         "session_mode": session_type,
         "minlogotime": 10,
-        "cmdline": "clear noCursorBlink vt.global_cursor_default=0 systemd.show_status=false",
+        "cmdline": "clear noCursorBlink vt.global_cursor_default=0 systemd.show_status=false", # so that the screen is cleaned even when only uartlogs is enabled and tty1 is not in the console.
         "sudo_privileges": args.sudo_privileges,
         "plymouth_disable_esc_button": not args.enable_bootlogs
     }
