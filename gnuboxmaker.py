@@ -1241,7 +1241,7 @@ def setup_build_base(builditems, cmdline):
         })
 
 def generate_syslbuild_project():
-    cmdline_console = ""
+    cmdline_console = "noctrlaltdel nosysrq sysrq=0"
 
     exclude_tty1_from_consoles = current_project.exclude_tty1_from_consoles or (current_project.exclude_tty1_from_consoles_in_quiet and current_project.boot_quiet)
 
