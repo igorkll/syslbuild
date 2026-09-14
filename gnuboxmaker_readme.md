@@ -54,6 +54,7 @@ if the platform you need is not available in gnubox maker, you can use syslbuild
 alternatively, you can fork gnubox maker and then offer a pull request  
 * x86_64 (BIOS, UEFI)
 * x86 (BIOS, UEFI)
+* arm64 (singleboards, UEFI)
 * orange pi zero 3 (export_arm64 && export_img_opi_zero3)
 * raspberry pi 5/4/3 (export_arm64 && export_img_rpi_64) (i tested this on raspberry pi 5, but in theory the image created via raspberry pi 64 should work on 5/4/3)
 * raspberry pi 2 (export_arm && export_img_rpi_32) (tested on raspberry pi 5)
