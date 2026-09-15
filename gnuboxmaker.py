@@ -502,6 +502,9 @@ def setup_build_debian(builditems, for64bits, architecture):
         include.append("plymouth") # install basic plymouth files. The part will later be replaced by embedded plymouth.
         include.append("plymouth-themes")
 
+        if current_project.plymouth_allow_render_text:
+            include.append("plymouth-label")
+
     if current_project.session_mode == "wayland" or current_project.session_mode == "x11" or current_project.session_mode == "tty_with_graphic_support":
         include.append("mesa-utils")
         include.append("libgl1-mesa-dri")
