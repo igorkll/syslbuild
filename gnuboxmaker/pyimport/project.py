@@ -102,7 +102,7 @@ class Project:
     integrate_advanced_gpu_packages: bool = True
     integrate_cpu_microcode_for_x86: bool = True
 
-    initramfs_use_list_mode: bool = True
+    initramfs_use_list_mode: bool = False
     initramfs_add_internal_modules_list: bool = True
     initramfs_add_modules: list[str] = field(default_factory=list)
 
