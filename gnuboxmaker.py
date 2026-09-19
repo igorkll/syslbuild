@@ -588,7 +588,7 @@ def setup_download(builditems):
             "name": name,
             "export": False,
 
-            "a": 1,
+            "a": 2,
 
             "git_url": f"https://github.com/{github_user}/{name}"#,
             #"git_checkout": version
