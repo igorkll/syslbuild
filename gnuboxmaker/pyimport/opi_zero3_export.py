@@ -27,7 +27,7 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         items.append(["armbian_firmware", "/usr/lib/firmware", RIGHTS_644_755])
 
     if __main__.current_project.platform_opi_zero3_hdmi_audio_high_priority:
-        conf = get_gnuboxmaker_dirpath("opi_zero3_hdmi_audio_high_priority.conf")
+        conf = get_gnuboxmaker_dirpath("configs/opi_zero3_hdmi_audio_high_priority.conf")
         items.append([conf, "/etc/wireplumber/wireplumber.conf.d/hdmi-audio-priority.conf", RIGHTS_644, False, RIGHTS_755])
 
     builditems.append({
