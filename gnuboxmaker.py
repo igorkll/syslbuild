@@ -1244,6 +1244,8 @@ def generate_syslbuild_project():
         
         if not current_project.use_separate_splash_for_update:
             cmdline += " updatescript_state_not_need_in_plymouth"
+        else:
+            cmdline += " allow_plymouth_change_state_to_update_later"
 
     if current_project.boot_splash and current_project.minlogotime > 0:
         cmdline += f" minlogotime={current_project.minlogotime}"
