@@ -145,6 +145,7 @@ image_sprite.SetX(x);
 image_sprite.SetY(y);
 image_sprite.SetZ(-1);"""
 
-    bootlogo_script = bootlogo_add_message_handlers(bootlogo_script + "\n")
+    if __main__.current_project.plymouth_allow_render_text:
+        bootlogo_script = bootlogo_add_message_handlers(bootlogo_script + "\n")
 
     writeText(os.path.join(bootlogo_files, "bootlogo.script"), bootlogo_script)
