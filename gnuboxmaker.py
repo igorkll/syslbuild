@@ -1077,6 +1077,8 @@ def setup_build_base(builditems, cmdline):
         ["custom-debian-initramfs-init/etc", "/etc", RIGHTS_755, False, RIGHTS_755],
         ["files/system_init_hook.sh", "/etc/initramfs-tools/hooks/system_init_hook.sh", RIGHTS_755],
 
+        [current_project.rebranding_hostname, "/etc/hostname", RIGHTS_644, True],
+
         ["files/user_files", "/", RIGHTS_755, False, None, False, True],
         ["files/user_initramfs", "/gnubox/user_initramfs", RIGHTS_755],
         ["files/etc_overwrite", "/gnubox/etc_overwrite", RIGHTS_755]
@@ -1211,6 +1213,9 @@ def generate_syslbuild_project():
         cmdline_console = "console=ttynull"
 
     cmdline = f"{"ro" if current_project.root_readonly else "rw"} rootwait=60 systemd.getty_auto=0 selinux=0 plymouth.ignore-serial-consoles mount_bootmnt {cmdline_console} preinit=/root/gnubox/system_preinit.sh {current_project.cmdline}"
+
+    if current_project.root_readonly:
+        cmdline += " bootmnt_readonly"
 
     if current_project.boot_sound == "init":
         cmdline += " startupsound_afterModulesLoading=/startup.wav"

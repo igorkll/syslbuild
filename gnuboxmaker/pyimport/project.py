@@ -148,6 +148,7 @@ class Project:
     rebranding_os_release_name: str = "Gnubox"
     rebranding_os_release_id: str = "gnubox"
     rebranding_remove_debian_logos: bool = True
+    rebranding_hostname: str = "hostname"
 
 def build_project():
     updateProgress(10, "Generating the syslbuild project...")
