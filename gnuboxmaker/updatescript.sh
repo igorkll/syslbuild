@@ -169,9 +169,9 @@ part_hash_from_image() {
 }
 
 part_hash_from_device() {
-    local dev="$1"
+    local part="$1"
     local count_bytes="$2"
-    /nativedd if="$dev" bs=$BS count=$count_bytes iflag=count_bytes status=none | sha256sum | /nativeawk '{print $1}'
+    /nativedd if="$part" bs=$BS count=$count_bytes iflag=count_bytes status=none | sha256sum | /nativeawk '{print $1}'
 }
 
 flash_partition() {
@@ -186,6 +186,14 @@ flash_partition_and_verify() {
     local part="$2"
     local skip_bytes="$3"
     local count_bytes="$4"
+
+    show_status "$name partition computing image hash..."
+    local src_hash
+    src_hash=$(part_hash_from_image "$skip_bytes" "$count_bytes")
+    if [ -z "$src_hash" ]; then
+        show_status "failed to compute image hash of $name partition"
+        return 1
+    fi
     
     local attempt=1
     while [ "$attempt" -le "$MAX_ATTEMPT" ]; do
@@ -193,8 +201,18 @@ flash_partition_and_verify() {
         flash_partition "$boot_dev" "$skip_bytes" "$count_bytes"
         sync
         show_status "verifying $name partition..."
+        
+        local dst_hash
+        dst_hash=$(part_hash_from_device "$part" "$count_bytes")
+        if [ -z "$src_hash" ]; then
+            show_status "failed to compute hash of $name partition"
+            return 1
+        fi
 
-
+        if [ "$src_hash" = "$dst_hash" ]; then
+            show_status "$name partition writed"
+            return 0
+        fi
 
         attempt=$((attempt + 1))
     done
