@@ -588,8 +588,8 @@ def setup_download(builditems):
             "name": name,
             "export": False,
 
-            "git_url": f"https://github.com/{github_user}/{name}",
-            "git_checkout": version
+            "git_url": f"https://github.com/{github_user}/{name}"#,
+            #"git_checkout": version
         })
 
     def addDownloadRelease(reponame, version, filename):
@@ -779,66 +779,6 @@ xset -dpms"""
     Option "AllowmouseOpenfail" "true"
 EndSection""")
 
-def setup_bootlogo():
-    bootlogo_files = os.path.join(path_temp_syslbuild, "files", "bootlogo")
-    project_logo_path = os.path.join(path_resources, "logo.png")
-    project_logo_updating_path = os.path.join(path_resources, "logo_updating.png")
-
-    if current_project.boot_splash:
-        copyFile(os.path.join(bootlogo_files, "bootlogo.plymouth"), "gnuboxmaker/bootlogo.plymouth")
-        copyFile(os.path.join(bootlogo_files, "logo.png"), project_logo_path)
-        copyFile(os.path.join(bootlogo_files, "logo_updating.png"), project_logo_updating_path)
-
-    if current_project.splash_mode == "fill":
-        scale_code = f"""scaled_width = window_width;
-scaled_height = window_height;"""
-    elif current_project.splash_mode == "center":
-        scale_code = f"""scaled_width = img_width;
-scaled_height = img_height;"""
-    elif current_project.splash_mode == "cover":
-        scale_code = f"""img_scale = Math.Max(window_width / img_width, window_height / img_height);
-scaled_width = Math.Int(img_width * img_scale);
-scaled_height = Math.Int(img_height * img_scale);"""
-    else:
-        scale_code = f"""img_scale = Math.Min(window_width / img_width, window_height / img_height);
-scaled_width = Math.Int(img_width * img_scale);
-scaled_height = Math.Int(img_height * img_scale);"""
-
-    bootlogo_script = f"""
-mode = Plymouth.GetMode();
-if (mode == "system-upgrade") {{
-    Window.SetBackgroundTopColor({current_project.splash_updating_bg});
-    Window.SetBackgroundBottomColor({current_project.splash_updating_bg});
-
-    image = Image("logo_updating.png");
-}} else {{
-    Window.SetBackgroundTopColor({current_project.splash_bg});
-    Window.SetBackgroundBottomColor({current_project.splash_bg});
-
-    image = Image("logo.png");
-}}
-
-window_width = Window.GetWidth();
-window_height = Window.GetHeight();
-img_width = image.GetWidth();
-img_height = image.GetHeight();
-
-{scale_code}
-
-scaled_width = scaled_width * {current_project.splash_scale};
-scaled_height = scaled_height * {current_project.splash_scale};
-
-scaled_image = image.Scale(scaled_width, scaled_height);
-x = (window_width - scaled_width) / 2;
-y = (window_height - scaled_height) / 2;
-
-image_sprite = Sprite(scaled_image);
-image_sprite.SetX(x);
-image_sprite.SetY(y);
-image_sprite.SetZ(-1);"""
-
-    writeText(os.path.join(bootlogo_files, "bootlogo.script"), bootlogo_script)
-
 def setup_bootsound():
     project_startup_sound_wav_path = os.path.join(path_resources, "startup.wav")
 
@@ -921,7 +861,7 @@ Storage=none""")
     writeText(os.path.join(etc_config, "locale.conf"), f"""LANG=en_US.UTF-8""")
 
     setup_autologin()
-    setup_bootlogo()
+    bootlogo.setup_bootlogo()
     setup_bootsound()
     setup_graphic()
 
@@ -1474,6 +1414,8 @@ from project import *
 
 from internal_utils import *
 from devicetree_funcs import *
+
+import bootlogo
 
 import gui_open_project
 import gui_editor
