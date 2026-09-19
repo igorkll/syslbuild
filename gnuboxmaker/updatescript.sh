@@ -31,16 +31,31 @@ show_status() {
 
 show_status "Starting update..."
 
-mkdir -p /data
-mount -n -o move /updateroot/data /data
-
 boot_dev=$(findmnt -nro SOURCE /updateroot/bootmnt)
 rootfs_dev=$(findmnt -nro SOURCE /updateroot)
 echo "boot device: $boot_dev"
 echo "rootfs device: $rootfs_dev"
 
-image_path=$(cat /updateroot/updatescript/path)
-echo "update from image $image_path"
+if [ -f /updateroot/updatescript/path ]; then
+    image_path=$(cat /updateroot/updatescript/path)
+elif [ -f /data/.private/updatescript/path ]; then
+    image_path=$(cat /data/.private/updatescript/path)
+else
+    show_status "updatescript/path not found"
+    exit 1
+fi
+
+if [ -z "$image_path" ]; then
+    show_status "updatescript/path is empty"
+    exit 1
+fi
+
+if [ ! -f "$image_path" ]; then
+    show_status "update image not found: $image_path"
+    exit 1
+fi
+
+echo "update from image: $image_path"
 
 echo "unmounting /updateroot/bootmnt"
 /nativeumount -fR /updateroot/bootmnt

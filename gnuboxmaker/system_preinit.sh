@@ -83,6 +83,8 @@ for x in $(cat /root/proc/cmdline); do
     esac
 done
 
+mkdir -m 0700 -p /root/data/.private
+
 if [ -x "/root/gnubox/preinit.sh" ]; then
     /root/gnubox/preinit.sh
 fi

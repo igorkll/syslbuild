@@ -588,6 +588,8 @@ def setup_download(builditems):
             "name": name,
             "export": False,
 
+            "a": 1,
+
             "git_url": f"https://github.com/{github_user}/{name}"#,
             #"git_checkout": version
         })
@@ -1241,7 +1243,7 @@ def generate_syslbuild_project():
                 cmdline += f" etc_merge_{current_project.separate_data_partition_etc_merge_mode}"
 
     if current_project.allow_updatescript:
-        cmdline += " allow_updatescript while_after_updatescript_crash"
+        cmdline += " allow_updatescript while_after_updatescript_crash updatescript_in_private_data"
         
         if not current_project.use_separate_splash_for_update:
             cmdline += " updatescript_state_not_need_in_plymouth"

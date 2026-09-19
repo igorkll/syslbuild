@@ -27,10 +27,12 @@ data_dev=$(stat -c %d /data)
 
 if [ "$file_dev" -eq "$data_dev" ]; then
     rm -rf /data/.post_update_processed.flag
-    rm -rf /data/.private/updatescript
-    mkdir /data/.private/updatescript
-    cp /gnubox/updatescript.sh /data/.private/updatescript/updatescript.sh
-    echo "$BOOTIMAGE" > /data/.private/updatescript/path
+    mount -o remount,rw /
+
+    rm -rf /updatescript
+    mkdir /updatescript
+    cp /gnubox/updatescript.sh /updatescript/updatescript.sh
+    echo "$BOOTIMAGE" > /updatescript/path
 
     sync
     shutdown --no-wall -r now
