@@ -20,10 +20,12 @@ copy_exec /usr/bin/findmnt /usr/bin
 copy_exec /usr/bin/jq /usr/bin
 copy_exec /usr/sbin/blockdev /usr/sbin
 
+copy_exec /usr/bin/awk /nativeawk
 copy_exec /usr/bin/dd /nativedd
 copy_exec /usr/bin/umount /nativeumount
 copy_exec /usr/bin/cp /nativeucp
 copy_exec /usr/sbin/chroot /nativechroot
+copy_exec /usr/bin/sha256sum /usr/bin
 
 if [ -e "/gnubox/startup.wav" ]; then
     cp /gnubox/startup.wav "${DESTDIR}/startup.wav"
