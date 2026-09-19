@@ -160,6 +160,7 @@ fi
 # ------------- flash new partitions
 
 BS=4M
+MAX_ATTEMPT=5
 
 part_hash_from_image() {
     local skip_bytes="$1"
@@ -173,21 +174,48 @@ part_hash_from_device() {
     /nativedd if="$dev" bs=$BS count=$count_bytes iflag=count_bytes status=none | sha256sum | /nativeawk '{print $1}'
 }
 
-if [ -n "$boot_dev" ]; then
-    show_status "start writing boot partition..."
+flash_partition() {
+    local part="$1"
+    local skip_bytes="$2"
+    local count_bytes="$3"
+    /nativedd if="$image_path" of="$part" bs=$BS skip=$skip_bytes count=$count_bytes status=progress conv=fsync iflag=skip_bytes,count_bytes
+}
 
+flash_partition_and_verify() {
+    local name="$1"
+    local part="$2"
+    local skip_bytes="$3"
+    local count_bytes="$4"
+    
+    local attempt=1
+    while [ "$attempt" -le "$MAX_ATTEMPT" ]; do
+        show_status "writing $name partition (attempt $attempt/$MAX_ATTEMPT)..."
+        flash_partition "$boot_dev" "$skip_bytes" "$count_bytes"
+        sync
+        show_status "verifying $name partition..."
+
+
+
+        attempt=$((attempt + 1))
+    done
+
+    show_status "failed to write $name partition"
+    return 1
+}
+
+if [ -n "$boot_dev" ]; then
     skip_bytes=$(( image_boot_start * sector_size ))
     count_bytes=$(( image_boot_size * sector_size ))
-    /nativedd if="$image_path" of="$boot_dev" bs=$BS skip=$skip_bytes count=$count_bytes status=progress conv=fsync iflag=skip_bytes,count_bytes
+    flash_partition_and_verify "boot" "$boot_dev" "$skip_bytes" "$count_bytes" || exit 1
 fi
 
 if [ -n "$rootfs_dev" ]; then
-    show_status "start writing rootfs partition..."
-
     skip_bytes=$(( image_rootfs_start * sector_size ))
     count_bytes=$(( image_rootfs_size * sector_size ))
-    /nativedd if="$image_path" of="$rootfs_dev" bs=$BS skip=$skip_bytes count=$count_bytes status=progress conv=fsync iflag=skip_bytes,count_bytes
+    flash_partition_and_verify "rootfs" "$boot_dev" "$skip_bytes" "$count_bytes" || exit 1
 fi
+
+sync
 
 # -------------
 

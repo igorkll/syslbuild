@@ -1,4 +1,4 @@
-VERSION = [1, 11, 5]
+VERSION = [1, 12, 0]
 
 def formatVersion(version):
     return '.'.join(str(n) for n in version)

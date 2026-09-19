@@ -112,8 +112,8 @@ class Project:
 
     plymouth_disable_esc_button: bool = True
     plymouth_allow_render_text: bool = False
-    plymouth_show_boot_status: bool = False
-    plymouth_show_update_status: bool = False
+    plymouth_show_boot_status: bool = True
+    plymouth_show_update_status: bool = True
     disable_hardware_vulnerabilities_fixs_boost_old_cpu: bool = False
 
     export_x86_64: bool = True
