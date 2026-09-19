@@ -51,6 +51,7 @@ class Project:
     splash_mode: str = "contain"
     splash_scale: float = 0.7
     use_separate_splash_for_update: bool = True
+    allow_plymouth_change_state_to_update_later: bool = True
 
     timezone: str = "UTC" # example: Europe/Moscow
     rtc_mode: str = "UTC" # UTC / LOCAL
@@ -60,12 +61,12 @@ class Project:
     allow_updatescript: bool = False
     separate_data_partition: bool = False
     separate_data_partition_home_link: bool = True
-    separate_data_partition_var_link: bool = False
+    separate_data_partition_var_link: bool = True
     separate_data_partition_etc_link: bool = False
     separate_data_partition_home_merge_mode: str = "none"
     separate_data_partition_var_merge_mode: str = "none"
     separate_data_partition_etc_merge_mode: str = "add"
-    var_is_temp: bool = True
+    var_is_temp: bool = False
     minsize_boot_partition: str = "64MB"
     minsize_efi_partition: str = "64MB"
     minsize_root_partition: str = "64MB"
@@ -83,6 +84,7 @@ class Project:
     minlogotime: int = 10
     cmdline: str = ""
     add_clear_commands_if_not_quiet: bool = True
+    disable_systemd_messages_if_not_quiet: bool = True
     exclude_cmdline: list[str] = field(default_factory=list)
     sudo_privileges: bool = False
 

@@ -384,9 +384,7 @@ def generate_project_config():
         user_packages += args.packages.split(",")
 
     project_config = {
-        "distro": "debian",
         "user_packages": user_packages,
-        "exclude_packages": [],
         "debian_variant": "minbase",
         "screen_idle_time": 0,
         "HandlePowerKey": "poweroff",
@@ -418,7 +416,6 @@ def generate_project_config():
         "session_user": "root" if args.root_privileges else "user",
         "session_mode": session_type,
         "minlogotime": 10,
-        "cmdline": "systemd.show_status=false",
         "sudo_privileges": args.sudo_privileges,
         "plymouth_disable_esc_button": not args.enable_bootlogs
     }
