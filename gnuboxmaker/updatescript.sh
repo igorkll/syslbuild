@@ -198,13 +198,13 @@ flash_partition_and_verify() {
     local attempt=1
     while [ "$attempt" -le "$MAX_ATTEMPT" ]; do
         show_status "writing $name partition (attempt $attempt/$MAX_ATTEMPT)..."
-        flash_partition "$boot_dev" "$skip_bytes" "$count_bytes"
+        flash_partition "$part" "$skip_bytes" "$count_bytes"
         sync
         show_status "verifying $name partition..."
         
         local dst_hash
         dst_hash=$(part_hash_from_device "$part" "$count_bytes")
-        if [ -z "$src_hash" ]; then
+        if [ -z "$dst_hash" ]; then
             show_status "failed to compute hash of $name partition"
             return 1
         fi
@@ -230,7 +230,7 @@ fi
 if [ -n "$rootfs_dev" ]; then
     skip_bytes=$(( image_rootfs_start * sector_size ))
     count_bytes=$(( image_rootfs_size * sector_size ))
-    flash_partition_and_verify "rootfs" "$boot_dev" "$skip_bytes" "$count_bytes" || exit 1
+    flash_partition_and_verify "rootfs" "$rootfs_dev" "$skip_bytes" "$count_bytes" || exit 1
 fi
 
 sync
