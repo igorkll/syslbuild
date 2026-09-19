@@ -2,32 +2,23 @@ from __main__ import *
 import __main__
 
 def bootlogo_add_message_handlers(bootlogo_script):
-    bootlogo_script += """# ============================================================
-#  Message + Status display
-# ============================================================
-
-# --- Создаём спрайты заранее, скрытыми ---
-message_sprite = Sprite();
+    bootlogo_script += """message_sprite = Sprite();
 message_sprite.SetOpacity(0);
-message_sprite.SetZ(10000);          # поверх остальных спрайтов
+message_sprite.SetZ(10000);
 
 status_sprite = Sprite();
 status_sprite.SetOpacity(0);
 status_sprite.SetZ(10000);
 
-# Параметры отображения (крути под себя)
-MESSAGE_FONT  = "Sans 24";           # главное — крупнее
-MESSAGE_COLOR = [1, 1, 1, 1];        # белый
+MESSAGE_FONT  = "Plymouth 24";
+MESSAGE_COLOR = [1, 1, 1, 1];
 
-STATUS_FONT   = "Sans 12";           # статус — мельче
-STATUS_COLOR  = [0.8, 0.8, 0.8, 1];  # светло-серый
+STATUS_FONT   = "Plymouth 12";
+STATUS_COLOR  = [0.8, 0.8, 0.8, 1];
 
-MESSAGE_Y     = 0.72;                # главное — выше
-STATUS_Y      = 0.80;                # статус — ниже
+MESSAGE_Y     = 0.72;
+STATUS_Y      = 0.80;
 
-# ------------------------------------------------------------
-#  Главное сообщение (display-message)
-# ------------------------------------------------------------
 fun show_message(text)
 {
     if (text == "")
@@ -49,14 +40,6 @@ fun show_message(text)
     message_sprite.SetOpacity(1);
 }
 
-fun hide_message()
-{
-    message_sprite.SetOpacity(0);
-}
-
-# ------------------------------------------------------------
-#  Строка статуса (update --status)
-# ------------------------------------------------------------
 fun show_status(text)
 {
     if (text == "")
@@ -78,9 +61,12 @@ fun show_status(text)
     status_sprite.SetOpacity(1);
 }
 
-# ------------------------------------------------------------
-#  Регистрация колбэков
-# ------------------------------------------------------------
+
+fun hide_message()
+{
+    message_sprite.SetOpacity(0);
+}
+
 Plymouth.SetMessageFunction(show_message);
 Plymouth.SetUpdateStatusFunction(show_status);
 Plymouth.SetHideMessageFunction(hide_message);"""
