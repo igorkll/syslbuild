@@ -169,6 +169,8 @@ def build_project():
             stop_error("Failed to build")
 
 def migrate_old_path(oldPath, newPath):
+    oldPath = os.path.join(__main__.path_resources, oldPath)
+    newPath = os.path.join(__main__.path_resources, newPath)
     if os.path.exists(oldPath) and not os.path.exists(newPath):
         os.rename(oldPath, newPath)
 
