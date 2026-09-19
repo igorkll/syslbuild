@@ -1072,6 +1072,7 @@ def setup_build_base(builditems, cmdline):
 
         ["custom-debian-initramfs-init/custom_init.sh", "/usr/share/initramfs-tools/init", RIGHTS_755],
         ["custom-debian-initramfs-init/custom_init_hook.sh", "/etc/initramfs-tools/hooks/custom_init_hook.sh", RIGHTS_755],
+        ["custom-debian-initramfs-init/etc", "/etc", RIGHTS_755, False, RIGHTS_755],
         ["files/system_init_hook.sh", "/etc/initramfs-tools/hooks/system_init_hook.sh", RIGHTS_755],
 
         ["files/user_files", "/", RIGHTS_755, False, None, False, True],

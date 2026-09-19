@@ -20,7 +20,6 @@ copy_exec /usr/bin/findmnt /usr/bin
 copy_exec /usr/bin/jq /usr/bin
 copy_exec /usr/sbin/blockdev /usr/sbin
 
-copy_exec /usr/bin/awk /nativeawk
 copy_exec /usr/bin/dd /nativedd
 copy_exec /usr/bin/umount /nativeumount
 copy_exec /usr/bin/cp /nativeucp

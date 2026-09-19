@@ -165,13 +165,13 @@ MAX_ATTEMPT=5
 part_hash_from_image() {
     local skip_bytes="$1"
     local count_bytes="$2"
-    /nativedd if="$image_path" bs=$BS skip=$skip_bytes count=$count_bytes iflag=skip_bytes,count_bytes status=none | sha256sum | /nativeawk '{print $1}'
+    /nativedd if="$image_path" bs=$BS skip=$skip_bytes count=$count_bytes iflag=skip_bytes,count_bytes status=none | sha256sum | awk '{print $1}'
 }
 
 part_hash_from_device() {
     local part="$1"
     local count_bytes="$2"
-    /nativedd if="$part" bs=$BS count=$count_bytes iflag=count_bytes status=none | sha256sum | /nativeawk '{print $1}'
+    /nativedd if="$part" bs=$BS count=$count_bytes iflag=count_bytes status=none | sha256sum | awk '{print $1}'
 }
 
 flash_partition() {
