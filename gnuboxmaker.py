@@ -588,7 +588,7 @@ def setup_download(builditems):
             "name": name,
             "export": False,
 
-            "a": 2,
+            "a": 3,
 
             "git_url": f"https://github.com/{github_user}/{name}"#,
             #"git_checkout": version
@@ -1189,7 +1189,7 @@ def setup_build_base(builditems, cmdline):
         })
 
 def generate_syslbuild_project():
-    cmdline_console = "noctrlaltdel nosysrq sysrq=0"
+    cmdline_console = ""
 
     exclude_tty1_from_consoles = current_project.exclude_tty1_from_consoles or (current_project.exclude_tty1_from_consoles_in_quiet and current_project.boot_quiet)
 
@@ -1212,7 +1212,7 @@ def generate_syslbuild_project():
         # I still found a working way to completely get rid of the logs using the built-in linux method. however, this requires enabling CONFIG_NULL_TTY in the kernel config.
         cmdline_console = "console=ttynull"
 
-    cmdline = f"{"ro" if current_project.root_readonly else "rw"} rootwait=60 systemd.getty_auto=0 selinux=0 plymouth.ignore-serial-consoles mount_bootmnt {cmdline_console} preinit=/root/gnubox/system_preinit.sh {current_project.cmdline}"
+    cmdline = f"{"ro" if current_project.root_readonly else "rw"} noctrlaltdel nosysrq sysrq=0 rootwait=60 systemd.getty_auto=0 selinux=0 plymouth.ignore-serial-consoles mount_bootmnt {cmdline_console} preinit=/root/gnubox/system_preinit.sh {current_project.cmdline}"
 
     if current_project.root_readonly:
         cmdline += " bootmnt_readonly"
