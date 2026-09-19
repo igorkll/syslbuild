@@ -1263,6 +1263,9 @@ def generate_syslbuild_project():
     else:
         cmdline += f" loglevel={current_project.loglevel_without_quiet}"
 
+        if current_project.add_clear_commands_if_not_quiet:
+            cmdline += " clear noCursorBlink vt.global_cursor_default=0"
+
     if not current_project.boot_kernel_logo:
         cmdline += " logo.nologo"
     else:

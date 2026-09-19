@@ -82,6 +82,7 @@ class Project:
 
     minlogotime: int = 10
     cmdline: str = ""
+    add_clear_commands_if_not_quiet: bool = True
     exclude_cmdline: list[str] = field(default_factory=list)
     sudo_privileges: bool = False
 
