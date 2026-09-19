@@ -1332,6 +1332,13 @@ def generate_syslbuild_project():
     if session_mode != "x11" and session_mode != "wayland" and current_project.screen_idle_time > 0:
         cmdline += f" consoleblank={current_project.screen_idle_time}"
 
+    if current_project.plymouth_allow_render_text:
+        if current_project.plymouth_show_boot_status:
+            cmdline += " plymouth_show_boot_status"
+
+        if current_project.plymouth_show_update_status:
+            cmdline += " plymouth_show_update_status"
+
     architectures = []
     builditems = []
 

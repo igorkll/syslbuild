@@ -8,9 +8,28 @@ if [ "${0#/tmp/}" = "$0" ]; then
     exec /tmp/updatescript.sh "$@"
 fi
 
+# ------------- funcstions
+
+for x in $(cat /proc/cmdline); do
+	case $x in
+	plymouth_show_update_status)
+		plymouth_show_update_status=y
+		;;
+	esac
+done
+
+show_status() {
+    if [ -n "$plymouth_show_update_status" ]; then
+        if command -v plymouth > /dev/null 2>&1; then
+            plymouth update --status="$1"
+        fi
+    fi
+    echo "$1"
+}
+
 # ------------- mounts
 
-echo "START SELF-UPDATE..."
+show_status "Starting update..."
 
 mkdir -p /data
 mount -n -o move /updateroot/data /data
@@ -82,7 +101,7 @@ elif [ -n "$boot_dev" ] && [ -n "$rootfs_dev" ]; then # rootfs и boot / EFI. т
     image_rootfs_start=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[1].start')
     image_rootfs_size=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[1].size')
 
-    echo "root position: BOOT-0 and rootfs-1"
+    echo "root position: boot-0 and rootfs-1"
 elif [ -n "$rootfs_dev" ]; then # когда есть только rootfs. то есть export_img_bios_mbr
     image_rootfs_start=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[0].start')
     image_rootfs_size=$(echo "$partitiontable" | jq -r '.partitiontable.partitions[0].size')
@@ -114,14 +133,14 @@ fi
 
 if [ -n "$image_boot_size" ] && [ -n "$boot_dev" ]; then
     if [ "$image_boot_size" -gt "$boot_size" ]; then
-        echo "BOOT partition in image is bigger than target"
+        show_status "boot partition in image is bigger than target"
         exit 1
     fi
 fi
 
 if [ -n "$image_rootfs_size" ] && [ -n "$rootfs_dev" ]; then
     if [ "$image_rootfs_size" -gt "$rootfs_size" ]; then
-        echo "rootfs partition in image is bigger than target"
+        show_status "rootfs partition in image is bigger than target"
         exit 1
     fi
 fi
@@ -129,12 +148,12 @@ fi
 # ------------- check available image partitions
 
 if [ -n "$boot_dev" ] && [ -z "$image_boot_start" ]; then
-    echo there are no BOOT partition in the image
+    show_status "there are no boot partition in the image"
     exit 1
 fi
 
 if [ -n "$rootfs_dev" ] && [ -z "$image_rootfs_start" ]; then
-    echo there are no rootfs partition in the image
+    show_status "there are no rootfs partition in the image"
     exit 1
 fi
 
@@ -143,7 +162,7 @@ fi
 BS=4M
 
 if [ -n "$boot_dev" ]; then
-    echo "start writing BOOT partition..."
+    show_status "start writing boot partition..."
 
     skip_bytes=$(( image_boot_start * sector_size ))
     count_bytes=$(( image_boot_size * sector_size ))
@@ -151,7 +170,7 @@ if [ -n "$boot_dev" ]; then
 fi
 
 if [ -n "$rootfs_dev" ]; then
-    echo "start writing rootfs partition..."
+    show_status "start writing rootfs partition..."
 
     skip_bytes=$(( image_rootfs_start * sector_size ))
     count_bytes=$(( image_rootfs_size * sector_size ))
@@ -160,4 +179,4 @@ fi
 
 # -------------
 
-echo "UPDATE DONE!"
+show_status "update done!"
