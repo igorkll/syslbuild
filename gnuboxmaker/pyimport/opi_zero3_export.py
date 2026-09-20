@@ -1,5 +1,6 @@
 from __main__ import *
 import __main__
+import consts
 
 def export_opi_zero3(builditems, cmdline, appendPartitions):
     dtboList_active = []
@@ -42,7 +43,9 @@ def export_opi_zero3(builditems, cmdline, appendPartitions):
         "symlinks_after_items": [
             ["/etc/systemd/system/BT_AW859A.service", "/etc/systemd/system/multi-user.target.wants/BT_AW859A.service"],
             ["/etc/systemd/system/reload_panfrost.service", "/etc/systemd/system/multi-user.target.wants/reload_panfrost.service"]
-        ]
+        ],
+
+        "delete": consts.delete_uefi_arm64_for_other_arm
     })
 
     builditems.append({

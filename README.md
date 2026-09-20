@@ -838,6 +838,11 @@ these changes to the kernel config are applied automatically when building the k
             "chown": [
                 ["/", 0, 0, false]
             ],
+
+            //optional
+            "delete": [
+                ["/any path"]
+            ],
         },
         {
             "type": "tar",

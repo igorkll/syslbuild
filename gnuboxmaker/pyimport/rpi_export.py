@@ -1,5 +1,6 @@
 from __main__ import *
 import __main__
+import consts
 
 def any_rpi(builditems):
     builditems.append({
@@ -72,7 +73,8 @@ def export_rpi_32(builditems, cmdline, appendPartitions, architecture="armhf", s
         "name": "rootfs directory RPI 32",
         "export": False,
 
-        "items": items
+        "items": items,
+        "delete": consts.delete_uefi_arm64_for_other_arm
     }))
 
     setup_export_initramfs(builditems, "rpi_32", architecture)
@@ -219,7 +221,8 @@ def export_rpi_64(builditems, cmdline, appendPartitions):
         "name": "rootfs directory RPI 64",
         "export": False,
 
-        "items": items
+        "items": items,
+        "delete": consts.delete_uefi_arm64_for_other_arm
     }))
 
     setup_export_initramfs(builditems, "rpi_64")

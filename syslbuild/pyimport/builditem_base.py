@@ -473,7 +473,7 @@ def buildFilesystem(item):
     if "fs_type" in item:
         formatFilesystem(fs_path, item)
 
-    if fs_files or "chmod" in item or "chown" in item:
+    if fs_files or ("chmod" in item) or ("chown" in item) or ("delete" in item):
         mountFilesystem(fs_path, __main__.path_mount)
 
         if fs_files:
@@ -484,6 +484,10 @@ def buildFilesystem(item):
 
         if "chown" in item:
             makeChown(__main__.path_mount, item["chown"])
+
+        if "delete" in item:
+            for deletePath in item["delete"]:
+                deleteAny(pathConcat(buildDirectoryPath, deletePath))
 
         umountFilesystem(__main__.path_mount)
 
