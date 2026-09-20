@@ -588,7 +588,7 @@ def setup_download(builditems):
             "name": name,
             "export": False,
 
-            "a": 3,
+            "a": 4,
 
             "git_url": f"https://github.com/{github_user}/{name}"#,
             #"git_checkout": version
@@ -1141,7 +1141,8 @@ def setup_build_base(builditems, cmdline):
         "export": False,
 
         "directories": directories,
-        "items": items
+        "items": items,
+        "delete": delete
     })
 
     builditems.append({
