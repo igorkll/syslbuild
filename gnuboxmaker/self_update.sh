@@ -26,6 +26,15 @@ file_dev=$(stat -c %d "$BOOTIMAGE")
 data_dev=$(stat -c %d /data)
 
 if [ "$file_dev" -eq "$data_dev" ]; then
+    if [[ "$BOOTIMAGE" != /data/* ]]; then
+        BOOTIMAGE="/data$(realpath "$BOOTIMAGE")"
+    fi
+
+    if [ ! -f "$BOOTIMAGE" ]; then
+        echo "File after path resolving not found $BOOTIMAGE"
+        exit 1
+    fi
+
     rm -rf /data/.post_update_processed.flag
     rm -rf /data/.private/updatescript
     mkdir /data/.private/updatescript
