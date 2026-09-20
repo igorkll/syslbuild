@@ -16,8 +16,8 @@ MESSAGE_COLOR = [1, 1, 1, 1];
 STATUS_FONT   = "Plymouth 12";
 STATUS_COLOR  = [0.8, 0.8, 0.8, 1];
 
-MESSAGE_Y     = 0.72;
-STATUS_Y      = 0.80;
+MESSAGE_Y     = 0.85;
+STATUS_Y      = 0.90;
 
 fun show_message(text)
 {
@@ -98,8 +98,7 @@ scaled_height = Math.Int(img_height * img_scale);"""
 scaled_width = Math.Int(img_width * img_scale);
 scaled_height = Math.Int(img_height * img_scale);"""
 
-    bootlogo_script = f"""
-mode = Plymouth.GetMode();
+    bootlogo_script = f"""mode = Plymouth.GetMode();
 if (mode == "system-upgrade") {{
     Window.SetBackgroundTopColor({__main__.current_project.splash_updating_bg});
     Window.SetBackgroundBottomColor({__main__.current_project.splash_updating_bg});
@@ -132,6 +131,6 @@ image_sprite.SetY(y);
 image_sprite.SetZ(-1);"""
 
     if __main__.current_project.plymouth_allow_render_text:
-        bootlogo_script = bootlogo_add_message_handlers(bootlogo_script + "\n")
+        bootlogo_script = bootlogo_add_message_handlers(bootlogo_script + "\n\n")
 
     writeText(os.path.join(bootlogo_files, "bootlogo.script"), bootlogo_script)
