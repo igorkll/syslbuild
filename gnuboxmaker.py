@@ -589,10 +589,8 @@ def setup_download(builditems):
             "name": name,
             "export": False,
 
-            "a": 5,
-
-            "git_url": f"https://github.com/{github_user}/{name}"#,
-            #"git_checkout": version
+            "git_url": f"https://github.com/{github_user}/{name}",
+            "git_checkout": version
         })
 
     def addDownloadRelease(reponame, version, filename):
@@ -666,7 +664,7 @@ def setup_download(builditems):
             "path": "/super_kiosk_browser_build/super_kiosk_browser-linux-arm64"
         })
 
-    addDownload("custom-debian-initramfs-init", "1.6.7")
+    addDownload("custom-debian-initramfs-init", "1.7.0")
     addDownload("linux-embedded-setup-scripts", "0.2")
     addDownloadRelease("linux-bootloaders", "1.2", "linux-bootloaders.tar.gz")
     unpackRelease("linux-bootloaders.tar.gz")

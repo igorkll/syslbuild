@@ -23,3 +23,12 @@ gnubox maker:
 the basic version of debian sid is used, with a fixed snapshot at the time of the changes. this allowed us to get weston 16 and GPU acceleration on raspberry pi 5.
 updated the kernel version for x86.
 added support for using the kernel logo if enabled in the config.
+
+1.12.0
+gnubox maker:
+fixed a bug where enabling "make_tty1_primary_console" turned off uartlogs.
+raspberry pi bootloader configuration files have been migrated for a more correct project structure.
+fixed a bug that caused "exclude_cmdline" to not work for raspberry pi and orange pi zero 3 platforms.
+added verification of control sums after the update to the self_update mechanism, which should greatly increase the reliability of self-updating.
+fixed the formation of the command line of the kernel and initramfs script, due to which, when logging to the uart, some still ended up on VT.
+added new mechanisms for directory merging after self-updating.
