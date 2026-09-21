@@ -156,6 +156,7 @@ exclude_tty1_from_consoles: false - we do not remove tty1 from consoles
 add_clear_commands_if_not_quiet: false - We don't clean it up  
 disable_systemd_messages_if_not_quiet: false - you probably want to see the systemd log as well. that's why we turn it off (do not turn off this parameter at any time if you do not want to get output to VT, since the systemd log goes to VT anyway)  
 always_add_quiet_parameter: false - turn off this parameter so that EFI stub messages appear on the VT  
+boot_kernel_logo: true - for fun, you can include the tux logo  
 * uart & tty:
 boot_quiet: false - allow log output  
 uartlogs: true - enable uart logs  
