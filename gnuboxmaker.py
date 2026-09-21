@@ -1185,13 +1185,13 @@ def generate_console_cmdline():
     exclude_tty1_from_consoles = current_project.exclude_tty1_from_consoles or (current_project.exclude_tty1_from_consoles_in_quiet and current_project.boot_quiet)
 
     if not exclude_tty1_from_consoles and not current_project.make_tty1_primary_console:
-        cmdline_console = " console=tty1"
+        cmdline_console += " console=tty1"
 
     if current_project.uartlogs:
         cmdline_console += f" console=ttyS0,{current_project.uartlogs_speed}"
 
     if not exclude_tty1_from_consoles and current_project.make_tty1_primary_console:
-        cmdline_console = " console=tty1"
+        cmdline_console += " console=tty1"
 
     if cmdline_console == "":
         # for some reason, console=null causes the linux userspace to freeze completely. it will be necessary to develop a kernel module, something like dummy_console (it turns out that there is a built-in ttynull)

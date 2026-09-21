@@ -131,7 +131,7 @@ you can create a custom devicetree to connect the perepherals
 * logo - It plays a sound when the load logo appears. It ONLY works with "boot_splash" enabled AND DOES NOT WORK on devices without a screen.
 
 ## internal utils
-* /usr/local/sbin/self_update - self-updating the system from an image built by gnubox maker. It does not validate images. when transferring an image, make sure that it is an image from the same project and that you have not changed the size of the partitions. to work, the new image must be located in the data partition
+* /usr/local/sbin/self_update - self-updating the system from an image built by gnubox maker. It does not validate images. when transferring an image, make sure that it is an image from the same project and that you have not changed the size of the partitions. to work, the new image must be located in the data partition. it must be launched on the full path as root. for example, the system update daemon
 
 ## how self-update works
 The update itself allows you to update the device's firmware automatically using the same .img image that gnubox maker exports  
