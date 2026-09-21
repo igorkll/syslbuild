@@ -113,10 +113,11 @@ alternatively, you can fork gnubox maker and then offer a pull request
 * resources/logo.png - the logo that will be used when bootloading with splash enabled
 * resources/logo_updating.png - the logo that will be used when updating with splash enabled
 * resources/startup.wav - the sound that will be used during the booting. requires configuration with a special parameter in the project. turned off by default
-* resources/platform_dependent/rpi_config_extension/rpi_32_only_armel.txt - configuration extensions for RPI 32 ARMEL
-* resources/platform_dependent/rpi_config_extension/rpi_32_only_armhf.txt - configuration extensions for RPI 32 ARMHF
-* resources/platform_dependent/rpi_config_extension/rpi_32.txt - configuration extensions for RPI 32
+* resources/platform_dependent/rpi_config_extension/rpi.txt - configuration extensions for all raspberry pi
 * resources/platform_dependent/rpi_config_extension/rpi_64.txt - configuration extensions for RPI 64
+* resources/platform_dependent/rpi_config_extension/rpi_32.txt - configuration extensions for RPI 32
+* resources/platform_dependent/rpi_config_extension/rpi_32_only_armhf.txt - configuration extensions for RPI 32 ARMHF
+* resources/platform_dependent/rpi_config_extension/rpi_32_only_armel.txt - configuration extensions for RPI 32 ARMEL
 
 ## devicetree
 you can create a custom devicetree to connect the perepherals  

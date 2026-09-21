@@ -217,10 +217,11 @@ def update_project_structure():
     internal_utils.create_empty_dir("platform_dependent/rpi_config_extension")
     migrate_old_path("rpi_32_config_extension.txt", "platform_dependent/rpi_config_extension/rpi_32.txt")
     migrate_old_path("rpi_64_config_extension.txt", "platform_dependent/rpi_config_extension/rpi_64.txt")
-    internal_utils.create_empty_file("platform_dependent/rpi_config_extension/rpi_32_only_armel.txt")
-    internal_utils.create_empty_file("platform_dependent/rpi_config_extension/rpi_32_only_armhf.txt")
-    internal_utils.create_empty_file("platform_dependent/rpi_config_extension/rpi_32.txt")
+    internal_utils.create_empty_file("platform_dependent/rpi_config_extension/rpi.txt")
     internal_utils.create_empty_file("platform_dependent/rpi_config_extension/rpi_64.txt")
+    internal_utils.create_empty_file("platform_dependent/rpi_config_extension/rpi_32.txt")
+    internal_utils.create_empty_file("platform_dependent/rpi_config_extension/rpi_32_only_armhf.txt")
+    internal_utils.create_empty_file("platform_dependent/rpi_config_extension/rpi_32_only_armel.txt")
 
     gitignore_path = os.path.join(__main__.current_project_directory, ".gitignore")
     if not os.path.isfile(gitignore_path):

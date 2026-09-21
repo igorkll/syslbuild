@@ -37,7 +37,7 @@ def any_rpi_rootfs_tweaks(rootfs_tbl):
     return rootfs_tbl
 
 def export_rpi_32(builditems, cmdline, appendPartitions, architecture="armhf", suffix="RPI 32"):
-    config_txt = read_gnubox_file("rpi_32_config.txt") + "\n" + read_project_file("resources/platform_dependent/rpi_config_extension/rpi_32.txt")
+    config_txt = read_gnubox_file("rpi_32_config.txt") + "\n" + read_project_file("resources/platform_dependent/rpi_config_extension/rpi.txt") + "\n" + read_project_file("resources/platform_dependent/rpi_config_extension/rpi_32.txt")
 
     if architecture == "armel":
         config_txt += "\n" + read_project_file("resources/platform_dependent/rpi_config_extension/rpi_32_only_armel.txt")
@@ -191,7 +191,7 @@ def export_rpi_32(builditems, cmdline, appendPartitions, architecture="armhf", s
     })
 
 def export_rpi_64(builditems, cmdline, appendPartitions):
-    config_txt = read_gnubox_file("rpi_64_config.txt") + "\n" + read_project_file("resources/platform_dependent/rpi_config_extension/rpi_64.txt")
+    config_txt = read_gnubox_file("rpi_64_config.txt") + "\n" + read_project_file("resources/platform_dependent/rpi_config_extension/rpi.txt") + "\n" + read_project_file("resources/platform_dependent/rpi_config_extension/rpi_64.txt")
 
     override = get_devicetree_override("rpi_64")
     if override:
