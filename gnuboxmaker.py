@@ -1270,6 +1270,7 @@ def generate_cmdline():
         # this means that on standard settings, the only difference between quiet on and off will be in the value of the "loglevel" parameter
         # this was done specifically so that the behavior would be possible when the entire log is sent to the UART and the user sees nothing in the VT. "uartlogs" and "exclude_tty1_from_consoles" parameters are used to achieve this when "boot_quiet" is turned off
         # because some kernel messages (for example, "EFI stub") can still be output to VT when quiet is turned off, even when "console=ttyS0,115200" is set.
+        # the "no_redirect_to_null_if_quiet" parameter is needed in order to pass quiet only to the kernel and not disable the output of the initramfs script. after that, use the following argument to return the loglevel parameter to its original value. since this will turn off other kernel logs that are not directly controlled by loglevel.
         if current_project.always_add_quiet_parameter:
             cmdline += f" no_redirect_to_null_if_quiet quiet"
 
