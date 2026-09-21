@@ -1186,7 +1186,7 @@ def setup_build_base(builditems, cmdline):
             "source": "rootfs directory"
         })
 
-def generate_syslbuild_project():
+def generate_console_cmdline():
     cmdline_console = ""
 
     exclude_tty1_from_consoles = current_project.exclude_tty1_from_consoles or (current_project.exclude_tty1_from_consoles_in_quiet and current_project.boot_quiet)
@@ -1209,6 +1209,11 @@ def generate_syslbuild_project():
 
         # I still found a working way to completely get rid of the logs using the built-in linux method. however, this requires enabling CONFIG_NULL_TTY in the kernel config.
         cmdline_console = "console=ttynull"
+
+    return cmdline_console
+
+def generate_cmdline():
+    cmdline_console = generate_console_cmdline()
 
     cmdline = f"{"ro" if current_project.root_readonly else "rw"} noctrlaltdel nosysrq sysrq=0 rootwait=60 systemd.getty_auto=0 selinux=0 plymouth.ignore-serial-consoles mount_bootmnt {cmdline_console} preinit=/root/gnubox/system_preinit.sh {current_project.cmdline}"
 
@@ -1305,6 +1310,12 @@ def generate_syslbuild_project():
             cmdline += " plymouth_show_update_status"
 
     cmdline = f"{current_project.cmdline_prepand} {cmdline} {current_project.cmdline_append}"
+    cmdline = exclude_string(cmdline, current_project.exclude_cmdline)
+
+    return cmdline
+
+def generate_syslbuild_project():
+    cmdline = generate_cmdline()
 
     architectures = []
     builditems = []
@@ -1326,8 +1337,6 @@ def generate_syslbuild_project():
 
     with open(path_temp_syslbuild_file, "w") as f:
         json.dump(syslbuild_project, f, indent=2, ensure_ascii=False)
-
-    cmdline = exclude_string(cmdline, current_project.exclude_cmdline)
 
     with open(os.path.join(path_temp_syslbuild, "grub.cfg"), "w") as f:
         grubcfg = f"""set cmdline="{cmdline}" """
