@@ -145,6 +145,25 @@ also for launching "/usr/local/sbin/self_update" an .img file passed as a path t
 using the script "/usr/local/sbin/self_update" it is impossible without a separate DATA section enabled. this script will not be in rootfs at all in this case  
 please note that the partition sizes CANNOT be increased during the update. therefore, when building the first image, reserve enough space for future updates using "minsize_root_partition" and "minsize_boot_partition" or "size_boot_partition" and "size_root_partition"  
 
+## redirecting system logs
+* drop: default values
+* tty only:
+boot_quiet: false - allow log output  
+exclude_tty1_from_consoles: false - we do not remove tty1 from consoles  
+* tty only extended (it also includes systemd and efi stub log displays):
+boot_quiet: false - allow log output  
+exclude_tty1_from_consoles: false - we do not remove tty1 from consoles  
+add_clear_commands_if_not_quiet: false - We don't clean it up  
+disable_systemd_messages_if_not_quiet: false - you probably want to see the systemd log as well. that's why we turn it off (do not turn off this parameter at any time if you do not want to get output to VT, since the systemd log goes to VT anyway)  
+always_add_quiet_parameter: false - turn off this parameter so that EFI stub messages appear on the VT  
+* uart & tty:
+boot_quiet: false - allow log output  
+uartlogs: true - enable uart logs  
+* uart only:
+boot_quiet: false - allow log output  
+uartlogs: true - enable uart logs  
+exclude_tty1_from_consoles: true - forcibly removing tty1 from consoles  
+
 ## args
 * you can pass the path to the *.gnb file to gnubox maker and the build will happen automatically after which the program will terminate. The GUI will not appear
 

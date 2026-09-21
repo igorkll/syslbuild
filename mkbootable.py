@@ -385,25 +385,13 @@ def generate_project_config():
 
     project_config = {
         "user_packages": user_packages,
-        "debian_variant": "minbase",
         "screen_idle_time": 0,
-        "HandlePowerKey": "poweroff",
-        "HandleRebootKey": "reboot",
-        "HandleSuspendKey": "ignore",
-        "HandleHibernateKey": "ignore",
-        "HandleLidSwitch": "ignore",
         "boot_quiet": not args.debug and not args.enable_bootlogs,
         "boot_splash": not args.no_logo,
-        "boot_sound": "none",
-        "dont_show_splash_on_poweroff": True,
-        "dont_use_splash_on_efi": False,
         "uartlogs": args.debug,
-        "uartlogs_speed": 115200,
         "uartlogs_login": args.debug,
         "root_login_unlock": args.debug,
         "exclude_tty1_from_consoles": not args.enable_bootlogs,
-        "exclude_tty1_from_consoles_in_quiet": True,
-        "make_tty1_primary_console": False,
         "use_separate_splash_for_update": False,
         "root_expand": False,
         "root_readonly": False,
@@ -415,7 +403,6 @@ def generate_project_config():
         "var_is_temp": False,
         "session_user": "root" if args.root_privileges else "user",
         "session_mode": session_type,
-        "minlogotime": 10,
         "sudo_privileges": args.sudo_privileges,
         "plymouth_disable_esc_button": not args.enable_bootlogs
     }
