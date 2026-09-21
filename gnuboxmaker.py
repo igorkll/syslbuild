@@ -841,14 +841,6 @@ MaxLevelKMsg=emerg
 MaxLevelConsole=emerg
 MaxLevelWall=emerg""")
 
-    writeText(os.path.join(systemd_config, "system.conf"), f"""[Manager]
-LogTarget=journal
-LogLevel=emerg""")
-
-    writeText(os.path.join(systemd_config, "user.conf"), f"""[Manager]
-LogTarget=journal
-LogLevel=emerg""")
-
     writeText(os.path.join(systemd_config, "coredump.conf"), f"""[Coredump]
 Storage=none""")
 
