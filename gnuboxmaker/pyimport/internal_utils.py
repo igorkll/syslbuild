@@ -81,14 +81,5 @@ def read_project_file(name):
     
     return []
 
-def create_empty_file(name):
-    path = os.path.join(__main__.path_resources, name)
-    if not os.path.isfile(path):
-        with open(path, "w", encoding="utf-8") as f:
-            pass
-
-def create_empty_dir(name):
-    os.makedirs(os.path.join(__main__.path_resources, name), exist_ok=True)
-
 def get_gnuboxmaker_dirpath(path):
     return "&" + os.path.join(gnuboxmaker_dir, path)

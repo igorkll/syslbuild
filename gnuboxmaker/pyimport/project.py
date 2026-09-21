@@ -178,6 +178,15 @@ def migrate_old_path(oldPath, newPath):
     if os.path.exists(oldPath) and not os.path.exists(newPath):
         os.rename(oldPath, newPath)
 
+def create_empty_dir(name):
+    os.makedirs(os.path.join(__main__.path_resources, name), exist_ok=True)
+
+def create_empty_file(name):
+    path = os.path.join(__main__.path_resources, name)
+    if not os.path.isfile(path):
+        with open(path, "w", encoding="utf-8") as f:
+            pass
+
 def update_project_structure():
     import internal_utils
     import devicetree_funcs
@@ -186,11 +195,11 @@ def update_project_structure():
     os.makedirs(__main__.path_temp, exist_ok=True)
     os.makedirs(__main__.path_temp_syslbuild, exist_ok=True)
 
-    internal_utils.create_empty_dir("chroot")
-    internal_utils.create_empty_dir("files")
-    internal_utils.create_empty_dir("initramfs")
-    internal_utils.create_empty_dir("etc_overwrite")
-    internal_utils.create_empty_dir("platform_dependent")
+    create_empty_dir("chroot")
+    create_empty_dir("files")
+    create_empty_dir("initramfs")
+    create_empty_dir("etc_overwrite")
+    create_empty_dir("platform_dependent")
 
     runshell_path = os.path.join(__main__.path_resources, "runshell.sh")
     if not os.path.isfile(runshell_path):
@@ -214,14 +223,14 @@ def update_project_structure():
     if not os.path.isfile(startup_sound):
         internal_utils.copyFile(startup_sound, "gnuboxmaker/startup.wav")
 
-    internal_utils.create_empty_dir("platform_dependent/rpi_config_extension")
+    create_empty_dir("platform_dependent/rpi_config_extension")
     migrate_old_path("rpi_32_config_extension.txt", "platform_dependent/rpi_config_extension/rpi_32.txt")
     migrate_old_path("rpi_64_config_extension.txt", "platform_dependent/rpi_config_extension/rpi_64.txt")
-    internal_utils.create_empty_file("platform_dependent/rpi_config_extension/rpi.txt")
-    internal_utils.create_empty_file("platform_dependent/rpi_config_extension/rpi_64.txt")
-    internal_utils.create_empty_file("platform_dependent/rpi_config_extension/rpi_32.txt")
-    internal_utils.create_empty_file("platform_dependent/rpi_config_extension/rpi_32_only_armhf.txt")
-    internal_utils.create_empty_file("platform_dependent/rpi_config_extension/rpi_32_only_armel.txt")
+    create_empty_file("platform_dependent/rpi_config_extension/rpi.txt")
+    create_empty_file("platform_dependent/rpi_config_extension/rpi_64.txt")
+    create_empty_file("platform_dependent/rpi_config_extension/rpi_32.txt")
+    create_empty_file("platform_dependent/rpi_config_extension/rpi_32_only_armhf.txt")
+    create_empty_file("platform_dependent/rpi_config_extension/rpi_32_only_armel.txt")
 
     gitignore_path = os.path.join(__main__.current_project_directory, ".gitignore")
     if not os.path.isfile(gitignore_path):
