@@ -84,7 +84,9 @@ class Project:
     minlogotime: int = 10
     sudo_privileges: bool = False
 
+    cmdline_prepand: str = ""
     cmdline: str = ""
+    cmdline_append: str = ""
     exclude_cmdline: list[str] = field(default_factory=list)
     add_clear_commands_if_not_quiet: bool = True
     disable_systemd_messages_if_not_quiet: bool = True

@@ -1304,6 +1304,8 @@ def generate_syslbuild_project():
         if current_project.plymouth_show_update_status:
             cmdline += " plymouth_show_update_status"
 
+    cmdline = f"{current_project.cmdline_prepand} {cmdline} {current_project.cmdline_append}"
+
     architectures = []
     builditems = []
 
