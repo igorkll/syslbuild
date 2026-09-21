@@ -35,7 +35,7 @@ if [ "$file_dev" -eq "$data_dev" ]; then
         exit 1
     fi
 
-    rm -rf /data/.post_update_processed.flag
+    rm -rf /data/.private/.post_update_processed.flag
     rm -rf /data/.private/updatescript
     mkdir /data/.private/updatescript
     cp /gnubox/updatescript.sh /data/.private/updatescript/updatescript.sh

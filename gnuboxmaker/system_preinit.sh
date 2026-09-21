@@ -18,7 +18,9 @@ data_link() {
     /nativemount --bind "/root/data/$1" "/root/$1"
 }
 
-if [ ! -e "/root/data/.post_update_processed.flag" ]; then
+mkdir -m 0700 -p /root/data/.private
+
+if [ ! -e "/root/data/.private/.post_update_processed.flag" ]; then
     for x in $(cat /root/proc/cmdline); do
         case $x in
             home_merge_add)
@@ -63,7 +65,7 @@ if [ ! -e "/root/data/.post_update_processed.flag" ]; then
         esac
     done
 
-    mkdir -m 000 -p /root/data/.post_update_processed.flag
+    mkdir -m 000 -p /root/data/.private/.post_update_processed.flag
 fi
 
 for x in $(cat /root/proc/cmdline); do
@@ -82,8 +84,6 @@ for x in $(cat /root/proc/cmdline); do
             ;;
     esac
 done
-
-mkdir -m 0700 -p /root/data/.private
 
 if [ -x "/root/gnubox/preinit.sh" ]; then
     /root/gnubox/preinit.sh
