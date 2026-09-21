@@ -37,6 +37,7 @@ boot_sound_variants = ["none", "init", "logo"]
 # и заменялись только те файлы которые пользователь не изменил но они изменились между старой и новой версии
 dir_merge_variants = ["none", "overwrite", "add"]
 
+boot_splash_substring = " splash earlysplash"
 QUIET_AGETTY = "--noreset --nohostname --nohints --nonewline --noclear --skip-login --noissue"
 RIGHTS_644 = [0, 0, "0644"]
 RIGHTS_755 = [0, 0, "0755"]
@@ -1284,7 +1285,6 @@ def generate_cmdline():
     if current_project.disable_hardware_vulnerabilities_fixs_boost_old_cpu:
         cmdline += " mitigations=off"
 
-    boot_splash_substring = " splash earlysplash"
     if current_project.boot_splash:
         cmdline += boot_splash_substring
 
