@@ -82,11 +82,13 @@ class Project:
     session_mode: str = "tty"
 
     minlogotime: int = 10
+    sudo_privileges: bool = False
+
     cmdline: str = ""
+    exclude_cmdline: list[str] = field(default_factory=list)
     add_clear_commands_if_not_quiet: bool = True
     disable_systemd_messages_if_not_quiet: bool = True
-    exclude_cmdline: list[str] = field(default_factory=list)
-    sudo_privileges: bool = False
+    always_add_quiet_parameter: bool = True
 
     integrate_liamounts: bool = False
     integrate_super_kiosk_browser: bool = False

@@ -841,17 +841,13 @@ MaxLevelKMsg=emerg
 MaxLevelConsole=emerg
 MaxLevelWall=emerg""")
 
-    user_system_config_append = ""
-    if current_project.boot_quiet:
-        user_system_config_append = """LogTarget=journal
-LogLevel=emerg"""
-
     writeText(os.path.join(systemd_config, "system.conf"), f"""[Manager]
-ShowStatus={"no" if current_project.boot_quiet else "yes"}
-{user_system_config_append}""")
+LogTarget=journal
+LogLevel=emerg""")
 
     writeText(os.path.join(systemd_config, "user.conf"), f"""[Manager]
-{user_system_config_append}""")
+LogTarget=journal
+LogLevel=emerg""")
 
     writeText(os.path.join(systemd_config, "coredump.conf"), f"""[Coredump]
 Storage=none""")
@@ -1260,16 +1256,27 @@ def generate_syslbuild_project():
     if current_project.boot_splash and current_project.minlogotime > 0:
         cmdline += f" minlogotime={current_project.minlogotime}"
 
+    disable_systemd_logging = "systemd.show_status=false rd.systemd.show_status=false systemd.log_level=emerg rd.systemd.log_level=emerg"
+    clean_vt = "clear noCursorBlink vt.global_cursor_default=0"
     if current_project.boot_quiet:
-        cmdline += f" systemd.show_status=false rd.systemd.show_status=false systemd.log_level=emerg rd.systemd.log_level=emerg clear noCursorBlink vt.global_cursor_default=0 quiet loglevel=0"
+        cmdline += f" {disable_systemd_logging} {clean_vt} quiet loglevel=0"
     else:
-        cmdline += f" loglevel={current_project.loglevel_without_quiet}"
-
-        if current_project.add_clear_commands_if_not_quiet:
-            cmdline += " clear noCursorBlink vt.global_cursor_default=0"
-
+        # if quiet mode is not enabled, but the "disable_systemd_messages_if_not_quiet" option is enabled, we disable systemd logging. "because"its output can be sent to VT even when the "uartlogs" and "exclude_tty1_from_consoles" options are enabled (and the user probably wants to receive the entire log on the UART but not receive the log on the VT
         if current_project.disable_systemd_messages_if_not_quiet:
-            cmdline += " systemd.show_status=false rd.systemd.show_status=false systemd.log_level=emerg rd.systemd.log_level=emerg"
+            cmdline += f" {disable_systemd_logging}"
+
+        # if quiet mode is not enabled, but the "add_clear_commands_if_not_quiet" option is enabled, we still clean the VT to remove possible BIOS output.
+        if current_project.add_clear_commands_if_not_quiet:
+            cmdline += f" {clean_vt}"
+
+        # no matter how strange it may look, by default, even when we turn off the "boot_quiet" parameter, we still add quiet to the cmdline.
+        # this means that on standard settings, the only difference between quiet on and off will be in the value of the "loglevel" parameter
+        # this was done specifically so that the behavior would be possible when the entire log is sent to the UART and the user sees nothing in the VT. "uartlogs" and "exclude_tty1_from_consoles" parameters are used to achieve this when "boot_quiet" is turned off
+        # because some kernel messages (for example, "EFI stub") can still be output to VT when quiet is turned off, even when "console=ttyS0,115200" is set.
+        if current_project.always_add_quiet_parameter:
+            cmdline += f" quiet"
+
+        cmdline += f" loglevel={current_project.loglevel_without_quiet}"
 
     if not current_project.boot_kernel_logo:
         cmdline += " logo.nologo"
