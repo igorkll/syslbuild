@@ -588,7 +588,7 @@ def setup_download(builditems):
             "name": name,
             "export": False,
 
-            "a": 4,
+            "a": 5,
 
             "git_url": f"https://github.com/{github_user}/{name}"#,
             #"git_checkout": version
@@ -1271,7 +1271,7 @@ def generate_cmdline():
         # this was done specifically so that the behavior would be possible when the entire log is sent to the UART and the user sees nothing in the VT. "uartlogs" and "exclude_tty1_from_consoles" parameters are used to achieve this when "boot_quiet" is turned off
         # because some kernel messages (for example, "EFI stub") can still be output to VT when quiet is turned off, even when "console=ttyS0,115200" is set.
         if current_project.always_add_quiet_parameter:
-            cmdline += f" quiet"
+            cmdline += f" no_redirect_to_null_if_quiet quiet"
 
         cmdline += f" loglevel={current_project.loglevel_without_quiet}"
 
