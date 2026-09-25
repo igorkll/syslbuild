@@ -1,0 +1,46 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+    compatible = "xunlong,orangepi-zero3";
+
+    fragment@0 {
+        target = <&pio>;
+        __overlay__ {
+            display_pins: display-pins {
+                pins = "PC6", "PC11"; /* DC, RESET */
+                function = "gpio_out";
+            };
+            cs_pin: cs-pin {
+                pins = "PH9"; /* CS */
+                function = "gpio_out";
+            };
+        };
+    };
+
+    fragment@1 {
+        target = <&spi1>;
+        __overlay__ {
+            status = "okay";
+            #address-cells = <1>;
+            #size-cells = <0>;
+
+            pinctrl-names = "default";
+            pinctrl-0 = <&spi1_pins &cs_pin>;
+            cs-gpios = <0>, <&pio 7 9 0>;    /* PH9 — chip select */
+
+            display@1 {
+                compatible = "jianda,jd-t18003-t01";
+                reg = <1>;
+                spi-max-frequency = <32000000>;
+
+                pinctrl-names = "default";
+                pinctrl-0 = <&display_pins>;
+
+                dc-gpios = <&pio 2 6 0>;     /* PC6 — Data/Command */
+                reset-gpios = <&pio 2 11 0>; /* PC11 — Reset */
+                rotation = <90>;
+            };
+        };
+    };
+};
