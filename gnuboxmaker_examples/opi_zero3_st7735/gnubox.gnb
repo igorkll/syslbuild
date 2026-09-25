@@ -93,7 +93,7 @@
   "minlogotime": 10,
   "sudo_privileges": false,
   "cmdline_prepand": "",
-  "cmdline": "",
+  "cmdline": "fbcon=map:1",
   "cmdline_append": "",
   "exclude_cmdline": [],
   "add_clear_commands_if_not_quiet": true,
