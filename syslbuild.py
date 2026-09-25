@@ -735,6 +735,8 @@ def buildItems(builditems):
         
         if readBool(item, "export"):
             exported.append(item)
+
+        buildExecute(["sync"])
     
     return exported
 
@@ -920,6 +922,8 @@ def buildProject(json_path):
     for exportedItem in exported:
         buildItemLog(exportedItem, "Exported: ", None, True)
     buildLog(";")
+
+    buildExecute(["sync"])
 
 def requireRoot():
     if os.geteuid() != 0:
