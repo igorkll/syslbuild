@@ -2,7 +2,7 @@
   "gnubox_version": [
     1,
     12,
-    0
+    1
   ],
   "distro": "debian",
   "user_packages": [
