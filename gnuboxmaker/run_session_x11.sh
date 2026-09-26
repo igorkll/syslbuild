@@ -6,7 +6,7 @@ if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
     clear
     
     if [ -x "/gnubox/custom_x11_run.sh" ]; then
-        /gnubox/custom_x11_run.sh
+        exec /gnubox/custom_x11_run.sh
     else
         startx > /dev/null 2>&1
     fi

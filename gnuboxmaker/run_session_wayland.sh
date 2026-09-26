@@ -12,7 +12,7 @@ if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
     #fi
 
     if [ -x "/gnubox/custom_weston_run.sh" ]; then
-        /gnubox/custom_weston_run.sh
+        exec /gnubox/custom_weston_run.sh
     else
         exec weston --continue-without-input >/dev/null 2>&1
     fi
