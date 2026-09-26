@@ -5,7 +5,7 @@
     compatible = "xunlong,orangepi-zero3";
 
     fragment@0 {
-        target-path = "/soc/display-engine";
+        target-path = "/display-engine";
         __overlay__ {
             status = "disabled";
         };
