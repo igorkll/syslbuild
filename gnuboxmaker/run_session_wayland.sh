@@ -8,8 +8,14 @@ if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
     #if [ -e "/bootmnt/rpi_64" ]; then
     #    exec weston --continue-without-input --renderer=pixman >/dev/null 2>&1
     #else
-    exec weston --continue-without-input >/dev/null 2>&1
+    #exec weston --continue-without-input >/dev/null 2>&1
     #fi
+
+    if [ -x "/gnubox/custom_weston_run.sh" ]; then
+        /gnubox/custom_weston_run.sh
+    else
+        exec weston --continue-without-input >/dev/null 2>&1
+    fi
 else
     clear
     reset
