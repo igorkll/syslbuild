@@ -11,6 +11,7 @@
                 compatible = "gpio-backlight";
                 gpios = <&pio 2 15 0>; /* PC15 - Backlight */
                 default-on;
+                default-brightness-level = <1>;
             };
         };
     };
