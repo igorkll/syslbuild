@@ -15,7 +15,6 @@
         };
     };
 
-
     fragment@1 {
         target = <&spi1>;
         __overlay__ {
@@ -23,7 +22,8 @@
             #address-cells = <1>;
             #size-cells = <0>;
 
-            cs-gpios = <0>, <&pio 7 9 0>;    /* PH9 - chip select */
+            pinctrl-names = "default";
+            pinctrl-0 = <&spi1_pins &spi1_cs1_pin>; /* PH9 - chip select */
 
             display@1 {
                 compatible = "jianda,jd-t18003-t01";
