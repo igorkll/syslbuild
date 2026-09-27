@@ -6,6 +6,7 @@
   ],
   "distro": "debian",
   "user_packages": [
+    "glmark2-es2-wayland",
     "nano"
   ],
   "temp_packages": [],
