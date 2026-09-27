@@ -2,7 +2,7 @@
   "gnubox_version": [
     1,
     12,
-    1
+    2
   ],
   "distro": "debian",
   "user_packages": [
@@ -95,15 +95,17 @@
   "cmdline_prepand": "",
   "cmdline": "waitFbAfterModules",
   "cmdline_append": "",
-  "exclude_cmdline": ["waitFbBeforeModules"],
+  "exclude_cmdline": [
+    "waitFbBeforeModules"
+  ],
   "add_clear_commands_if_not_quiet": true,
   "disable_systemd_messages_if_not_quiet": true,
   "always_add_quiet_parameter": true,
   "integrate_liamounts": false,
   "integrate_super_kiosk_browser": false,
   "integrate_xwayland": true,
-  "integrate_firmwares": true,
-  "integrate_firmwares2": true,
+  "integrate_firmwares": false,
+  "integrate_firmwares2": false,
   "integrate_armbian_firmwares_if_need": true,
   "integrate_raspberry_firmwares_if_need": true,
   "integrate_bluetooth": true,
@@ -112,7 +114,7 @@
   "integrate_network_timesync": true,
   "integrate_network_wifi": true,
   "integrate_audio": true,
-  "integrate_advanced_gpu_packages": true,
+  "integrate_advanced_gpu_packages": false,
   "integrate_cpu_microcode_for_x86": true,
   "initramfs_use_list_mode": false,
   "initramfs_add_internal_modules_list": true,
