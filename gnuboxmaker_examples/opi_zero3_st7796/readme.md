@@ -1,6 +1,6 @@
-# opi_zero3_st7735
-## 160x128 tft
-example of connecting the st7735 display to the orange pi zero 3  
+# opi_zero3_st7796
+## 320x480 ips
+example of connecting the st7796 display to the orange pi zero 3  
 
 ## changes in project
 * added "waitFbBeforeModules" to "exclude_cmdline" and added "waitFbAfterModules" to "cmdline". this is necessary so that the framebuffer waits after the module loader at the initramfs stage and the deadlock does not occur. these parameters are handled at the custom initramfs level.
