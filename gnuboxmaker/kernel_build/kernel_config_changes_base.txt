@@ -12,3 +12,11 @@ CONFIG_DRM_VKMS=m
 
 # not working... WTF... I'll make a patch later to disable coredump creation
 # CONFIG_COREDUMP=n
+
+CONFIG_DEBUG_INFO=n
+CONFIG_DEBUG_FS=n
+CONFIG_DEBUG_KERNEL=n
+CONFIG_DEBUG_MISC=n
+CONFIG_MAGIC_SYSRQ=n
+CONFIG_FTRACE=n
+CONFIG_TRACING=n
