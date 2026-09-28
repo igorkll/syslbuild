@@ -67,7 +67,7 @@
   "size_efi_partition": "256MB",
   "size_root_partition": "(auto * 1.2) + (100 * 1024 * 1024)",
   "weston_shell": "kiosk",
-  "session_user": "root",
+  "session_user": "user",
   "session_mode": "wayland",
   "minlogotime": 10,
   "sudo_privileges": false,
