@@ -1,2 +1,2 @@
-display
+st7796_480_320_high_speed
 disable_hdmi
