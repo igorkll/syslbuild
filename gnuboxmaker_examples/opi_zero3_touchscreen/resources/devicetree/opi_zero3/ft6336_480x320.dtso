@@ -1,0 +1,83 @@
+/*
+ * Подключение (FT6336U -> Orange Pi Zero 3, 26-pin):
+ *   VCC -> pin 1  (3.3V)
+ *   SDA -> pin 3  (PH5, TWI3-SDA)
+ *   SCL -> pin 5  (PH4, TWI3-SCK)
+ *   GND -> pin 9  (GND)
+ *   INT -> pin 11 (PC8)
+ *   RST -> pin 13 (PC5)
+ *
+ * Pin 7 (PC9) НЕ использовать: в mainline DT это линия прерывания PMIC AXP313A.
+ */
+
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "xunlong,orangepi-zero3", "allwinner,sun50i-h618";
+
+	/*
+	 * Фиксированный номер шины: /dev/i2c-3 (так же делает официальный
+	 * оверлей Orange Pi ph-i2c3). Без этого номер назначается динамически.
+	 */
+	fragment@0 {
+		target-path = "/aliases";
+		__overlay__ {
+			i2c3 = "/soc/i2c@5002c00";
+		};
+	};
+
+	/*
+	 * Свои группы пинов, чтобы не зависеть от наличия метки i2c3_ph_pins
+	 * в базовом dtb конкретной версии ядра.
+	 */
+	fragment@1 {
+		target = <&pio>;
+		__overlay__ {
+			ft6336u_i2c3_pins: ft6336u-i2c3-pins {
+				pins = "PH4", "PH5";
+				function = "i2c3";
+				/* слабая (~100k) внутренняя подтяжка на случай, если на модуле её нет */
+				bias-pull-up;
+			};
+
+			ft6336u_int_pin: ft6336u-int-pin {
+				pins = "PC8";
+				function = "gpio_in";
+				bias-pull-up;
+			};
+		};
+	};
+
+	fragment@2 {
+		target = <&i2c3>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&ft6336u_i2c3_pins>;
+			clock-frequency = <100000>;	/* FT6336U умеет 400 kHz; 100 kHz надёжнее на проводах */
+			status = "okay";
+
+			touchscreen@38 {
+				/* FT6336U совместим с FT6236, драйвер edt-ft5x06 (CONFIG_TOUCHSCREEN_EDT_FT5X06) */
+				compatible = "focaltech,ft6236";
+				reg = <0x38>;
+
+				pinctrl-names = "default";
+				pinctrl-0 = <&ft6336u_int_pin>;
+				interrupt-parent = <&pio>;
+				interrupts = <2 8 2>;		/* PC8, IRQ_TYPE_EDGE_FALLING */
+				reset-gpios = <&pio 2 5 1>;	/* PC5, GPIO_ACTIVE_LOW */
+
+				touchscreen-size-x = <320>;
+				touchscreen-size-y = <480>;
+
+				/* Ориентация, если дисплей повёрнут (проверять через evtest): */
+				touchscreen-swapped-x-y;
+				touchscreen-inverted-x;
+				/* touchscreen-inverted-y; */
+			};
+		};
+	};
+};

@@ -8,3 +8,13 @@ example of connecting the st7735 display to the orange pi zero 3
 * added device tree overlays "display.dtso" and "disable_hdmi.dtso" to connect an external display and disconnect the HDMI
 * enabled "uartlogs" and "uartlogs_login" to debug the system via UART
 * disable "integrate_firmwares", "integrate_firmwares2" and "integrate_advanced_gpu_packages" to minimize the size of the final firmware
+
+## display connection
+* V3.3 - VCC (Power)
+* GND - GND (Groud)
+* PH9 - CS (Chip select)
+* PC11 - RESET
+* PC6 - A0/DC (Data/Command)
+* PH7 - SDA (MOSI)
+* PH6 - SCK (CLK/Clock)
+* PC15 - LED (Backlight)
