@@ -2,7 +2,7 @@
   "gnubox_version": [
     1,
     12,
-    2
+    3
   ],
   "distro": "debian",
   "user_packages": [
@@ -97,7 +97,9 @@
   "integrate_cpu_microcode_for_x86": true,
   "initramfs_use_list_mode": false,
   "initramfs_add_internal_modules_list": true,
-  "initramfs_add_modules": ["panel-mipi-dbi"],
+  "initramfs_add_modules": [
+    "panel-mipi-dbi"
+  ],
   "wifi_autoconnect_name": "",
   "wifi_autoconnect_password": "",
   "wifi_autoconnect_security": "wpa-psk",
