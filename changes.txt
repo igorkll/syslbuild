@@ -32,3 +32,8 @@ fixed a bug that caused "exclude_cmdline" to not work for raspberry pi and orang
 added verification of control sums after the update to the self_update mechanism, which should greatly increase the reliability of self-updating.
 fixed the formation of the command line of the kernel and initramfs script, due to which, when logging to the uart, some still ended up on VT.
 added new mechanisms for directory merging after self-updating.
+
+1.12.4:
+gnubox maker:
+enabled new parameters in kernels configs.
+added example "opi_zero3_touchscreen".
