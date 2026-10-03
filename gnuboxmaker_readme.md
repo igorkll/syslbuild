@@ -47,7 +47,7 @@ you can fix any of these bugs yourself if necessary, and if you want to send a p
 * "screen idle time" does not work on wayland
 * on the orange pi zero 3, when audio is output to the line output, the sound plays twice as slowly. at the same time, the file reproduction itself slows down and the scale of reproduction is slower (at least in chrome)
 * boot_sound only works on x86 at the moment
-* when building some gnubox maker projects, I had a problem that all applications written in electron crashed on my computer, and only a reboot helped. I do not know what this is related to, but I assume that it is a matter of systemd-nspawn and mounting the host file systems inside the system being assembled (this happened when building rootfs for i368)
+* when building some gnubox maker projects, I had a problem that all applications written in electron crashed on my computer, and only a reboot helped. I do not know what this is related to, but I assume that it is a matter of chroot and mounting the host file systems inside the system being assembled (this happened when building rootfs for i368)
 
 ## supported platforms
 if the platform you need is not available in gnubox maker, you can use syslbuild (a lower-level tool for creating embedded linux builds) where you can customize the build for any hardware you are interested in and do anything with the system  
@@ -105,7 +105,7 @@ alternatively, you can fork gnubox maker and then offer a pull request
 * .gitignore - this is necessary to prevent "output" and ".temp" from ending up in your project's git repository
 * resources - all project resources used during the build process
 * resources/files - files that will be copied to rootfs before executing chroot scripts. please note that all your files and directories from this directory will have rights 755 and belong to root, regardless of what rights they have during the build. this is necessary for repeatable assembly on different machines. if you need to change the permissions on the target system, use the "chroot" scripts.
-* resources/chroot - scripts executed inside a chroot in the system during the build process (not just a chroot, but a systemd-nspawn container) please note that at the end of each file you need to create an empty file or directory with the path "/.chrootend" otherwise the build will fail
+* resources/chroot - scripts executed inside a chroot in the system during the build process please note that at the end of each file you need to create an empty file or directory with the path "/.chrootend" otherwise the build will fail
 * resources/initramfs - you can add additional files directly to initramfs
 * resources/etc_overwrite - it only works with the data section enabled and etc moved to the data section. overlays your files on top of etc with replacement. it does this not when building the image, but when it is first turned on or after updating the system via self_update.
 * resources/runshell.sh - the shell startup file. you can write a script directly in it if you use tty mode and you will just get console output, or you can run your application from it if you use wayland/x11
@@ -132,6 +132,7 @@ you can create a custom devicetree to connect the perepherals
 
 ## internal utils
 * /usr/local/sbin/self_update - self-updating the system from an image built by gnubox maker. It does not validate images. when transferring an image, make sure that it is an image from the same project and that you have not changed the size of the partitions. to work, the new image must be located in the data partition. it must be launched on the full path as root. for example, the system update daemon
+* /usr/local/bin/vsysctl - the utility partially replaces systemctl in the chroot environment. supports basic commands: mask, unmask, enable, disable, set-default
 
 ## how self-update works
 The update itself allows you to update the device's firmware automatically using the same .img image that gnubox maker exports  
@@ -172,7 +173,6 @@ exclude_tty1_from_consoles: true - forcibly removing tty1 from consoles
 ## WARNINGS
 * at the end of each script, you must create an empty file or directory from the chroot folder at the end using the path "/.chrootend" to make sure that the script is executed correctly. if you don't do this, the build will fail
 * "files" that will be copied to rootfs before executing chroot scripts. please note that all your files and directories from this directory will have rights 755 and belong to root, regardless of what rights they have during the build. this is necessary for repeatable assembly on different machines. if you need to change the permissions on the target system, use the "chroot" scripts.
-* "chroot" is executed in systemd-nspawn
 * Attention! since the gnubox maker projects are building from root in the host system, be careful what you build
 * despite the presence of command-line arguments for building via tty, gnubox maker must BE run from its working directory (otherwise it will not work)
 * in order for GPU acceleration to work on raspberry pi 64, you need to select at least this debian version: trixie 20260217T143331Z. older versions have a Mesa version that is incompatible with the raspberry pi board
