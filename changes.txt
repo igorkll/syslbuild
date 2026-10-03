@@ -37,3 +37,10 @@ added new mechanisms for directory merging after self-updating.
 gnubox maker:
 enabled new parameters in kernels configs.
 added example "opi_zero3_touchscreen".
+
+1.13.0:
+gnubox maker:
+added parameter "zram_percent"
+removed parameter "platform_opi_zero3_cma"
+renamed option: platform_opi_zero3_hdmi_audio_high_priority > misc_hdmi_audio_1001_priority
+abandoning the use of systemd-nspawn in chroot scripts in favor of regular chroot.
