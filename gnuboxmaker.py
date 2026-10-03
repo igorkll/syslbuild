@@ -1210,7 +1210,7 @@ def generate_console_cmdline():
 def generate_cmdline():
     cmdline_console = generate_console_cmdline()
 
-    cmdline = f"{"ro" if current_project.root_readonly else "rw"} noctrlaltdel nosysrq sysrq=0 rootwait=60 systemd.getty_auto=0 selinux=0 plymouth.ignore-serial-consoles mount_bootmnt {cmdline_console} preinit=/root/gnubox/system_preinit.sh {current_project.cmdline}"
+    cmdline = f"{"ro" if current_project.root_readonly else "rw"} custom_zram_percent={current_project.zram_percent} noctrlaltdel nosysrq sysrq=0 rootwait=60 systemd.getty_auto=0 selinux=0 plymouth.ignore-serial-consoles mount_bootmnt {cmdline_console} preinit=/root/gnubox/system_preinit.sh {current_project.cmdline}"
 
     if current_project.root_readonly:
         cmdline += " bootmnt_readonly"
