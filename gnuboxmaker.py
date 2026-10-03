@@ -1147,8 +1147,8 @@ def setup_build_base(builditems, cmdline):
         "export": current_project.export_rootfs_directory,
 
         "manual_validation": True,
-        "use_systemd_container": True,
-        "fix_systemd_container_host_files_copy": True,
+        #"use_systemd_container": True,
+        #"fix_systemd_container_host_files_copy": True,
         
         "source": "rootfs directory x2",
         "scripts": setup_chroot_script()
