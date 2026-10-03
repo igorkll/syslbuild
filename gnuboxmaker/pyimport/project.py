@@ -145,7 +145,6 @@ class Project:
     export_rootfs_tar_xz: bool = False
     export_rootfs_tar: bool = False
 
-    platform_opi_zero3_cma: str = "256M"
     platform_opi_zero3_hdmi_audio_high_priority: bool = True
 
     rebranding_enabled: bool = True
