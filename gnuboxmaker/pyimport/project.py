@@ -145,7 +145,7 @@ class Project:
     export_rootfs_tar_xz: bool = False
     export_rootfs_tar: bool = False
 
-    platform_opi_zero3_hdmi_audio_high_priority: bool = True
+    misc_hdmi_audio_1001_priority: bool = True
 
     rebranding_enabled: bool = True
     rebranding_issue: str = "gnubox \\n \\l\n\n"

@@ -85,5 +85,5 @@
   "export_rootfs_directory": true,
   "export_rootfs_tar_gz": false,
   "platform_opi_zero3_cma": "256M",
-  "platform_opi_zero3_hdmi_audio_high_priority": true
+  "misc_hdmi_audio_1001_priority": true
 }

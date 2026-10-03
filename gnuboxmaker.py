@@ -1117,6 +1117,10 @@ def setup_build_base(builditems, cmdline):
     if current_project.separate_data_partition:
         directories.append(["/data", RIGHTS_755])
 
+    if __main__.current_project.misc_hdmi_audio_1001_priority:
+        conf = get_gnuboxmaker_dirpath("configs/hdmi_audio_1001_priority.conf")
+        items.append([conf, "/etc/wireplumber/wireplumber.conf.d/hdmi_audio_1001_priority.conf", RIGHTS_644, False, RIGHTS_755])
+
     setup_write_bins(builditems)
     items.append(["rootfs directory overlay", "/"])
 
