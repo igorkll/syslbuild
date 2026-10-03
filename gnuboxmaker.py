@@ -234,21 +234,21 @@ EOF
 
 # ------------
 
-systemctl mask getty.target
-systemctl mask getty@.service
-systemctl mask getty@tty1.service
-systemctl mask getty@tty2.service
-systemctl mask getty@tty3.service
-systemctl mask getty@tty4.service
-systemctl mask getty@tty5.service
-systemctl mask getty@tty6.service
-systemctl mask serial-getty@.service
-systemctl mask container-getty@.service
-systemctl mask console-getty.service
+vsysctl mask getty.target
+vsysctl mask getty@.service
+vsysctl mask getty@tty1.service
+vsysctl mask getty@tty2.service
+vsysctl mask getty@tty3.service
+vsysctl mask getty@tty4.service
+vsysctl mask getty@tty5.service
+vsysctl mask getty@tty6.service
+vsysctl mask serial-getty@.service
+vsysctl mask container-getty@.service
+vsysctl mask console-getty.service
 
 # ------------
 
-systemctl set-default graphical.target
+vsysctl set-default graphical.target
 
 # ------------
 
@@ -275,13 +275,13 @@ cp -f /usr/share/plymouth/themes/bootlogo/bootlogo.plymouth /usr/share/plymouth/
 
         if current_project.plymouth_disable_esc_button:
             aaa_setup += "\n" + f"""# this trash break systemd quiet
-systemctl mask plymouth-read-write.service"""
+vsysctl mask plymouth-read-write.service"""
 
     if current_project.dont_show_splash_on_poweroff:
-        aaa_setup += "\n" + f"""systemctl mask plymouth-poweroff.service
-systemctl mask plymouth-reboot.service
-systemctl mask plymouth-halt.service
-systemctl mask plymouth-kexec.service"""
+        aaa_setup += "\n" + f"""vsysctl mask plymouth-poweroff.service
+vsysctl mask plymouth-reboot.service
+vsysctl mask plymouth-halt.service
+vsysctl mask plymouth-kexec.service"""
 
     if current_project.integrate_liamounts:
         aaa_setup += "\n" + f"""cd /liamounts
@@ -300,10 +300,10 @@ def gen_default_last_chroot_script():
     zzz_setup = "#!/bin/bash"
 
     if current_project.session_mode != "init":
-        zzz_setup += "\n\nsystemctl enable run_shell.service"
+        zzz_setup += "\n\nvsysctl enable run_shell.service"
 
     if current_project.uartlogs_login or current_project.uartlogs_rootshell:
-        zzz_setup += "\n\nsystemctl enable uartshell.service"
+        zzz_setup += "\n\nvsysctl enable uartshell.service"
 
     zzz_setup += "\n\ntouch /.chrootend"
 
@@ -419,6 +419,7 @@ def setup_build_debian(builditems, for64bits, architecture):
         "cpio",
         "zstd",
         "rsync",
+        "python3-minimal",
 
         "systemd",
         "systemd-sysv",
@@ -1072,7 +1073,7 @@ def setup_build_base(builditems, cmdline):
         ["files/user_initramfs", "/gnubox/user_initramfs", RIGHTS_755],
         ["files/etc_overwrite", "/gnubox/etc_overwrite", RIGHTS_755],
 
-        ["files/system_scripts/vsysctl.sh", "/usr/local/bin/vsysctl", RIGHTS_755]
+        ["files/system_scripts/vsysctl.py", "/usr/local/bin/vsysctl", RIGHTS_755]
     ]
 
     if current_project.initramfs_use_list_mode:
