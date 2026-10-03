@@ -871,8 +871,9 @@ Storage=none""")
     shutil.copy("gnuboxmaker/cleanup.sh", os.path.join(path_temp_syslbuild, "files", "cleanup.sh"))
     shutil.copy("gnuboxmaker/fix-rpi-x11.conf", os.path.join(path_temp_syslbuild, "files", "fix-rpi-x11.conf"))
 
+    shutil.copytree("gnuboxmaker/system_scripts", os.path.join(path_temp_syslbuild, "files", "system_scripts"), dirs_exist_ok=True)
+
     if current_project.allow_updatescript and current_project.separate_data_partition:
-        shutil.copy("gnuboxmaker/self_update.sh", os.path.join(path_temp_syslbuild, "files", "self_update.sh"))
         shutil.copy("gnuboxmaker/updatescript.sh", os.path.join(path_temp_syslbuild, "files", "updatescript.sh"))
 
     prepair_devicetree(devicetree)
@@ -1069,7 +1070,9 @@ def setup_build_base(builditems, cmdline):
 
         ["files/user_files", "/", RIGHTS_755, False, None, False, True],
         ["files/user_initramfs", "/gnubox/user_initramfs", RIGHTS_755],
-        ["files/etc_overwrite", "/gnubox/etc_overwrite", RIGHTS_755]
+        ["files/etc_overwrite", "/gnubox/etc_overwrite", RIGHTS_755],
+
+        ["files/system_scripts/vsysctl.sh", "/usr/local/bin/vsysctl", RIGHTS_755]
     ]
 
     if current_project.initramfs_use_list_mode:
@@ -1081,7 +1084,7 @@ def setup_build_base(builditems, cmdline):
     items.append(["\n".join(current_project.initramfs_add_modules), "/usr/share/initramfs-tools/modules.d/user-modules.list", RIGHTS_644, True])
 
     if current_project.allow_updatescript and current_project.separate_data_partition:
-        items.append(["files/self_update.sh", "/usr/local/sbin/self_update", RIGHTS_755])
+        items.append(["files/system_scripts/self_update.sh", "/usr/local/sbin/self_update", RIGHTS_755])
         items.append(["files/updatescript.sh", "/gnubox/updatescript.sh", RIGHTS_755])
 
     if current_project.boot_sound == "init" or (current_project.boot_sound == "logo" and current_project.boot_splash):
