@@ -99,7 +99,6 @@
   "export_rootfs_tar_gz": false,
   "export_rootfs_tar_xz": false,
   "export_rootfs_tar": false,
-  "platform_opi_zero3_cma": "256M",
   "misc_hdmi_audio_1001_priority": true,
   "rebranding_enabled": true,
   "rebranding_issue": "gnubox \\n \\l\n\n",

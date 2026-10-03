@@ -1,8 +1,8 @@
 {
   "gnubox_version": [
     1,
-    12,
-    4
+    13,
+    0
   ],
   "distro": "debian",
   "user_packages": [
@@ -77,6 +77,7 @@
   "exclude_cmdline": [
     "waitFbBeforeModules"
   ],
+  "zram_percent": 25,
   "add_clear_commands_if_not_quiet": true,
   "disable_systemd_messages_if_not_quiet": true,
   "always_add_quiet_parameter": true,
@@ -127,7 +128,6 @@
   "export_rootfs_tar_gz": false,
   "export_rootfs_tar_xz": false,
   "export_rootfs_tar": false,
-  "platform_opi_zero3_cma": "256M",
   "misc_hdmi_audio_1001_priority": false,
   "rebranding_enabled": true,
   "rebranding_issue": "gnubox \\n \\l\n\n",

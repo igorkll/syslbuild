@@ -93,6 +93,5 @@
   "export_img_rpi_64": false,
   "export_rootfs_directory": false,
   "export_rootfs_tar_gz": false,
-  "platform_opi_zero3_cma": "256M",
   "misc_hdmi_audio_1001_priority": true
 }

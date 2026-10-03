@@ -84,6 +84,5 @@
   "export_img_rpi_32_armel": true,
   "export_img_rpi_32": true,
   "export_img_rpi_64": true,
-  "platform_opi_zero3_cma": "256M",
   "misc_hdmi_audio_1001_priority": true
 }
