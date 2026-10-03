@@ -1308,6 +1308,9 @@ def generate_cmdline():
         if current_project.plymouth_show_update_status:
             cmdline += " plymouth_show_update_status"
 
+    if current_project.zram_percent > 0:
+        cmdline += " zswap.enabled=0"
+
     cmdline = f"{current_project.cmdline_prepand} {cmdline} {current_project.cmdline_append}"
     cmdline = exclude_string(cmdline, current_project.exclude_cmdline)
 
