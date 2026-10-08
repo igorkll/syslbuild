@@ -101,6 +101,7 @@ def export_rpi_32(builditems, cmdline, appendPartitions, architecture="armhf", s
         ["rpi_firmware/boot/start_x.elf", "/start_x.elf"],
         ["rpi_firmware/boot/bootcode.bin", "/bootcode.bin"],
 
+        # ХУЙНЯ. это ядро не запрашивается для исключительно 32 битных сборок. нужно перенести экспорт этих dtb в rpi_64
         ["kernel_image/arm64/rpi_5/boot", "/"], # тут некоторые dtb лежат. по этому добавляю все равно даже в 32 битный образ, хотя само ядро от RPI 5 тут не нужно
 
         ["kernel_image/arm64/rpi_64/boot", "/"],

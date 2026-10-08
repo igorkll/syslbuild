@@ -166,6 +166,10 @@ def request_kernel(builditems, architecture, filtername):
 
 def setup_build_architectures(builditems, architectures):
     # fuck... я же беру dtb для raspberry pi из папок с ядрами, а при сборке не все ядра могут быть запрошены
+    # по сути если сразу попытатся сделать сборку для 32 битного raspberry pi то прога упадет нахер, потому что ядро rpi_5 не запрашивается в этом случаи
+    # а при сборке образа от туда пытаются скопироватся dtb
+    # по этому нужно перенести все dtb из экспорта ядра rpi_5 в rpi_64
+
     build_rpi64_kernel = False
     build_rpi32_kernel = False
 
