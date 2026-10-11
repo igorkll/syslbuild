@@ -1,5 +1,6 @@
 from __main__ import *
 import __main__
+import dataclasses
 
 def get_name_without_all_extensions(filepath):
     p = Path(filepath)
@@ -10,7 +11,12 @@ def get_name_without_all_extensions(filepath):
 def raw_load_project(path):
     with open(path, "r", encoding="utf-8") as f:
         data = json5.load(f)
-        return Project(**data)
+
+    if isinstance(data, dict):
+        allowed = {f.name for f in dataclasses.fields(Project)}
+        data = {k: v for k, v in data.items() if k in allowed}
+
+    return Project(**data)
 
 def raw_save_project(path, proj):
     with open(path, "w", encoding="utf-8") as f:
