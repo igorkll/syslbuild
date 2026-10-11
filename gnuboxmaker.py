@@ -805,6 +805,7 @@ def setup_write_files():
     writeText(os.path.join(systemd_config, "logind.conf"), f"""[Login]
 NAutoVTs=0
 ReserveVT=0
+WallMessages=no
 
 IdleAction=ignore
 
