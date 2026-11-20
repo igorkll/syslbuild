@@ -1,4 +1,4 @@
-let debug = false
+let debug = true
 
 const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
@@ -13,7 +13,8 @@ function createWindow () {
         webPreferences: {
             devTools: debug, // DON'T FORGET TO TURN OFF THE DAMN DEVTOOLS!
             nodeIntegration: true,
-            contextIsolation: false
+            contextIsolation: false,
+            webSecurity: false
         }
     })
 
@@ -43,7 +44,7 @@ function createWindow () {
         win.show()
     })
 
-    win.loadFile(path.join(__dirname, 'main.html'))
+    win.loadFile(path.join(__dirname, 'app/index.html'))
 
     if (debug) win.openDevTools()
 }

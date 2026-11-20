@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Musical Ball Bouncing</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./libs/three.js/build/three.module.js",
+                "three/addons/": "./libs/three.js/examples/jsm/"
+            }
+        }
+    </script>
+
+    <div class="gui_base" id="gui_base">
+        <div class="gui_music_list" id="gui_music_list">
+        </div>
+
+        <div class="gui_container gui_container_flex">
+            <div class="gui_music_button" id="import">
+                Import
+            </div>
+
+            <div class="gui_music_button" id="settings">
+                Settings
+            </div>
+        </div>
+    </div>
+
+    <div class="number_block" id="number_block"></div>
+    
+    <script type="module" src="Main.js"></script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+*, *::after, *::before {
+    box-sizing: border-box;
+}
+
+@font-face {
+    font-family: "Sevenish";
+    src: url("./fonts/Sevenish/Sevenish.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    
+    overflow: hidden !important;
+    overscroll-behavior: none;
+    touch-action: none;
+
+    user-select: none;
+
+    font-size: 30px;
+
+    font-family: "Sevenish";
+}
+
+img {
+    -webkit-user-drag: none;
+}
+
+body {
+    background-color: #000000;
+}
+
+canvas {
+    touch-action: none;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.gui_base {
+    position: absolute;
+    width: calc(min(800px, 90dvw));
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    border-radius: 30px;
+    background-color: #ffffff26;
+    backdrop-filter: blur(10px);
+
+    transition: opacity 0.5s ease;
+    opacity: 1;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 15px;
+
+    padding: 15px;
+}
+
+.gui_base_hide {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.menu-title {
+    color: #ffffff;
+    text-align: center;
+    text-shadow: 0px 0px 3px black;
+}
+
+.menu-description {
+    color: #ffffff;
+    text-align: center;
+    font-size: 25px;
+    text-shadow: 0px 0px 3px black;
+}
+
+.menu-subtitle {
+    color: #ffffff;
+    text-align: start;
+    font-size: 20px;
+    text-shadow: 0px 0px 3px black;
+}
+
+.gui_music_list {
+    height: calc(min(600px, 90dvh));
+
+    border-radius: 15px;
+    background-color: #ffffff26;
+    backdrop-filter: blur(10px);
+
+    padding: 15px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 20px;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    clip-path: inset(0 round 15px);
+}
+
+.gui_music_item {
+    height: 70px;
+
+    border-radius: 15px;
+    background-color: #ffffff26;
+    backdrop-filter: blur(10px);
+
+    color: #ffffff;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+
+    padding: 8px;
+    transition: background-color 0.1s linear;
+    cursor: pointer;
+
+    flex-shrink: 0;
+
+    text-shadow: 0px 0px 3px black;
+}
+
+.flex {
+    flex: 1;
+}
+
+.number_block {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 50vw;
+
+    color: #ffffff;
+    text-shadow: 0px 0px 3px black;
+    
+    pointer-events: none;
+}
+
+.gui_music_item_button {
+    height: calc(70px - (8px * 2));
+    width: calc(70px - (8px * 2));
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #ffffff;
+    border-radius: 7px;
+
+    margin-left: 8px;
+
+}
+
+.gui_music_button {
+    height: calc(70px - (8px * 2));
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #ffffff;
+    border-radius: 7px;
+
+    cursor: pointer;
+
+    padding: 6px;
+    font-size: 25px;
+
+    border-radius: 15px;
+}
+
+.gui_container {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+}
+
+.gui_container_vertical {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+
+    gap: 8px;
+}
+
+.gui_container_flex > * {
+    flex: 1;
+}
+
+.button-img {
+    width: 80%;
+    height: 80%;
+    object-fit: contain;
+}
+
+.gui_music_list::-webkit-scrollbar {
+    width: 8px; /* Ширина вертикального скроллбара */
+    height: 8px; /* Высота горизонтального */
+}
+
+.gui_music_list::-webkit-scrollbar-track {
+    /* Фон (трек) скроллбара. Делаем его почти прозрачным */
+    background: rgba(255, 255, 255, 0.08); 
+    border-radius: 10px;
+}
+
+.gui_music_list::-webkit-scrollbar-thumb {
+    /* Ползунок. Полупрозрачный белый, как и другие элементы */
+    background: rgba(255, 255, 255, 0.35); 
+    border-radius: 10px; /* Скругленные углы */
+
+    /* Создаем визуальный "отступ" внутри ползунка, 
+        окрашивая границу в цвет трека */
+    border: 2px solid transparent; 
+    background-clip: padding-box;
+}
