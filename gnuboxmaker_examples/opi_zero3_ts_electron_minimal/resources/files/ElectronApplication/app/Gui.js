@@ -38,7 +38,7 @@ function startGame(musicItem) {
         audio = Utils.createAudioFromBuffer(musicItem.mp3data);
     }
 
-    audio.volume = 0.1;
+    audio.volume = 1;
     audio.loop = true;
     audio.play();
 
