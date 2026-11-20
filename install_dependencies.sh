@@ -37,6 +37,7 @@ apt install -y pip
 apt install -y fdisk
 apt install -y binutils-arm-linux-gnueabi binutils-aarch64-linux-gnu
 apt install -y python3-tk
+apt install -y python3-pil.imagetk
 
 echo "INSTALLER: install python packages"
 pip install json5 --break-system-packages

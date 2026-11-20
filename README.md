@@ -93,7 +93,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * armel
 
 ## dependencies
-* python3 / python3-tk / pip
+* python3 / python3-tk / python3-pil.imagetk / pip
 * mmdebstrap - to build debian based systems
 * pacman/pacstrap - to build arch linux based systems
 * mkfs.* - you need support for the file systems that you intend to use in your projects
@@ -170,6 +170,7 @@ sudo apt install -y pip
 sudo apt install -y fdisk
 sudo apt install -y binutils-arm-linux-gnueabi binutils-aarch64-linux-gnu
 sudo apt install -y python3-tk
+sudo apt install -y python3-pil.imagetk
 
 sudo pip install json5 --break-system-packages
 sudo pip install asteval --break-system-packages
