@@ -27,7 +27,9 @@
     "unzip"
   ],
   "exclude_packages": [],
-  "delete_packages": [],
+  "delete_packages": [
+    "python3-minimal"
+  ],
   "debian_variant": "minbase",
   "debian_suite": "<default>",
   "debian_snapshot": "<default>",
@@ -99,7 +101,7 @@
   "always_add_quiet_parameter": true,
   "integrate_liamounts": false,
   "integrate_super_kiosk_browser": false,
-  "integrate_xwayland": true,
+  "integrate_xwayland": false,
   "integrate_firmwares": false,
   "integrate_firmwares2": false,
   "integrate_armbian_firmwares_if_need": false,
