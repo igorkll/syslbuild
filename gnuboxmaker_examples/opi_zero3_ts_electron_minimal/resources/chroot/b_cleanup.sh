@@ -10,3 +10,5 @@ rm -rf /root/.npm
 
 # We don’t need this.
 rm -rf /usr/share/doc/*
+
+touch /.chrootend
