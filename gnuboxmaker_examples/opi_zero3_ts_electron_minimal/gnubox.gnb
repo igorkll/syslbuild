@@ -109,7 +109,7 @@
   "integrate_network_resolved": false,
   "integrate_network_timesync": false,
   "integrate_network_wifi": false,
-  "integrate_audio": false,
+  "integrate_audio": true,
   "integrate_advanced_gpu_packages": false,
   "integrate_cpu_microcode_for_x86": false,
   "initramfs_use_list_mode": false,
