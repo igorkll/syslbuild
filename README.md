@@ -1,4 +1,4 @@
-# syslbuild + gnubox maker + mkbootable 1.13.2
+# syslbuild + gnubox maker + mkbootable 1.13.3
 an build system for creating Linux distributions. it is focused on embedded distributions  
 DOWNLOAD THE RELEASE, NOT THE REPOSITORY!  
 WARNING!!! if you read this text from GITHUB page please, download a release and read description there. on github this text is DEV syslbuild version (not released yet)  
@@ -93,7 +93,7 @@ also, assembling a bootable img with an already installed system is also a separ
 * armel
 
 ## dependencies
-* python3 / pip
+* python3 / python3-tk / pip
 * mmdebstrap - to build debian based systems
 * pacman/pacstrap - to build arch linux based systems
 * mkfs.* - you need support for the file systems that you intend to use in your projects
@@ -169,6 +169,7 @@ sudo apt install -y rsync cpio initramfs-tools diffutils
 sudo apt install -y pip
 sudo apt install -y fdisk
 sudo apt install -y binutils-arm-linux-gnueabi binutils-aarch64-linux-gnu
+sudo apt install -y python3-tk
 
 sudo pip install json5 --break-system-packages
 sudo pip install asteval --break-system-packages
