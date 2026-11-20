@@ -1,0 +1,3 @@
+st7796_480_320_high_speed
+ft6336_480x320
+disable_hdmi
