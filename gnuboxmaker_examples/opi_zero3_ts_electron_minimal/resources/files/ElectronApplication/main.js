@@ -6,10 +6,10 @@ const path = require('path')
 function createWindow () {
     const win = new BrowserWindow({
         frame: debug,
-        fullscreen: !debug,
         width: 1280,
         height: 720,
         show: false,
+        backgroundColor: '#000000',
         webPreferences: {
             devTools: debug, // DON'T FORGET TO TURN OFF THE DAMN DEVTOOLS!
             nodeIntegration: true,
@@ -41,7 +41,11 @@ function createWindow () {
     }
 
     win.once('ready-to-show', () => {
-        win.show()
+        if (debug) {
+            win.show()
+        } else {
+            win.setFullScreen(true)
+        }
     })
 
     win.loadFile(path.join(__dirname, 'app/index.html'))
