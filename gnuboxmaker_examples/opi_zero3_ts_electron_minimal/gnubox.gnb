@@ -23,7 +23,8 @@
   ],
   "temp_packages": [
     "nodejs",
-    "npm"
+    "npm",
+    "unzip"
   ],
   "exclude_packages": [],
   "delete_packages": [],
@@ -65,11 +66,11 @@
   "rtc_mode": "UTC",
   "root_expand": true,
   "root_readonly": false,
-  "allow_updatescript": false,
-  "separate_data_partition": false,
+  "allow_updatescript": true,
+  "separate_data_partition": true,
   "separate_data_partition_home_link": true,
   "separate_data_partition_var_link": true,
-  "separate_data_partition_etc_link": false,
+  "separate_data_partition_etc_link": true,
   "separate_data_partition_home_merge_mode": "none",
   "separate_data_partition_var_merge_mode": "none",
   "separate_data_partition_etc_merge_mode": "add",
@@ -80,7 +81,7 @@
   "minsize_data_partition": "64MB",
   "size_boot_partition": "64MB",
   "size_efi_partition": "64MB",
-  "size_root_partition": "(auto * 1.2) + (100 * 1024 * 1024)",
+  "size_root_partition": "2 * 1024 * 1024 * 1024",
   "weston_shell": "kiosk",
   "session_user": "user",
   "session_mode": "wayland",
