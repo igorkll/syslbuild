@@ -27,9 +27,7 @@
     "unzip"
   ],
   "exclude_packages": [],
-  "delete_packages": [
-    "python3-minimal"
-  ],
+  "delete_packages": [],
   "debian_variant": "minbase",
   "debian_suite": "<default>",
   "debian_snapshot": "<default>",
