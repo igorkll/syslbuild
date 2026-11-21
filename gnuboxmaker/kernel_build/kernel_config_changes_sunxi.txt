@@ -1,1 +1,4 @@
 CONFIG_LOCALVERSION="-embedded-sunxi"
+
+# --- temporarily disabled is what doesn’t build on the current version of the kernel
+CONFIG_STK3310=n
