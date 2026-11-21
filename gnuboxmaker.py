@@ -17,9 +17,8 @@ import version
 # module_dir = os.path.join(os.path.dirname(__file__), "gnuboxmaker/pyimport")
 
 gnuboxmaker_dir = os.path.join(os.getcwd(), "gnuboxmaker")
-module_dir = os.path.join(gnuboxmaker_dir, "pyimport")
-
-sys.path.insert(0, module_dir)
+sys.path.insert(0, os.path.join(gnuboxmaker_dir, "pyimport"))
+sys.path.insert(0, os.path.join(gnuboxmaker_dir, "pyimport/export_modules"))
 
 import consts
 

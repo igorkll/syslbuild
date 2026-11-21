@@ -226,7 +226,7 @@ def setup_build_targets(builditems, cmdline):
         rpi_export.export_rpi_32(builditems, cmdline, appendPartitions, "armel", "RPI 32 ARMEL")
 
     if __main__.current_project.export_img_rpi_32:
-        rpi_export.export_rpi_32(builditems, cmdline, appendPartitions)
+        rpi_export.export_rpi_32(builditems, cmdline, appendPartitions, "armhf", "RPI 32")
 
     if __main__.current_project.export_img_rpi_64:
         rpi_export.export_rpi_64(builditems, cmdline, appendPartitions)

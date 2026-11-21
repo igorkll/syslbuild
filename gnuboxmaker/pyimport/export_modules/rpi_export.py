@@ -36,7 +36,7 @@ def any_rpi_rootfs_tweaks(rootfs_tbl):
 
     return rootfs_tbl
 
-def export_rpi_32(builditems, cmdline, appendPartitions, architecture="armhf", suffix="RPI 32"):
+def export_rpi_32(builditems, cmdline, appendPartitions, architecture, suffix):
     config_txt = read_gnubox_file("rpi_32_config.txt") + "\n" + read_project_file("resources/platform_dependent/rpi_config_extension/rpi.txt") + "\n" + read_project_file("resources/platform_dependent/rpi_config_extension/rpi_32.txt")
 
     if architecture == "armel":
