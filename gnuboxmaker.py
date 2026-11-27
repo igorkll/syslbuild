@@ -629,7 +629,7 @@ def setup_download(builditems):
         })
 
     if current_project.integrate_super_kiosk_browser:
-        addDownloadRelease("super-kiosk-browser", "1.1", "super_kiosk_browser_build.zip")
+        addDownloadRelease("super-kiosk-browser", "1.2", "super_kiosk_browser_build.zip")
         
         builditems.append({
             "independent_architecture": True,
